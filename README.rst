@@ -19,15 +19,17 @@ templates::
     from crudlfap import shortcuts as crudlfap
     from .models import Server
 
-    urlpatterns = crudlfap.ModelViewRouter(Server).urlpatterns()
+    # Use fields='__all__' to allow read/write on all model fields for
+    # everybody for now
+    urlpatterns = crudlfap.ModelViewRouter(Server, fields='__all__').urlpatterns()
 
 Now, open your browser and learn to love CRUDFA+ and stop worrying. Don't
 forget to open the debug url as superuser, to see the list of url patterns and
 names and views and menus etc and everything it did for you because crudlfap+
 loves you.
 
-Let's setup the default queryset per user OOAO for views and forms etc and set
-some permissions::
+Let's setup the default queryset per user for views and forms etc and set
+some permissions on views and fields, all OOAO::
 
 
     class ServerCreateView(crudlfap.CreateView):
@@ -59,6 +61,14 @@ some permissions::
             ServerDeleteView,
         ]
 
+        readable_fields = ['name', 'owner', 'created']
+
+        def get_writable_fields(self, user):
+            if request.user.is_staff:
+                return ['name', 'owner']
+            else:
+                return ['name']
+
         # used by anything from autocomplete view to related forms fields
         def get_queryset(self, user):
             if not user.pk:
@@ -81,13 +91,26 @@ Example checking security in Python::
     if crudlfap.routers['yourapp.server']['update'].allow(user, server):
         # User has permission to update on the default router for yourapp.Server
 
-New if you want to make your own link to an object update modal because you are
+Now if you want to make your own link to an object update modal because you are
 in 2017 then you could use this Jinja2 function::
 
     {% cruldfap_modal object 'update' %}
 
 Note that the above won't render anything if the user doesn't have the
 permission to execute the update view.
+
+Now if you want to render a particular model field attribute after checking
+user permission::
+
+    {% if 'created' in crudlfap_router(object).get_writable_fields(request.user) %}
+        {% crudlfap_attribute_label object 'created' %}: {% crudlfap_attribute_value object 'created' %}
+    {% endif %}
+
+Or just::
+
+    {% crudlfap_attribute object 'created' %}
+
+Check the default templates for moar 2017 DRY fun !
 
 Now, if you think this pattern is too 2017 for you, wait until we add some
 custom actions on this model::
@@ -130,3 +153,18 @@ custom actions on this model::
 
 Refresh your browser and you will see a new "refresh" button with the
 'fa-refresh' icon in the list view and the detail view
+
+Ok so you want to integrate django-reversion and django-tables2 then please
+dear knock yourself out::
+
+    class ServerRouter(crudlfap.ModelViewRouter):
+        views = [
+            ServerCreateView,
+            crudlfap.DetailView,
+            crudlfap.Tables2ListView,
+            crudlfap.ReversionView,
+            ServerUpdateView,
+            ServerDeleteView,
+            ServerRefreshView,
+        ]
+    urlpatterns = ServerRouter(Server).urlpatterns()
