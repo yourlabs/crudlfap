@@ -10,6 +10,14 @@ applications by thinking differently:
 - JavaScript is a first class citizen,
 - Integration with external Django apps more than welcome,
 
+Try
+===
+
+This should start the example project in ``src/crudlfap_example`` where each
+documented example lives::
+
+    pip install --user crudlflap[django][tables2][filter][dal]; crudlfap runserver
+
 Examples
 ========
 
@@ -21,7 +29,7 @@ templates::
 
     # Use fields='__all__' to allow read/write on all model fields for
     # everybody for now
-    urlpatterns = crudlfap.ModelViewRouter(Server, fields='__all__').urlpatterns()
+    urlpatterns = crudlfap.Router(Server, fields='__all__').urlpatterns()
 
 Now, open your browser and learn to love CRUDFA+ and stop worrying. Don't
 forget to open the debug url as superuser, to see the list of url patterns and
@@ -52,7 +60,7 @@ some permissions on views and fields, all OOAO::
         pass
 
 
-    class ServerRouter(ModelViewRouter):
+    class ServerRouter(Router):
         views = [
             ServerCreateView,
             crudlfap.DetailView,
@@ -140,7 +148,7 @@ custom actions on this model::
             return self.object.get_absolute_url()
 
 
-    class ServerRouter(crudlfap.ModelViewRouter):
+    class ServerRouter(crudlfap.Router):
         views = [
             ServerCreateView,
             crudlfap.DetailView,
@@ -157,7 +165,7 @@ Refresh your browser and you will see a new "refresh" button with the
 Ok so you want to integrate django-reversion and django-tables2 then please
 dear knock yourself out::
 
-    class ServerRouter(crudlfap.ModelViewRouter):
+    class ServerRouter(crudlfap.Router):
         views = [
             ServerCreateView,
             crudlfap.DetailView,
