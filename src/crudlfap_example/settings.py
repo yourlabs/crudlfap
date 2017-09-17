@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crudlfap',
+    'crudlfap_example.basic',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -55,19 +56,63 @@ ROOT_URLCONF = 'crudlfap_example.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django_jinja.backend.Jinja2",
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "app_dirname": "templates",
+            "match_extension": ".html",
+            "match_regex": r"^(?!admin/).*",
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.i18n",
+                "crudlfap.context_processors.base",
             ],
-        },
+            "extensions": [
+                "jinja2.ext.do",
+                "jinja2.ext.loopcontrols",
+                "jinja2.ext.with_",
+                "jinja2.ext.i18n",
+                "jinja2.ext.autoescape",
+                "django_jinja.builtins.extensions.CsrfExtension",
+                "django_jinja.builtins.extensions.CacheExtension",
+                "django_jinja.builtins.extensions.TimezoneExtension",
+                "django_jinja.builtins.extensions.UrlsExtension",
+                "django_jinja.builtins.extensions.StaticFilesExtension",
+                "django_jinja.builtins.extensions.DjangoFiltersExtension",
+            ],
+            "constants": {
+                "settings": dict(SITE_NAME='CRUFLA+ demo !'),
+            },
+            "newstyle_gettext": True,
+            "bytecode_cache": {
+                "name": "default",
+                "backend": "django_jinja.cache.BytecodeCache",
+                "enabled": False,
+            },
+            "autoescape": True,
+            "auto_reload": DEBUG,
+            "translation_engine": "django.utils.translation",
+        }
     },
+    #{
+    #    "BACKEND": "django.template.backends.django.DjangoTemplates",
+    #    "APP_DIRS": True,
+    #    "OPTIONS": {
+    #        "context_processors": [
+    #            "django.template.context_processors.debug",
+    #            "django.template.context_processors.request",
+    #            "django.contrib.auth.context_processors.auth",
+    #            "django.contrib.messages.context_processors.messages",
+    #        ],
+    #    },
+    #},
 ]
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, "locale"),
+)
 
 WSGI_APPLICATION = 'crudlfap_example.wsgi.application'
 

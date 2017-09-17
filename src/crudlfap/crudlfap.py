@@ -2,7 +2,7 @@
 
 from .routers import Router
 
-from .views import (
+from .views.generic import (
     CreateView,
     DeleteView,
     DetailView,

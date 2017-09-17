@@ -13,6 +13,11 @@ def main():
         import django
         django.setup()
         call_command('migrate')
+        from django.conf import settings
+        from django.apps import apps
+        User = apps.get_model(settings.AUTH_USER_MODEL)
+        if not User.objects.count():
+            call_command('createsuperuser')
 
     execute_from_command_line(sys.argv)
 

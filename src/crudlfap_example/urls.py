@@ -1,6 +1,9 @@
-from django.conf.urls import url
+from django.conf.urls import include, url
+from django.views import generic
 from django.contrib import admin
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^auth/', include('django.contrib.auth.urls')),
+    url(r'^debug/', include('crudlfap.urls')),
+    url(r'^$', generic.TemplateView.as_view(template_name='crudlfap/home.html')),
 ]

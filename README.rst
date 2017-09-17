@@ -18,23 +18,42 @@ documented example lives::
 
     pip install --user crudlflap[django][tables2][filter][dal]; crudlfap runserver
 
+To add crudlfap to your project, first copy over settings from
+``crudlfap_settings.TEMPLATES`` or enable jinja2 manually.
+
+Then add ``crudlfap`` to your ``settings.INSTALLED_APPS``. You can find other
+crudflap apps you can add with the following commmand::
+
+    echo 'from django.conf import settings; settings.INSTALLED_APPS' | crudlfap shell | grep crud
+
+You will also need a context processor that sets the ``base`` template context
+
 Examples
 ========
 
 Let's hack a modern CRUD for your Server model where you can override default
-templates::
+templates, add this to your app's ``urls.py``::
 
-    from crudlfap import shortcuts as crudlfap
+    from crudlfap import crudlfap
     from .models import Server
 
     # Use fields='__all__' to allow read/write on all model fields for
     # everybody for now
     urlpatterns = crudlfap.Router(Server, fields='__all__').urlpatterns()
 
-Now, open your browser and learn to love CRUDFA+ and stop worrying. Don't
-forget to open the debug url as superuser, to see the list of url patterns and
-names and views and menus etc and everything it did for you because crudlfap+
-loves you.
+Then, add it to your project's ``urls.py``::
+
+    urlpatterns = [
+        # for auth views, we haz material templates
+        url(r'^auth/', include('django.contrib.auth.urls')),
+        url(r'^crudlfap/', include('crudlfap.urls')),  # for debug views
+        url(r'^$', generic.TemplateView.as_view(template_name='crudlfap/home.html')),  # for free
+        # It's considered a good practice to not leave django.contrib.admin here
+    ]
+
+Now, open your browser and learn to love CRUDFA+ and look at your material
+design website. Don't forget to check the registered url list which was
+generated for you.
 
 Let's setup the default queryset per user for views and forms etc and set
 some permissions on views and fields, all OOAO::

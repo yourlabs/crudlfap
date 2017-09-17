@@ -23,7 +23,11 @@ setup(
     long_description=read('README.rst'),
     license='MIT',
     keywords='django crud',
-    extra_require=dict(
+    install_requires=[
+        'jinja2',
+        'django-jinja',
+    ],
+    extras_require=dict(
         django=['django'],
         tables2=['django-tables2'],
         filter=['django-filter'],

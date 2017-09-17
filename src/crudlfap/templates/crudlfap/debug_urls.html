@@ -1,0 +1,7 @@
+{% extends base %}
+
+{% block content %}
+{% for url in urlpatterns %}
+    {% include '_url.html' %}
+{% endfor %}
+{% endblock %}
