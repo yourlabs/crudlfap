@@ -4,7 +4,7 @@
 <form action="{{ request.get_full_path() }}" method="post">
 {% endblock %}
 
-{% block form %}
+{% block content %}
     {% csrf_token %}
     {{ bootstrap_form(form) }}
 {% endblock %}

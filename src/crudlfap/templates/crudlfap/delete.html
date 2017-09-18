@@ -6,8 +6,9 @@
 
 {% block content %}
   {{ _('Are you sure you want to delete') }} {{ view.model._meta.verbose_name }} {{ object }} ?
+  {% csrf_token %}
 {% endblock %}
 
 {% block buttons %}
-    {{ bootstrap_button(_('Delete'), button_type="submit", button_class="btn-danger") }}
+  {{ bootstrap_button(_('Delete'), button_type="submit", button_class="btn-danger") }}
 {% endblock %}

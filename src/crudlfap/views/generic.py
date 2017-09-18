@@ -218,6 +218,12 @@ class DeleteView(ObjectFormViewMixin, generic.DeleteView):
     target = 'modal'
 
     def get_success_url(self):
+        messages.success(
+            self.request,
+            _(
+                '%s %s: {}' % (self.slug, self.model._meta.verbose_name)
+            ).format(self.object).capitalize()
+        )
         return self.router['list'].reverse()
 
 
