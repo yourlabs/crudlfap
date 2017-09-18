@@ -2,7 +2,7 @@
 
 from django import apps
 
-from . import views
+from .views import generic
 
 
 class DefaultConfig(apps.AppConfig):
@@ -13,9 +13,9 @@ class DefaultConfig(apps.AppConfig):
     def get_default_views(self):  # pylint: disable=no-self-use
         """Return the default views to use in a new router."""
         return [
-            views.CreateView,
-            views.DeleteView,
-            views.DetailView,
-            views.ListView,
-            views.UpdateView,
+            generic.CreateView,
+            generic.DeleteView,
+            generic.DetailView,
+            generic.ListView,
+            generic.UpdateView,
         ]

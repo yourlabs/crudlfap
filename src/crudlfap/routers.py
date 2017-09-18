@@ -106,3 +106,6 @@ class Router(object):
                 type(self).__name__,
             )
         )
+
+    def urlpatterns(self):
+        return [view.as_url() for view in self.views]
