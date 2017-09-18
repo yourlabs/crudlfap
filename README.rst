@@ -42,7 +42,9 @@ Examples
 ========
 
 Let's hack a modern CRUD for your Server model where you can override default
-templates, add this to your app's ``urls.py``::
+templates, add this to your app's ``urls.py``:
+
+.. code-block:: python
 
     from crudlfap import crudlfap
     from .models import Server
@@ -51,7 +53,9 @@ templates, add this to your app's ``urls.py``::
     # everybody for now, also show Server Router views in main menu
     urlpatterns = crudlfap.Router(Server, fields='__all__', menus=['main']).urlpatterns()
 
-Then, add it to your project's ``urls.py``::
+Then, add it to your project's ``urls.py``:
+
+.. code-block:: python
 
     urlpatterns = [
         # for auth views, we haz material templates
@@ -66,8 +70,9 @@ design website. Don't forget to check the registered url list which was
 generated for you.
 
 Let's setup the default queryset per user for views and forms etc and set
-some permissions on views and fields, all OOAO::
+some permissions on views and fields, all OOAO:
 
+.. code-block:: python
 
     class ServerCreateView(crudlfap.CreateView):
         @classmethod
@@ -153,7 +158,9 @@ Or just::
 Check the default templates for moar 2017 DRY fun !
 
 Now, if you think this pattern is too 2017 for you, wait until we add some
-custom actions on this model::
+custom actions on this model:
+
+.. code-block:: python
 
     from django import forms
     from django.contrib import messages
@@ -195,7 +202,9 @@ Refresh your browser and you will see a new "refresh" button with the
 'fa-refresh' icon in the list view and the detail view
 
 Ok so you want to integrate django-reversion and django-tables2 then please
-dear knock yourself out::
+dear knock yourself out:
+
+.. code-block:: python
 
     class ServerRouter(crudlfap.Router):
         views = [
