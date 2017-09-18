@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'debug_toolbar',
+
     # CRUDLFA+ dependencies
     'crudlfap',
     'bootstrap4',
@@ -53,7 +55,9 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+INTERNAL_IPS = ('127.0.0.1',)
 
 ROOT_URLCONF = 'crudlfap_example.urls'
 
@@ -64,7 +68,7 @@ TEMPLATES = [
         "OPTIONS": {
             "app_dirname": "templates",
             "match_extension": ".html",
-            "match_regex": r"^(?!(admin|bootstrap4)/).*",
+            "match_regex": r"^(?!(admin|bootstrap4|debug_toolbar)/).*",
             "context_processors": [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
@@ -96,7 +100,10 @@ TEMPLATES = [
                 "bootstrap_setting": "bootstrap4.bootstrap.get_bootstrap_setting",  # noqa
                 "bootstrap_form": "bootstrap4.forms.render_form",
                 "bootstrap_button": "bootstrap4.forms.render_button",
+                "pagination_filter_params": "crudlfap.jinja2.pagination_filter_params",  # noqa
                 "Router": "crudlfap.routers.Router",
+                "getattr": getattr,
+                "isinstance": isinstance,
             },
             "newstyle_gettext": True,
             "bytecode_cache": {

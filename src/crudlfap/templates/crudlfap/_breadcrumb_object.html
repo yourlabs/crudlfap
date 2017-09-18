@@ -1,0 +1,9 @@
+{% if view.model %}
+    <a class="breadcrumb-item" href="{{ Router.registry[view.model]['list'].reverse() }}">{{ view.model._meta.verbose_name_plural.capitalize() }}</a>
+{% endif %}
+{% if object %}
+    <a class="breadcrumb-item" href="{{ object.get_absolute_url() }}">{{ object }}</a>
+{% endif %}
+{% if view.slug %}
+    <span class="breadcrumb-item active">{{ _(view.slug).capitalize() }}</span>
+{% endif %}

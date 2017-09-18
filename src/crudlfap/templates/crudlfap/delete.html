@@ -1,0 +1,13 @@
+{% extends 'crudlfap/form.html' %}
+
+{% block breadcrumb %}
+  {% include 'crudlfap/_breadcrumb_object.html' %}
+{% endblock %}
+
+{% block content %}
+  {{ _('Are you sure you want to delete') }} {{ view.model._meta.verbose_name }} {{ object }} ?
+{% endblock %}
+
+{% block buttons %}
+    {{ bootstrap_button(_('Delete'), button_type="submit", button_class="btn-danger") }}
+{% endblock %}

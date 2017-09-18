@@ -7,7 +7,7 @@
     <meta name="author" content="">
     <link rel="icon" href="{{ static('favicon.ico') }}">
 
-    <title>{% block title %}{{ view.title }}{% endblock %} {% if settings.SITE_TITLE %}- {{ settings.SITE_TITLE }}{% endif %}</title>
+    <title>{% block title %}{% if view.get_title_html %}{{ view.get_title_html() }}{% endif %}{% endblock %} {% if settings.SITE_TITLE %}- {{ settings.SITE_TITLE }}{% endif %}</title>
 
     <!-- Bootstrap core CSS -->
     <link href="{{ static('crudlfap/bootstrap-material-design.min.css') }}" rel="stylesheet">
@@ -69,8 +69,26 @@
     {% endblock %}
 
     <div class="container">
-      {% block content %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+
+      {% block breadcrumb_block %}
+      <nav class="breadcrumb">
+      {% block breadcrumb %}
       {% endblock %}
+      </nav>
+      {% endblock %}
+
+      {% block title_heading %}
+      {% if view.get_title_heading() %}
+      <h2 class="text-{{ view.style|default('default') }}">{{ view.get_title_heading() }}</h2>
+      {% endif %}
+      {% endblock %}
+      {% block form_open %}{% endblock %}
+      {% block content %}{% block form %}{% endblock %}{% endblock %}
+      {% block buttons %}{% endblock %}
+      {% block form_close %}{% endblock %}
 
       <hr>
 
@@ -79,6 +97,11 @@
       </footer>
     </div> <!-- /container -->
 
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal-label">
+      <div class="modal-dialog" role="document" style="max-width:600px">
+      </div>
+    </div>
+
     {% block after_container %}
     {# i wish you put some super elegant hack here #}
     {% endblock %}
@@ -86,11 +109,12 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="{{ static('crudlfap/jquery-3.2.1.slim.min.js') }}" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="{{ static('crudlfap/jquery-3.2.1.min.js') }}" crossorigin="anonymous"></script>
     <script>window.jQuery || document.write('<script src="{{ static('crudlfap/jquery-3.2.1.slim.min.js') }}"><\/script>')</script>
     <script src="{{ static('crudlfap/popper.js') }}"></script>
     <script src="{{ static('crudlfap/bootstrap-material-design.js') }}"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="{{ static('crudlfap/ie10-viewport-bug-workaround.js') }}"></script>
+    <script src="{{ static('crudlfap/script.js') }}"></script>
   </body>
 </html>

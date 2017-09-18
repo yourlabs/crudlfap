@@ -20,7 +20,10 @@ Try
 This should start the example project in ``src/crudlfap_example`` where each
 documented example lives::
 
-    pip install --user crudlflap[django,tables2,filter,dal,reversion]; crudlfap runserver
+    pip install --user crudlflap[django,tables2,filter,dal,reversion,debug]; crudlfap runserver
+
+Install
+=======
 
 To add crudlfap to your project, first copy over settings from
 ``crudlfap_settings.TEMPLATES`` or enable jinja2 manually. Also set
@@ -31,8 +34,9 @@ crudflap apps you can add with the following commmand::
 
     echo 'from django.conf import settings; settings.INSTALLED_APPS' | crudlfap shell | grep crud
 
-You will also need a context processor that sets the ``base`` template context,
-ie. ``crudlfap.context_processors.base``.
+You will also need a context processor that sets the ``base`` template
+context, ie. ``crudlfap.context_processors.base``, but then again, just copy
+over the ``TEMPLATES`` .
 
 Examples
 ========

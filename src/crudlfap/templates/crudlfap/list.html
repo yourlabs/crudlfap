@@ -1,0 +1,19 @@
+{% extends base %}
+
+{% block breadcrumb %}
+  {% include 'crudlfap/_breadcrumb_object.html' %}
+
+  <div class="btn-toolbar pull-right">
+   {% for menu_view in view.router.get_menu('model') %}
+     {% if not isinstance(view, menu_view) %}
+       {% with view=menu_view %}
+       {% include 'crudlfap/_action.html' %}
+       {% endwith %}
+     {% endif %}
+   {% endfor %}
+  </div>
+{% endblock %}
+
+{% block content %}
+{% include 'crudlfap/_list.html' %}
+{% endblock %}

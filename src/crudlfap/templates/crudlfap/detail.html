@@ -1,5 +1,32 @@
 {% extends base %}
 
+{% block breadcrumb %}
+  {% include 'crudlfap/_breadcrumb_object.html' %}
+
+  <div class="btn-toolbar pull-right">
+      {% for view in view.router.get_menu('object') %}
+          {% include 'crudlfap/_action.html' %}
+      {% endfor %}
+  </div>
+{% endblock %}
+
+{% block title %}{{ object }} {{ view.model._meta.verbose_name.capitalize() }} {{ _(view.slug).capitalize() }}{% endblock %}
+
 {% block content %}
 <h2>{{ object }}</h2>
+
+<table class="table">
+  <thead class="thead-inverse">
+    {% for field in fields %}
+    <tr>
+        <th>
+            {{ field['field'].name.capitalize() }}
+        </th>
+        <td>
+            {{ field['value'] }}
+        </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}

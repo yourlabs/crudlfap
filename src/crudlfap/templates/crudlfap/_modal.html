@@ -1,0 +1,21 @@
+<div class="modal fade" id="{{ modal_name }}{{ modal_pk }}" tabindex="-1" role="dialog" aria-labelledby="{{ modal_name }}{{ modal_pk }}Label">
+  <div class="modal-dialog" role="document" style="max-width:600px">
+    <div class="modal-content panel-default">
+      <div class="modal-header panel-heading">
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{ _('Close') }}"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">
+          {% block heading %}heading{% endblock %}
+          {% if action_icon %}<span class="{{ action_icon }}"></span>&nbsp;{% endif %}
+          {% if action_title %}{{ action_title }}&nbsp;{% endif %}
+          {{ object }}
+        </h4>
+      </div>
+      <div class="modal-body">
+          {% block modal_body %}{% block content %} _modal-{{ modal_name }}{{ modal_pk }}{% endblock %}{% endblock %}
+      </div>
+      <div class="modal-footer">
+        {% block modal_footer %}{% block footer %}{% endblock %}{% endblock %}
+      </div>
+    </div>
+  </div>
+</div>

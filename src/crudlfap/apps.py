@@ -13,9 +13,9 @@ class DefaultConfig(apps.AppConfig):
     def get_default_views(self):  # pylint: disable=no-self-use
         """Return the default views to use in a new router."""
         return [
-            generic.CreateView,
             generic.DeleteView,
-            generic.DetailView,
-            generic.ListView,
             generic.UpdateView,
+            generic.DetailView,
+            generic.CreateView,
+            generic.ListView,
         ]

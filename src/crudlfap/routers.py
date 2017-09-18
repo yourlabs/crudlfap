@@ -19,11 +19,21 @@ class Router(object):
 
     views = crudlfap.get_default_views()
 
+    def _get_fields(self, attr, user):
+        fields = getattr(self, attr, None)
+        if not fields:
+            fields = getattr(self, 'fields', None)
+        if fields == '__all__' or not fields:
+            fields = [
+                f.name for f in self.model._meta.fields
+            ]
+        return fields
+
+    def get_readable_fields(self, user):
+        return self._get_fields('readable_fields', user)
+
     def get_writable_fields(self, user):
-        if hasattr(self, 'writable_fields'):
-            return self.writable_fields
-        else:
-            return self.fields
+        return self._get_fields('writable_fields', user)
 
     def generate_view_slug(self, view):
         """
