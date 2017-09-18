@@ -93,7 +93,7 @@ TEMPLATES = [
                 ),
             },
             "globals": {
-                "bootstrap_setting": "bootstrap4.bootstrap.get_bootstrap_setting",
+                "bootstrap_setting": "bootstrap4.bootstrap.get_bootstrap_setting",  # noqa
                 "bootstrap_form": "bootstrap4.forms.render_form",
                 "bootstrap_button": "bootstrap4.forms.render_button",
                 "Router": "crudlfap.routers.Router",

@@ -31,7 +31,8 @@ crudflap apps you can add with the following commmand::
 
     echo 'from django.conf import settings; settings.INSTALLED_APPS' | crudlfap shell | grep crud
 
-You will also need a context processor that sets the ``base`` template context
+You will also need a context processor that sets the ``base`` template context,
+ie. ``crudlfap.context_processors.base``.
 
 Examples
 ========

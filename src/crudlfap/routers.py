@@ -129,4 +129,3 @@ class Router(object):
     def get_menu(self, name=None):
         name = name or 'model'  # consider model menu as root
         return [v for v in self.views if name in getattr(v, 'menus', [])]
-

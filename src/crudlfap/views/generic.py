@@ -43,7 +43,10 @@ class ViewMixin(object):
 
     @classmethod
     def get_fa_icon(cls):
-        return getattr(cls, 'fa_icon', None) or getattr(cls.router, 'fa_icon', '')
+        return (
+            getattr(cls, 'fa_icon', None) or
+            getattr(cls.router, 'fa_icon', '')
+        )
 
     @classmethod
     def as_url(cls, **kwargs):

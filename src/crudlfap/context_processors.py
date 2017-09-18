@@ -1,6 +1,3 @@
-from jinja2.ext import Extension
-
-
 def base(request):
     c = dict(base='base.html')
 
