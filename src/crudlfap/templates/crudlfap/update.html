@@ -1,7 +1,9 @@
 {% extends 'crudlfap/form.html' %}
 
 {% block breadcrumb %}
+<nav class="breadcrumb">
   {% include 'crudlfap/_breadcrumb_object.html' %}
+</nav>
 {% endblock %}
 
 {% block before_form %}<h1>{{ _(view.slug).capitalize() }} {{ view.model._meta.verbose_name.capitalize() }}<h1>{% endblock %}

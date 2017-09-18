@@ -1,6 +1,7 @@
 {% extends base %}
 
 {% block breadcrumb %}
+<nav class="breadcrumb">
   {% include 'crudlfap/_breadcrumb_object.html' %}
 
   <div class="btn-toolbar pull-right">
@@ -8,6 +9,7 @@
           {% include 'crudlfap/_action.html' %}
       {% endfor %}
   </div>
+</nav>
 {% endblock %}
 
 {% block title %}{{ object }} {{ view.model._meta.verbose_name.capitalize() }} {{ _(view.slug).capitalize() }}{% endblock %}

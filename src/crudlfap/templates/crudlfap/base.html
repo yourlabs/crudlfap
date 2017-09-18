@@ -7,7 +7,7 @@
     <meta name="author" content="">
     <link rel="icon" href="{{ static('favicon.ico') }}">
 
-    <title>{% block title %}{% if view.get_title_html %}{{ view.get_title_html() }}{% endif %}{% endblock %} {% if settings.SITE_TITLE %}- {{ settings.SITE_TITLE }}{% endif %}</title>
+    <title>{% block title %}{% if getattr(view, 'get_title_html', None) %}{{ view.get_title_html() }}{% endif %}{% endblock %} {% if settings.SITE_TITLE %}- {{ settings.SITE_TITLE }}{% endif %}</title>
 
     <!-- Bootstrap core CSS -->
     <link href="{{ static('crudlfap/bootstrap-material-design.min.css') }}" rel="stylesheet">
@@ -38,7 +38,7 @@
           </li>
           {% for model, router in Router.registry.items() %}
           <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" id="dropdown-{{ router.model._meta.model_name }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ model._meta.verbose_name_plural }}</a>
+              <a class="nav-link dropdown-toggle" id="dropdown-{{ router.model._meta.model_name }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% if getattr(router, 'fa_icon', None) %}<i class="fa fa-fw fa-{{ router.fa_icon }}"></i> {% endif %}{{ model._meta.verbose_name_plural }}</a>
               <div class="dropdown-menu" aria-labelledby="dropdown-{{ router.model._meta.model_name }}">
               {% for view in router.get_menu() %}
                 <a class="dropdown-item" href="{{ view.reverse() }}" title="{% if view.title %}{{ view.title }}{% endif %}"><i class="fa fa-fw fa-{{ view.get_fa_icon() }}"></i>{{ _(view.slug|capfirst) }}</a>
@@ -73,15 +73,11 @@
         <div class="alert alert-{{ message.tags }}">{{ message }}</div>
       {% endfor %}
 
-      {% block breadcrumb_block %}
-      <nav class="breadcrumb">
       {% block breadcrumb %}
-      {% endblock %}
-      </nav>
       {% endblock %}
 
       {% block title_heading %}
-      {% if view.get_title_heading() %}
+      {% if getattr(view, 'get_title_heading', None) %}
       <h2 class="text-{{ view.style|default('default') }}">{{ view.get_title_heading() }}</h2>
       {% endif %}
       {% endblock %}

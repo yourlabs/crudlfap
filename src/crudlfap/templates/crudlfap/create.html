@@ -1,5 +1,11 @@
 {% extends 'crudlfap/form.html' %}
 
+{% block breadcrumb %}
+<nav class="breadcrumb">
+  {% include 'crudlfap/_breadcrumb_object.html' %}
+</nav>
+{% endblock %}
+
 {% block buttons %}
 {{ bootstrap_button(_(view.slug), button_type="submit", button_class="btn-primary") }}
 {% endblock %}
