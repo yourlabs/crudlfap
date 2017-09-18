@@ -12,7 +12,7 @@ def read(fname):
 
 setup(
     name='crudlfap',
-    version='0.0.0',
+    version='0.0.1',
     description='2017 OOAO DRY BUZZWORDS FOR DJANGO 2.0 with Material design',
     author='James Pic',
     author_email='jamespic@gmail.com',
@@ -42,7 +42,7 @@ setup(
         ],
     },
     classifiers=[
-        'Development Status :: 0 - Planning',
+        'Development Status :: 1 - Planning',
         'Environment :: Web Environment',
         'Framework :: Django',
         'Intended Audience :: Developers',
