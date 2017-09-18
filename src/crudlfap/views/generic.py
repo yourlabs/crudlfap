@@ -7,8 +7,8 @@ Crudlfa+ takes views further than Django and are expected to:
 - check if a user has permission for an object,
 - declare the names of the navigation menus they belong to.
 """
-from django.contrib import messages
 from django.conf.urls import url
+from django.contrib import messages
 from django.core.exceptions import FieldDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
