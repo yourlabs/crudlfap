@@ -31,13 +31,16 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # CRUDLFA+ dependencies
     'crudlfap',
+    'bootstrap4',
+
     'crudlfap_example.basic',
 ]
 
@@ -61,7 +64,7 @@ TEMPLATES = [
         "OPTIONS": {
             "app_dirname": "templates",
             "match_extension": ".html",
-            "match_regex": r"^(?!admin/).*",
+            "match_regex": r"^(?!(admin|bootstrap4)/).*",
             "context_processors": [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
@@ -86,6 +89,11 @@ TEMPLATES = [
             "constants": {
                 "settings": dict(SITE_NAME='CRUFLA+ demo !'),
             },
+            "globals": {
+                'bootstrap_setting': 'bootstrap4.bootstrap.get_bootstrap_setting',
+                'bootstrap_form': 'bootstrap4.forms.render_form',
+                'bootstrap_button': 'bootstrap4.forms.render_button',
+            },
             "newstyle_gettext": True,
             "bytecode_cache": {
                 "name": "default",
@@ -97,19 +105,20 @@ TEMPLATES = [
             "translation_engine": "django.utils.translation",
         }
     },
-    #{
-    #    "BACKEND": "django.template.backends.django.DjangoTemplates",
-    #    "APP_DIRS": True,
-    #    "OPTIONS": {
-    #        "context_processors": [
-    #            "django.template.context_processors.debug",
-    #            "django.template.context_processors.request",
-    #            "django.contrib.auth.context_processors.auth",
-    #            "django.contrib.messages.context_processors.messages",
-    #        ],
-    #    },
-    #},
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
 ]
+LOGIN_REDIRECT_URL = '/'
 LOCALE_PATHS = (
     os.path.join(BASE_DIR, "locale"),
 )

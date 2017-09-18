@@ -26,6 +26,7 @@ setup(
     install_requires=[
         'jinja2',
         'django-jinja',
+        'django-bootstrap4',
     ],
     extras_require=dict(
         django=['django'],

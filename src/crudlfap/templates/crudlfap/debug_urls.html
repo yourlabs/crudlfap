@@ -1,7 +1,9 @@
 {% extends base %}
 
 {% block content %}
+<dl>
 {% for url in urlpatterns %}
-    {% include '_url.html' %}
+    {% include 'crudlfap/_debug_url.html' %}
 {% endfor %}
+</dl>
 {% endblock %}

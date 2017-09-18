@@ -1,0 +1,11 @@
+{% if url.name %}
+    <dt>
+        <code>{% if prefix %}{{ prefix }}{% endif %}{{ url.regex.pattern.replace('^', '') }}</code>
+    </dt>
+    <dd>{{ url.name }}</dd>
+{% endif %}
+
+{% set prefix=url.regex.pattern %}
+{% for url in url.url_patterns %}
+    {% include 'crudlfap/_debug_url.html' %}
+{% endfor %}

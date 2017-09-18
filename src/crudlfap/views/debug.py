@@ -1,9 +1,10 @@
+from django.conf import settings
 from django.utils.module_loading import import_string
 from django.views import generic
 
 
 class UrlsView(generic.TemplateView):
-    template_name = 'crudlflap/debug/urls.html'
+    template_name = 'crudlfap/debug_urls.html'
 
     def get(self, request, *a, **k):
         if not request.user.is_superuser:

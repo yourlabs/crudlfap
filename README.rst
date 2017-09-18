@@ -19,7 +19,8 @@ documented example lives::
     pip install --user crudlflap[django][tables2][filter][dal]; crudlfap runserver
 
 To add crudlfap to your project, first copy over settings from
-``crudlfap_settings.TEMPLATES`` or enable jinja2 manually.
+``crudlfap_settings.TEMPLATES`` or enable jinja2 manually. Also set
+``LOGIN_REDIRECT_URL = '/'`` for now.
 
 Then add ``crudlfap`` to your ``settings.INSTALLED_APPS``. You can find other
 crudflap apps you can add with the following commmand::

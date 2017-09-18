@@ -4,5 +4,5 @@ from .views.debug import UrlsView
 
 
 urlpatterns = [
-    url(r'$', UrlsView.as_view(), name='crudlfap'),
+    url(r'$', UrlsView.as_view(), name='crudlfap_urls'),
 ]
