@@ -54,7 +54,7 @@ def test_router_detail(router):
     assert_url_like(
         router['detail'],
         'artist_detail',
-        '(?P<slug>[\w\d_-]+)/detail/$'
+        '(?P<slug>[\w\d_-]+)/$'
     )
 
 
@@ -104,7 +104,7 @@ def test_router_prefix_detail(router_prefix):
     assert_url_like(
         router_prefix['detail'],
         'artistpicture_detail',
-        'photo/(?P<pk>\d+)/detail/$'
+        'photo/(?P<pk>\d+)/$'
     )
 
 
