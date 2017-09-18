@@ -10,13 +10,17 @@ applications by thinking differently:
 - JavaScript is a first class citizen,
 - Integration with external Django apps more than welcome,
 
+Consider this as a brand new framework with a lot of modern features, except
+you don't have to learn a new framework because this is still Django, with a
+2017 feels.
+
 Try
 ===
 
 This should start the example project in ``src/crudlfap_example`` where each
 documented example lives::
 
-    pip install --user crudlflap[django][tables2][filter][dal]; crudlfap runserver
+    pip install --user crudlflap[django,tables2,filter,dal,reversion]; crudlfap runserver
 
 To add crudlfap to your project, first copy over settings from
 ``crudlfap_settings.TEMPLATES`` or enable jinja2 manually. Also set
