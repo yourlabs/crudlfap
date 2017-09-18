@@ -26,7 +26,7 @@ Install
 =======
 
 To add crudlfap to your project, first copy over settings from
-``crudlfap_settings.TEMPLATES`` or enable jinja2 manually. Also set
+``crudlfap_example.settings.TEMPLATES`` or enable jinja2 manually. Also set
 ``LOGIN_REDIRECT_URL = '/'`` for now.
 
 Then add ``crudlfap`` to your ``settings.INSTALLED_APPS``. You can find other
@@ -58,9 +58,10 @@ Then, add it to your project's ``urls.py``:
 .. code-block:: python
 
     urlpatterns = [
+        url(r'^yourapp/', include('yourapp.urls')),  # what you created above
+        url(r'^crudlfap/', include('crudlfap.urls')),  # for debug views
         # for auth views, we haz material templates
         url(r'^auth/', include('django.contrib.auth.urls')),
-        url(r'^crudlfap/', include('crudlfap.urls')),  # for debug views
         url(r'^$', generic.TemplateView.as_view(template_name='crudlfap/home.html')),  # for free
         # It's considered a good practice to not leave django.contrib.admin here
     ]
@@ -80,17 +81,17 @@ some permissions on views and fields, all OOAO:
             return True if user.is_authenticated() else False
 
 
-    class ServerFormViewMixin(crudlfap.FormViewMixin):
+    class ServerOwnerRequired(crudlfap.FormViewMixin):
         @classmethod
         def allow(cls, user, model):
             return user.is_staff or model.owner == user
 
 
-    class ServerUpdateView(ServerFormViewMixin, crudlfap.CreateView):
+    class ServerUpdateView(ServerOwnerRequired, crudlfap.UpdateView):
         pass
 
 
-    class ServerDeleteView(ServerFormViewMixin, crudlfap.CreateView):
+    class ServerDeleteView(ServerOwnerRequired, crudlfap.UpdateViewView):
         pass
 
 
