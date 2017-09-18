@@ -33,12 +33,17 @@ class ViewMixin(object):
     slug = None
     url_pattern = None
 
-    @property
-    def verbose_slug(self):
-        """Translate and capitalize slug for display."""
-        from django.utils.translation import ugettext_lazy as _
-        from django.template import defaultfilters
-        return defaultfilters.capfirst(_(self.slug))
+    def get_template_names(self):
+        """Give a chance to default_template_name."""
+        template_names = super().get_template_names()
+        default_template_name = getattr(self, 'default_template_name', None)
+        if default_template_name:
+            template_names.append(default_template_name)
+        return template_names
+
+    @classmethod
+    def get_fa_icon(cls):
+        return getattr(cls, 'fa_icon', None) or getattr(cls.router, 'fa_icon', '')
 
     @classmethod
     def as_url(cls, **kwargs):
@@ -70,14 +75,14 @@ class ViewMixin(object):
     @classmethod
     def get_url_args(cls, *args):  # pylint: disable=unused-argument
         """Return url reverse args given these args."""
-        return []
+        return args
 
     @classmethod
     def reverse(cls, *args):
         """Reverse a url to this view with the given args."""
         from django.core.urlresolvers import reverse_lazy
         return reverse_lazy(
-            cls.get_url_name(*args),
+            cls.get_url_name(),
             args=cls.get_url_args(*args)
         )
 
@@ -89,9 +94,19 @@ class View(ViewMixin, generic.View):
 class ModelViewMixin(ViewMixin):
     """Mixin for views using a Model class but no instance."""
 
+    menus = ['model']
+
 
 class ObjectViewMixin(ViewMixin):
     """Mixin for views using a Model instance."""
+
+    menus = ['object']
+
+    @classmethod
+    def get_url_args(cls, *args):
+        if '<slug>' in cls.get_url_pattern():
+            return [args[0].slug]
+        return [args[0].pk]
 
     @classmethod
     def get_url_pattern(cls):
@@ -118,6 +133,10 @@ class FormView(FormViewMixin, generic.FormView):
     default_template_name = 'crudlfap/form.html'
 
 
+class ModelFormViewMixin(ModelViewMixin, FormViewMixin):
+    """ModelForm ViewMixin using readable"""
+
+
 class ObjectFormView(ObjectViewMixin, FormViewMixin, generic.FormView):
     """Custom form view on an object."""
 
@@ -126,10 +145,13 @@ class CreateView(ModelViewMixin, FormViewMixin, generic.CreateView):
     """View to create a model object."""
 
     style = 'success'
-    icon = 'fa fa-fw fa-plus'
-    menus = ['list_action']
+    fa_icon = 'plus'
     default_template_name = 'crudlfap/create.html'
     target = 'modal'
+
+    @property
+    def fields(self):
+        return self.router.get_writable_fields(self.request.user)
 
 
 class DeleteView(ObjectViewMixin, generic.DeleteView):
@@ -137,14 +159,31 @@ class DeleteView(ObjectViewMixin, generic.DeleteView):
 
     default_template_name = 'crudlfap/delte.html'
     style = 'danger'
-    icon = 'fa fa-fw fa-trash'
+    fa_icon = 'trash'
     target = 'modal'
 
 
 class DetailView(ObjectViewMixin, generic.DetailView):
-    """Model object detail view."""
+    """Templated model object detail view which takes a field option."""
 
     default_template_name = 'crudlfap/detail.html'
+
+    @property
+    def fields(self):
+        return self.router.get_writable_fields(self.request.user)
+
+    def get_context_data(self, *a, **k):
+        c = super(DetailView, self).get_context_data(*a, **k)
+        return c  # inhiate brokn code
+        c['fields'] = [
+            {
+                'object': self.object,
+                'field': field,
+                'value': getattr(self.object, field.name)
+            }
+            for field in self.drycrud.get_readable_fields(self).values()
+        ]
+        return c
 
 
 class ListView(ModelViewMixin, generic.ListView):

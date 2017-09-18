@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'crudlfap',
     'bootstrap4',
 
-    'crudlfap_example.basic',
+    'crudlfap_example.artist',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -87,12 +87,16 @@ TEMPLATES = [
                 "django_jinja.builtins.extensions.DjangoFiltersExtension",
             ],
             "constants": {
-                "settings": dict(SITE_NAME='CRUFLA+ demo !'),
+                "settings": dict(
+                    SITE_NAME='CRUFLA+DEMO',
+                    SITE_TITLE='CRUFLA+ demo !',
+                ),
             },
             "globals": {
-                'bootstrap_setting': 'bootstrap4.bootstrap.get_bootstrap_setting',
-                'bootstrap_form': 'bootstrap4.forms.render_form',
-                'bootstrap_button': 'bootstrap4.forms.render_button',
+                "bootstrap_setting": "bootstrap4.bootstrap.get_bootstrap_setting",
+                "bootstrap_form": "bootstrap4.forms.render_form",
+                "bootstrap_button": "bootstrap4.forms.render_button",
+                "Router": "crudlfap.routers.Router",
             },
             "newstyle_gettext": True,
             "bytecode_cache": {

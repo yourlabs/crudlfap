@@ -15,8 +15,15 @@ crudlfap = apps.get_app_config('crudlfap')  # pylint: disable=invalid-name
 
 class Router(object):
     """Base router for CRUDLFA+."""
+    registry = {}
 
     views = crudlfap.get_default_views()
+
+    def get_writable_fields(self, user):
+        if hasattr(self, 'writable_fields'):
+            return self.writable_fields
+        else:
+            return self.fields
 
     def generate_view_slug(self, view):
         """
@@ -82,7 +89,7 @@ class Router(object):
             result.append(view_class)
         return result
 
-    def __init__(self, model, prefix=None, *views):
+    def __init__(self, model, prefix=None, *views, **kwargs):
         """Create a Router for a Model."""
         self.model = model
 
@@ -90,6 +97,10 @@ class Router(object):
         self.model_name = model._meta.model_name
         self.model_verbose_name = model._meta.verbose_name
         self.model_verbose_name_plural = model._meta.verbose_name_plural
+
+        # Save the user a type() call, really ? mehh
+        for name, value in kwargs.items():
+            setattr(self, name, value)
 
         self.prefix = prefix or ''
         self.views = self.generate_views(*views)
@@ -108,4 +119,14 @@ class Router(object):
         )
 
     def urlpatterns(self):
+        self.registry[self.model] = self
+        if not hasattr(self.model, 'get_absolute_url'):
+            def get_absolute_url(self):
+                return Router.registry[type(self)]['detail'].reverse(self)
+            self.model.get_absolute_url = get_absolute_url
         return [view.as_url() for view in self.views]
+
+    def get_menu(self, name=None):
+        name = name or 'model'  # consider model menu as root
+        return [v for v in self.views if name in getattr(v, 'menus', [])]
+

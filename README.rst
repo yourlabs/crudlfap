@@ -39,8 +39,8 @@ templates, add this to your app's ``urls.py``::
     from .models import Server
 
     # Use fields='__all__' to allow read/write on all model fields for
-    # everybody for now
-    urlpatterns = crudlfap.Router(Server, fields='__all__').urlpatterns()
+    # everybody for now, also show Server Router views in main menu
+    urlpatterns = crudlfap.Router(Server, fields='__all__', menus=['main']).urlpatterns()
 
 Then, add it to your project's ``urls.py``::
 
@@ -81,6 +81,9 @@ some permissions on views and fields, all OOAO::
 
 
     class ServerRouter(Router):
+        menus = ['main']  # Yes Django can make menus
+        fa_icon = 'server'  # Yes with icons
+
         views = [
             ServerCreateView,
             crudlfap.DetailView,
@@ -89,15 +92,15 @@ some permissions on views and fields, all OOAO::
             ServerDeleteView,
         ]
 
-        readable_fields = ['name', 'owner', 'created']
+        readable_fields = ['name', 'owner', 'created']  # yes per attr authorization
 
-        def get_writable_fields(self, user):
+        def get_writable_fields(self, user):  # yes per user attr authorization
             if request.user.is_staff:
                 return ['name', 'owner']
             else:
                 return ['name']
 
-        # used by anything from autocomplete view to related forms fields
+        # yes django allows OOAO for viewland, and you can invent words too
         def get_queryset(self, user):
             if not user.pk:
                 return Server.objects.filter(is_public=True)
@@ -148,7 +151,7 @@ custom actions on this model::
 
     class ServerRefreshView(crudlfap.FormView):
         menus = ['object_actions']  # show in detail and list view
-        icon = 'fa fa-refresh'  # icon for this view / menu links
+        fa_icon = 'refresh'  # icon for this view / menu links
         style = 'warning'  # view style variable
 
         def allow(self, user, model=None):

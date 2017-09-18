@@ -1,0 +1,14 @@
+{% extends base %}
+
+{% block content %}
+<div>
+    {% block before_form %}{% endblock %}
+    <form action="" method="post">
+    {% csrf_token %}
+    {{ bootstrap_form(form) }}
+    {% block buttons %}
+    {{ bootstrap_button(_('Submit'), button_type="submit", button_class="btn-primary") }}
+    {% endblock %}
+    </form>
+</div>
+{% endblock %}
