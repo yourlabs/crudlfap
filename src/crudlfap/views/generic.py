@@ -237,6 +237,10 @@ class DetailView(ObjectViewMixin, generic.DetailView):
     def fields(self):
         return self.router.get_writable_fields(self.request.user)
 
+    @property
+    def title(self):
+        return str(self.object)
+
     def get_context_data(self, *a, **k):
         c = super(DetailView, self).get_context_data(*a, **k)
         c['fields'] = [
@@ -280,3 +284,4 @@ class UpdateView(ObjectFormViewMixin, generic.UpdateView):
 
     fa_icon = 'edit'
     default_template_name = 'crudlfap/update.html'
+    target = 'modal'

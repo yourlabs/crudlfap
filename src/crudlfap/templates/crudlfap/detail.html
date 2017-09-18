@@ -4,19 +4,13 @@
 <nav class="breadcrumb">
   {% include 'crudlfap/_breadcrumb_object.html' %}
 
-  <div class="btn-toolbar pull-right">
-      {% for view in view.router.get_menu('object') %}
-          {% include 'crudlfap/_action.html' %}
-      {% endfor %}
-  </div>
+  {% for view in view.router.get_menu('object') %}
+      {% include 'crudlfap/_action.html' %}
+  {% endfor %}
 </nav>
 {% endblock %}
 
-{% block title %}{{ object }} {{ view.model._meta.verbose_name.capitalize() }} {{ _(view.slug).capitalize() }}{% endblock %}
-
 {% block content %}
-<h2>{{ object }}</h2>
-
 <table class="table">
   <thead class="thead-inverse">
     {% for field in fields %}
