@@ -25,10 +25,10 @@
   <body class="{% block body_class %}{% endblock %}">
     {% include 'crudlfap/_menu_main.html' %}
 
-    {% block before_container %}{% endblock %}
+    <div id="ajax-replace" data-full-path="{{ request.get_full_path() }}">
+      {% block before_container %}{% endblock %}
 
-    <div id="page-container" class="container">
-      <div id="ajax-replace" data-full-path="{{ request.get_full_path() }}">
+      <div id="page-container" class="container">
         {% include 'crudlfap/_messages.html' %}
 
         {% block breadcrumb %}
@@ -53,7 +53,9 @@
         </div>
         {% endblock %}
       </div>
+    </div>
 
+    <div class="container">
       <hr>
 
       <footer>

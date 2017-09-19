@@ -33,3 +33,7 @@ nav.breadcrumb .btn {
 progress {
     width: 100%;
 }
+
+ul.breadcrumb {
+    display: inline-block;
+}

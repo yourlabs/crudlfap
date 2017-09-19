@@ -9,8 +9,6 @@
     class="{% if request.method == 'POST' and form.errors or form.non_field_errors %}form-invalid{% endif %}"
     {% endif %}
 >
-    <input type="hidden" name="_next" value="{{ request.GET.get('_next', None) or request.POST.get('_next', None) or request.META.get('HTTP_REFERER', '') }}" />
-    {% csrf_token %}
 {% endblock %}
 
 {% block content %}
@@ -24,6 +22,8 @@
 
 {% block buttons %}
     {{ bootstrap_button(_('Submit'), button_type="submit", button_class="btn-primary") }}
+    <input type="hidden" name="_next" value="{{ request.GET.get('_next', None) or request.POST.get('_next', None) or request.META.get('HTTP_REFERER', '') }}" />
+    {% csrf_token %}
 </form>
 {% endblock %}
 

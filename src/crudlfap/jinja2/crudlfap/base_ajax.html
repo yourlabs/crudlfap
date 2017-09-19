@@ -1,5 +1,8 @@
 {% include 'crudlfap/_messages.html' %}
 
+{% block before_container %}{% endblock %}
+<div id="page-container" class="container">
+
 {% block breadcrumb %}
 {% endblock %}
 
@@ -21,3 +24,4 @@
 {% endblock %}
 
 <div id="html-title" style="display: none">{% block title %}{% if getattr(view, 'get_title_html', None) %}{{ view.get_title_html() }}{% endif %}{% endblock %} {% if settings.SITE_TITLE %}- {{ settings.SITE_TITLE }}{% endif %}</div>
+</div>

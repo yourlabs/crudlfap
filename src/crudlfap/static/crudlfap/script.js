@@ -47,7 +47,7 @@ $('body').on('click', 'a', function(e) {
     if ($(this).attr('data-target') == 'modal') {
         $target = $('#modal .modal-dialog');
         callback = function() {
-            $('#modal').modal();
+            $('#modal').modal()
             $('#modal').find(':input:first').focus()
         }
         url = window.crudlfap.setBase(url, 'modal');
@@ -61,6 +61,10 @@ window.onpopstate = function(event) {
   window.crudlfap.ajaxLoad(document.location.href);
 };
 
+$('body').on('shown.bs.modal', function (e) {
+    $(e.target).find(':input:first').focus()
+;
+});
 
 /* Intercept submits to ajaxify requests.
  */
@@ -103,7 +107,7 @@ $('body').on('submit', 'form', function(e) {
                 var newTitle = $data.filter('title').html()
                 $('title').html(newTitle);
 
-                var $ajaxReplace = $data.find('#ajax-replace')
+                var $ajaxReplace = $data.filter('#ajax-replace')
                 window.history.pushState(
                     null,
                     newTitle,

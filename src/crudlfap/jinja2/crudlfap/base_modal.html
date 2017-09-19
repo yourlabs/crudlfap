@@ -2,13 +2,12 @@
   <div class="modal-header panel-heading">
       <h4 class="modal-title text-{{ view.style|default('default') }}">{% block title %}{{ view.title|default('') }}{% endblock %}</h4>
 
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span class="close" data-dismiss="modal" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
 
   {% block form_open %}{% endblock %}
-  <input type="hidden" name="_base" value="modal" />
   <div class="modal-body">
     {% block messages %}
       {% include 'crudlfap/_messages.html' %}
@@ -20,6 +19,7 @@
   <div class="modal-footer">
     {% block buttons %}{% endblock %}
   </div>
+  <input type="hidden" name="_base" value="modal" />
   {% block form_close %}{% endblock %}
 </div>
 

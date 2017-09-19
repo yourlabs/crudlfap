@@ -1,13 +1,15 @@
 {% extends base %}
 
 {% block breadcrumb %}
-<nav class="breadcrumb">
+<ul class="breadcrumb">
   {% include 'crudlfap/_breadcrumb_object.html' %}
+</ul>
 
+<div class="pull-right">
   {% for view in view.router.get_menu('object') %}
       {% include 'crudlfap/_action.html' %}
   {% endfor %}
-</nav>
+</div>
 {% endblock %}
 
 {% block content %}
