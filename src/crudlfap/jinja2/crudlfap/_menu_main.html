@@ -1,0 +1,65 @@
+<!-- Static navbar -->
+<nav class="navbar navbar-inverse pmd-navbar pmd-z-depth navbar-fixed-top">
+  <div class="container-fluid">
+
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+      {% if settings.SITE_NAME %}
+      <a class="navbar-brand" href="/">{{ settings.SITE_NAME }}</a>
+      {% endif %}
+    </div>
+
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="/">Home</a></li>
+        {% for app, routers in Router.registry.sort_by_apps().items() %}
+        <li class="dropdown pmd-dropdown">
+          <a href="#" class="dropdown-toggle pmd-ripple-effect" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ app.verbose_name }} <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+              {% for router in routers %}
+                {% for view in router.get_menu('main') %}
+                <li>
+                    <a href="{{ view.reverse() }}" title="{% if view.title %}{{ view.title }}{% endif %}">{{ view.model._meta.verbose_name_plural.capitalize() }} {{ _(view.slug|capfirst) }}</a>
+                </li>
+                {% endfor %}
+              {% endfor %}
+            </ul>
+        </li>
+        {% endfor %}
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        {% if not request.user.is_authenticated() %}
+        <li>
+          <a href="{{ url('login') }}">{{ _('Login') }}</a>
+        </li>
+        {% else %}
+        <li class="dropdown pmd-dropdown">
+          <a href="#" class="dropdown-toggle pmd-ripple-effect" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ request.user }} <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" href="{{ url('logout') }}">{{ _('Logout') }}</a>
+            </li>
+          </ul>
+        </li>
+        {% endif %}
+        {% if request.user.is_superuser %}
+        <li class="dropdown pmd-dropdown">
+          <a href="#" class="dropdown-toggle pmd-ripple-effect" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">CRUDLFA+ <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" href="{{ url('crudlfap_urls') }}">URLs</a>
+            </li>
+          </ul>
+        </li>
+        {% endif %}
+      </ul>
+    </div><!--/.nav-collapse -->
+
+  </div><!--/.container-fluid -->
+</nav>

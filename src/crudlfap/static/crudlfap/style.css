@@ -21,3 +21,15 @@ nav.breadcrumb .breadcrumb-item {
 nav.breadcrumb .btn {
     margin-bottom: 0;
 }
+
+.django-filter .form-group {
+    display: inline-block;
+}
+
+#page-container {
+    margin-top: 33px;
+}
+
+progress {
+    width: 100%;
+}

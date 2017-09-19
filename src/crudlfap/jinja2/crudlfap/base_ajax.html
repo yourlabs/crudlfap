@@ -1,0 +1,23 @@
+{% include 'crudlfap/_messages.html' %}
+
+{% block breadcrumb %}
+{% endblock %}
+
+{% block content_open %}
+<div class="pmd-card pmd-z-depth" style="padding: 1em">
+{% endblock %}
+
+{% block title_heading %}
+{% if getattr(view, 'get_title_heading', None) %}
+<h2 class="text-{{ view.style|default('default') }}">{{ view.get_title_heading() }}</h2>
+{% endif %}
+{% endblock %}
+{% block form_open %}{% endblock %}
+{% block content %}{% block form %}{% endblock %}{% endblock %}
+{% block buttons %}{% endblock %}
+{% block form_close %}{% endblock %}
+{% block content_close %}
+</div>
+{% endblock %}
+
+<div id="html-title" style="display: none">{% block title %}{% if getattr(view, 'get_title_html', None) %}{{ view.get_title_html() }}{% endif %}{% endblock %} {% if settings.SITE_TITLE %}- {{ settings.SITE_TITLE }}{% endif %}</div>

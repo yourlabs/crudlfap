@@ -1,0 +1,16 @@
+{% for message in messages %}
+  <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+{% endfor %}
+
+{% block breadcrumb %}
+{% endblock %}
+
+{% block title_heading %}
+{% if getattr(view, 'get_title_heading', None) %}
+<h2 class="text-{{ view.style|default('default') }}">{{ view.get_title_heading() }}</h2>lol
+{% endif %}
+{% endblock %}
+{% block form_open %}{% endblock %}
+{% block content %}{% block form %}{% endblock %}{% endblock %}
+{% block buttons %}{% endblock %}
+{% block form_close %}{% endblock %}

@@ -36,6 +36,7 @@ class ViewMixin(object):
     url_pattern = None
     style = 'default'
     fa_icon = 'question'
+    material_icon = 'priority high'
 
     def get_template_names(self):
         """Give a chance to default_template_name."""
@@ -115,11 +116,28 @@ class ModelViewMixin(ViewMixin):
     def title(self):
         return '{} {}'.format(
             _(self.slug),
-            self.model._meta.verbose_name,
+            self.model._meta.verbose_name_plural,
         ).capitalize()
 
+    @property
+    def fields(self):
+        """Return router.fields or None, field names if ``__all__``."""
+        fields = getattr(self.router, 'fields', None)
+        if fields == '__all__':
+            fields = [
+                f.name for f in self.model._meta.fields
+                if not f.primary_key or not getattr(
+                    self, 'with_pk', False)
+            ]
+        return fields
 
-class ObjectViewMixin(ViewMixin):
+    @property
+    def exclude(self):
+        """Return router.exclude or None, field names if ``__all__``.."""
+        return getattr(self.router, 'ecxlude', None)
+
+
+class ObjectViewMixin(ModelViewMixin):
     """Mixin for views using a Model instance."""
 
     menus = ['object']
@@ -154,6 +172,13 @@ class ObjectViewMixin(ViewMixin):
 
 class FormViewMixin(ViewMixin):
     """Mixin for views which have a Form."""
+    success_url_next = True
+
+    def get_success_url(self):
+        url = super().get_success_url()
+        if self.success_url_next and '_next' in self.request.POST:
+            url = self.request.POST['_next']
+        return url
 
 
 class FormView(FormViewMixin, generic.FormView):
@@ -166,15 +191,11 @@ class FormView(FormViewMixin, generic.FormView):
 class ModelFormViewMixin(ModelViewMixin, FormViewMixin):
     """ModelForm ViewMixin using readable"""
 
-    @property
-    def fields(self):
-        return self.router.get_writable_fields(self.request.user)
-
     def form_invalid(self, form):
         messages.error(
             self.request,
             _(
-                '{} {}'.format(
+                '{} {} error'.format(
                     self.slug,
                     self.model._meta.verbose_name
                 ).capitalize()
@@ -205,6 +226,7 @@ class CreateView(ModelFormViewMixin, generic.CreateView):
 
     style = 'success'
     fa_icon = 'plus'
+    material_icon = 'add'
     default_template_name = 'crudlfap/create.html'
     target = 'modal'
 
@@ -215,7 +237,9 @@ class DeleteView(ObjectFormViewMixin, generic.DeleteView):
     default_template_name = 'crudlfap/delete.html'
     style = 'danger'
     fa_icon = 'trash'
+    material_icon = 'delete'
     target = 'modal'
+    success_url_next = True
 
     def get_success_url(self):
         messages.success(
@@ -231,11 +255,8 @@ class DetailView(ObjectViewMixin, generic.DetailView):
     """Templated model object detail view which takes a field option."""
 
     fa_icon = 'search-plus'
+    material_icon = 'search'
     default_template_name = 'crudlfap/detail.html'
-
-    @property
-    def fields(self):
-        return self.router.get_writable_fields(self.request.user)
 
     @property
     def title(self):
@@ -248,7 +269,7 @@ class DetailView(ObjectViewMixin, generic.DetailView):
                 'field': self.model._meta.get_field(field),
                 'value': getattr(self.object, field)
             }
-            for field in self.router.get_readable_fields(self.request.user)
+            for field in self.fields
         ]
         return c
 
@@ -273,15 +294,14 @@ class ListView(ModelViewMixin, generic.ListView):
     url_pattern = '$'
     paginate_by = 10
     fa_icon = 'table'
-
-    @property
-    def fields(self):
-        return self.router.get_readable_fields(self.request.user)
+    material_icon = 'list'
+    menus = ['main']
 
 
 class UpdateView(ObjectFormViewMixin, generic.UpdateView):
     """Model update view."""
 
     fa_icon = 'edit'
+    material_icon = 'edit'
     default_template_name = 'crudlfap/update.html'
     target = 'modal'

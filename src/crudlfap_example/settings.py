@@ -41,9 +41,18 @@ INSTALLED_APPS = [
 
     # CRUDLFA+ dependencies
     'crudlfap',
-    'bootstrap4',
+    'bootstrap3',
 
+    # CRUDLFA+ optionnal dependencies
+    'crudlfap_filtertables2',
+    'django_filters',
+    'django_tables2',
+    'dal',
+    'dal_select2',
+
+    # CRUDLFA+ examples
     'crudlfap_example.artist',
+    'crudlfap_example.song',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -66,9 +75,8 @@ TEMPLATES = [
         "BACKEND": "django_jinja.backend.Jinja2",
         "APP_DIRS": True,
         "OPTIONS": {
-            "app_dirname": "templates",
+            "app_dirname": "jinja2",
             "match_extension": ".html",
-            "match_regex": r"^(?!(admin|bootstrap4|debug_toolbar)/).*",
             "context_processors": [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
@@ -97,13 +105,17 @@ TEMPLATES = [
                 ),
             },
             "globals": {
-                "bootstrap_setting": "bootstrap4.bootstrap.get_bootstrap_setting",  # noqa
-                "bootstrap_form": "bootstrap4.forms.render_form",
-                "bootstrap_button": "bootstrap4.forms.render_button",
                 "pagination_filter_params": "crudlfap.jinja2.pagination_filter_params",  # noqa
                 "Router": "crudlfap.routers.Router",
                 "getattr": getattr,
                 "isinstance": isinstance,
+                "render_table": "crudlfap_filtertables2.jinja2.render_table",
+                "render_form": "bootstrap3.forms.render_form",
+
+                # For django-bootsrap4, not used but kept for reference
+                "bootstrap_setting": "bootstrap4.bootstrap.get_bootstrap_setting",  # noqa
+                "bootstrap_form": "bootstrap4.forms.render_form",
+                "bootstrap_button": "bootstrap4.forms.render_button",
             },
             "newstyle_gettext": True,
             "bytecode_cache": {

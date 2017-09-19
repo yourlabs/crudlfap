@@ -4,6 +4,7 @@ from django.views import generic
 
 urlpatterns = [
     url(r'^artist/', include('crudlfap_example.artist.urls')),
+    url(r'^song/', include('crudlfap_example.song.urls')),
 
     url(r'^auth/', include('django.contrib.auth.urls')),
     url(r'^debug/', include('crudlfap.urls')),

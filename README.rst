@@ -30,7 +30,7 @@ To add crudlfap to your project, first copy over settings from
 ``LOGIN_REDIRECT_URL = '/'`` for now.
 
 Then add ``crudlfap`` to your ``settings.INSTALLED_APPS``. You can find other
-crudflap apps you can add with the following commmand::
+crudlfap apps you can add with the following commmand::
 
     echo 'from django.conf import settings; settings.INSTALLED_APPS' | crudlfap shell | grep crud
 
@@ -63,7 +63,10 @@ Then, add it to your project's ``urls.py``:
         # for auth views, we haz material templates
         url(r'^auth/', include('django.contrib.auth.urls')),
         url(r'^$', generic.TemplateView.as_view(template_name='crudlfap/home.html')),  # for free
-        # It's considered a good practice to not leave django.contrib.admin here
+
+        # Also, remove django.contrib.admin from ehere and INSTALLED_APPS, not
+        # that it's not compatible, but CRUDLFA+ provides better features so do
+        # yourself a favor in 2017 and use CRUDLFA+'s modern router instead
     ]
 
 Now, open your browser and learn to love CRUDFA+ and look at your material
@@ -210,9 +213,10 @@ dear knock yourself out:
     class ServerRouter(crudlfap.Router):
         views = [
             ServerCreateView,
-            crudlfap.DetailView,
-            crudlfap.Tables2ListView,
-            crudlfap.ReversionView,
+            # yes you can haz type() on the fly
+            dict(_cls='crudlfap.DetailView', fields=['name']),
+            'crudlfap.Tables2ListView',
+            'crudlfap.ReversionView',
             ServerUpdateView,
             ServerDeleteView,
             ServerRefreshView,

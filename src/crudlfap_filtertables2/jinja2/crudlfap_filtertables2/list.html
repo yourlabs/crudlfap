@@ -1,0 +1,15 @@
+{% extends 'crudlfap/list.html' %}
+
+{% block content %}
+<div class="django-filter django-filter-ajax pm-card">
+  <form method="get" action="">
+    {{ render_form(filter.form, layout='inline') }}
+  </form>
+</div>
+
+<div class="table-responsive" id="render-table">
+  {{ render_table(request, table, object_list) }}
+</div><!-- /.table-responsive -->
+
+{% include 'crudlfap/_pagination.html' %}
+{% endblock %}

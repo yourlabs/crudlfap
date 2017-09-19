@@ -8,7 +8,6 @@
 
 {% block content %}
   {{ _('Are you sure you want to delete') }} {{ view.model._meta.verbose_name }} {{ object }} ?
-  {% csrf_token %}
   <br />
 {% endblock %}
 

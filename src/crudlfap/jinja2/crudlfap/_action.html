@@ -1,0 +1,7 @@
+<a
+  class="btn btn-{{ view.style|default('default') }} btn-xs pull-right pmd-btn-fab pmd-btn-raised pmd-ripple-effect"
+  href="{% if object %}{{ view.reverse(object) }}{% else %}{{ view.reverse() }}{% endif %}"
+  data-target="{{ view.target }}"
+  title="{{ view.title }}">
+  <i class="material-icons pmd-xs">{{ view.material_icon }}</i>
+</a>

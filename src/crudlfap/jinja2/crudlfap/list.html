@@ -1,10 +1,10 @@
 {% extends base %}
 
 {% block breadcrumb %}
-<nav class="breadcrumb">
+<ul class="breadcrumb">
   {% include 'crudlfap/_breadcrumb_object.html' %}
 
-  <div class="btn-toolbar pull-right">
+  <li class="btn-toolbar pull-right">
    {% for menu_view in view.router.get_menu('model') %}
      {% if not isinstance(view, menu_view) %}
        {% with view=menu_view %}
@@ -12,8 +12,8 @@
        {% endwith %}
      {% endif %}
    {% endfor %}
-  </div>
-</nav>
+  </li>
+</ul>
 {% endblock %}
 
 {% block content %}

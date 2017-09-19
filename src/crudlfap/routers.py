@@ -5,35 +5,31 @@ Note that you can also use non-database backed models, by inheriting from
 models.Model and setting their Meta.managed attribute to False. Then, you can
 use CRUDLFA+ views and routers.
 """
+import collections
 import re
 
 from django.apps import apps
+from django.utils.module_loading import import_string
 
 
 crudlfap = apps.get_app_config('crudlfap')  # pylint: disable=invalid-name
 
 
+class RouterRegistry(collections.OrderedDict):
+    def sort_by_apps(self):
+        result = collections.OrderedDict()
+        for model, router in self.items():
+            app = apps.get_app_config(model._meta.app_label)
+            result.setdefault(app, [])
+            result[app].append(router)
+        return result
+
+
 class Router(object):
     """Base router for CRUDLFA+."""
-    registry = {}
+    registry = RouterRegistry()
 
     views = crudlfap.get_default_views()
-
-    def _get_fields(self, attr, user):
-        fields = getattr(self, attr, None)
-        if not fields:
-            fields = getattr(self, 'fields', None)
-        if fields == '__all__' or not fields:
-            fields = [
-                f.name for f in self.model._meta.fields
-            ]
-        return fields
-
-    def get_readable_fields(self, user):
-        return self._get_fields('readable_fields', user)
-
-    def get_writable_fields(self, user):
-        return self._get_fields('writable_fields', user)
 
     def generate_view_slug(self, view):
         """
@@ -77,6 +73,9 @@ class Router(object):
             if isinstance(arg, dict):
                 view = arg.pop('_cls')
 
+            if isinstance(view, str):
+                view = import_string(view)
+
             slug = getattr(view, 'slug', None)
             if not view.slug:
                 slug = self.generate_view_slug(view)
@@ -90,6 +89,9 @@ class Router(object):
                 model=self.model,
                 slug=slug,
             )
+
+            if isinstance(arg, dict):
+                attrs.update(arg)
 
             view_name = view.__name__
             if self.model.__name__ not in view_name:
@@ -136,6 +138,5 @@ class Router(object):
             self.model.get_absolute_url = get_absolute_url
         return [view.as_url() for view in self.views]
 
-    def get_menu(self, name=None):
-        name = name or 'model'  # consider model menu as root
+    def get_menu(self, name):
         return [v for v in self.views if name in getattr(v, 'menus', [])]

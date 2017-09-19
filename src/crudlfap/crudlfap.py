@@ -1,5 +1,7 @@
 """Import everything we expose in crudlfap namespace."""
 
+from .apps import _installed
+
 from .routers import Router
 
 from .views.generic import (
@@ -15,3 +17,6 @@ from .views.generic import (
     View,
     ViewMixin,
 )
+
+if _installed('crudlfap_filtertables2'):
+    from crudlfap_filtertables2.views import FilterTables2ListView
