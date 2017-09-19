@@ -1,0 +1,2 @@
+.pmd-scrollbar { max-height: 200px; overflow: auto; position: relative;}
+.mCSB_outside + .mCSB_scrollTools {  right: -35px; }

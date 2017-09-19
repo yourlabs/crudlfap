@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="description" content="Propeller is a front-end responsive framework based on Material design & Bootstrap.">
+	<meta content="width=device-width, initial-scale=1, user-scalable=no" name="viewport">
+    <title>Form - Propeller Components</title>
+
+	<!-- favicon --> 	
+	<link href="http://propeller.in/assets/landing-page/images/favicon.ico" type="image/x-icon" rel="icon"  />
+    
+   	<!-- Bootstrap --> 
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" type="text/css" rel="stylesheet" /> 
+ 
+    <!-- Propeller card (CSS for helping component example file)-->
+	<link href="http://propeller.in/components/card/css/card.css" type="text/css" rel="stylesheet" />
+	
+	<!-- Example docs (CSS for helping component example file)-->
+	<link href="http://propeller.in/docs/css/example-docs.css" type="text/css" rel="stylesheet" />
+	
+	<!-- Propeller typography (CSS for helping component example file) -->
+	<link href="http://propeller.in/components/typography/css/typography.css" type="text/css" rel="stylesheet" />
+
+	<!-- Google Icon Font -->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="http://propeller.in/components/icons/css/google-icons.css" type="text/css" rel="stylesheet" />
+	
+	<!-- Propeller Checkbox -->
+    <link href="http://propeller.in/components/checkbox/css/checkbox.css" type="text/css" rel="stylesheet" />
+
+	<!-- Propeller textfield -->
+    <link href="http://propeller.in/components/textfield/css/textfield.css" type="text/css" rel="stylesheet" />
+    
+	<!-- Propeller Radio -->
+    <link href="http://propeller.in/components/radio/css/radio.css" type="text/css" rel="stylesheet" />
+    
+	<!-- Propeller Toggle -->
+    <link href="http://propeller.in/components/toggle-switch/css/toggle-switch.css" type="text/css" rel="stylesheet" />
+
+</head>
+<body>
+
+<!--Form-->
+<div class="pmd-content pmd-content-custom" id="content"> 
+	
+	<!--component header -->
+	<div class="componant-title-bg"> 
+		<div class="container">
+			<div class="row">
+			
+				<!-- component title and description-->
+				<div class="col-xs-12">
+					<h1>Radio</h1>
+					<p class="lead">An HTML form is a section of a document containing normal content, markup, special elements called controls (checkboxes, radio buttons, menus, etc.), and labels on those controls. Users generally "complete" a form by modifying its controls (entering text, selecting menu items, etc.), before submitting the form to an agent for processing (e.g., to a Web server, to a mail server, etc.)</p>
+				</div><!-- component title and description end--> 
+				
+			</div>
+		</div>
+	</div><!--end component header-->
+
+	<div class="container">
+		
+		<!-- Radio -->
+		<section class="row component-section">
+		
+			<!-- radio title and description -->
+			<div class="col-md-3">
+				<div id="radio">
+					<h2>Radio</h2>
+				</div>
+				<p>Add <code>.pmd-radio</code> in label to create a propeller customized radio. You can also add <code>.pmd-radio-ripple-effect</code> to provide a ripple effect to the radio.</p>
+			</div> <!-- radio title and description end-->
+			
+			<!-- radio code and example -->
+			<div class="col-md-9">
+				<div class="component-box">
+					<!-- radio example -->
+					<div class="row">
+						<div class="col-md-6">
+							<div class="pmd-card pmd-z-depth">
+								<div class="pmd-card-body"> 
+									<!-- Simple radio with label -->
+
+									<div class="radio">
+										<label class="pmd-radio pmd-radio-ripple-effect">
+											<input type="radio" name="optionsRadios" id="click" value="option1" checked>
+											<span for="click">Option one is this and that&mdash;be sure to include why it's great</span> </label>
+									</div>
+									<!-- Radio button checked -->
+									<div class="radio">
+										<label class="pmd-radio pmd-radio-ripple-effect">
+											<input type="radio" name="optionsRadios" id="click1" value="option1" checked>
+											<span for="click1">Option one is this and that&mdash;be sure to include why it's great</span> </label>
+									</div>
+									<!-- Radio button disable -->
+									<div class="radio disabled">
+										<label class="pmd-radio pmd-radio-ripple-effect">
+											<input type="radio" name="optionsRadios" id="optionsRadios3" value="option3" disabled>
+											<span for="optionsRadios3">Option three is disabled</span> </label>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="pmd-card pmd-card-inverse pmd-z-depth">
+								<div class="pmd-card-body"> 
+									<!-- Simple radio with label -->
+									<div class="radio">
+										<label class="pmd-radio pmd-radio-ripple-effect">
+											<input type="radio" name="optionsRadios" id="click4" value="option1">
+											<span for="click4">Option one is this and that&mdash;be sure to include why it's great</span> </label>
+									</div>
+									<!-- Radio button checked -->
+									<div class="radio">
+										<label class="pmd-radio pmd-radio-ripple-effect">
+											<input type="radio" name="optionsRadios" id="click5" value="option2" checked>
+											<span for="click5">Option one is this and that&mdash;be sure to include why it's great</span> </label>
+									</div>
+									<!-- Radio button disable -->
+									<div class="radio disabled">
+										<label class="pmd-radio pmd-radio-ripple-effect">
+											<input type="radio" name="optionsRadios" id="optionsRadios3" value="option3" disabled>
+											<span for="optionsRadios3">Option three is disabled</span> </label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div> <!-- radio example end -->
+				</div>
+			</div> <!-- radio code and example end -->
+		</section> <!-- Radio end --> 
+		 
+	</div> <!--container end --> 
+	
+</div> <!--Form-->
+
+</body>
+<!-- Jquery js -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<!-- Propeller checkbox js -->
+<script type="text/javascript" src="http://propeller.in/components/checkbox/js/checkbox.js"></script>
+
+<!-- Propeller checkbox js -->
+<script type="text/javascript" src="http://propeller.in/components/textfield/js/textfield.js"></script>
+
+<!-- Propeller checkbox js -->
+<script type="text/javascript" src="http://propeller.in/components/radio/js/radio.js"></script>
+
+</html>

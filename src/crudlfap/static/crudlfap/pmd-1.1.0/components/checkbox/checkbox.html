@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="description" content="Propeller is a front-end responsive framework based on Material design & Bootstrap.">
+	<meta content="width=device-width, initial-scale=1, user-scalable=no" name="viewport">
+    <title>Form - Propeller Components</title>
+
+	<!-- favicon --> 	
+	<link href="http://propeller.in/assets/landing-page/images/favicon.ico" type="image/x-icon" rel="icon"  />
+    
+   	<!-- Bootstrap --> 
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" type="text/css" rel="stylesheet" /> 
+ 
+    <!-- Propeller card (CSS for helping component example file)-->
+	<link href="http://propeller.in/components/card/css/card.css" type="text/css" rel="stylesheet" />
+	
+	<!-- Example docs (CSS for helping component example file)-->
+	<link href="http://propeller.in/docs/css/example-docs.css" type="text/css" rel="stylesheet" />
+	
+	<!-- Propeller typography (CSS for helping component example file) -->
+	<link href="http://propeller.in/components/typography/css/typography.css" type="text/css" rel="stylesheet" />
+
+	<!-- Google Icon Font -->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="http://propeller.in/components/icons/css/google-icons.css" type="text/css" rel="stylesheet" />
+	
+	<!-- Propeller Checkbox -->
+    <link href="css/checkbox.css" type="text/css" rel="stylesheet" />
+
+	<!-- Propeller textfield -->
+    <link href="http://propeller.in/components/textfield/css/textfield.css" type="text/css" rel="stylesheet" />
+    
+	<!-- Propeller Radio -->
+    <link href="http://propeller.in/components/radio/css/radio.css" type="text/css" rel="stylesheet" />
+    
+	<!-- Propeller Toggle -->
+    <link href="http://propeller.in/components/toggle-switch/css/toggle-switch.css" type="text/css" rel="stylesheet" />
+
+</head>
+<body>
+
+<!--Form-->
+<div class="pmd-content pmd-content-custom" id="content"> 
+	
+	<!--component header -->
+	<div class="componant-title-bg"> 
+		<div class="container">
+			<div class="row">
+			
+				<!-- component title and description-->
+				<div class="col-xs-12">
+					<h1>Checkboxes</h1>
+					<p class="lead">An HTML form is a section of a document containing normal content, markup, special elements called controls (checkboxes, radio buttons, menus, etc.), and labels on those controls. Users generally "complete" a form by modifying its controls (entering text, selecting menu items, etc.), before submitting the form to an agent for processing (e.g., to a Web server, to a mail server, etc.)</p>
+				</div><!-- component title and description end--> 
+				
+			</div>
+		</div>
+	</div><!--end component header-->
+
+	<div class="container">
+		<!-- checkbox -->
+		<section class="row component-section">
+		
+			<!-- checkbox title and description -->
+			<div class="col-md-3">
+				<div id="checkbox">
+					<h2>Checkboxes</h2>
+				</div>
+				<p>Add <code>.pmd-checkbox</code> in label to create propeller customized checkbox. You can also add <code>.pmd-checkbox-ripple-effect</code> to provide a ripple effect to the checkbox.</p>
+			</div> <!-- checkbox title and description end-->
+			
+			<!-- checkbox code and example -->
+			<div class="col-md-9">
+				<div class="component-box">
+					<!-- checkbox example -->
+					<div class="row">
+						<div class="col-md-6">
+							<div class="pmd-card pmd-z-depth">
+								<div class="pmd-card-body"> 
+									<!-- Simple checkbox with label, checked -->
+									<div class="checkbox pmd-default-theme">
+										<label class="pmd-checkbox pmd-checkbox-ripple-effect">
+											<input type="checkbox" value="" checked>
+											<span>On</span> </label>
+									</div>
+										
+									<!-- Simple checkbox with label -->
+									<div class="checkbox pmd-default-theme">
+										<label class="pmd-checkbox pmd-checkbox-ripple-effect">
+											<input type="checkbox" value="">
+											<span> Option one is this and that&mdash;be sure to include why it's great</span> </label>
+									</div>
+										
+									<!-- Simple checkbox with label, Disabled -->
+									<div class="checkbox pmd-default-theme disabled">
+										<label class="pmd-checkbox pmd-checkbox-ripple-effect">
+										<input type="checkbox" value="" disabled>
+										<span>Option two is disabled</span> </label>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="pmd-card pmd-card-inverse pmd-z-depth">
+								<div class="pmd-card-body"> 
+									<!-- Simple checkbox with label, checked -->
+									<div class="checkbox pmd-default-theme">
+										<label class="pmd-checkbox pmd-checkbox-ripple-effect">
+											<input type="checkbox" value="" checked>
+											<span>On</span> </label>
+									</div>
+									<!-- Simple checkbox with label -->
+									<div class="checkbox pmd-default-theme">
+										<label class="pmd-checkbox pmd-checkbox-ripple-effect">
+											<input type="checkbox" value="">
+											<span> Option one is this and that&mdash;be sure to include why it's great</span> </label>
+									</div>
+									<!-- Simple checkbox with label, Disabled -->
+									<div class="checkbox pmd-default-theme disabled">
+										<label class="pmd-checkbox pmd-checkbox-ripple-effect">
+											<input type="checkbox" value="" disabled>
+											<span>Option two is disabled</span></label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div> <!-- checkbox example end-->
+				</div>
+			</div> <!-- checkbox code and example end-->
+			
+		</section> <!-- checkbox end --> 	
+		
+		<!-- Inline checkbox -->
+		<section class="row component-section">
+		
+			<!-- Inline checkbox title and description -->
+			<div class="col-md-3">
+				<div>
+					<h2></h2>
+				</div>
+				<p>Inline Checkboxes - Use <code>.checkbox-inline</code> on a series of checkboxes for controls that appear on the same line.</p>
+			</div> <!-- Inline checkbox title and description end-->
+			
+			<!-- Inline checkbox code and example -->
+			<div class="col-md-9">
+				<div class="component-box">
+					<!-- checkbox example -->
+					<div class="row">
+						<div class="col-md-12">
+							<div class="pmd-card pmd-z-depth">
+								<div class="pmd-card-body"> 
+									<!--Inline checkboxes-->
+									<form>
+										<label class="checkbox-inline pmd-checkbox pmd-checkbox-ripple-effect">
+											<input type="checkbox" value="" checked>
+											<span> 1</span> </label>
+										<label class="checkbox-inline pmd-checkbox pmd-checkbox-ripple-effect">
+											<input type="checkbox" value="">
+											<span> 2</span> </label>
+										<label class="checkbox-inline pmd-checkbox pmd-checkbox-ripple-effect">
+											<input type="checkbox" value="">
+											<span> 3</span> </label>
+										<label class="checkbox-inline pmd-checkbox pmd-checkbox-ripple-effect">
+											<input type="checkbox" value="">
+										</label>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div> <!-- checkbox example end-->
+				</div>
+			</div> <!-- Inline checkbox code and example end-->
+			
+		</section> <!-- Inline checkbox end --> 		
+		
+	
+	</div> <!--container end --> 
+	
+</div> <!--Form-->
+
+</body>
+<!-- Jquery js -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<!-- Propeller checkbox js -->
+<script type="text/javascript" src="js/checkbox.js"></script>
+
+<!-- Propeller checkbox js -->
+<script type="text/javascript" src="http://propeller.in/components/textfield/js/textfield.js"></script>
+
+<!-- Propeller checkbox js -->
+<script type="text/javascript" src="http://propeller.in/components/radio/js/radio.js"></script>
+
+</html>

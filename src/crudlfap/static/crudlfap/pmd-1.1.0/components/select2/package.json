@@ -1,0 +1,31 @@
+{
+  "name": "propellerkit-select2",
+  "version": "1.1.0",
+  "description": "Select2 gives a customizable select box with support for searching, tagging, remote data sets, infinite scrolling, and many other highly used options. We have used Select2 plugin as a reference which we have then customized based on our Propeller theme.",
+  "homepage": "http://propeller.in/",
+  "author": "Digicorp, Inc",
+  "license": "MIT",
+  "main":"js/pmd-select2.js",
+  "scripts": {
+    "test": "npm install propellerkit-select2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/digicorp/propeller/tree/master/components/select2"
+  },
+  "keywords": [
+   "css",
+   "js",
+   "mobile-first",
+   "responsive",
+   "front-end",
+   "framework",
+   "web",
+   "select2"
+  ],
+  "dependencies": {
+    "propellerkit":"*.*.*",
+    "select2": "^4.0.2",
+    "select2-bootstrap-theme":"^0.1.0-beta.4"
+  }
+}

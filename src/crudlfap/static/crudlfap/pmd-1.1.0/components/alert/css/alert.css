@@ -1,0 +1,50 @@
+/*!
+ * Propeller v1.1.0 (http://propeller.in)
+ * Copyright 2016-2017 Digicorp, Inc.
+ * Licensed under MIT (http://propeller.in/LICENSE)
+*/
+/* --------------------------- alert container for positions ----------------------*/
+.pmd-alert-container { position:fixed; width:auto; text-align:right; padding:0; z-index:100000000;}
+
+/* alert container for top, bottom, left, right and center positions */
+.pmd-alert-container.top { top:20px;}
+.pmd-alert-container.bottom { bottom:20px;}
+.pmd-alert-container.left { left:20px;}
+.pmd-alert-container.right { right:20px;}
+.pmd-alert-container.center { left:50%; }
+
+/* ------------ alert container for alert varients ------------------*/
+.pmd-alert-container .pmd-alert  {  position:relative; margin-bottom:5px; text-align:left; vertical-align:middle;  background:#000; padding:9px 24px; color:#fff; width:360px; z-index:1000; clear:both;  border-radius:3px;animation-duration: 1s; animation-fill-mode: both;}
+
+/* alert container for error*/
+.pmd-alert-container .pmd-alert.error { background:#FE5722; color:#fff;}
+
+/* alert container for information*/
+.pmd-alert-container .pmd-alert.information {background:#0288D1; color:#fff;}
+
+/* alert container for warning*/
+.pmd-alert-container .pmd-alert.warning {background:#FFB300; color:#fff;}
+
+/* alert container for success*/
+.pmd-alert-container .pmd-alert.success {background:#229A21; color:#fff;}
+
+/* Alert Action css */
+.pmd-alert a,
+.notification a { float:right; position: absolute; right: 18px; color: #5ca9ea; }
+.pmd-alert a:before { content: ""; position: absolute; right: -10px; top: 0; bottom: 0; margin: auto; left: -10px; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; }}
+.fadeIn { animation-name: fadeIn; }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; }}
+.fadeOut { animation-name: fadeOut; }
+@keyframes fadeOutDown { from { opacity: 1; } to { opacity: 0; transform: translate3d(0, 100%, 0); }}
+.fadeOutDown { animation-name: fadeOutDown;}
+@keyframes fadeInDown { from { opacity: 0; transform: translate3d(0, -100%, 0); } to { opacity: 1; transform: none; }}
+.fadeInDown { animation-name: fadeInDown; }
+@keyframes fadeInUp { from { opacity: 0; transform: translate3d(0, 100%, 0); } to { opacity: 1; transform: none; }}
+.fadeInUp { animation-name: fadeInUp; }
+
+@media screen and (max-width:767px){
+	.pmd-alert-container.left { left:50%;}
+	.pmd-alert-container.right { right:50%;}
+
+}

@@ -1,0 +1,37 @@
+{
+  "name": "propellerkit-datatables",
+  "version": "1.1.0",
+  "description": "Propeller’s data tables refers to a matrix of information, like an excel spreadsheet with columns, rows, and data. We have used Bootstrap Data table as base and customized it by applying material design principles to it.",
+  "homepage": "http://propeller.in/",
+  "author": "Digicorp, Inc",
+  "license": "MIT",
+  "main":"css/pmd-datatable.css",
+  "scripts": {
+    "test": "npm install propellerkit-datatables"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/digicorp/propeller/tree/master/components/data-table"
+  },
+  "keywords": [
+   "css",
+   "js",
+   "mobile-first",
+   "responsive",
+   "front-end",
+   "framework",
+   "filter", 
+   "sort",
+   "table",
+   "DataTables",
+   "Bootstrap"	  
+  ],
+  "dependencies": {
+	"propellerkit": "*.*.*",
+	"datatables.net":"1.10.12",  
+	"datatables.net-bs":"1.10.12",  
+    "datatables.net-responsive-bs":"2.1.0",
+	"datatables.net-select":"1.2.0",  
+    "datatables.net-select-dt":"1.2.0"
+  }
+}
