@@ -19,12 +19,14 @@ window.crudlfap.unsetBase = function(url) {
 
 /* Load a URL in ajax and update #ajax-replace and friends.
  */
-window.crudlfap.ajaxLoad = function(url) {
+window.crudlfap.ajaxLoad = function(url, cb) {
     ajaxUrl = window.crudlfap.setBase(url, 'ajax');
     callback = function(data) {
         var newTitle = $(data).filter('#html-title').html()
         $('title').html(newTitle);
-        window.history.pushState(null, newTitle, window.crudlfap.unsetBase(url));
+        if (cb !== undefined) {
+            cb(window.crudlfap.unsetBase(url), newTitle)
+        }
     }
     $('#ajax-replace').load(ajaxUrl, callback)
 }
@@ -53,7 +55,12 @@ $('body').on('click', 'a', function(e) {
         url = window.crudlfap.setBase(url, 'modal');
         $target.load(url, callback);
     } else {
-        window.crudlfap.ajaxLoad(url);
+        window.crudlfap.ajaxLoad(
+            url,
+            function(url, title) {
+                window.history.pushState(null, title, url)
+            }
+        );
     }
 });
 
