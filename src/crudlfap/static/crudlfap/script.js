@@ -22,7 +22,9 @@ window.crudlfap.unsetBase = function(url) {
 window.crudlfap.ajaxLoad = function(url, cb) {
     ajaxUrl = window.crudlfap.setBase(url, 'ajax');
     callback = function(data) {
-        var newTitle = $(data).filter('#html-title').html()
+        var htmlTitle = $(data).filter('#html-title')
+        if (!htmlTitle.length) htmlTitle = $(data).find('#html-title')
+        var newTitle = htmlTitle.html()
         $('title').html(newTitle);
         if (cb !== undefined) {
             cb(window.crudlfap.unsetBase(url), newTitle)
