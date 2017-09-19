@@ -8,17 +8,7 @@ def main():
         "DJANGO_SETTINGS_MODULE",
         "crudlfap_example.settings"
     )
-    from django.core.management import call_command, execute_from_command_line
-    if sys.argv[1] == 'runserver':
-        import django
-        django.setup()
-        call_command('migrate')
-        from django.conf import settings
-        from django.apps import apps
-        user_model = apps.get_model(settings.AUTH_USER_MODEL)
-        if not user_model.objects.count():
-            call_command('createsuperuser')
-
+    from django.core.management import execute_from_command_line
     execute_from_command_line(sys.argv)
 
 if __name__ == "__main__":

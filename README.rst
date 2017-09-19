@@ -20,7 +20,7 @@ Try
 This should start the example project in ``src/crudlfap_example`` where each
 documented example lives::
 
-    pip install --user crudlfap[django,tables2,filter,dal,reversion,debug]; crudlfap runserver
+    pip install --user crudlfap[django,tables2,filter,dal,reversion,debug]; crudlfap dev
 
 Install
 =======
