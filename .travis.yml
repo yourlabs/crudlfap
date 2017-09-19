@@ -12,7 +12,7 @@ install:
 script:
 - tox
 after_success:
-- codecov
+- cd src; codecov
 cache:
   directories:
   - "$HOME/.cache/pip"
