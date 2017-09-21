@@ -12,7 +12,7 @@ def read(fname):
 
 setup(
     name='crudlfap',
-    version='0.0.6',
+    version='0.0.7',
     description='2017 OOAO DRY BUZZWORDS FOR DJANGO 2.0 with Material design',
     author='James Pic',
     author_email='jamespic@gmail.com',
