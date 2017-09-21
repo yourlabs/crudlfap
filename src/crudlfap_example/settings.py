@@ -111,11 +111,6 @@ TEMPLATES = [
                 "isinstance": isinstance,
                 "render_table": "crudlfap_filtertables2.jinja2.render_table",
                 "render_form": "bootstrap3.forms.render_form",
-
-                # For django-bootsrap4, not used but kept for reference
-                "bootstrap_setting": "bootstrap4.bootstrap.get_bootstrap_setting",  # noqa
-                "bootstrap_form": "bootstrap4.forms.render_form",
-                "bootstrap_button": "bootstrap4.forms.render_button",
             },
             "newstyle_gettext": True,
             "bytecode_cache": {
