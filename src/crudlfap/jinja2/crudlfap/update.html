@@ -9,5 +9,5 @@
 {% block before_form %}<h1>{{ _(view.slug).capitalize() }} {{ view.model._meta.verbose_name.capitalize() }}<h1>{% endblock %}
 
 {% block buttons %}
-{{ bootstrap_button(_(view.slug), button_type="submit", button_class="btn-primary") }}
+{{ render_button(_(view.slug), button_type="submit", button_class="btn-primary") }}
 {% endblock %}

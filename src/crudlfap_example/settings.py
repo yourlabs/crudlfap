@@ -111,6 +111,7 @@ TEMPLATES = [
                 "isinstance": isinstance,
                 "render_table": "crudlfap_filtertables2.jinja2.render_table",
                 "render_form": "bootstrap3.forms.render_form",
+                "render_button": "bootstrap3.forms.render_button",
             },
             "newstyle_gettext": True,
             "bytecode_cache": {
