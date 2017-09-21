@@ -28,6 +28,15 @@ class RouterRegistry(collections.OrderedDict):
             result[app].append(router)
         return result
 
+    def __getitem__(self, arg):
+        """Return a router instance by model class, instance or dotted name."""
+        from django.db import models
+        if isinstance(arg, models.Model):
+            arg = type(arg)
+        if isinstance(arg, str):
+            arg = apps.get_model(*arg.split('.'))
+        return super().__getitem__(arg)
+
 
 class Router(object):
     """
@@ -76,8 +85,12 @@ class Router(object):
             if isinstance(view, str):
                 view = import_string(view)
 
-            if not issubclass(view, RoutableViewMixin):
-                view = type(view.__name__, (view, RoutableViewMixin), {})
+            try:
+                if not issubclass(view, RoutableViewMixin):
+                    view = type(view.__name__, (view, RoutableViewMixin), {})
+            except Exception as e:
+                print('Got an error with view:', view)
+                raise e
 
             view = view.factory(
                 model=self.model,

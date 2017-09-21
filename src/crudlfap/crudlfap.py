@@ -1,5 +1,7 @@
 """Import everything we expose in crudlfap namespace."""
 
+from django.utils.module_loading import import_string
+
 from .apps import _installed
 
 from .routers import Router

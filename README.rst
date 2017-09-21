@@ -1,5 +1,5 @@
-Welcome to CRUDLFA+ for Django 2.0
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Welcome to CRUDLFA+ for Django 2.0: because Django is FUN !
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 CRUDLFA+ stands for Create Read Update Delete List Form Autocomplete and more.
 
@@ -78,45 +78,36 @@ some permissions on views and fields, all OOAO:
 
 .. code-block:: python
 
-    class ServerCreateView(crudlfap.CreateView):
-        @classmethod
-        def allow(cls, user):
-            return True if user.is_authenticated() else False
+
+    def authenticated(view, user):
+        return True if user.is_authenticated() else False
 
 
-    class ServerOwnerRequired(crudlfap.FormViewMixin):
-        @classmethod
-        def allow(cls, user, model):
-            return user.is_staff or model.owner == user
+    def owner_or_staff(view, user):
+        return user.is_staff or view.object.owner == user
 
 
     class ServerUpdateView(ServerOwnerRequired, crudlfap.UpdateView):
-        pass
+        allow = owner_or_staff
 
-
-    class ServerDeleteView(ServerOwnerRequired, crudlfap.UpdateViewView):
-        pass
-
-
-    class ServerRouter(Router):
-        menus = ['main']  # Yes Django can make menus
-        fa_icon = 'server'  # Yes with icons
-
-        views = [
-            ServerCreateView,
-            crudlfap.DetailView,
-            crudlfap.ListView,
-            ServerUpdateView,
-            ServerDeleteView,
-        ]
-
-        readable_fields = ['name', 'owner', 'created']  # yes per attr authorization
-
-        def get_writable_fields(self, user):  # yes per user attr authorization
+        def get_fields(self):
             if request.user.is_staff:
                 return ['name', 'owner']
             else:
                 return ['name']
+
+
+    class ServerRouter(Router):
+        menus = ['main']  # Yes Django can make menus from your URL definition
+        material_icon = 'server'  # Yes with icons
+
+        views = [
+            ServerCreateView.factory(allow=authenticated),
+            crudlfap.DetailView.factory(fields=['name', 'owner', 'created']),
+            'crudlfap.views.generic.ListView',
+            ServerUpdateView.factory(allow=owner_or_staff),
+            ServerDeleteView.factory(allow=owner_or_staff),
+        ]
 
         # yes django allows OOAO for viewland, and you can invent words too
         def get_queryset(self, user):
@@ -131,13 +122,27 @@ some permissions on views and fields, all OOAO:
             return self.model.objects.all()
     urlpatterns = ServerRouter(Server).urlpatterns()
 
-Example checking security in template (Jinja2)::
+Example generating a menu which rocks in 2017::
 
-    {% if crulfap_router(object).get_view_by_slug('update').allow(request.user, object) %}
+    {% for v in Router.registry[object].get_menu('object') %}
+      {% set v=v.factory(object=object)() %}
+      {% if v != view and view.allow(request.user) %}
+        {#
+        above we check that it's not the same as the current
+        view and that the user has permission too
+        #}
+        <a
+          href="{{ view.reverse(object) }}"
+          target="{{ view.target }}"
+          data-ajax="{{ view.ajax }}"
+          title="{{ view.get_title() }}" # hell yes, soooooo 2017 !!! let's DRY !
+          ><i class="material-icon material-{{ view.material_icon }}"></i></a>
+      {% endif %}
+    {% endif %}
 
 Example checking security in Python::
 
-    if crudlfap.routers['yourapp.server']['update'].allow(user, server):
+    if crudlfap.Router.registry[obj]['update'].factory(object=obj).allow(user):
         # User has permission to update on the default router for yourapp.Server
 
 Now if you want to make your own link to an object update modal because you are
@@ -212,12 +217,15 @@ dear knock yourself out:
 
     class ServerRouter(crudlfap.Router):
         views = [
-            ServerCreateView,
-            # yes you can haz type() on the fly
-            dict(_cls='crudlfap.DetailView', fields=['name']),
-            'crudlfap.Tables2ListView',
+            'yourapp.views.ServerCreateView',
+            crudlfap.DetailView.factory(fields=['name']),
+            crudlfap.import_string(
+                'crudlfap_filtertables2.views.FilterTables2ListView'
+            ).factory(
+                filter_fields=['location', 'name'],
+            ),
             'crudlfap.ReversionView',
-            ServerUpdateView,
+            'yourapp.views.ServerUpdateView',
             ServerDeleteView,
             ServerRefreshView,
         ]

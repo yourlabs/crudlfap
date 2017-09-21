@@ -62,7 +62,11 @@ class RoutableViewMixin(object):
     .. py:attribute:: router
 
         If you're using the CRUDLFA+ Router to register a View, then this will
-        be automatically populated when the Router generates its URLs.
+        be automatically populated when the Router instanciates. So far, it's
+        only used in get_url_prefx() to get the url_prefix that the router for
+        this view might have. But you should probably use it to also return the
+        default form_class, fields, and so on, which is what CRUDLFA+ generic
+        views do.
     """
     url_pattern = None
     url_prefix = None
@@ -154,7 +158,11 @@ class RoutableViewMixin(object):
 
     @classmethod
     def get_url_name(cls):
-        """Return the url name for this view which has a router."""
+        """Return the url name for this view."""
+        url_name = getattr(cls, 'url_name', None)
+        if url_name:
+            return url_name
+
         parts = []
         model = getattr(cls, 'model', None)
         if model:

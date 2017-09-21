@@ -8,7 +8,14 @@ import pytest
 
 
 class ExampleView(View):
-    pass
+    def allow(self, user):
+        if not user.is_authenticated():
+            return False
+
+        if self.object.pk == 1:
+            return True
+
+        return user.is_staff
 
 
 def test_example_view():
@@ -57,6 +64,27 @@ def test_view_factory_with_and_slug_and_prefix():
     assert view.url().regex == re.compile('rofl/lol/$')
 
 
+def test_view_factory_allow():
+    from django.contrib.auth.models import AnonymousUser, User
+    artist = Artist(pk=1)
+    user = AnonymousUser()
+
+    view = ExampleView.factory(object=artist)()
+    assert not view.allow(user), 'forbid anonymous'
+
+    user = User(is_staff=False)
+    view = ExampleView.factory(object=artist)()
+    assert view.allow(user), 'allow pk=1 for authed users'
+
+    artist.pk = 12
+    view = ExampleView.factory(object=artist)()
+    assert not view.allow(user), 'forbid pk=12 for non staff'
+
+    user = User(is_staff=True)
+    view = ExampleView.factory(object=artist)()
+    assert view.allow(user), 'allow any pk for staff'
+
+
 urlpatterns = [
     ExampleView.url(),
     ExampleView.factory(slug='example2').url(),
@@ -64,16 +92,17 @@ urlpatterns = [
 ]
 
 
-@pytest.mark.urls('crudlfap.views.test_generic')
-def test_view_with_slug():
+@pytest.mark.urls('crudlfap.views.test_routable')
+def test_views_with_overrides():
     view = view_reverse('example')
     assert view.get_slug() == 'example'
     assert view.__name__ == ExampleView.__name__
     assert view.get_url_pattern() == 'example/$'
 
-'''
-@pytest.mark.urls('crudlfap.views.test_generic')
-def test_view_with_slug():
     view = view_reverse('example2')
-    assert view == ExampleView
-'''
+    assert view.get_slug() == 'example2'
+    assert view.get_url_pattern() == 'example2/$'
+
+    view = view_reverse('example4')
+    assert view.get_slug() == 'example3'
+    assert view.get_url_pattern() == 'example3/$'

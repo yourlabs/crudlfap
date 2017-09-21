@@ -91,6 +91,10 @@ class ObjectViewMixin(ModelViewMixin):
 
     menus = ['object']
 
+    @property
+    def object(self):
+        return self.get_object()
+
     @classmethod
     def get_url_args(cls, *args):
         if '<slug>' in cls.get_url_pattern():
