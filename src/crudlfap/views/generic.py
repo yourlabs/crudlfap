@@ -7,92 +7,25 @@ Crudlfa+ takes views further than Django and are expected to:
 - check if a user has permission for an object,
 - declare the names of the navigation menus they belong to.
 """
-from django.conf.urls import url
 from django.contrib import messages
 from django.core.exceptions import FieldDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
 
+from .routable import RoutableViewMixin
 
-class ViewMixin(object):
+
+class DefaultTemplateMixin(object):
     """
-    Mixin to make crudlfa+ love a view.
+    Override for get_template_names to append default_template_name.
 
-    .. py:attribute:: slug
-
-        Slug name of this view, often properly automatically generated
-        from view class name uppon registration.
-
-    .. py:attribute:: verbose_slug
-
-        Verbose slug of the view for display.
-
-    .. py:attribute:: url_pattern
-
-        URL pattern to use for this view.
+    This allows to configure "last resort" templates for each class, and thus
+    to provide a working CRUD out of the box.
     """
 
-    slug = None
-    url_pattern = None
     style = 'default'
     fa_icon = 'question'
     material_icon = 'priority high'
-
-    def get_template_names(self):
-        """Give a chance to default_template_name."""
-        template_names = super().get_template_names()
-        default_template_name = getattr(self, 'default_template_name', None)
-        if default_template_name:
-            template_names.append(default_template_name)
-        return template_names
-
-    @classmethod
-    def get_fa_icon(cls):
-        return (
-            getattr(cls, 'fa_icon', None) or
-            getattr(cls.router, 'fa_icon', '')
-        )
-
-    @classmethod
-    def as_url(cls, **kwargs):
-        """Return the Django url object."""
-        return url(
-            '{}{}'.format(
-                cls.router.prefix or '',
-                cls.get_url_pattern(),
-            ),
-            cls.as_view(**kwargs),
-            name=cls.get_url_name(),
-        )
-
-    @classmethod
-    def get_url_pattern(cls):
-        """Return the url pattern for this view."""
-        if cls.url_pattern:
-            return cls.url_pattern.format(cls.slug)
-        return '{}/$'.format(cls.slug)
-
-    @classmethod
-    def get_url_name(cls):
-        """Return the url name for this view which has a router."""
-        return '{}_{}'.format(
-            cls.router.model_name,
-            cls.slug,
-        )
-
-    @classmethod
-    def get_url_args(cls, *args):  # pylint: disable=unused-argument
-        """Return url reverse args given these args."""
-        return args
-
-    @classmethod
-    def reverse(cls, *args):
-        """Reverse a url to this view with the given args."""
-        from django.core.urlresolvers import reverse_lazy
-        return reverse_lazy(
-            cls.get_url_name(),
-            args=cls.get_url_args(*args)
-        )
 
     def get_title_html(self):
         """Return text for HTML title tag."""
@@ -102,9 +35,25 @@ class ViewMixin(object):
         """Return text for page heading."""
         return self.title
 
+    def get_template_names(self):
+        """Give a chance to default_template_name."""
+        template_names = super().get_template_names()
+        default_template_name = getattr(self, 'default_template_name', None)
+        if default_template_name:
+            template_names.append(default_template_name)
+        return template_names
+
+
+class ViewMixin(DefaultTemplateMixin, RoutableViewMixin):
+    """Base View mixin for CRUDLFA+.
+
+    If you have any question about style then find your answers in
+    DefaultTemplateMixin, otherwise in RoutableViewMixin.
+    """
+
 
 class View(ViewMixin, generic.View):
-    """Base view for crudlfap+."""
+    """Base view for CRUDLFA+."""
 
 
 class ModelViewMixin(ViewMixin):

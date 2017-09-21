@@ -26,7 +26,7 @@ class ArtistPicture(models.Model):
 
 
 def assert_url_like(view, name, pattern):
-    url = view.as_url()
+    url = view.url()
     assert url.name == name
     assert url.regex == re.compile(pattern)
 
@@ -39,7 +39,7 @@ def router():
 def test_router_init():
     result = crudlfap.Router(Artist)
     assert result.model == Artist
-    assert result.prefix == ''
+    assert result.url_prefix == ''
 
 
 def test_router_create(router):
@@ -84,12 +84,12 @@ def test_router_update(router):
 
 @pytest.fixture
 def router_prefix():
-    return crudlfap.Router(ArtistPicture, prefix='photo/')
+    return crudlfap.Router(ArtistPicture, url_prefix='photo/')
 
 
 def test_router_prefix(router_prefix):
     assert router_prefix.model == ArtistPicture
-    assert router_prefix.prefix == 'photo/'
+    assert router_prefix.url_prefix == 'photo/'
 
 
 def test_router_prefix_create(router_prefix):

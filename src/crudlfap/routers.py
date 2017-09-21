@@ -6,17 +6,21 @@ models.Model and setting their Meta.managed attribute to False. Then, you can
 use CRUDLFA+ views and routers.
 """
 import collections
-import re
 
 from django.apps import apps
 from django.utils.module_loading import import_string
+
+from .views.routable import RoutableViewMixin
 
 
 crudlfap = apps.get_app_config('crudlfap')  # pylint: disable=invalid-name
 
 
 class RouterRegistry(collections.OrderedDict):
+    """Registers Routers which have generated urlpatterns in this thread."""
+
     def sort_by_apps(self):
+        """Sort Router instances by app name."""
         result = collections.OrderedDict()
         for model, router in self.items():
             app = apps.get_app_config(model._meta.app_label)
@@ -26,22 +30,21 @@ class RouterRegistry(collections.OrderedDict):
 
 
 class Router(object):
-    """Base router for CRUDLFA+."""
+    """
+    Base router for CRUDLFA+ RoutableView.
+
+    .. py:attr:: model
+
+        Optional model class for this Router and all its views.
+
+    .. py:attr:: url_prefix
+
+        Optional url prefix for all of this Router's views.
+    """
+
     registry = RouterRegistry()
 
     views = crudlfap.get_default_views()
-
-    def generate_view_slug(self, view):
-        """
-        Generate a slug from a view class.
-
-        Strip model name and 'View' suffix from view class name, will be added
-        by router, YourModelCreateView gets the 'create' slug.
-        """
-        name = view.__name__.replace(self.model.__name__, '')
-        name = name.replace('View', '')
-        name = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
-        return re.sub('([a-z0-9])([A-Z])', r'\1_\2', name).lower()
 
     def generate_views(self, *views):
         """
@@ -70,57 +73,36 @@ class Router(object):
         for arg in views or self.views:
             view = arg
 
-            if isinstance(arg, dict):
-                view = arg.pop('_cls')
-
             if isinstance(view, str):
                 view = import_string(view)
 
-            slug = getattr(view, 'slug', None)
-            if not view.slug:
-                slug = self.generate_view_slug(view)
+            if not issubclass(view, RoutableViewMixin):
+                view = type(view.__name__, (view, RoutableViewMixin), {})
 
-            url_pattern = getattr(view, 'url_pattern', None)
-            if url_pattern:
-                url_pattern = url_pattern.format(slug=slug)
-
-            attrs = dict(
-                router=self,
+            view = view.factory(
                 model=self.model,
-                slug=slug,
+                router=self,
+                slug=view.get_slug(),
             )
 
-            if isinstance(arg, dict):
-                attrs.update(arg)
-
-            view_name = view.__name__
-            if self.model.__name__ not in view_name:
-                view_name = self.model.__name__ + view_name
-
-            view_class = type(view_name, (view,), attrs)
-            result.append(view_class)
+            result.append(view)
         return result
 
-    def __init__(self, model, prefix=None, *views, **kwargs):
+    def __init__(self, model=None, url_prefix=None, *views, **attributes):
         """Create a Router for a Model."""
         self.model = model
-
-        # pylint: disable=protected-access
-        self.model_name = model._meta.model_name
-        self.model_verbose_name = model._meta.verbose_name
-        self.model_verbose_name_plural = model._meta.verbose_name_plural
+        self.url_prefix = url_prefix or ''
 
         # Save the user a type() call, really ? mehh
-        for name, value in kwargs.items():
+        for name, value in attributes.items():
             setattr(self, name, value)
 
-        self.prefix = prefix or ''
         self.views = self.generate_views(*views)
 
     def __getitem__(self, slug):
         """Get a view by slug."""
         for view in self.views:
-            if view.slug == slug:
+            if view.get_slug() == slug:
                 return view
 
         raise KeyError(
@@ -131,12 +113,28 @@ class Router(object):
         )
 
     def urlpatterns(self):
+        """
+        Generate URL patterns for this Router views.
+
+        Also, adds the get_absolute_url() method to the model class if it has
+        None, to return the reversed url for this instance to the view of this
+        Router with the ``detail`` slug.
+
+        Set get_absolute_url in your model class to disable this feature. Until
+        then, welcome in 2017.
+
+        Also, register this router as default router for its model class in the
+        RouterRegistry.
+        """
         self.registry[self.model] = self
+
         if not hasattr(self.model, 'get_absolute_url'):
             def get_absolute_url(self):
                 return Router.registry[type(self)]['detail'].reverse(self)
             self.model.get_absolute_url = get_absolute_url
-        return [view.as_url() for view in self.views]
+
+        return [view.url() for view in self.views]
 
     def get_menu(self, name):
+        """Return views which have ``name`` in their ``menus``."""
         return [v for v in self.views if name in getattr(v, 'menus', [])]
