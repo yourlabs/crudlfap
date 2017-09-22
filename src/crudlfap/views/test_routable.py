@@ -1,7 +1,7 @@
 import re
 
 from crudlfap.test_routers import Artist
-from crudlfap.utils import view_reverse
+from crudlfap.utils import view_resolve
 from crudlfap.views.generic import View
 
 import pytest
@@ -94,15 +94,15 @@ urlpatterns = [
 
 @pytest.mark.urls('crudlfap.views.test_routable')
 def test_views_with_overrides():
-    view = view_reverse('example')
+    view = view_resolve('example')
     assert view.get_slug() == 'example'
     assert view.__name__ == ExampleView.__name__
     assert view.get_url_pattern() == 'example/$'
 
-    view = view_reverse('example2')
+    view = view_resolve('example2')
     assert view.get_slug() == 'example2'
     assert view.get_url_pattern() == 'example2/$'
 
-    view = view_reverse('example4')
+    view = view_resolve('example4')
     assert view.get_slug() == 'example3'
     assert view.get_url_pattern() == 'example3/$'
