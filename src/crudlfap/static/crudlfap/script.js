@@ -1,36 +1,136 @@
-window.crudlfap = {}
+var crudlfap = crudlfap || {}
 
-window.crudlfap.setBase = function(url, base) {
-    if (url.search(/\?/) < 0) {
-        url += '?'
+crudlfap.Ajax = function(url, method, data, callback, options) {
+    if (crudlfap.state && crudlfap.state.DEBUG) {
+        console.log('Ajax(', method, url, data, callback, options)
     }
 
-    if (url.search('&base=') > 0) {
-        url = url.replace(/base=[^&]*/, 'base=' + base)
+    this.callback = callback
+    this.options = options
+    this.uploading = data instanceof FormData ? true : false;
+
+    $.ajax({
+        url: url,
+        type: method,
+        data: data,
+
+        // Tell jQuery not to process data or worry about content-type
+        // You *must* include these options for HTML5 uploads !
+        contentType: !this.uploading,
+        processData: !this.uploading,
+        cache: !this.uploading,
+
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader('Cache-Control', 'no-cache');
+        },
+        complete: $.proxy(this.complete, this),
+        error: $.proxy(this.error, this),
+        xhr: this.xhr,
+    });
+}
+
+crudlfap.Ajax.prototype.complete = function(jqXHR) {
+    var $data = $(jqXHR.responseText);
+
+    // Update global state object
+    try {
+        crudlfap.state = JSON.parse($data.filter('#ajax-state').html())
+    } catch(e) {
+        if (console) console.log('Could not parse ajax state')
+        crudlfap.state = false
+    }
+    crudlfap.state.title = $data.filter('title').html()
+
+    this.callback($data, this.options, jqXHR);
+}
+
+crudlfap.Ajax.prototype.error = function(jqXHR) {
+    if (crudlfap.state && crudlfap.state.DEBUG) {
+        $('body').html($(jqXHR.responseText).filter('body').html());
+    }
+}
+
+crudlfap.Ajax.prototype.xhr = function() {
+    var myXhr = $.ajaxSettings.xhr();
+
+    if (myXhr.upload) {
+        // Disable everything during upload
+        $('#modal :input').attr('disabled', 'disabled');
+
+        // For handling the progress of the upload
+        myXhr.upload.addEventListener('progress', function(e) {
+            if (e.lengthComputable) {
+                $('progress').attr({
+                    value: e.loaded,
+                    max: e.total,
+                });
+            }
+        } , false);
+    }
+    return myXhr;
+}
+
+crudlfap.completePage = function($data, options, jqXHR) {
+    if (crudlfap.state && crudlfap.state.ajax) {
+        $(crudlfap.state.ajax).each(function() {
+            var id = $(this).attr('id');
+            if (id === undefined) {
+                if (console) {
+                    console.log('Skipping update of element lacking id', $(this))
+                }
+                return
+            }
+            id = '#' + id
+            var source = $data.filter(id);
+            if (!source.length) source = $data.find(id)
+            if (!source.length) return
+
+            var target = $(id);
+            if (!target.length) return
+
+            target.html(source.html())
+        });
+    }
+
+    $('title').html(crudlfap.state.title);
+
+    if (options.history) {
+        window.history.pushState(
+            null,
+            crudlfap.state.title,
+            crudlfap.state.url,
+        );
+    }
+}
+
+crudlfap.completeModal = function($data, options, jqXHR) {
+    // Fill in Modal
+    $('#modal .modal-content').removeClass(function (index, className) {
+        return (className.match (/(^|\s)panel-\S+/g) || []).join(' ');
+    }).addClass('panel-' + crudlfap.state.style);
+
+    $('#modal .modal-title').removeClass(function (index, className) {
+        return (className.match (/(^|\s)text-\S+/g) || []).join(' ');
+    }).addClass('text-' + crudlfap.state.style);
+
+    $('#modal .modal-body').html($data.find('#modal-body-ajax').html())
+    $('#modal .modal-body-ajax').prepend($data.find('#messages'));
+    $('#modal .modal-title').html($data.find('#modal-title-ajax').html());
+    $('#modal').modal();
+}
+
+crudlfap.completeForm = function($data, options, jqXHR) {
+    // Update form and messages in modal, or close modal and update DOM
+    var $form = $data.find('#' + options.formId)
+    if (!$form.length) $form = $data.filter('#' + options.formId)
+    if ($form.length) {
+        // Form is still there, display again
+        $('#' + options.formId).html($form.html())
     } else {
-        url += '&base=' + base
+        // Form is gone, load page
+        crudlfap.completePage($data, {history: true}, jqXHR)
+        $('#modal').modal('hide')
     }
-    return url
-}
-
-window.crudlfap.unsetBase = function(url) {
-    return url.replace(/base=[^&]*&/, '')
-}
-
-/* Load a URL in ajax and update #ajax-replace and friends.
- */
-window.crudlfap.ajaxLoad = function(url, cb) {
-    ajaxUrl = window.crudlfap.setBase(url, 'ajax');
-    callback = function(data) {
-        var htmlTitle = $(data).filter('#html-title')
-        if (!htmlTitle.length) htmlTitle = $(data).find('#html-title')
-        var newTitle = htmlTitle.html()
-        $('title').html(newTitle);
-        if (cb !== undefined) {
-            cb(window.crudlfap.unsetBase(url), newTitle)
-        }
-    }
-    $('#ajax-replace').load(ajaxUrl, callback)
 }
 
 /* Intercept clicks to ajaxify requests.
@@ -38,38 +138,45 @@ window.crudlfap.ajaxLoad = function(url, cb) {
  * Do nothing if href starts with '#', open link in a modal if
  * data-target=model.
  */
-$('body').on('click', 'a', function(e) {
-    if ($(this).attr('href').startsWith('#')) {
-        return;
-    }
-
-    var $target, callback
-    var url = $(this).attr('href');
-
+$('body').on('click', 'a[data-ajax]', function(e) {
     e.preventDefault();
-
-    if ($(this).attr('data-target') == 'modal') {
-        $target = $('#modal .modal-dialog');
-        callback = function() {
-            $('#modal').modal()
-            $('#modal').find(':input:first').focus()
-        }
-        url = window.crudlfap.setBase(url, 'modal');
-        $target.load(url, callback);
+    var $e = $(this);
+    var options = {}
+    var callback
+    if ($(this).attr('data-ajax') == '_modal') {
+        callback = crudlfap.completeModal
+        options.history = false
     } else {
-        window.crudlfap.ajaxLoad(
-            url,
-            function(url, title) {
-                window.history.pushState(null, title, url)
-            }
-        );
+        callback = crudlfap.completePage
+        options.history = true
     }
+
+    try {
+        var data = JSON.parse($(this).attr('data-ajax-data'))
+    } catch (e) {
+        var data = null
+    }
+
+    new crudlfap.Ajax(
+        $(this).attr('href'),
+        $(this).attr('data-ajax-method') || 'GET',
+        data,
+        callback,
+        options
+    )
 });
 
+// Support history back/forward
 window.onpopstate = function(event) {
-  window.crudlfap.ajaxLoad(document.location.href);
+    new crudlfap.Ajax(
+        document.location.href,
+        'GET',
+        {},
+        crudlfap.completePage
+    )
 };
 
+// Focus on first input when opening modal
 $('body').on('shown.bs.modal', function (e) {
     $(e.target).find(':input:first').focus()
 ;
@@ -77,7 +184,7 @@ $('body').on('shown.bs.modal', function (e) {
 
 /* Intercept submits to ajaxify requests.
  */
-$('body').on('submit', 'form', function(e) {
+$('body').on('submit', 'form[data-ajax]', function(e) {
     e.preventDefault();
 
     var form = $(this);
@@ -91,63 +198,15 @@ $('body').on('submit', 'form', function(e) {
     // Show form loading div
     form.find('.form-loading').show();
 
-    var modal = $(this).parents().find('.modal-dialog')
-    var target = modal.length ? 'modal' : 'ajax'
-
-    $.ajax({
-        url: window.crudlfap.setBase(form.attr('action'), target),
-        type: 'POST',
-        data: formData,
-
-        // Tell jQuery not to process data or worry about content-type
-        // You *must* include these options!
-        cache: false,
-        contentType: false,
-        processData: false,
-
-        complete: function(jqXHR) {
-            var $data = $(jqXHR.responseText);
-            var $form = $data.filter('form');
-            if (!$form.length) $form = $data.find('form');
-
-            if ($form.length && $form.hasClass('form-invalid')) {
-                modal.html($data);
-            } else {
-                var newTitle = $data.filter('title').html()
-                $('title').html(newTitle);
-
-                var $ajaxReplace = $data.filter('#ajax-replace')
-                window.history.pushState(
-                    null,
-                    newTitle,
-                    window.crudlfap.unsetBase(
-                        $ajaxReplace.attr('data-full-path')
-                    )
-                );
-                $('#ajax-replace').html($ajaxReplace.html());
-                modal.parent().modal('hide');
-            }
-        },
-        // Custom XMLHttpRequest
-        xhr: function() {
-            var myXhr = $.ajaxSettings.xhr();
-            if (myXhr.upload) {
-                // Disable form inputs during upload
-                form.find(':input').attr('disabled', 'disabled');
-
-                // For handling the progress of the upload
-                myXhr.upload.addEventListener('progress', function(e) {
-                    if (e.lengthComputable) {
-                        $('progress').attr({
-                            value: e.loaded,
-                            max: e.total,
-                        });
-                    }
-                } , false);
-            }
-            return myXhr;
-        },
-    });
+    new crudlfap.Ajax(
+        $(this).attr('action'),
+        $(this).attr('method') || 'POST',
+        formData,
+        crudlfap.completeForm,
+        {
+            formId: form.attr('id')
+        }
+    )
 });
 
 function getCookie(name) {
@@ -218,6 +277,14 @@ window.crudlfap.list = function() {
 }
 
 $(document).ready(function() {
+    try {
+        crudlfap.state = JSON.parse($('#ajax-state').html())
+    } catch (e) {
+        if (console) console.log('Could not parse ajax state', e)
+        crudlfap.state = false
+    }
+    crudlfap.state.title = $('title').html()
+
     $('.django-filter-ajax input').keyup(window.crudlfap.list);
     $('.django-filter-ajax select').change(window.crudlfap.list);
 });

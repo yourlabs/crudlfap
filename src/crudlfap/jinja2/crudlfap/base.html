@@ -23,48 +23,69 @@
   </head>
 
   <body class="{% block body_class %}{% endblock %}">
-    {% include 'crudlfap/_menu_main.html' %}
+      {% include 'crudlfap/_menu_main.html' %}
+    <div id="ajax-container">
 
-    <div id="ajax-replace" data-full-path="{{ request.get_full_path() }}">
-      {% block before_container %}{% endblock %}
+      <div id="page">
+        {% block before_container %}{% endblock %}
 
-      <div id="page-container" class="container">
-        {% include 'crudlfap/_messages.html' %}
+        <div id="page-container" class="container">
+          <div id="messages">
+            {% include 'crudlfap/_messages.html' %}
+          </div>
 
-        {% block breadcrumb %}
-        {% endblock %}
-
-        {% block content_open %}
-        <div class="pmd-card pmd-z-depth" style="padding: 1em">
-        {% endblock %}
-
-          {% block title_heading %}
-          {% if getattr(view, 'get_title_heading', None) %}
-          <h2 class="text-{{ view.style|default('default') }}">{{ view.get_title_heading() }}</h2>
-          {% endif %}
+          {% block breadcrumb %}
           {% endblock %}
 
-          {% block form_open %}{% endblock %}
-          {% block content %}{% block form %}{% endblock %}{% endblock %}
-          {% block buttons %}{% endblock %}
-          {% block form_close %}{% endblock %}
+          {% block content_open %}
+          <div class="pmd-card pmd-z-depth" style="padding: 1em" id="modal-body-ajax">
+          {% endblock %}
 
-        {% block content_close %}
+            {% block title_heading %}
+            {% if getattr(view, 'get_title_heading', None) %}
+            <h2
+              class="text-{{ view.style|default('default') }} hide-in-modal"
+              id="modal-title-ajax"
+            >{{ view.get_title_heading() }}</h2>
+            {% endif %}
+            {% endblock %}
+
+            {% block form_open %}{% endblock %}
+            {% block content %}{% block form %}{% endblock %}{% endblock %}
+            {% block buttons %}{% endblock %}
+            {% block form_close %}{% endblock %}
+
+          {% block content_close %}
+          </div>
+          {% endblock %}
         </div>
-        {% endblock %}
       </div>
     </div>
 
     <div class="container">
       <hr>
-
-      <footer>
+      <footer id="footer">
         <p>&copy; Company 2017</p>
       </footer>
     </div>
 
     <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal-label">
       <div class="modal-dialog" role="document" style="max-width:600px">
+        <div class="modal-content">
+          <div class="modal-header panel-heading">
+            <h4 class="modal-title"></h4>
+            <span class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+          </div>
+
+          <div class="modal-footer">
+          </div>
+          <input type="hidden" name="_base" value="modal" />
+        </div>
       </div>
     </div>
 
@@ -72,6 +93,14 @@
     {# i wish you put some super elegant hack here #}
     {% endblock %}
 
+    <script type="text/crudlfap-state" id="ajax-state">
+    {
+        "url": "{{ request.get_full_path() }}",
+        "style": "{{ view.style|default("default") }}",
+        "ajax": "{{ view.ajax|default("#ajax-container, #navbar") }}",
+        "debug": "{{ settings.DEBUG }}"
+    }
+    </script>
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->

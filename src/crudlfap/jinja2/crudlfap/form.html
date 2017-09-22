@@ -2,9 +2,11 @@
 
 {% block form_open %}
 <form
+    id="main-form"
     action="{{ request.get_full_path() }}"
     method="post"
     enctype="multipart/form-data"
+    data-ajax="{% block form_ajax %}{% endblock %}"
     {% if form is defined %}
     class="{% if request.method == 'POST' and form.errors or form.non_field_errors %}form-invalid{% endif %}"
     {% endif %}

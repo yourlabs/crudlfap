@@ -6,7 +6,7 @@
 </ul>
 
 <div class="pull-right">
-  {% for view in view.router.get_menu('object') %}
+  {% for view in view.router.get_menu('object', request.user) %}
       {% include 'crudlfap/_action.html' %}
   {% endfor %}
 </div>

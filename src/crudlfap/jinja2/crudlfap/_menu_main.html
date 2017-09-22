@@ -18,14 +18,21 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="active"><a href="/">Home</a></li>
-        {% for app, routers in Router.registry.sort_by_apps().items() %}
+        {% for app, routers in Router.registry.get_app_menus('main', request.user).items() %}
         <li class="dropdown pmd-dropdown">
           <a href="#" class="dropdown-toggle pmd-ripple-effect" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ app.verbose_name }} <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
               {% for router in routers %}
-                {% for view in router.get_menu('main') %}
+                {% for v in router.get_menu('main', request.user) %}
                 <li>
-                    <a href="{{ view.reverse() }}" title="{% if view.title %}{{ view.title }}{% endif %}">{{ view.model._meta.verbose_name_plural.capitalize() }} {{ _(view.slug|capfirst) }}</a>
+                    <a
+                        href="{{ v.reverse() }}"
+                        class="{% if v == view %}active{% endif %}"
+                        title="{% if v.title %}{{ v.title }}{% endif %}"
+                        {% if v.ajax %}
+                        data-ajax="{{ v.ajax }}"
+                        {% endif %}
+                    >{{ v.model._meta.verbose_name_plural.capitalize() }} {{ _(v.slug|capfirst) }}</a>
                 </li>
                 {% endfor %}
               {% endfor %}
@@ -36,7 +43,10 @@
       <ul class="nav navbar-nav navbar-right">
         {% if not request.user.is_authenticated() %}
         <li>
-          <a href="{{ url('login') }}">{{ _('Login') }}</a>
+          <a
+              href="{{ url('login') }}"
+              data-ajax="#page-container, nav.navbar"
+          >{{ _('Login') }}</a>
         </li>
         {% else %}
         <li class="dropdown pmd-dropdown">

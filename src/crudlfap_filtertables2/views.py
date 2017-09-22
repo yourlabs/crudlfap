@@ -19,7 +19,10 @@ class Table(tables.Table):
         from crudlfap.routers import Router
         context = dict(
             object=record,
-            views=Router.registry[type(record)].get_menu('object'),
+            views=Router.registry[type(record)].get_menu(
+                'object',
+                self.context['request'].user,
+            ),
         )
         template = loader.select_template([
             '{}/_{}_actions.html'.format(
@@ -52,11 +55,6 @@ class FilterTables2ListView(SingleTableMixin, FilterView, ListView):
         if not getattr(self, 'table_fields', None):
             self.table_fields = self.fields
         return super().dispatch(*a, **k)
-
-    def get_context_data(self, *args, **kwargs):
-        c = super().get_context_data(*args, **kwargs)
-        c['action_views'] = self.router.get_menu('object')
-        return c
 
     def get_table_class(self):
         list_display_links = getattr(self, 'list_display_links', None)

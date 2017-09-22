@@ -15,7 +15,7 @@
           <td>{{ getattr(object, field) }}</td>
         {% endfor %}
         <td>
-          {% for view in view.router.get_menu('object') %}
+          {% for view in view.router.get_menu('object', request.user, object=object) %}
             {% include 'crudlfap/_action.html' %}
           {% endfor %}
         </td>

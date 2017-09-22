@@ -1,7 +1,14 @@
 {% if view.model %}
+  {% set v = Router.registry[view.model]['list']() %}
+  {% if v.allow(request.user) %}
   <li>
-    <a class="breadcrumb-item" href="{{ Router.registry[view.model]['list'].reverse() }}">{{ view.model._meta.verbose_name_plural.capitalize() }}</a>
+    <a
+      class="breadcrumb-item"
+      data-ajax="{{ v.ajax }}"
+      href="{{ v.reverse() }}"
+    >{{ v.model._meta.verbose_name_plural.capitalize() }}</a>
   </li>
+  {% endif %}
 {% endif %}
 {% if object %}
   <li>

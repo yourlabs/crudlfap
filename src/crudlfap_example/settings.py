@@ -102,12 +102,15 @@ TEMPLATES = [
                 "settings": dict(
                     SITE_NAME='CRUFLA+DEMO',
                     SITE_TITLE='CRUFLA+ demo !',
+                    DEBUG=DEBUG,
                 ),
             },
             "globals": {
                 "pagination_filter_params": "crudlfap.jinja2.pagination_filter_params",  # noqa
                 "Router": "crudlfap.routers.Router",
                 "getattr": getattr,
+                "str": str,
+                "int": int,
                 "isinstance": isinstance,
                 "render_table": "crudlfap_filtertables2.jinja2.render_table",
                 "render_form": "bootstrap3.forms.render_form",

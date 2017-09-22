@@ -20,6 +20,7 @@ crudflap.views.debug.
 import re
 
 from django.conf.urls import url
+from django import http
 
 
 class RoutableViewMixin(object):
@@ -188,3 +189,30 @@ class RoutableViewMixin(object):
             cls.get_url_name(),
             args=cls.get_url_args(*args)
         )
+
+    def allow(self, user):
+        """
+        Must return True if this user is allowed to access this view.
+
+        By default, this proxies the router's allow() method which returns True
+        for staff users by default.
+        If the view has no router, return True for staff users by default.
+
+        Override with a lambda in a factory if you want to open to all::
+
+            YourView.factory(allow=lambda v, u: True)
+
+        You can also set allow on the router if you want to allow a whole
+        router::
+
+            YourRouter(YourModel, allow=lambda r, v, u: True)
+        """
+        if not self.router:
+            return user.is_staff
+        return self.router.allow(self, user)
+
+    def dispatch(self, request, *args, **kwargs):
+        """Run allow() before dispatch()."""
+        if not self.allow(request.user):
+            return http.HttpResponseNotFound()
+        return super().dispatch(request, *args, **kwargs)

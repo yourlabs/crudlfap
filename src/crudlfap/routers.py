@@ -19,10 +19,15 @@ crudlfap = apps.get_app_config('crudlfap')  # pylint: disable=invalid-name
 class RouterRegistry(collections.OrderedDict):
     """Registers Routers which have generated urlpatterns in this thread."""
 
-    def sort_by_apps(self):
+    def get_app_menus(self, name, user, **kwargs):
         """Sort Router instances by app name."""
         result = collections.OrderedDict()
         for model, router in self.items():
+            menu = router.get_menu(name, user, **kwargs)
+
+            if not menu:
+                continue
+
             app = apps.get_app_config(model._meta.app_label)
             result.setdefault(app, [])
             result[app].append(router)
@@ -34,6 +39,7 @@ class RouterRegistry(collections.OrderedDict):
         if isinstance(arg, models.Model):
             arg = type(arg)
         if isinstance(arg, str):
+            print (arg)
             arg = apps.get_model(*arg.split('.'))
         return super().__getitem__(arg)
 
@@ -148,6 +154,24 @@ class Router(object):
 
         return [view.url() for view in self.views]
 
-    def get_menu(self, name):
+    def get_menu(self, name, user, **kwargs):
         """Return views which have ``name`` in their ``menus``."""
-        return [v for v in self.views if name in getattr(v, 'menus', [])]
+        return [
+            v
+            for v in self.views
+            if (
+                name in getattr(v, 'menus', [])
+                and v.factory(**kwargs)().allow(user)
+            )
+        ]
+
+    def allow(self, view, user):
+        """
+        Return True to allow a user to access a view.
+
+        Called by the default view.allow() implementation.
+        If you override the view.allow() method, then it's up to you to decide
+        if you want to call this method or not.
+        Returns True if user.is_staff by default.
+        """
+        return user.is_staff

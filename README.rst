@@ -22,6 +22,15 @@ documented example lives::
 
     pip install --user crudlfap[django,tables2,filter,dal,reversion,debug]; crudlfap dev
 
+Features
+========
+
+- Modern url router,
+- Ajax routing framework,
+- Ajax / modal forms (ie. ajax file upload with progressbar),
+- Default templates for CRUD with Propeller CSS framework (provides Material
+  design for bootstrap3's HTML and select2.js !)
+
 Install
 =======
 
@@ -49,9 +58,9 @@ templates, add this to your app's ``urls.py``:
     from crudlfap import crudlfap
     from .models import Server
 
-    # Use fields='__all__' to allow read/write on all model fields for
-    # everybody for now, also show Server Router views in main menu
-    urlpatterns = crudlfap.Router(Server, fields='__all__', menus=['main']).urlpatterns()
+    urlpatterns = crudlfap.Router(Server, fields='__all__', menus=['main']).urlpatterns(
+        allow=lambda view, user: return True, # Secure to is_staff by default !
+    )
 
 Then, add it to your project's ``urls.py``:
 

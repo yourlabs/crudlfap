@@ -26,6 +26,7 @@ class DefaultTemplateMixin(object):
     style = 'default'
     fa_icon = 'question'
     material_icon = 'priority high'
+    ajax = '#ajax-container'
 
     def get_title_html(self):
         """Return text for HTML title tag."""
@@ -91,9 +92,18 @@ class ObjectViewMixin(ModelViewMixin):
 
     menus = ['object']
 
-    @property
-    def object(self):
-        return self.get_object()
+    def object_get(self):
+        """Return the object, uses get_object() if necessary."""
+        cached = getattr(self, '_object', None)
+        if not cached:
+            self._object = self.get_object()
+        return self._object
+
+    def object_set(self, value):
+        """Set self.object attribute."""
+        self._object = value
+
+    object = property(object_get, object_set)
 
     @classmethod
     def get_url_args(cls, *args):
@@ -181,7 +191,7 @@ class CreateView(ModelFormViewMixin, generic.CreateView):
     fa_icon = 'plus'
     material_icon = 'add'
     default_template_name = 'crudlfap/create.html'
-    target = 'modal'
+    ajax = '_modal'
 
 
 class DeleteView(ObjectFormViewMixin, generic.DeleteView):
@@ -191,7 +201,7 @@ class DeleteView(ObjectFormViewMixin, generic.DeleteView):
     style = 'danger'
     fa_icon = 'trash'
     material_icon = 'delete'
-    target = 'modal'
+    ajax = '_modal'
     success_url_next = True
 
     def get_success_url(self):
@@ -257,4 +267,4 @@ class UpdateView(ObjectFormViewMixin, generic.UpdateView):
     fa_icon = 'edit'
     material_icon = 'edit'
     default_template_name = 'crudlfap/update.html'
-    target = 'modal'
+    ajax = '_modal'

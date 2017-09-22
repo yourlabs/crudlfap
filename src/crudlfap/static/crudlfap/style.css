@@ -37,3 +37,7 @@ progress {
 ul.breadcrumb {
     display: inline-block;
 }
+
+#modal .hide-in-modal {
+    display: none;
+}

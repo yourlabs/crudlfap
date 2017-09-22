@@ -20,17 +20,16 @@ class DefaultConfig(apps.AppConfig):
 
     def get_default_views(self):  # pylint: disable=no-self-use
         """Return the default views to use in a new router."""
-        views = [
-            'crudlfap.views.generic.DeleteView',
-            'crudlfap.views.generic.UpdateView',
-            'crudlfap.views.generic.DetailView',
-            'crudlfap.views.generic.CreateView',
-        ]
-
-        if _installed('crudlfap_filtertables2'):
-            from crudlfap_filtertables2.views import FilterTables2ListView
-            views.append(FilterTables2ListView)
-        else:
-            views.append(generic.ListView)
+        CRUDFLAP = getattr(settings, 'CRUDFLAP', {})
+        views = CRUDFLAP.get(
+            'default_views',
+            [
+                'crudlfap.views.generic.DeleteView',
+                'crudlfap.views.generic.UpdateView',
+                'crudlfap.views.generic.DetailView',
+                'crudlfap.views.generic.CreateView',
+                'crudlfap.views.generic.ListView',
+            ]
+        )
 
         return views
