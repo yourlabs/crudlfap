@@ -6,6 +6,8 @@ urlpatterns = [
     url(r'^artist/', include('crudlfap_example.artist.urls')),
     url(r'^song/', include('crudlfap_example.song.urls')),
 
+    url(r'^user/', include('crudlfap_user.urls')),
+
     url(r'^auth/', include('django.contrib.auth.urls')),
     url(r'^debug/', include('crudlfap.urls')),
     url(r'^$', generic.TemplateView.as_view(
