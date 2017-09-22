@@ -45,17 +45,17 @@
         <li>
           <a
               href="{{ url('login') }}"
-              data-ajax="#page-container, nav.navbar"
-          >{{ _('Login') }}</a>
+              data-ajax="_modal"
+              >{{ _('Login') }}</a>
         </li>
         {% else %}
         <li class="dropdown pmd-dropdown">
-          <a href="#" class="dropdown-toggle pmd-ripple-effect" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ request.user }} <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li>
-              <a class="dropdown-item" href="{{ url('logout') }}">{{ _('Logout') }}</a>
-            </li>
-          </ul>
+            <a href="#" class="dropdown-toggle pmd-ripple-effect" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ request.user }} <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li>
+                    <a class="dropdown-item" href="{{ url('logout') }}">{{ _('Logout') }}</a>
+                </li>
+            </ul>
         </li>
         {% endif %}
         {% if request.user.is_superuser %}

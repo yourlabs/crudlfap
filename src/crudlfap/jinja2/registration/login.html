@@ -1,6 +1,7 @@
 {% extends 'crudlfap/form.html' %}
 
 {% block body_class %}push-down{% endblock %}
+{% block form_ajax %}{% endblock %}
 
 {% block buttons %}
 {{ render_button(_('Authenticate'), button_type="submit", button_class="btn-primary") }}

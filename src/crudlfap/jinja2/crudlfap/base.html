@@ -97,7 +97,7 @@
     {
         "url": "{{ request.get_full_path() }}",
         "style": "{{ view.style|default("default") }}",
-        "ajax": "{{ view.ajax|default("#ajax-container, #navbar") }}",
+        "ajax": "{{ view.ajax|default("#ajax-container") }}",
         "debug": "{{ settings.DEBUG }}"
     }
     </script>
