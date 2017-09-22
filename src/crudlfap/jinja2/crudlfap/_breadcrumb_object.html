@@ -12,7 +12,7 @@
 {% endif %}
 {% if object %}
   <li>
-    <a class="breadcrumb-item" href="{{ object.get_absolute_url() }}">{{ object }}</a>
+    <a data-ajax="#page-container" class="breadcrumb-item" href="{{ object.get_absolute_url() }}">{{ object }}</a>
   </li>
 {% endif %}
 {% if view.slug %}
