@@ -285,7 +285,7 @@ $(document).ready(function() {
     }
     crudlfap.state.title = $('title').html()
 
-    $('.django-filter-ajax input').keyup(window.crudlfap.list);
-    $('.django-filter-ajax select').change(window.crudlfap.list);
+    $('body').on('keyup', '.django-filter-ajax input', window.crudlfap.list);
+    $('body').on('change', '.django-filter-ajax select', window.crudlfap.list);
 });
 
