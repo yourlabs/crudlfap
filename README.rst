@@ -20,8 +20,12 @@ Try
 This should start the example project in ``src/crudlfap_example`` where each
 documented example lives::
 
+    # Clean virtual env
     rm -rf /tmp/crudlfap_env ; virtualenv /tmp/crudlfap_env ; source /tmp/crudlfap_env/bin/activate
+    # Stable
     pip install crudlfap[django,tables2,filter,dal,reversion,debug]; crudlfap dev
+    # or Development
+    pip install -e git+https://github.com/yourlabs/crudlfap.git#egg=crudlfap[django,tables2,filter,dal,reversion,debug]; crudlfap dev
 
 Features
 ========
