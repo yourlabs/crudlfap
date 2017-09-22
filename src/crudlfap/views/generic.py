@@ -87,10 +87,12 @@ class ModelViewMixin(ViewMixin):
         return getattr(self.router, 'ecxlude', None)
 
 
-class ObjectViewMixin(ModelViewMixin):
-    """Mixin for views using a Model instance."""
+class ObjectMixin(object):
+    """
+    Make self.object call and cache self.get_object() automatically.
 
-    menus = ['object']
+    WHAT A RELIEF
+    """
 
     def object_get(self):
         """Return the object, uses get_object() if necessary."""
@@ -104,6 +106,12 @@ class ObjectViewMixin(ModelViewMixin):
         self._object = value
 
     object = property(object_get, object_set)
+
+
+class ObjectViewMixin(ObjectMixin, ModelViewMixin):
+    """Mixin for views using a Model instance."""
+
+    menus = ['object']
 
     @classmethod
     def get_url_args(cls, *args):
