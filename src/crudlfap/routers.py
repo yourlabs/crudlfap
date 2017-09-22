@@ -39,7 +39,6 @@ class RouterRegistry(collections.OrderedDict):
         if isinstance(arg, models.Model):
             arg = type(arg)
         if isinstance(arg, str):
-            print (arg)
             arg = apps.get_model(*arg.split('.'))
         return super().__getitem__(arg)
 

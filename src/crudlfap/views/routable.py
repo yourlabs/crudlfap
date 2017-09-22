@@ -19,8 +19,8 @@ crudflap.views.debug.
 
 import re
 
-from django.conf.urls import url
 from django import http
+from django.conf.urls import url
 
 
 class RoutableViewMixin(object):

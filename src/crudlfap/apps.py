@@ -3,8 +3,6 @@
 from django import apps
 from django.conf import settings
 
-from .views import generic
-
 
 def _installed(*apps):
     for app in apps:
@@ -20,8 +18,8 @@ class DefaultConfig(apps.AppConfig):
 
     def get_default_views(self):  # pylint: disable=no-self-use
         """Return the default views to use in a new router."""
-        CRUDFLAP = getattr(settings, 'CRUDFLAP', {})
-        views = CRUDFLAP.get(
+        crudlfap = getattr(settings, 'CRUDFLAP', {})
+        views = crudlfap.get(
             'default_views',
             [
                 'crudlfap.views.generic.DeleteView',
