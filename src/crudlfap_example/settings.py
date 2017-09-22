@@ -100,8 +100,8 @@ TEMPLATES = [
             ],
             "constants": {
                 "settings": dict(
-                    SITE_NAME='CRUFLA+DEMO',
-                    SITE_TITLE='CRUFLA+ demo !',
+                    SITE_NAME='CRUDLFA+DEMO',
+                    SITE_TITLE='CRUDLFA+ demo !',
                     DEBUG=DEBUG,
                 ),
             },
