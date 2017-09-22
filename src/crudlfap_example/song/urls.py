@@ -15,7 +15,7 @@ class SongUpdateView(crudlfap.UpdateView):
     allow = owner_or_staff
 
     def get_fields(self):
-        if request.user.is_staff:
+        if self.request.user.is_staff:
             return ['name', 'owner']
         else:
             return ['name']
