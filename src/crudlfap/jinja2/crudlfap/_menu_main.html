@@ -41,7 +41,7 @@
         {% endfor %}
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        {% if not request.user.is_authenticated() %}
+        {% if not request.user.is_authenticated %}
         <li>
           <a
               href="{{ url('login') }}"

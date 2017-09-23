@@ -28,7 +28,7 @@ class ArtistPicture(models.Model):
 def assert_url_like(view, name, pattern):
     url = view.url()
     assert url.name == name
-    assert url.regex == re.compile(pattern)
+    assert url.pattern._regex == pattern
 
 
 @pytest.fixture

@@ -29,7 +29,7 @@ setup(
         'django-bootstrap3',
     ],
     extras_require=dict(
-        django=['django'],
+        django=['django>=2.0a1'],
         tables2=['django-tables2'],
         filter=['django-filter'],
         dal=['django-autocomplete-light'],

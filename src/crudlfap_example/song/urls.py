@@ -4,7 +4,7 @@ from .models import Song
 
 
 def authenticated(view, user):
-    return True if user.is_authenticated() else False
+    return True if user.is_authenticated else False
 
 
 def owner_or_staff(view, user):

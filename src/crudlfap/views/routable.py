@@ -184,7 +184,7 @@ class RoutableViewMixin(object):
     @classmethod
     def reverse(cls, *args):
         """Reverse a url to this view with the given args."""
-        from django.core.urlresolvers import reverse_lazy
+        from django.urls import reverse_lazy
         return reverse_lazy(
             cls.get_url_name(),
             args=cls.get_url_args(*args)

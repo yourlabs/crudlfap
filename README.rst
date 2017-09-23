@@ -63,9 +63,9 @@ templates, add this to your app's ``urls.py``:
     from crudlfap import crudlfap
     from .models import Server
 
-    urlpatterns = crudlfap.Router(Server, fields='__all__', menus=['main']).urlpatterns(
-        allow=lambda view, user: return True, # Secure to is_staff by default !
-    )
+    urlpatterns = crudlfap.Router(Server, fields='__all__', menus=['main'],
+        allow=lambda view, user: return True, # Default requires is_staff !
+    ).urlpatterns()
 
 Then, add it to your project's ``urls.py``:
 

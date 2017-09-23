@@ -9,7 +9,7 @@ import pytest
 
 class ExampleView(View):
     def allow(self, user):
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return False
 
         if self.object.pk == 1:
@@ -37,7 +37,7 @@ def test_view_factory_with_slug():
     assert view.get_slug() == 'example3'
     assert view.get_url_pattern() == 'example3/$'
     assert view.get_url_name() == 'example3'
-    assert view.url().regex == re.compile('example3/$')
+    assert view.url().pattern._regex == 'example3/$'
 
 
 def test_view_factory_with_model():
@@ -45,7 +45,7 @@ def test_view_factory_with_model():
     assert view.get_slug() == 'example'
     assert view.get_url_pattern() == 'example/$'
     assert view.get_url_name() == 'artist_example'
-    assert view.url().regex == re.compile('example/$')
+    assert view.url().pattern._regex == 'example/$'
 
 
 def test_view_factory_with_and_slug():
@@ -53,7 +53,7 @@ def test_view_factory_with_and_slug():
     assert view.get_slug() == 'lol'
     assert view.get_url_pattern() == 'lol/$'
     assert view.get_url_name() == 'artist_lol'
-    assert view.url().regex == re.compile('lol/$')
+    assert view.url().pattern._regex == 'lol/$'
 
 
 def test_view_factory_with_and_slug_and_prefix():
@@ -61,7 +61,7 @@ def test_view_factory_with_and_slug_and_prefix():
     assert view.get_slug() == 'lol'
     assert view.get_url_pattern() == 'lol/$'
     assert view.get_url_name() == 'artist_lol'
-    assert view.url().regex == re.compile('rofl/lol/$')
+    assert view.url().pattern._regex == 'rofl/lol/$'
 
 
 def test_view_factory_allow():
