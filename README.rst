@@ -12,7 +12,7 @@ applications by thinking differently:
 
 Consider this as a brand new framework with a lot of modern features, except
 you don't have to learn a new framework because this is still Django, with a
-2017 feels.
+2017 feels: https://www.youtube.com/watch?v=lGqeXp6zeo8
 
 Try
 ===
