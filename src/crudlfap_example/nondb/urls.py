@@ -34,13 +34,4 @@ class SongRatingRouter(crudlfap.Router):
         object_list = self.get_queryset(view)
         return object_list[int(view.kwargs['pk']) - 1]
 
-    views = [
-        crudlfap.DeleteView,
-        crudlfap.UpdateView,
-        crudlfap.DetailView,
-        crudlfap.CreateView,
-        crudlfap.ListView,
-    ]
-
-
 urlpatterns = SongRatingRouter(models.SongRating).urlpatterns()
