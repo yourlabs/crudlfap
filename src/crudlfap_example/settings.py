@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     # CRUDLFA+ examples
     'crudlfap_example.artist',
     'crudlfap_example.song',
+    'crudlfap_example.nondb',
 ]
 
 MIDDLEWARE = [

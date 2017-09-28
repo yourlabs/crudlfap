@@ -3,8 +3,10 @@ from django.conf.urls import include, url
 from django.views import generic
 
 urlpatterns = [
+    # CRUDLFA+ examples
     url(r'^artist/', include('crudlfap_example.artist.urls')),
     url(r'^song/', include('crudlfap_example.song.urls')),
+    url(r'^nondb/', include('crudlfap_example.nondb.urls')),
 
     url(r'^user/', include('crudlfap_user.urls')),
 

@@ -86,13 +86,29 @@ class ModelViewMixin(ViewMixin):
         """Return router.exclude or None, field names if ``__all__``.."""
         return getattr(self.router, 'ecxlude', None)
 
+    def get_queryset(self):
+        """Return router.get_queryset() by default, otherwise super()."""
+        router = getattr(self, 'router', None)
+        if getattr(router, 'get_queryset', None):
+            return router.get_queryset(self)
+        return super().get_queryset()
+
 
 class ObjectMixin(object):
     """
     Make self.object call and cache self.get_object() automatically.
 
     WHAT A RELIEF
+
+    However, if it has a router with the get_object() method, use it.
     """
+
+    def get_object(self):
+        """Return router.get_object() by default, otherwise super()."""
+        router = getattr(self, 'router', None)
+        if router and getattr(router, 'get_object', None):
+            return router.get_object(self)
+        return super().get_object()
 
     def object_get(self):
         """Return the object, uses get_object() if necessary."""
