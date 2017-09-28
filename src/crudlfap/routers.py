@@ -6,6 +6,7 @@ models.Model and setting their Meta.managed attribute to False. Then, you can
 use CRUDLFA+ views and routers.
 """
 import collections
+import warnings
 
 from django.apps import apps
 from django.utils.module_loading import import_string
@@ -108,10 +109,24 @@ class Router(object):
             result.append(view)
         return result
 
-    def __init__(self, model=None, url_prefix=None, *views, **attributes):
+    def __init__(self, model=None, url_prefix=None, fields=None, *views,
+                 **attributes):
+
         """Create a Router for a Model."""
         self.model = model
         self.url_prefix = url_prefix or ''
+
+        if fields is None:
+            warnings.warn(
+                '{} has no fields, defaulting to __all__ to get out of your'
+                ' way, but this is not secure because it means users can see'
+                ' and edit any field, which is not necessarily secure,'
+                ' depending on your model.'
+                ' If this is really what you want, please set fields="__all__"'
+                ' at the router level'.format(self)
+            )
+            fields = '__all__'
+        self.fields = fields
 
         # Save the user a type() call, really ? mehh
         for name, value in attributes.items():
