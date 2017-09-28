@@ -43,5 +43,4 @@ class SongRatingRouter(crudlfap.Router):
     ]
 
 
-router = SongRatingRouter(models.SongRating)
-urlpatterns = router.urlpatterns()
+urlpatterns = SongRatingRouter(models.SongRating).urlpatterns()
