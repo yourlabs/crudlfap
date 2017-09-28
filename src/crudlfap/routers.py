@@ -100,8 +100,10 @@ class Router(object):
             view = view.factory(
                 model=self.model,
                 router=self,
-                slug=view.get_slug(),
             )
+
+            # Set this after setting the model in the factory() call above
+            view.slug = view.get_slug()
 
             result.append(view)
         return result
