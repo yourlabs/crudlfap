@@ -14,12 +14,25 @@ import os
 import importlib
 
 
-def add_optional_dep(module: str, before: str=None, after: str=None):
+def add_optional_dep(module: str, to: list=None,
+                     before: str=None, after: str=None):
     has_module = False
+    if to is None:
+        to = INSTALLED_APPS
+
     try:
         importlib.__import__(module)
     except ModuleNotFoundError:
-        pass
+        mod_path, dot, cls = module.rpartition('.')
+        if not mod_path:
+            return
+        try:
+            mod = importlib.import_module(mod_path)
+        except ModuleNotFoundError:
+            return
+        else:
+            if hasattr(mod, cls):
+                has_module = True
     else:
         has_module = True
 
@@ -27,18 +40,18 @@ def add_optional_dep(module: str, before: str=None, after: str=None):
         return
 
     if not before and not after:
-        INSTALLED_APPS.append(module)
+        to.append(module)
         return
 
     try:
         if before:
-            pos = INSTALLED_APPS.index(before)
+            pos = to.index(before)
         else:
-            pos = INSTALLED_APPS.index(after) + 1
+            pos = to.index(after) + 1
     except ValueError:
         pass
     else:
-        INSTALLED_APPS.insert(pos, module)
+        to.insert(pos, module)
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -92,8 +105,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+add_optional_dep('debug_toolbar.middleware.DebugToolbarMiddleware',
+                 to=MIDDLEWARE)
 
 INTERNAL_IPS = ('127.0.0.1',)
 
