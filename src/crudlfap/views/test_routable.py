@@ -1,5 +1,3 @@
-import re
-
 from crudlfap.test_routers import Artist
 from crudlfap.utils import view_resolve
 from crudlfap.views.generic import View

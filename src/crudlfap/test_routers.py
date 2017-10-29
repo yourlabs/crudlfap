@@ -1,5 +1,3 @@
-import re
-
 from crudlfap import crudlfap
 
 from django.db import models
