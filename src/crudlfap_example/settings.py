@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'debug_toolbar',
 
     # CRUDLFA+ dependencies
     'crudlfap',
@@ -54,6 +53,13 @@ INSTALLED_APPS = [
     'crudlfap_example.song',
     'crudlfap_example.nondb',
 ]
+
+try:
+    import debug_toolbar
+except ImportError:
+    pass
+else:
+    INSTALLED_APPS.insert(5, 'debug_toolbar')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

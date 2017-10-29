@@ -36,7 +36,7 @@ setup(
         reversion=['django-reversion'],
         debug=['django-debug-toolbar'],
     ),
-    entry_points = {
+    entry_points={
         'console_scripts': [
             'crudlfap = crudlfap_example.manage:main',
         ],
