@@ -11,6 +11,35 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+import importlib
+
+
+def add_optional_dep(module: str, before: str=None, after: str=None):
+    has_module = False
+    try:
+        importlib.__import__(module)
+    except ModuleNotFoundError:
+        pass
+    else:
+        has_module = True
+
+    if not has_module:
+        return
+
+    if not before and not after:
+        INSTALLED_APPS.append(module)
+        return
+
+    try:
+        if before:
+            pos = INSTALLED_APPS.index(before)
+        else:
+            pos = INSTALLED_APPS.index(after) + 1
+    except ValueError:
+        pass
+    else:
+        INSTALLED_APPS.insert(pos, module)
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -41,25 +70,19 @@ INSTALLED_APPS = [
     'crudlfap',
     'bootstrap3',
 
-    # CRUDLFA+ optionnal dependencies
-    'crudlfap_filtertables2',
-    'django_filters',
-    'django_tables2',
-    'dal',
-    'dal_select2',
-
     # CRUDLFA+ examples
     'crudlfap_example.artist',
     'crudlfap_example.song',
     'crudlfap_example.nondb',
 ]
 
-try:
-    import debug_toolbar
-except ImportError:
-    pass
-else:
-    INSTALLED_APPS.insert(5, 'debug_toolbar')
+# CRUDLFA+ optional dependencies
+add_optional_dep('debug_toolbar', after='django.contrib.staticfiles')
+add_optional_dep('crudlfap_filtertables2', before='crudlfap_example.artist')
+add_optional_dep('django_filters', before='crudlfap_example.artist')
+add_optional_dep('django_tables2', before='crudlfap_example.artist')
+add_optional_dep('dal', before='crudlfap_example.artist')
+add_optional_dep('dal_select2', before='crudlfap_example.artist')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
