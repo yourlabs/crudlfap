@@ -16,6 +16,21 @@ import importlib
 
 def add_optional_dep(module: str, to: list=None,
                      before: str=None, after: str=None):
+    """
+    Adds an optional dependency
+
+    Add an optional dependency to the given `to` list, if it is resolvable by
+    the importer. If to is not given, it defaults to INSTALLED_APPS.
+
+    The module can be inserted at the right spot by using before or after
+    keyword arguments. If both are given, the gun is pointing at your feet
+    and before wins. If neither are given, the module is appended at the end.
+
+    :param module: module to add, as it would be added to the given `to` list
+    :param to: list to add the module to
+    :param before: module string as should be available in the to list.
+    :param after: module string as should be available in the to list.
+    """
     has_module = False
     if to is None:
         to = INSTALLED_APPS
