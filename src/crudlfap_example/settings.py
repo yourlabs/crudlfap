@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+import importlib
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -36,23 +38,25 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'debug_toolbar',
 
     # CRUDLFA+ dependencies
     'crudlfap',
     'bootstrap3',
 
-    # CRUDLFA+ optionnal dependencies
-    'crudlfap_filtertables2',
-    'django_filters',
-    'django_tables2',
-    'dal',
-    'dal_select2',
-
     # CRUDLFA+ examples
     'crudlfap_example.artist',
     'crudlfap_example.song',
     'crudlfap_example.nondb',
+]
+
+# CRUDLFA+ optional dependencies
+OPTIONAL_APPS = [
+    {'debug_toolbar': {'after': 'django.contrib.staticfiles'}},
+    {'crudlfap_filtertables2': {'before': 'crudlfap_example.artist'}},
+    {'django_filters': {'before': 'crudlfap_example.artist'}},
+    {'django_tables2': {'before': 'crudlfap_example.artist'}},
+    {'dal': {'before': 'crudlfap_example.artist'}},
+    {'dal_select2': {'before': 'crudlfap_example.artist'}},
 ]
 
 MIDDLEWARE = [
@@ -63,9 +67,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
+OPTIONAL_MIDDLEWARE = [
+    {'debug_toolbar.middleware.DebugToolbarMiddleware': {}}
+]
 INTERNAL_IPS = ('127.0.0.1',)
 
 ROOT_URLCONF = 'crudlfap_example.urls'
@@ -196,3 +202,100 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+def _resolve_module(module: str) -> bool:
+    """
+    Determines if a given module string can be resolved
+
+    Determine if the module referenced by string, can be imported by trying
+    an import in two ways:
+
+    - direct import of the module
+    - import of the module minus the last part, then see if the last part is
+      an attribute of the module.
+
+    Parts of course, are separated by dots.
+
+    :param module: module reference
+    :return: True if importable, False otherwise
+    """
+    has_module = False
+    try:
+        importlib.__import__(module)
+    except ModuleNotFoundError:
+        mod_path, dot, cls = module.rpartition('.')
+        if not mod_path:
+            return False
+        try:
+            mod = importlib.import_module(mod_path)
+        except ModuleNotFoundError:
+            return False
+        else:
+            if hasattr(mod, cls):
+                has_module = True
+    else:
+        has_module = True
+
+    return has_module
+
+
+def add_optional_dep(module: str, to: list = None, before: str = None,
+                     after: str = None):
+    """
+    Adds an optional dependency
+
+    Add an optional dependency to the given `to` list, if it is
+    resolvable by
+    the importer. If to is not given, it defaults to INSTALLED_APPS.
+
+    The module can be inserted at the right spot by using before or after
+    keyword arguments. If both are given, the gun is pointing at your feet
+    and before wins. If neither are given, the module is appended at the
+    end.
+
+    :param module: module to add, as it would be added to the given `to`
+    list
+    :param to: list to add the module to
+    :param before: module string as should be available in the to list.
+    :param after: module string as should be available in the to list.
+    """
+    if to is None:
+        to = INSTALLED_APPS
+
+    if not _resolve_module(module):
+        return
+
+    if not before and not after:
+        to.append(module)
+        return
+
+    try:
+        if before:
+            pos = to.index(before)
+        else:
+            pos = to.index(after) + 1
+    except ValueError:
+        pass
+    else:
+        to.insert(pos, module)
+
+
+def install_optional(source: list, target: list=None):
+    """
+    Install optional modules
+
+    :param source: modules to install
+    :param target: install into this list. Default: INSTALLED_APPS.
+    :return:
+    """
+    if not target:
+        target = INSTALLED_APPS
+    for app in source:
+        for ref, kwargs in app.items():
+            kwargs.setdefault('to', target)
+            add_optional_dep(ref, **kwargs)
+
+
+install_optional(OPTIONAL_APPS)
+install_optional(OPTIONAL_MIDDLEWARE, MIDDLEWARE)
