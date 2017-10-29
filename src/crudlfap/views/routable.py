@@ -190,13 +190,36 @@ class RoutableViewMixin(object):
             args=cls.get_url_args(*args)
         )
 
-    def allow(self, user):
+    def allow(self):
         """
-        Must return True if this user is allowed to access this view.
+        Must return True if it dispatching this view is allowed.
+
+        This means that the view should be instanciated with all the context it
+        needs for this method to work.
+
+        The best way for you to understand the pattern being this is this
+        pseudo code::
+
+            class SomeDetailView(DetailView):
+                def get_context_data(self):
+                    return dict(
+
+                        # For the object used in this view instance, we would
+                        # also have been allowed to execute the delete view
+                        # with this request.
+                        can_delete=SomeDeleteView(
+                            object=self.object,
+                            request=self.request,
+                        ).allow()
+                    )
+
+        This means that your view classes are ready for an allow() override
+        which considers that the view object was instanciated with everything
+        it would need to dispatch.
 
         By default, this proxies the router's allow() method which returns True
-        for staff users by default.
-        If the view has no router, return True for staff users by default.
+        for staff users by default.  If the view has no router then it returns
+        True if the request user is_staff.
 
         Override with a lambda in a factory if you want to open to all::
 
@@ -205,14 +228,14 @@ class RoutableViewMixin(object):
         You can also set allow on the router if you want to allow a whole
         router::
 
-            YourRouter(YourModel, allow=lambda r, v, u: True)
+            YourRouter(YourModel, allow=lambda r, v: True)
         """
         if not self.router:
-            return user.is_staff
-        return self.router.allow(self, user)
+            return self.request.user.is_staff
+        return self.router.allow(self)
 
     def dispatch(self, request, *args, **kwargs):
-        """Run allow() before dispatch()."""
-        if not self.allow(request.user):
+        """Run allow() before dispatch(), because that's what its for."""
+        if not self.allow():
             return http.HttpResponseNotFound()
         return super().dispatch(request, *args, **kwargs)

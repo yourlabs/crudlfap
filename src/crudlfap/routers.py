@@ -181,13 +181,15 @@ class Router(object):
             )
         ]
 
-    def allow(self, view, user):
+    def allow(self, view):
         """
-        Return True to allow a user to access a view.
+        Return True to allow a access to a view.
 
         Called by the default view.allow() implementation.
-        If you override the view.allow() method, then it's up to you to decide
-        if you want to call this method or not.
+
+        If you override the view.allow() method, then it's up to you
+        to decide if you want to call this method or not.
+
         Returns True if user.is_staff by default.
         """
-        return user.is_staff
+        return view.request.user.is_staff
