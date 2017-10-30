@@ -171,15 +171,27 @@ class Router(object):
         return [view.url() for view in self.views]
 
     def get_menu(self, name, request, **kwargs):
-        """Return views which have ``name`` in their ``menus``."""
-        return [
-            v
-            for v in self.views
-            if (
-                name in getattr(v, 'menus', [])
-                and v.factory(request=request, **kwargs)().allow()
-            )
-        ]
+        """
+        Return allowed view objects which have ``name`` in their ``menus``.
+
+        For each view class in self.views which have ``name`` in their
+        ``menus`` attribute, instanciate the view class with ``request`` and
+        kwargs, call ``allow()`` on it.
+
+        Return the list of view instances for which ``allow()`` has passed.
+        """
+        views = []
+
+        for v in self.views:
+            if name not in getattr(v, 'menus', []):
+                continue
+
+            view = v.factory(request=request, **kwargs)()
+
+            if view.allow():
+                views.append(view)
+
+        return views
 
     def allow(self, view):
         """
