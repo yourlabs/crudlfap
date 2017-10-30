@@ -107,6 +107,12 @@ class ObjectMixin(object):
         router = getattr(self, 'router', None)
         if router and getattr(router, 'get_object', None):
             return router.get_object(self)
+
+        if getattr(self, 'kwargs', False) is False:
+            # This happens when the view has not been instanciated with an
+            # object, neither from a URL which would allow getting the object
+            # in the super() call below.
+            raise Exception('Must instanciate the view with an object')
         return super().get_object()
 
     def object_get(self):
