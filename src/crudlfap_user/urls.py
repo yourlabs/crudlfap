@@ -7,8 +7,8 @@ from django.conf import settings
 User = apps.get_model(getattr(settings, 'AUTH_USER_MODEL', 'auth.User'))
 
 
-def superuser(view, user):
-    return user.is_superuser
+def superuser(view):
+    return view.request.user.is_superuser
 
 
 urlpatterns = crudlfap.Router(
@@ -18,5 +18,5 @@ urlpatterns = crudlfap.Router(
     crudlfap.DetailView,
     crudlfap.CreateView,
     crudlfap.ListView.factory(slug_url_kwarg='username'),
-    allow=lambda view, user: user.is_superuser,
+    allow=lambda view: view.request.user.is_superuser,
 ).urlpatterns()

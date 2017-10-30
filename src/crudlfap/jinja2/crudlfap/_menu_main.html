@@ -18,7 +18,7 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="active"><a href="/">Home</a></li>
-        {% for app, routers in Router.registry.get_app_menus('main', request.user).items() %}
+        {% for app, routers in Router.registry.get_app_menus('main', request).items() %}
         <li class="dropdown pmd-dropdown">
           <a href="#" class="dropdown-toggle pmd-ripple-effect" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ app.verbose_name }} <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">

@@ -3,12 +3,12 @@ from crudlfap import crudlfap
 from .models import Song
 
 
-def authenticated(view, user):
-    return True if user.is_authenticated else False
+def authenticated(view):
+    return True if view.request.user.is_authenticated else False
 
 
-def owner_or_staff(view, user):
-    return user.is_staff or view.object.owner == user
+def owner_or_staff(view):
+    return view.request.user.is_staff or view.object.owner == user
 
 
 class SongUpdateView(crudlfap.UpdateView):

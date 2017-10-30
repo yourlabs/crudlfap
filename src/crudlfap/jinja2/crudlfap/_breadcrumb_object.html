@@ -1,6 +1,6 @@
 {% if view.model %}
-  {% set v = Router.registry[view.model]['list']() %}
-  {% if v.allow(request.user) %}
+  {% set v = Router.registry[view.model]['list'](request=request) %}
+  {% if v.allow() %}
   <li>
     <a
       class="breadcrumb-item"

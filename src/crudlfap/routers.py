@@ -20,11 +20,11 @@ crudlfap = apps.get_app_config('crudlfap')  # pylint: disable=invalid-name
 class RouterRegistry(collections.OrderedDict):
     """Registers Routers which have generated urlpatterns in this thread."""
 
-    def get_app_menus(self, name, user, **kwargs):
+    def get_app_menus(self, name, request, **kwargs):
         """Sort Router instances by app name."""
         result = collections.OrderedDict()
         for model, router in self.items():
-            menu = router.get_menu(name, user, **kwargs)
+            menu = router.get_menu(name, request, **kwargs)
 
             if not menu:
                 continue
@@ -170,14 +170,14 @@ class Router(object):
 
         return [view.url() for view in self.views]
 
-    def get_menu(self, name, user, **kwargs):
+    def get_menu(self, name, request, **kwargs):
         """Return views which have ``name`` in their ``menus``."""
         return [
             v
             for v in self.views
             if (
                 name in getattr(v, 'menus', [])
-                and v.factory(**kwargs)().allow(user)
+                and v.factory(request=request, **kwargs)().allow()
             )
         ]
 
