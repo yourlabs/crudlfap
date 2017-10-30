@@ -102,7 +102,7 @@ def test_router_prefix_detail(router_prefix):
     assert_url_like(
         router_prefix['detail'],
         'artistpicture_detail',
-        'photo/(?P<pk>\d+)/$'
+        'photo/(?P<pk>[\w\d_-]+)/$'
     )
 
 
@@ -110,7 +110,7 @@ def test_router_prefix_delete(router_prefix):
     assert_url_like(
         router_prefix['delete'],
         'artistpicture_delete',
-        'photo/(?P<pk>\d+)/delete/$'
+        'photo/(?P<pk>[\w\d_-]+)/delete/$'
     )
 
 
@@ -126,5 +126,5 @@ def test_router_prefix_update(router_prefix):
     assert_url_like(
         router_prefix['update'],
         'artistpicture_update',
-        'photo/(?P<pk>\d+)/update/$'
+        'photo/(?P<pk>[\w\d_-]+)/update/$'
     )

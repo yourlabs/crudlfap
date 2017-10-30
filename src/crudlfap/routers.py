@@ -9,6 +9,7 @@ import collections
 import warnings
 
 from django.apps import apps
+from django.core.exceptions import FieldDoesNotExist
 from django.utils.module_loading import import_string
 
 from .views.routable import RoutableViewMixin
@@ -109,12 +110,21 @@ class Router(object):
             result.append(view)
         return result
 
-    def __init__(self, model=None, url_prefix=None, fields=None, views=None,
-                 **attributes):
+    def __init__(self, model=None, url_prefix=None, fields=None,
+                 url_field=None, views=None, **attributes):
 
         """Create a Router for a Model."""
         self.model = model
         self.url_prefix = url_prefix or ''
+
+        if self.model and not url_field:
+            try:
+                self.model._meta.get_field('slug')
+            except FieldDoesNotExist:
+                url_field = 'pk'
+            else:
+                url_field = 'slug'
+        self.url_field = url_field
 
         if fields is None:
             warnings.warn(

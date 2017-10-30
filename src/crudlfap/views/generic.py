@@ -8,7 +8,6 @@ Crudlfa+ takes views further than Django and are expected to:
 - declare the names of the navigation menus they belong to.
 """
 from django.contrib import messages
-from django.core.exceptions import FieldDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
 
@@ -133,11 +132,35 @@ class ObjectViewMixin(ObjectMixin, ModelViewMixin):
         """Return ``[self.object]``."""
         return [self.object]
 
+    def get_slug_field(self):
+        """Replace Django's get_slug_field with get_url_field."""
+        return self.get_url_field()
+
+    @property
+    def slug_url_kwarg(self):
+        """Replace Django's slug_url_kwarg with get_url_field."""
+        return self.get_url_field()
+
+    @classmethod
+    def get_url_field(cls):
+        """
+        Return the model field name to use in the url.
+
+        By default, try router's url_field, otherwise try ``slug``,
+        fallback on ``pk``.
+        """
+        url_field = getattr(cls, 'url_field', None)
+        if url_field is None:
+            router = getattr(cls, 'router', None)
+            return router.url_field
+
+        return url_field or 'pk'
+
     @classmethod
     def to_url_args(cls, *args):
-        if '<slug>' in cls.get_url_pattern():
-            return [args[0].slug]
-        return [args[0].pk]
+        """Return first arg's url_field attribute."""
+        url_field = cls.get_url_field()
+        return [getattr(args[0], url_field)]
 
     @classmethod
     def get_url_pattern(cls):
@@ -145,12 +168,8 @@ class ObjectViewMixin(ObjectMixin, ModelViewMixin):
         if cls.url_pattern:
             return cls.url_pattern.format(cls.slug)
 
-        try:
-            cls.model._meta.get_field('slug')
-        except FieldDoesNotExist:
-            return r'(?P<pk>\d+)/{}/$'.format(cls.slug)
-        else:
-            return r'(?P<slug>[\w\d_-]+)/{}/$'.format(cls.slug)
+        url_field = cls.get_url_field()
+        return r'(?P<{}>[\w\d_-]+)/{}/$'.format(url_field, cls.slug)
 
     @property
     def title(self):
@@ -270,12 +289,8 @@ class DetailView(ObjectViewMixin, generic.DetailView):
         if cls.url_pattern:
             return cls.url_pattern.format(cls.slug)
 
-        try:
-            cls.model._meta.get_field('slug')
-        except FieldDoesNotExist:
-            return r'(?P<pk>\d+)/$'
-        else:
-            return r'(?P<slug>[\w\d_-]+)/$'
+        url_field = cls.get_url_field()
+        return r'(?P<{}>[\w\d_-]+)/$'.format(url_field)
 
 
 class ListView(ModelViewMixin, generic.ListView):

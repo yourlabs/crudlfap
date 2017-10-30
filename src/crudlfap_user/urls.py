@@ -17,7 +17,8 @@ urlpatterns = crudlfap.Router(
         crudlfap.UpdateView,
         crudlfap.DetailView,
         crudlfap.CreateView,
-        crudlfap.ListView.factory(slug_url_kwarg='username'),
+        crudlfap.ListView,
     ],
     allow=lambda view: view.request.user.is_superuser,
+    url_field='username',
 ).urlpatterns()
