@@ -16,7 +16,7 @@ setup(
     description='2017 OOAO DRY BUZZWORDS FOR DJANGO 2.0 with Material design',
     author='James Pic',
     author_email='jamespic@gmail.com',
-    url='https://github.com/jpic/crudlfap',
+    url='https://github.com/yourlabs/crudlfap',
     packages=find_packages('src'),
     package_dir={'': 'src'},
     include_package_data=True,
@@ -28,6 +28,7 @@ setup(
         'django-jinja',
         'django-bootstrap3',
     ],
+    tests_require=['tox'],
     extras_require=dict(
         django=['django>=2.0a1'],
         tables2=['django-tables2'],

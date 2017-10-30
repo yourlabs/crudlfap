@@ -20,8 +20,8 @@ def test_install_optional():
     }
     after = get_installed()
     install_optional([bs3], after)
-    expected = ['django.contrib.staticfiles', 'crudlfap', 'bootstrap3', 'myapp']
-    assert after == expected, "Failed to insert bootstrap3 after crudlfap"
+    expect = ['django.contrib.staticfiles', 'crudlfap', 'bootstrap3', 'myapp']
+    assert after == expect, "Failed to insert bootstrap3 after crudlfap"
     before_and_after = get_installed()
     install_optional([bs3, messages], before_and_after)
     expected = ['django.contrib.messages', 'django.contrib.staticfiles',
