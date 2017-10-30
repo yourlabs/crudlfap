@@ -239,7 +239,7 @@ class RoutableViewMixin(object):
 
         Override with a lambda in a factory if you want to open to all::
 
-            YourView.factory(allow=lambda v, u: True)
+            YourView.factory(allow=lambda v: True)
 
         You can also set allow on the router if you want to allow a whole
         router::
