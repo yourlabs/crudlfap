@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+from crudlfap.conf import install_optional
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -36,23 +38,25 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'debug_toolbar',
 
     # CRUDLFA+ dependencies
     'crudlfap',
     'bootstrap3',
 
-    # CRUDLFA+ optionnal dependencies
-    'crudlfap_filtertables2',
-    'django_filters',
-    'django_tables2',
-    'dal',
-    'dal_select2',
-
     # CRUDLFA+ examples
     'crudlfap_example.artist',
     'crudlfap_example.song',
     'crudlfap_example.nondb',
+]
+
+# CRUDLFA+ optional dependencies
+OPTIONAL_APPS = [
+    {'debug_toolbar': {'after': 'django.contrib.staticfiles'}},
+    {'crudlfap_filtertables2': {'before': 'crudlfap_example.artist'}},
+    {'django_filters': {'before': 'crudlfap_example.artist'}},
+    {'django_tables2': {'before': 'crudlfap_example.artist'}},
+    {'dal': {'before': 'crudlfap_example.artist'}},
+    {'dal_select2': {'before': 'crudlfap_example.artist'}},
 ]
 
 MIDDLEWARE = [
@@ -63,9 +67,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
+OPTIONAL_MIDDLEWARE = [
+    {'debug_toolbar.middleware.DebugToolbarMiddleware': None}
+]
 INTERNAL_IPS = ('127.0.0.1',)
 
 ROOT_URLCONF = 'crudlfap_example.urls'
@@ -196,3 +202,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+install_optional(OPTIONAL_APPS, INSTALLED_APPS)
+install_optional(OPTIONAL_MIDDLEWARE, MIDDLEWARE)
