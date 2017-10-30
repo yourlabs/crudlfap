@@ -63,8 +63,11 @@ templates, add this to your app's ``urls.py``:
     from crudlfap import crudlfap
     from .models import Server
 
-    urlpatterns = crudlfap.Router(Server, fields='__all__', menus=['main'],
-        allow=lambda view, user: return True, # Default requires is_staff !
+    urlpatterns = crudlfap.Router(
+        Server,
+        fields='__all__',
+        menus=['main'],
+        allow=lambda view, user: True, # Default requires is_staff!
     ).urlpatterns()
 
 Then, add it to your project's ``urls.py``:
@@ -72,8 +75,10 @@ Then, add it to your project's ``urls.py``:
 .. code-block:: python
 
     urlpatterns = [
+    
         url(r'^yourapp/', include('yourapp.urls')),  # what you created above
         url(r'^crudlfap/', include('crudlfap.urls')),  # for debug views
+        
         # for auth views, we haz material templates
         url(r'^auth/', include('django.contrib.auth.urls')),
         url(r'^$', generic.TemplateView.as_view(template_name='crudlfap/home.html')),  # for free
