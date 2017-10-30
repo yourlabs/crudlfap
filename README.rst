@@ -67,7 +67,7 @@ templates, add this to your app's ``urls.py``:
         Server,
         fields='__all__',
         menus=['main'],
-        allow=lambda view, user: True, # Default requires is_staff!
+        allow=lambda view: True, # Default requires is_staff!
     ).urlpatterns()
 
 Then, add it to your project's ``urls.py``:
@@ -75,10 +75,10 @@ Then, add it to your project's ``urls.py``:
 .. code-block:: python
 
     urlpatterns = [
-    
+
         url(r'^yourapp/', include('yourapp.urls')),  # what you created above
         url(r'^crudlfap/', include('crudlfap.urls')),  # for debug views
-        
+
         # for auth views, we haz material templates
         url(r'^auth/', include('django.contrib.auth.urls')),
         url(r'^$', generic.TemplateView.as_view(template_name='crudlfap/home.html')),  # for free
@@ -103,14 +103,14 @@ some permissions on views and fields, all OOAO:
 
 
     def owner_or_staff(view):
-        return view.request.user.is_staff or view.object.owner == user
+        return view.request.user.is_staff or view.object.owner == view.request.user
 
 
     class ServerUpdateView(ServerOwnerRequired, crudlfap.UpdateView):
         allow = owner_or_staff
 
         def get_fields(self):
-            if request.user.is_staff:
+            if self.request.user.is_staff:
                 return ['name', 'owner']
             else:
                 return ['name']
@@ -129,13 +129,13 @@ some permissions on views and fields, all OOAO:
         ]
 
         # yes django allows OOAO for viewland, and you can invent words too
-        def get_queryset(self, user):
-            if not user.pk:
+        def get_queryset(self, view):
+            if not view.request.user.pk:
                 return Server.objects.filter(is_public=True)
 
-            if not request.user.is_staff:
+            if not view.request.user.is_staff:
                 return self.model.objects.filter(
-                    Q(is_public=True)|Q(owner=request.user)
+                    Q(is_public=True)|Q(owner=view.request.user)
                 )
 
             return self.model.objects.all()
@@ -143,18 +143,18 @@ some permissions on views and fields, all OOAO:
 
 Example generating a menu which rocks in 2017::
 
-    {% for v in Router.registry[object].get_menu('object') %}
-      {% set v=v.factory(object=object, request=request)() %}
-      {% if v != view and view.allow() %}
+    {% for v in Router.registry[object].get_menu('object', request, object=object) %}
+      {% if type(v) != type(view) %}
         {#
         above we check that it's not the same as the current
-        view and that the user has permission too
+        view, get_menu did run allow() after hydrating each view with
+        menus=['object'] and return them
         #}
         <a
           href="{{ view.reverse(object) }}"
           target="{{ view.target }}"
           data-ajax="{{ view.ajax }}"
-          title="{{ view.get_title() }}" # hell yes, soooooo 2017 !!! let's DRY !
+          title="{{ view.title }}" # hell yes, soooooo 2017 !!! let's DRY !
           ><i class="material-icon material-{{ view.material_icon }}"></i></a>
       {% endif %}
     {% endif %}
