@@ -98,12 +98,12 @@ some permissions on views and fields, all OOAO:
 .. code-block:: python
 
 
-    def authenticated(view, user):
-        return True if user.is_authenticated() else False
+    def authenticated(view):
+        return True if view.request.user.is_authenticated() else False
 
 
-    def owner_or_staff(view, user):
-        return user.is_staff or view.object.owner == user
+    def owner_or_staff(view):
+        return view.request.user.is_staff or view.object.owner == user
 
 
     class ServerUpdateView(ServerOwnerRequired, crudlfap.UpdateView):
@@ -144,8 +144,8 @@ some permissions on views and fields, all OOAO:
 Example generating a menu which rocks in 2017::
 
     {% for v in Router.registry[object].get_menu('object') %}
-      {% set v=v.factory(object=object)() %}
-      {% if v != view and view.allow(request.user) %}
+      {% set v=v.factory(object=object, request=request)() %}
+      {% if v != view and view.allow() %}
         {#
         above we check that it's not the same as the current
         view and that the user has permission too
@@ -161,29 +161,11 @@ Example generating a menu which rocks in 2017::
 
 Example checking security in Python::
 
-    if crudlfap.Router.registry[obj]['update'].factory(object=obj).allow(user):
+    update_view = crudlfap.Router.registry[obj]['update'].factory(
+        object=obj, request=request)
+
+    if update_view.allow():
         # User has permission to update on the default router for yourapp.Server
-
-Now if you want to make your own link to an object update modal because you are
-in 2017 then you could use this Jinja2 function::
-
-    {% cruldfap_modal object 'update' %}
-
-Note that the above won't render anything if the user doesn't have the
-permission to execute the update view.
-
-Now if you want to render a particular model field attribute after checking
-user permission::
-
-    {% if 'created' in crudlfap_router(object).get_writable_fields(request.user) %}
-        {% crudlfap_attribute_label object 'created' %}: {% crudlfap_attribute_value object 'created' %}
-    {% endif %}
-
-Or just::
-
-    {% crudlfap_attribute object 'created' %}
-
-Check the default templates for moar 2017 DRY fun !
 
 Now, if you think this pattern is too 2017 for you, wait until we add some
 custom actions on this model:
@@ -193,13 +175,13 @@ custom actions on this model:
     from django import forms
     from django.contrib import messages
 
-    class ServerRefreshView(crudlfap.FormView):
+    class ServerRefreshView(crudlfap.ObjectFormView):
         menus = ['object_actions']  # show in detail and list view
         fa_icon = 'refresh'  # icon for this view / menu links
         style = 'warning'  # view style variable
 
-        def allow(self, user, model=None):
-            return model.is_public or model.owner == user
+        def allow(self):
+            return self.object.is_public or self.object.owner == user
 
         def form_valid(self, form):
             try:
