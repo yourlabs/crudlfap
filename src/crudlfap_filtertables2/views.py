@@ -22,6 +22,7 @@ class Table(tables.Table):
             views=Router.registry[type(record)].get_menu(
                 'object',
                 self.context['request'],
+                object=record,
             ),
         )
         template = loader.select_template([

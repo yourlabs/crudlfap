@@ -21,6 +21,7 @@ import re
 
 from django import http
 from django.conf.urls import url
+from django.urls import reverse_lazy
 
 
 class RoutableViewMixin(object):
@@ -99,7 +100,7 @@ class RoutableViewMixin(object):
         return type(name, (cls,), attributes)
 
     @classmethod
-    def url(cls):
+    def get_url_object(cls):
         """
         Return the Django url object.
 
@@ -172,7 +173,7 @@ class RoutableViewMixin(object):
         return '_'.join(parts)
 
     @classmethod
-    def get_url_args(cls, *args):  # pylint: disable=unused-argument
+    def to_url_args(cls, *args):  # pylint: disable=unused-argument
         """
         Return url reverse args given these args.
 
@@ -184,11 +185,27 @@ class RoutableViewMixin(object):
     @classmethod
     def reverse(cls, *args):
         """Reverse a url to this view with the given args."""
-        from django.urls import reverse_lazy
-        return reverse_lazy(
-            cls.get_url_name(),
-            args=cls.get_url_args(*args)
-        )
+        return reverse_lazy(cls.get_url_name(), args=cls.to_url_args(*args))
+
+    def get_url_args(self):
+        """
+        Return args for reversing this view url from self.
+
+        See ``self_reverse()`` for detail.
+        """
+        return []
+
+    @property
+    def url(self):
+        """
+        Return the URL for this view given its current state.
+
+        Given that the ``reverse()`` method is a class method, this should
+        allow things like::
+
+            url = YourView(object=your_object).url
+        """
+        return self.reverse(*self.get_url_args())
 
     def allow(self):
         """
@@ -203,7 +220,6 @@ class RoutableViewMixin(object):
             class SomeDetailView(DetailView):
                 def get_context_data(self):
                     return dict(
-
                         # For the object used in this view instance, we would
                         # also have been allowed to execute the delete view
                         # with this request.

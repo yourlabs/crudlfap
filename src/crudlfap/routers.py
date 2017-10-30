@@ -168,7 +168,7 @@ class Router(object):
                 return Router.registry[type(self)]['detail'].reverse(self)
             self.model.get_absolute_url = get_absolute_url
 
-        return [view.url() for view in self.views]
+        return [view.get_url_object() for view in self.views]
 
     def get_menu(self, name, request, **kwargs):
         """
