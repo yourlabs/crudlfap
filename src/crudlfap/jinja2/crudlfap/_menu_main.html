@@ -23,7 +23,7 @@
           <a href="#" class="dropdown-toggle pmd-ripple-effect" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ app.verbose_name }} <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
               {% for router in routers %}
-                {% for v in router.get_menu('main', request.user) %}
+                {% for v in router.get_menu('main', request) %}
                 <li>
                     <a
                         href="{{ v.reverse() }}"
