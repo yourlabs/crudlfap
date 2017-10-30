@@ -11,6 +11,72 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+import importlib
+
+
+def dep_importable(module):
+    try:
+        importlib.__import__(module)
+    except ModuleNotFoundError:
+        mod_path, dot, cls = module.rpartition('.')
+
+        if not mod_path:
+            return False
+
+        try:
+            mod = importlib.import_module(mod_path)
+        except ModuleNotFoundError:
+            return False
+        else:
+            if hasattr(mod, cls):
+                return True
+    else:
+        return True
+
+    return False
+
+
+def dep_insert_to(module, to, before, after):
+    if to is None:
+        to = INSTALLED_APPS
+
+    if not before and not after:
+        to.append(module)
+        return
+
+    try:
+        if before:
+            pos = to.index(before)
+        else:
+            pos = to.index(after) + 1
+    except ValueError:
+        pass
+    else:
+        to.insert(pos, module)
+
+
+def dep_optional_to(module: str, to: list=None,
+                    before: str=None, after: str=None):
+    """
+    Adds an optional dependency
+
+    Add an optional dependency to the given `to` list, if it is resolvable by
+    the importer. If to is not given, it defaults to INSTALLED_APPS.
+
+    The module can be inserted at the right spot by using before or after
+    keyword arguments. If both are given, the gun is pointing at your feet
+    and before wins. If neither are given, the module is appended at the end.
+
+    :param module: module to add, as it would be added to the given `to` list
+    :param to: list to add the module to
+    :param before: module string as should be available in the to list.
+    :param after: module string as should be available in the to list.
+    """
+    if not dep_importable(module):
+        return
+
+    dep_insert_to(module, to, before, after)
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -36,24 +102,24 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'debug_toolbar',
 
     # CRUDLFA+ dependencies
     'crudlfap',
     'bootstrap3',
-
-    # CRUDLFA+ optionnal dependencies
-    'crudlfap_filtertables2',
-    'django_filters',
-    'django_tables2',
-    'dal',
-    'dal_select2',
 
     # CRUDLFA+ examples
     'crudlfap_example.artist',
     'crudlfap_example.song',
     'crudlfap_example.nondb',
 ]
+
+# CRUDLFA+ optional dependencies
+dep_optional_to('debug_toolbar', after='django.contrib.staticfiles')
+dep_optional_to('crudlfap_filtertables2', before='crudlfap_example.artist')
+dep_optional_to('django_filters', before='crudlfap_example.artist')
+dep_optional_to('django_tables2', before='crudlfap_example.artist')
+dep_optional_to('dal', before='crudlfap_example.artist')
+dep_optional_to('dal_select2', before='crudlfap_example.artist')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -63,8 +129,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+dep_optional_to('debug_toolbar.middleware.DebugToolbarMiddleware',
+                to=MIDDLEWARE)
 
 INTERNAL_IPS = ('127.0.0.1',)
 
