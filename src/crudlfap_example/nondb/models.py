@@ -6,7 +6,7 @@ class SongRatingManager(models.Manager):
 
 
 class SongRating(models.Model):
-    song = models.ForeignKey('song.Song', on_delete=models.CASCADE)
+    song = models.ForeignKey('song.Song', on_delete=models.DO_NOTHING)
     rating = models.IntegerField()
 
     objects = SongRatingManager()
