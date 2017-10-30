@@ -109,7 +109,7 @@ class Router(object):
             result.append(view)
         return result
 
-    def __init__(self, model=None, url_prefix=None, fields=None, *views,
+    def __init__(self, model=None, url_prefix=None, fields=None, views=None,
                  **attributes):
 
         """Create a Router for a Model."""
@@ -132,7 +132,7 @@ class Router(object):
         for name, value in attributes.items():
             setattr(self, name, value)
 
-        self.views = self.generate_views(*views)
+        self.views = self.generate_views(*(views or []))
 
     def __getitem__(self, slug):
         """Get a view by slug."""
