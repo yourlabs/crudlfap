@@ -97,11 +97,14 @@ def test_views_with_overrides():
     assert view.get_slug() == 'example'
     assert view.__name__ == ExampleView.__name__
     assert view.get_url_pattern() == 'example/$'
+    assert view().href == '/example/'
 
     view = view_resolve('example2')
     assert view.get_slug() == 'example2'
     assert view.get_url_pattern() == 'example2/$'
+    assert view().href == '/example2/'
 
     view = view_resolve('example4')
     assert view.get_slug() == 'example3'
     assert view.get_url_pattern() == 'example3/$'
+    assert view().href == '/example3/'

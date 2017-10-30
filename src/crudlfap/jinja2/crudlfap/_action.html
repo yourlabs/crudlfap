@@ -1,6 +1,6 @@
 <a
   class="btn btn-{{ view.style|default('default') }} btn-xs pull-right pmd-btn-fab pmd-btn-raised pmd-ripple-effect"
-  href="{{ view.url }}"
+  href="{{ view.href }}"
   title="{{ view.title }}"
   {% if view.ajax is defined %}
   data-ajax="{{ view.ajax }}"

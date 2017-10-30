@@ -100,7 +100,7 @@ class RoutableViewMixin(object):
         return type(name, (cls,), attributes)
 
     @classmethod
-    def get_url_object(cls):
+    def url(cls):
         """
         Return the Django url object.
 
@@ -196,7 +196,7 @@ class RoutableViewMixin(object):
         return []
 
     @property
-    def url(self):
+    def href(self):
         """
         Return the URL for this view given its current state.
 
