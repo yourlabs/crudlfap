@@ -1,11 +1,18 @@
 {% if url.name %}
     <dt>
-        <code>{% if prefix %}{{ prefix }}{% endif %}{{ url.regex.pattern.replace('^', '') }}</code>
+        <code>
+            {% if prefix %}{{ prefix }}{% endif %}
+            {% if getattr(url, 'regex', False) %}{{ url.regex.pattern.replace('^', '') }}{% else %}{{ url.pattern }}{% endif %}
+        </code>
     </dt>
     <dd>{{ url.name }}</dd>
 {% endif %}
 
+{% if url.regex %}
 {% set prefix=url.regex.pattern %}
+{% elif url.pattern %}
+{% set prefix=url.pattern %}
+{% endif %}
 {% for url in url.url_patterns %}
     {% include 'crudlfap/_debug_url.html' %}
 {% endfor %}

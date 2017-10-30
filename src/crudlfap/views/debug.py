@@ -18,5 +18,8 @@ class UrlsView(generic.TemplateView):
             settings.ROOT_URLCONF
         ).urlpatterns
         for u in urlpatterns:
-            print(u.regex.pattern, getattr(u, 'url_patterns', None))
+            if getattr(u, 'regex', False) == False:
+                print(u.pattern)
+            else:
+                print(u.regex.pattern, getattr(u, 'url_patterns', None))
         return c
