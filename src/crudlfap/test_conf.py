@@ -35,4 +35,3 @@ def test_install_optional():
     expected = ['django.contrib.staticfiles', 'crudlfap', 'myapp',
                 'crudlfap.context_processors.base']
     assert mod_attr == expected, "Failed to append module attribute reference"
-
