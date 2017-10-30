@@ -8,7 +8,7 @@ def authenticated(view):
 
 
 def owner_or_staff(view):
-    return view.request.user.is_staff or view.object.owner == user
+    return view.request.user.is_staff or view.object.owner == view.request.user
 
 
 class SongUpdateView(crudlfap.UpdateView):
