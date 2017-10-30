@@ -6,14 +6,14 @@ import pytest
 
 
 class ExampleView(View):
-    def allow(self, user):
-        if not user.is_authenticated:
+    def allow(self):
+        if not self.request.user.is_authenticated:
             return False
 
         if self.object.pk == 1:
             return True
 
-        return user.is_staff
+        return self.request.user.is_staff
 
 
 def test_example_view():
@@ -62,25 +62,26 @@ def test_view_factory_with_and_slug_and_prefix():
     assert view.url().pattern._regex == 'rofl/lol/$'
 
 
-def test_view_factory_allow():
+def test_view_factory_allow(rf):
     from django.contrib.auth.models import AnonymousUser, User
     artist = Artist(pk=1)
-    user = AnonymousUser()
+    request = rf.get('/')
+    request.user = AnonymousUser()
 
-    view = ExampleView.factory(object=artist)()
-    assert not view.allow(user), 'forbid anonymous'
+    view = ExampleView.factory(object=artist, request=request)()
+    assert not view.allow(), 'forbid anonymous'
 
-    user = User(is_staff=False)
-    view = ExampleView.factory(object=artist)()
-    assert view.allow(user), 'allow pk=1 for authed users'
+    request.user = User(is_staff=False)
+    view = ExampleView.factory(object=artist, request=request)()
+    assert view.allow(), 'allow pk=1 for authed users'
 
     artist.pk = 12
-    view = ExampleView.factory(object=artist)()
-    assert not view.allow(user), 'forbid pk=12 for non staff'
+    view = ExampleView.factory(object=artist, request=request)()
+    assert not view.allow(), 'forbid pk=12 for non staff'
 
-    user = User(is_staff=True)
-    view = ExampleView.factory(object=artist)()
-    assert view.allow(user), 'allow any pk for staff'
+    request.user = User(is_staff=True)
+    view = ExampleView.factory(object=artist, request=request)()
+    assert view.allow(), 'allow any pk for staff'
 
 
 urlpatterns = [
