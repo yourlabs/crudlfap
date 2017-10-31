@@ -22,10 +22,10 @@ class DefaultConfig(apps.AppConfig):
         views = crudlfap.get(
             'default_views',
             [
+                'crudlfap.views.generic.CreateView',
                 'crudlfap.views.generic.DeleteView',
                 'crudlfap.views.generic.UpdateView',
                 'crudlfap.views.generic.DetailView',
-                'crudlfap.views.generic.CreateView',
                 'crudlfap.views.generic.ListView',
             ]
         )
