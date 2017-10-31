@@ -44,7 +44,7 @@ def test_router_create(router):
     assert_url_like(
         router['create'],
         'artist_create',
-        'create/$'
+        'create/new/$'
     )
 
 
@@ -94,7 +94,7 @@ def test_router_prefix_create(router_prefix):
     assert_url_like(
         router_prefix['create'],
         'artistpicture_create',
-        'photo/create/$'
+        'photo/create/new/$'
     )
 
 

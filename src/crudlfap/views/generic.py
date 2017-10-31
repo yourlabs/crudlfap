@@ -245,6 +245,7 @@ class CreateView(ModelFormViewMixin, generic.CreateView):
     material_icon = 'add'
     default_template_name = 'crudlfap/create.html'
     ajax = '_modal'
+    url_pattern = r'create/new/$'
 
 
 class DeleteView(ObjectFormViewMixin, generic.DeleteView):
