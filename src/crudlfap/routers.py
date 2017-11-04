@@ -49,11 +49,11 @@ class Router(object):
     """
     Base router for CRUDLFA+ RoutableView.
 
-    .. py:attr:: model
+    .. py:attribute:: model
 
         Optional model class for this Router and all its views.
 
-    .. py:attr:: url_prefix
+    .. py:attribute:: url_prefix
 
         Optional url prefix for all of this Router's views.
     """

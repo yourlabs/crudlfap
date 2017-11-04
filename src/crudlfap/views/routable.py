@@ -1,18 +1,23 @@
 """
-Routable Views rock.
+Routable Views are fun.
 
-A view should be able to reverse and generate its own URL::
+A view can reverse and generate its own URL::
 
     urlpatterns = [ExampleView.url()]
 
 This means it must know its url pattern and name or how to generate them, but
 that doesn't mean you can't override them::
 
-    urlpatterns = [ExampleView.factory(url_pattern='lol/$', url()]
+    urlpatterns = [
+        ExampleView.factory(
+            url_pattern='yoururlpattern/$',
+            url_name='yoururlname',
+        ).url()
+    ]
 
 The problem with all this magic is that then you loose the ability to read the
 truck load of urls.py that you have written manually to find your view or debug
-things. To compensate for this, we offer lovely debug views in
+things. To compensate for this, consider using : we offer lovely debug views in
 crudflap.views.debug.
 """
 
