@@ -14,7 +14,6 @@ from django.utils.module_loading import import_string
 
 from .views.routable import RoutableViewMixin
 
-
 crudlfap = apps.get_app_config('crudlfap')  # pylint: disable=invalid-name
 
 
@@ -106,16 +105,19 @@ class Router(object):
 
             # Set this after setting the model in the factory() call above
             view.slug = view.get_slug()
+            if view.slug in self.menu_map:
+                view.menus.extend(self.menu_map[view.slug])
 
             result.append(view)
         return result
 
     def __init__(self, model=None, url_prefix=None, fields=None,
-                 url_field=None, views=None, **attributes):
+                 url_field=None, views=None, menu_map=None, **attributes):
 
         """Create a Router for a Model."""
         self.model = model
         self.url_prefix = url_prefix or ''
+        self.menu_map = menu_map or {}
 
         if self.model and not url_field:
             try:
@@ -176,6 +178,7 @@ class Router(object):
         if not hasattr(self.model, 'get_absolute_url'):
             def get_absolute_url(self):
                 return Router.registry[type(self)]['detail'].reverse(self)
+
             self.model.get_absolute_url = get_absolute_url
 
         return [view.url() for view in self.views]
@@ -215,3 +218,60 @@ class Router(object):
         Returns True if user.is_staff by default.
         """
         return view.request.user.is_staff
+
+
+class RouterList(collections.MutableSequence):
+    def __init__(self, *routers, **index_opts):
+        self._routers = list(routers)
+        self._urlpatterns = None
+        self.add_index_url = index_opts.get('add_index_url', False)
+        self.index_name = index_opts.get('index_name', '')
+        self.index_menu = index_opts.get('index_menu', 'index')
+        self.index_template = index_opts.get(
+            'index_template', 'crudlfap/app_index.html'
+        )
+        self.index_view = index_opts.get(
+            'index_view', 'crudlfap.views.generic.AppIndexView'
+        )
+        super().__init__()
+
+    def __setitem__(self, index, value):
+        self._routers[index] = value
+        self.reset_urlpatterns()
+
+    def __delitem__(self, index):
+        del self._routers[index]
+        self.reset_urlpatterns()
+
+    def insert(self, index, value):
+        self._routers.insert(index, value)
+        self.reset_urlpatterns()
+
+    def __getitem__(self, index):
+        return self._routers[index]
+
+    def __len__(self):
+        return len(self._routers)
+
+    def get_index_urlpattern(self):
+        from django.conf.urls import url
+
+        vc = import_string(self.index_view)
+        pattern = url(r'^$', vc.as_view(routers=self._routers,
+                                        index_name=self.index_name,
+                                        template_name=self.index_template),
+                      name=self.index_name.lower() + '_index')
+        return pattern
+
+    def urlpatterns(self):
+        if self._urlpatterns is None:
+            self._urlpatterns = []
+            if self.add_index_url:
+                self._urlpatterns.append(self.get_index_urlpattern())
+            for router in self._routers:
+                self._urlpatterns.extend(router.urlpatterns())
+        return self._urlpatterns
+
+    def reset_urlpatterns(self):
+        if self._urlpatterns is not None:
+            self._urlpatterns = None

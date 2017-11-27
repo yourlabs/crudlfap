@@ -3,7 +3,7 @@
 from django.utils.module_loading import import_string
 
 from .apps import _installed
-from .routers import Router
+from .routers import Router, RouterList
 from .views.generic import (
     CreateView,
     DeleteView,

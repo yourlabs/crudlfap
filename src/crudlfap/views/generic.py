@@ -317,3 +317,30 @@ class UpdateView(ObjectFormViewMixin, generic.UpdateView):
     material_icon = 'edit'
     default_template_name = 'crudlfap/update.html'
     ajax = '_modal'
+
+
+class AppIndexView(generic.TemplateView):
+    template_name = 'crudlfap/app_index.html'
+    index_name = 'App Index'
+    index_menu = 'index'
+    routers = None
+
+    def __init__(self, routers=None, index_name=None, menu=None, **kwargs):
+        self.routers = set(routers) if routers is not None else set()
+        if index_name:
+            self.index_name = index_name
+        if menu:
+            self.index_menu = menu
+        super().__init__(**kwargs)
+
+    def get_index_name(self):
+        return str(self.index_name)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(title=self.get_index_name())
+        index_menu = []
+        for router in self.routers:
+            index_menu.extend(router.get_menu(self.index_menu, self.request))
+        context['index_menu'] = index_menu
+        return context

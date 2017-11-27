@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+	{% block index_title %}
+		<div class="pmd-card-title">
+			<h2 class="pmd-card-title-text">{{ title }}</h2>
+		</div>
+	{% endblock %}
+	<div class="pmd-card-body">
+		{% block index_intro %}{% endblock %}
+		{% block index_menu %}
+			<div class="list-group pmd-card-list" role="menu">
+				{% for item in index_menu %}
+					<a href="{{ item.reverse() }}" class="list-group-item">{{ item.title }}</a>
+				{% endfor %}
+			</div>
+		{% endblock %}
+		{% block index_epilog %}{% endblock %}
+	</div>
+{% endblock %}
