@@ -48,11 +48,11 @@ INSTALLED_APPS = [
 # CRUDLFA+ optional dependencies
 OPTIONAL_APPS = [
     {'debug_toolbar': {'after': 'django.contrib.staticfiles'}},
-    {'crudlfap_filtertables2': {'before': 'crudlfap_example.artist'}},
-    {'django_filters': {'before': 'crudlfap_example.artist'}},
-    {'django_tables2': {'before': 'crudlfap_example.artist'}},
-    {'dal': {'before': 'crudlfap_example.artist'}},
-    {'dal_select2': {'before': 'crudlfap_example.artist'}},
+    {'crudlfap_filtertables2': {'after': 'crudlfap'}},
+    {'django_filters': {'after': 'crudlfap'}},
+    {'django_tables2': {'after': 'crudlfap'}},
+    {'dal': {'before': 'crudlfap'}},
+    {'dal_select2': {'before': 'crudlfap'}},
 ]
 
 MIDDLEWARE = [
