@@ -1,18 +1,22 @@
-{% if url.name %}
-    <dt>
+<tr>
+    <td colspan="2">
         <code>
-            {% if prefix %}{{ prefix }}{% endif %}
-            {% if getattr(url, 'regex', False) %}{{ url.regex.pattern.replace('^', '') }}{% else %}{{ url.pattern }}{% endif %}
+            <a href="{{ repr }}">{{ repr }}</a>
         </code>
-    </dt>
-    <dd>{{ url.name }}</dd>
-{% endif %}
-
-{% if url.regex %}
-{% set prefix=url.regex.pattern %}
-{% elif url.pattern %}
-{% set prefix=url.pattern %}
-{% endif %}
-{% for url in url.url_patterns %}
-    {% include 'crudlfap/_debug_url.html' %}
-{% endfor %}
+        {% if url.name %}
+        <br />
+        {{ url.name }}
+        {% endif %}
+    </td>
+    <td>
+        {% if url.callback.view_class %}
+            {{ url.callback.view_class }}
+        {% else %}
+            {{ url.callback }}
+        {% endif %}
+        <br />
+        {% if url.callback.__code__ %}
+            {{ url.callback.__code__ }}
+        {% endif %}
+    </td>
+</tr>

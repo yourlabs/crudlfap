@@ -7,19 +7,29 @@ from django.views import generic
 class UrlsView(generic.TemplateView):
     template_name = 'crudlfap/debug_urls.html'
 
-    def get(self, request, *a, **k):
-        if not request.user.is_superuser:
-            return http.HttpResponse404()
-        return super(UrlsView, self).get(request, *a, **k)
+    def printurl(self, parent, url):
+        def url_repr(url):
+            pattern = getattr(url, 'pattern', None)
+            if pattern:
+                regex = getattr(pattern, 'regex', None)
+                if regex:
+                    return regex.pattern.lstrip(
+                        '^').rstrip('$').replace('\/', '/')
+            return url_repr or ''
+        ret = parent if parent else ''
+        ret += url_repr(url)
 
-    def get_context_data(self):
-        c = super(UrlsView, self).get_context_data()
-        c['urlpatterns'] = urlpatterns = import_string(
-            settings.ROOT_URLCONF
-        ).urlpatterns
-        for u in urlpatterns:
-            if not getattr(u, 'regex', False):
-                print(u.pattern)
-            else:
-                print(u.regex.pattern, getattr(u, 'url_patterns', None))
-        return c
+        self.urlpatterns[ret] = url
+
+        for pattern in getattr(url, 'url_patterns', []):
+            self.printurl(ret, pattern)
+
+    def get(self, request, *a, **k):
+        urlpatterns = import_string(settings.ROOT_URLCONF).urlpatterns
+        self.urlpatterns = {}
+        for url in urlpatterns:
+            self.printurl('/', url)
+
+        if not request.user.is_superuser:
+            return http.HttpResponseNotFound()
+        return super(UrlsView, self).get(request, *a, **k)
