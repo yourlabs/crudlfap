@@ -67,7 +67,7 @@ templates, add this to your app's ``urls.py``:
         Server,
         fields='__all__',
         menus=['main'],
-        allow=lambda view: True, # Default requires is_staff!
+        allow=lambda view: True,  # Default requires is_staff!
     ).urlpatterns()
 
 Then, add it to your project's ``urls.py``:
