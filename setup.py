@@ -35,7 +35,7 @@ setup(
         filter=['django-filter'],
         dal=['django-autocomplete-light'],
         reversion=['django-reversion'],
-        debug=['django-debug-toolbar'],
+        debug=['django-debug-toolbar', 'devpy'],
     ),
     entry_points={
         'console_scripts': [

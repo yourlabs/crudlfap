@@ -11,6 +11,12 @@ from django.core.management import call_command
 from django.core.management.commands.runserver import Command
 from django.utils.timezone import now
 
+try:
+    import devpy.develop as logger
+except ImportError:
+    import logging
+    logger = logging.getLogger('dev')
+
 signal = django.dispatch.Signal()
 
 
@@ -55,7 +61,8 @@ class Command(Command):
                 password = rnpw()
                 user.set_password(password)
                 user.save()
-                print('Login with {} / {}'.format(username, password))
+                logger.warning('\n{}\nLogin with {} / {}\n'.format(
+                    '*' * 12, username, password))
 
             return user, created
 
