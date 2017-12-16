@@ -42,6 +42,7 @@ class Command(Command):
         if pid == 0:
             signal.send(sender=self)
         else:
+            options['nothreading'] = True
             return super().handle(*args, **options)
 
     def createusers(self):
