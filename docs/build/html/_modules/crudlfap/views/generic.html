@@ -1,0 +1,421 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>crudlfap.views.generic &#8212; CRUDLFA+ 0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for crudlfap.views.generic</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Crudlfa+ generic views and mixins.</span>
+
+<span class="sd">Crudlfa+ takes views further than Django and are expected to:</span>
+
+<span class="sd">- generate their URL definitions and reversions,</span>
+<span class="sd">- check if a user has permission for an object,</span>
+<span class="sd">- declare the names of the navigation menus they belong to.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">django.contrib</span> <span class="k">import</span> <span class="n">messages</span>
+<span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="k">import</span> <span class="n">ugettext_lazy</span> <span class="k">as</span> <span class="n">_</span>
+<span class="kn">from</span> <span class="nn">django.views</span> <span class="k">import</span> <span class="n">generic</span>
+
+<span class="kn">from</span> <span class="nn">.routable</span> <span class="k">import</span> <span class="n">RoutableViewMixin</span>
+
+
+<div class="viewcode-block" id="DefaultTemplateMixin"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.DefaultTemplateMixin">[docs]</a><span class="k">class</span> <span class="nc">DefaultTemplateMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Override for get_template_names to append default_template_name.</span>
+
+<span class="sd">    This allows to configure &quot;last resort&quot; templates for each class, and thus</span>
+<span class="sd">    to provide a working CRUD out of the box.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">style</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span>
+    <span class="n">fa_icon</span> <span class="o">=</span> <span class="s1">&#39;question&#39;</span>
+    <span class="n">material_icon</span> <span class="o">=</span> <span class="s1">&#39;priority high&#39;</span>
+    <span class="n">ajax</span> <span class="o">=</span> <span class="s1">&#39;#ajax-container&#39;</span>
+
+<div class="viewcode-block" id="DefaultTemplateMixin.get_title_html"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.DefaultTemplateMixin.get_title_html">[docs]</a>    <span class="k">def</span> <span class="nf">get_title_html</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return text for HTML title tag.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span></div>
+
+<div class="viewcode-block" id="DefaultTemplateMixin.get_title_heading"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.DefaultTemplateMixin.get_title_heading">[docs]</a>    <span class="k">def</span> <span class="nf">get_title_heading</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return text for page heading.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span></div>
+
+<div class="viewcode-block" id="DefaultTemplateMixin.get_template_names"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.DefaultTemplateMixin.get_template_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_template_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Give a chance to default_template_name.&quot;&quot;&quot;</span>
+        <span class="n">template_names</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_template_names</span><span class="p">()</span>
+        <span class="n">default_template_name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;default_template_name&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">default_template_name</span><span class="p">:</span>
+            <span class="n">template_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">default_template_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">template_names</span></div></div>
+
+
+<div class="viewcode-block" id="ViewMixin"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.ViewMixin">[docs]</a><span class="k">class</span> <span class="nc">ViewMixin</span><span class="p">(</span><span class="n">DefaultTemplateMixin</span><span class="p">,</span> <span class="n">RoutableViewMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base View mixin for CRUDLFA+.</span>
+
+<span class="sd">    If you have any question about style then find your answers in</span>
+<span class="sd">    DefaultTemplateMixin, otherwise in RoutableViewMixin.</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="View"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.View">[docs]</a><span class="k">class</span> <span class="nc">View</span><span class="p">(</span><span class="n">ViewMixin</span><span class="p">,</span> <span class="n">generic</span><span class="o">.</span><span class="n">View</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base view for CRUDLFA+.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="ModelViewMixin"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.ModelViewMixin">[docs]</a><span class="k">class</span> <span class="nc">ModelViewMixin</span><span class="p">(</span><span class="n">ViewMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Mixin for views using a Model class but no instance.&quot;&quot;&quot;</span>
+
+    <span class="n">menus</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slug</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">verbose_name_plural</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return router.fields or None, field names if ``__all__``.&quot;&quot;&quot;</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="s1">&#39;fields&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fields</span> <span class="o">==</span> <span class="s1">&#39;__all__&#39;</span><span class="p">:</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">fields</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">primary_key</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;with_pk&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="k">return</span> <span class="n">fields</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">exclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return router.exclude or None, field names if ``__all__``..&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="s1">&#39;ecxlude&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ModelViewMixin.get_queryset"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.ModelViewMixin.get_queryset">[docs]</a>    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return router.get_queryset() by default, otherwise super().&quot;&quot;&quot;</span>
+        <span class="n">router</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;router&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">router</span><span class="p">,</span> <span class="s1">&#39;get_queryset&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">router</span><span class="o">.</span><span class="n">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_queryset</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="ObjectMixin"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.ObjectMixin">[docs]</a><span class="k">class</span> <span class="nc">ObjectMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make self.object call and cache self.get_object() automatically.</span>
+
+<span class="sd">    WHAT A RELIEF</span>
+
+<span class="sd">    However, if it has a router with the get_object() method, use it.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ObjectMixin.get_object"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.ObjectMixin.get_object">[docs]</a>    <span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return router.get_object() by default, otherwise super().&quot;&quot;&quot;</span>
+        <span class="n">router</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;router&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">router</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">router</span><span class="p">,</span> <span class="s1">&#39;get_object&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">router</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;kwargs&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="c1"># This happens when the view has not been instanciated with an</span>
+            <span class="c1"># object, neither from a URL which would allow getting the object</span>
+            <span class="c1"># in the super() call below.</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Must instanciate the view with an object&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_object</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ObjectMixin.object_get"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.ObjectMixin.object_get">[docs]</a>    <span class="k">def</span> <span class="nf">object_get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the object, uses get_object() if necessary.&quot;&quot;&quot;</span>
+        <span class="n">cached</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_object&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cached</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_object</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_object</span></div>
+
+<div class="viewcode-block" id="ObjectMixin.object_set"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.ObjectMixin.object_set">[docs]</a>    <span class="k">def</span> <span class="nf">object_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set self.object attribute.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_object</span> <span class="o">=</span> <span class="n">value</span></div>
+
+    <span class="nb">object</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">object_get</span><span class="p">,</span> <span class="n">object_set</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ObjectViewMixin"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.ObjectViewMixin">[docs]</a><span class="k">class</span> <span class="nc">ObjectViewMixin</span><span class="p">(</span><span class="n">ObjectMixin</span><span class="p">,</span> <span class="n">ModelViewMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Mixin for views using a Model instance.&quot;&quot;&quot;</span>
+
+    <span class="n">menus</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;object&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="ObjectViewMixin.get_url_args"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.ObjectViewMixin.get_url_args">[docs]</a>    <span class="k">def</span> <span class="nf">get_url_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return ``[self.object]``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ObjectViewMixin.get_slug_field"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.ObjectViewMixin.get_slug_field">[docs]</a>    <span class="k">def</span> <span class="nf">get_slug_field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Replace Django&#39;s get_slug_field with get_url_field.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_url_field</span><span class="p">()</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">slug_url_kwarg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Replace Django&#39;s slug_url_kwarg with get_url_field.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_url_field</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ObjectViewMixin.get_url_field"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.ObjectViewMixin.get_url_field">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_url_field</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the model field name to use in the url.</span>
+
+<span class="sd">        By default, try router&#39;s url_field, otherwise try ``slug``,</span>
+<span class="sd">        fallback on ``pk``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url_field</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;url_field&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">url_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">router</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;router&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">router</span><span class="o">.</span><span class="n">url_field</span>
+
+        <span class="k">return</span> <span class="n">url_field</span> <span class="ow">or</span> <span class="s1">&#39;pk&#39;</span></div>
+
+<div class="viewcode-block" id="ObjectViewMixin.to_url_args"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.ObjectViewMixin.to_url_args">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">to_url_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return first arg&#39;s url_field attribute.&quot;&quot;&quot;</span>
+        <span class="n">url_field</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_url_field</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">url_field</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="ObjectViewMixin.get_url_pattern"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.ObjectViewMixin.get_url_pattern">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_url_pattern</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Identify the object by slug or pk in the pattern.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">url_pattern</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">url_pattern</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">slug</span><span class="p">)</span>
+
+        <span class="n">url_field</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_url_field</span><span class="p">()</span>
+        <span class="k">return</span> <span class="sa">r</span><span class="s1">&#39;(?P&lt;</span><span class="si">{}</span><span class="s1">&gt;[\w\d_-]+)/</span><span class="si">{}</span><span class="s1">/$&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url_field</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">slug</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1"> &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slug</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">verbose_name</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">object</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="FormViewMixin"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.FormViewMixin">[docs]</a><span class="k">class</span> <span class="nc">FormViewMixin</span><span class="p">(</span><span class="n">ViewMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Mixin for views which have a Form.&quot;&quot;&quot;</span>
+    <span class="n">success_url_next</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">get_success_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_success_url</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">success_url_next</span> <span class="ow">and</span> <span class="s1">&#39;_next&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s1">&#39;_next&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">url</span></div>
+
+
+<div class="viewcode-block" id="FormView"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.FormView">[docs]</a><span class="k">class</span> <span class="nc">FormView</span><span class="p">(</span><span class="n">FormViewMixin</span><span class="p">,</span> <span class="n">generic</span><span class="o">.</span><span class="n">FormView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base FormView class.&quot;&quot;&quot;</span>
+
+    <span class="n">style</span> <span class="o">=</span> <span class="s1">&#39;warning&#39;</span>
+    <span class="n">default_template_name</span> <span class="o">=</span> <span class="s1">&#39;crudlfap/form.html&#39;</span></div>
+
+
+<div class="viewcode-block" id="ModelFormViewMixin"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.ModelFormViewMixin">[docs]</a><span class="k">class</span> <span class="nc">ModelFormViewMixin</span><span class="p">(</span><span class="n">ModelViewMixin</span><span class="p">,</span> <span class="n">FormViewMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;ModelForm ViewMixin using readable&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">form_invalid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">form</span><span class="p">):</span>
+        <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span>
+            <span class="n">_</span><span class="p">(</span>
+                <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1"> error&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">slug</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">verbose_name</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">form_invalid</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">form_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">form</span><span class="p">):</span>
+        <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span>
+            <span class="n">_</span><span class="p">(</span>
+                <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">: </span><span class="si">{}</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slug</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">verbose_name</span><span class="p">)</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">instance</span><span class="p">)</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">form_valid</span><span class="p">(</span><span class="n">form</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ObjectFormViewMixin"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.ObjectFormViewMixin">[docs]</a><span class="k">class</span> <span class="nc">ObjectFormViewMixin</span><span class="p">(</span><span class="n">ObjectViewMixin</span><span class="p">,</span> <span class="n">ModelFormViewMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Custom form view mixin on an object.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="ObjectFormView"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.ObjectFormView">[docs]</a><span class="k">class</span> <span class="nc">ObjectFormView</span><span class="p">(</span><span class="n">ObjectFormViewMixin</span><span class="p">,</span> <span class="n">generic</span><span class="o">.</span><span class="n">FormView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Custom form view on an object.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="CreateView"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.CreateView">[docs]</a><span class="k">class</span> <span class="nc">CreateView</span><span class="p">(</span><span class="n">ModelFormViewMixin</span><span class="p">,</span> <span class="n">generic</span><span class="o">.</span><span class="n">CreateView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;View to create a model object.&quot;&quot;&quot;</span>
+
+    <span class="n">style</span> <span class="o">=</span> <span class="s1">&#39;success&#39;</span>
+    <span class="n">fa_icon</span> <span class="o">=</span> <span class="s1">&#39;plus&#39;</span>
+    <span class="n">material_icon</span> <span class="o">=</span> <span class="s1">&#39;add&#39;</span>
+    <span class="n">default_template_name</span> <span class="o">=</span> <span class="s1">&#39;crudlfap/create.html&#39;</span>
+    <span class="n">ajax</span> <span class="o">=</span> <span class="s1">&#39;_modal&#39;</span></div>
+
+
+<div class="viewcode-block" id="DeleteView"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.DeleteView">[docs]</a><span class="k">class</span> <span class="nc">DeleteView</span><span class="p">(</span><span class="n">ObjectFormViewMixin</span><span class="p">,</span> <span class="n">generic</span><span class="o">.</span><span class="n">DeleteView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;View to delete a model object.&quot;&quot;&quot;</span>
+
+    <span class="n">default_template_name</span> <span class="o">=</span> <span class="s1">&#39;crudlfap/delete.html&#39;</span>
+    <span class="n">style</span> <span class="o">=</span> <span class="s1">&#39;danger&#39;</span>
+    <span class="n">fa_icon</span> <span class="o">=</span> <span class="s1">&#39;trash&#39;</span>
+    <span class="n">material_icon</span> <span class="o">=</span> <span class="s1">&#39;delete&#39;</span>
+    <span class="n">ajax</span> <span class="o">=</span> <span class="s1">&#39;_modal&#39;</span>
+    <span class="n">success_url_next</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">get_success_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span>
+            <span class="n">_</span><span class="p">(</span>
+                <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">: </span><span class="si">{}</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slug</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">verbose_name</span><span class="p">)</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="p">)</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">router</span><span class="p">[</span><span class="s1">&#39;list&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="DetailView"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.DetailView">[docs]</a><span class="k">class</span> <span class="nc">DetailView</span><span class="p">(</span><span class="n">ObjectViewMixin</span><span class="p">,</span> <span class="n">generic</span><span class="o">.</span><span class="n">DetailView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Templated model object detail view which takes a field option.&quot;&quot;&quot;</span>
+
+    <span class="n">fa_icon</span> <span class="o">=</span> <span class="s1">&#39;search-plus&#39;</span>
+    <span class="n">material_icon</span> <span class="o">=</span> <span class="s1">&#39;search&#39;</span>
+    <span class="n">default_template_name</span> <span class="o">=</span> <span class="s1">&#39;crudlfap/detail.html&#39;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">):</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">DetailView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span>
+        <span class="n">c</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="n">field</span><span class="p">),</span>
+                <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">c</span>
+
+<div class="viewcode-block" id="DetailView.get_url_pattern"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.DetailView.get_url_pattern">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_url_pattern</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Identify the object by slug or pk in the pattern.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">url_pattern</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">url_pattern</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">slug</span><span class="p">)</span>
+
+        <span class="n">url_field</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_url_field</span><span class="p">()</span>
+        <span class="k">return</span> <span class="sa">r</span><span class="s1">&#39;(?P&lt;</span><span class="si">{}</span><span class="s1">&gt;[\w\d_-]+)/$&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url_field</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ListView"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.ListView">[docs]</a><span class="k">class</span> <span class="nc">ListView</span><span class="p">(</span><span class="n">ModelViewMixin</span><span class="p">,</span> <span class="n">generic</span><span class="o">.</span><span class="n">ListView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Model list view.&quot;&quot;&quot;</span>
+
+    <span class="n">default_template_name</span> <span class="o">=</span> <span class="s1">&#39;crudlfap/list.html&#39;</span>
+    <span class="n">url_pattern</span> <span class="o">=</span> <span class="s1">&#39;$&#39;</span>
+    <span class="n">paginate_by</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">fa_icon</span> <span class="o">=</span> <span class="s1">&#39;table&#39;</span>
+    <span class="n">material_icon</span> <span class="o">=</span> <span class="s1">&#39;list&#39;</span>
+    <span class="n">menus</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;main&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="UpdateView"><a class="viewcode-back" href="../../../views.html#crudlfap.views.generic.UpdateView">[docs]</a><span class="k">class</span> <span class="nc">UpdateView</span><span class="p">(</span><span class="n">ObjectFormViewMixin</span><span class="p">,</span> <span class="n">generic</span><span class="o">.</span><span class="n">UpdateView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Model update view.&quot;&quot;&quot;</span>
+
+    <span class="n">fa_icon</span> <span class="o">=</span> <span class="s1">&#39;edit&#39;</span>
+    <span class="n">material_icon</span> <span class="o">=</span> <span class="s1">&#39;edit&#39;</span>
+    <span class="n">default_template_name</span> <span class="o">=</span> <span class="s1">&#39;crudlfap/update.html&#39;</span>
+    <span class="n">ajax</span> <span class="o">=</span> <span class="s1">&#39;_modal&#39;</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">CRUDLFA+</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../routable.html">View URL autogeneration mechanisms: RoutableViewMixin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../routers.html">URLPatterns autogeneration mechanisms: Router</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../views.html">Views</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, James Pic & Contributors.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

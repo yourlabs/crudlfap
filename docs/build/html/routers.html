@@ -1,0 +1,203 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>URLPatterns autogeneration mechanisms: Router &#8212; CRUDLFA+ 0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Views" href="views.html" />
+    <link rel="prev" title="View URL autogeneration mechanisms: RoutableViewMixin" href="routable.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="urlpatterns-autogeneration-mechanisms-router">
+<h1>URLPatterns autogeneration mechanisms: Router<a class="headerlink" href="#urlpatterns-autogeneration-mechanisms-router" title="Permalink to this headline">¶</a></h1>
+<p>One of the key architectural concepts of CRUDLFA+ is the ability to tie a group
+of view with a model class to autogenerate urlpatterns. This chapter reviews
+the different mechanisms in place and how they are overridable.</p>
+<p>Source is located in the <code class="xref py py-class docutils literal"><span class="pre">Router</span></code>, which
+we’ll describe here.</p>
+<span class="target" id="module-crudlfap.routers"></span><p>CRUDLFA+ router for Django 2.0.</p>
+<p>Note that you can also use non-database backed models, by inheriting from
+models.Model and setting their Meta.managed attribute to False. Then, you can
+use CRUDLFA+ views and routers.</p>
+<dl class="class">
+<dt id="crudlfap.routers.Router">
+<em class="property">class </em><code class="descclassname">crudlfap.routers.</code><code class="descname">Router</code><span class="sig-paren">(</span><em>model=None</em>, <em>url_prefix=None</em>, <em>fields=None</em>, <em>url_field=None</em>, <em>views=None</em>, <em>**attributes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/routers.html#Router"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.routers.Router" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base router for CRUDLFA+ RoutableView.</p>
+<dl class="attribute">
+<dt id="crudlfap.routers.Router.model">
+<code class="descname">model</code><a class="headerlink" href="#crudlfap.routers.Router.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optional model class for this Router and all its views.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crudlfap.routers.Router.url_prefix">
+<code class="descname">url_prefix</code><a class="headerlink" href="#crudlfap.routers.Router.url_prefix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optional url prefix for all of this Router’s views.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="crudlfap.routers.Router.allow">
+<code class="descname">allow</code><span class="sig-paren">(</span><em>view</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/routers.html#Router.allow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.routers.Router.allow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True to allow a access to a view.</p>
+<p>Called by the default view.allow() implementation.</p>
+<p>If you override the view.allow() method, then it’s up to you
+to decide if you want to call this method or not.</p>
+<p>Returns True if user.is_staff by default.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="crudlfap.routers.Router.generate_views">
+<code class="descname">generate_views</code><span class="sig-paren">(</span><em>*views</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/routers.html#Router.generate_views"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.routers.Router.generate_views" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate views for this router, core of the automation in CRUDLFA+.</p>
+<p>This method considers each view in given args or self.views and returns
+a list of usable views.</p>
+<p>Each arg may be a view class or a dict of attributes with a <cite>_cls</cite> key
+for the actual view class.</p>
+<p>It will copy the view class and bind the router on it in the list this
+returns.</p>
+<p>For example, this would cause two view classes to be returned, if
+self.model is <code class="docutils literal"><span class="pre">Artist</span></code>, then <code class="docutils literal"><span class="pre">CreateView</span></code> will be used as parent to
+create <code class="docutils literal"><span class="pre">ArtistCreateView</span></code> and <code class="docutils literal"><span class="pre">DetailView</span></code> will be used to create
+<code class="docutils literal"><span class="pre">ArtistDetailView</span></code>, also setting the attribute
+<code class="docutils literal"><span class="pre">extra_stuff='bar'</span></code>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Router</span><span class="p">(</span><span class="n">Artist</span><span class="p">)</span><span class="o">.</span><span class="n">generate_views</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">CreateView</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">_cls</span><span class="o">=</span><span class="n">DetailView</span><span class="p">,</span> <span class="n">extra_stuff</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">)]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="crudlfap.routers.Router.get_menu">
+<code class="descname">get_menu</code><span class="sig-paren">(</span><em>name</em>, <em>request</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/routers.html#Router.get_menu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.routers.Router.get_menu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return allowed view objects which have <code class="docutils literal"><span class="pre">name</span></code> in their <code class="docutils literal"><span class="pre">menus</span></code>.</p>
+<p>For each view class in self.views which have <code class="docutils literal"><span class="pre">name</span></code> in their
+<code class="docutils literal"><span class="pre">menus</span></code> attribute, instanciate the view class with <code class="docutils literal"><span class="pre">request</span></code> and
+kwargs, call <code class="docutils literal"><span class="pre">allow()</span></code> on it.</p>
+<p>Return the list of view instances for which <code class="docutils literal"><span class="pre">allow()</span></code> has passed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="crudlfap.routers.Router.urlpatterns">
+<code class="descname">urlpatterns</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/routers.html#Router.urlpatterns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.routers.Router.urlpatterns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate URL patterns for this Router views.</p>
+<p>Also, adds the get_absolute_url() method to the model class if it has
+None, to return the reversed url for this instance to the view of this
+Router with the <code class="docutils literal"><span class="pre">detail</span></code> slug.</p>
+<p>Set get_absolute_url in your model class to disable this feature. Until
+then, welcome in 2017.</p>
+<p>Also, register this router as default router for its model class in the
+RouterRegistry.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="crudlfap.routers.RouterRegistry">
+<em class="property">class </em><code class="descclassname">crudlfap.routers.</code><code class="descname">RouterRegistry</code><a class="reference internal" href="_modules/crudlfap/routers.html#RouterRegistry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.routers.RouterRegistry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers Routers which have generated urlpatterns in this thread.</p>
+<dl class="method">
+<dt id="crudlfap.routers.RouterRegistry.get_app_menus">
+<code class="descname">get_app_menus</code><span class="sig-paren">(</span><em>name</em>, <em>request</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/routers.html#RouterRegistry.get_app_menus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.routers.RouterRegistry.get_app_menus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort Router instances by app name.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">CRUDLFA+</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="routable.html">View URL autogeneration mechanisms: RoutableViewMixin</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">URLPatterns autogeneration mechanisms: Router</a></li>
+<li class="toctree-l1"><a class="reference internal" href="views.html">Views</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="routable.html" title="previous chapter">View URL autogeneration mechanisms: RoutableViewMixin</a></li>
+      <li>Next: <a href="views.html" title="next chapter">Views</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, James Pic & Contributors.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/routers.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

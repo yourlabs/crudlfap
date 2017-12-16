@@ -1,0 +1,322 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Views &#8212; CRUDLFA+ 0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="URLPatterns autogeneration mechanisms: Router" href="routers.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="views">
+<h1>Views<a class="headerlink" href="#views" title="Permalink to this headline">¶</a></h1>
+<p>Source is located in the <a class="reference internal" href="#module-crudlfap.views.generic" title="crudlfap.views.generic"><code class="xref py py-class docutils literal"><span class="pre">generic</span></code></a>, which
+we’ll describe here.</p>
+<span class="target" id="module-crudlfap.views.generic"></span><p>Crudlfa+ generic views and mixins.</p>
+<p>Crudlfa+ takes views further than Django and are expected to:</p>
+<ul class="simple">
+<li>generate their URL definitions and reversions,</li>
+<li>check if a user has permission for an object,</li>
+<li>declare the names of the navigation menus they belong to.</li>
+</ul>
+<dl class="class">
+<dt id="crudlfap.views.generic.CreateView">
+<em class="property">class </em><code class="descclassname">crudlfap.views.generic.</code><code class="descname">CreateView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/generic.html#CreateView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.CreateView" title="Permalink to this definition">¶</a></dt>
+<dd><p>View to create a model object.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="crudlfap.views.generic.DefaultTemplateMixin">
+<em class="property">class </em><code class="descclassname">crudlfap.views.generic.</code><code class="descname">DefaultTemplateMixin</code><a class="reference internal" href="_modules/crudlfap/views/generic.html#DefaultTemplateMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.DefaultTemplateMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override for get_template_names to append default_template_name.</p>
+<p>This allows to configure “last resort” templates for each class, and thus
+to provide a working CRUD out of the box.</p>
+<dl class="method">
+<dt id="crudlfap.views.generic.DefaultTemplateMixin.get_template_names">
+<code class="descname">get_template_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/generic.html#DefaultTemplateMixin.get_template_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.DefaultTemplateMixin.get_template_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Give a chance to default_template_name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="crudlfap.views.generic.DefaultTemplateMixin.get_title_heading">
+<code class="descname">get_title_heading</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/generic.html#DefaultTemplateMixin.get_title_heading"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.DefaultTemplateMixin.get_title_heading" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return text for page heading.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="crudlfap.views.generic.DefaultTemplateMixin.get_title_html">
+<code class="descname">get_title_html</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/generic.html#DefaultTemplateMixin.get_title_html"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.DefaultTemplateMixin.get_title_html" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return text for HTML title tag.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="crudlfap.views.generic.DeleteView">
+<em class="property">class </em><code class="descclassname">crudlfap.views.generic.</code><code class="descname">DeleteView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/generic.html#DeleteView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.DeleteView" title="Permalink to this definition">¶</a></dt>
+<dd><p>View to delete a model object.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="crudlfap.views.generic.DetailView">
+<em class="property">class </em><code class="descclassname">crudlfap.views.generic.</code><code class="descname">DetailView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/generic.html#DetailView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.DetailView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Templated model object detail view which takes a field option.</p>
+<dl class="classmethod">
+<dt id="crudlfap.views.generic.DetailView.get_url_pattern">
+<em class="property">classmethod </em><code class="descname">get_url_pattern</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/generic.html#DetailView.get_url_pattern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.DetailView.get_url_pattern" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identify the object by slug or pk in the pattern.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="crudlfap.views.generic.FormView">
+<em class="property">class </em><code class="descclassname">crudlfap.views.generic.</code><code class="descname">FormView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/generic.html#FormView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.FormView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base FormView class.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="crudlfap.views.generic.FormViewMixin">
+<em class="property">class </em><code class="descclassname">crudlfap.views.generic.</code><code class="descname">FormViewMixin</code><a class="reference internal" href="_modules/crudlfap/views/generic.html#FormViewMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.FormViewMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mixin for views which have a Form.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="crudlfap.views.generic.ListView">
+<em class="property">class </em><code class="descclassname">crudlfap.views.generic.</code><code class="descname">ListView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/generic.html#ListView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.ListView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model list view.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="crudlfap.views.generic.ModelFormViewMixin">
+<em class="property">class </em><code class="descclassname">crudlfap.views.generic.</code><code class="descname">ModelFormViewMixin</code><a class="reference internal" href="_modules/crudlfap/views/generic.html#ModelFormViewMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.ModelFormViewMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>ModelForm ViewMixin using readable</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="crudlfap.views.generic.ModelViewMixin">
+<em class="property">class </em><code class="descclassname">crudlfap.views.generic.</code><code class="descname">ModelViewMixin</code><a class="reference internal" href="_modules/crudlfap/views/generic.html#ModelViewMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.ModelViewMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mixin for views using a Model class but no instance.</p>
+<dl class="attribute">
+<dt id="crudlfap.views.generic.ModelViewMixin.exclude">
+<code class="descname">exclude</code><a class="headerlink" href="#crudlfap.views.generic.ModelViewMixin.exclude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return router.exclude or None, field names if <code class="docutils literal"><span class="pre">__all__</span></code>..</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crudlfap.views.generic.ModelViewMixin.fields">
+<code class="descname">fields</code><a class="headerlink" href="#crudlfap.views.generic.ModelViewMixin.fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return router.fields or None, field names if <code class="docutils literal"><span class="pre">__all__</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="crudlfap.views.generic.ModelViewMixin.get_queryset">
+<code class="descname">get_queryset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/generic.html#ModelViewMixin.get_queryset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.ModelViewMixin.get_queryset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return router.get_queryset() by default, otherwise super().</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="crudlfap.views.generic.ObjectFormView">
+<em class="property">class </em><code class="descclassname">crudlfap.views.generic.</code><code class="descname">ObjectFormView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/generic.html#ObjectFormView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.ObjectFormView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom form view on an object.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="crudlfap.views.generic.ObjectFormViewMixin">
+<em class="property">class </em><code class="descclassname">crudlfap.views.generic.</code><code class="descname">ObjectFormViewMixin</code><a class="reference internal" href="_modules/crudlfap/views/generic.html#ObjectFormViewMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.ObjectFormViewMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom form view mixin on an object.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="crudlfap.views.generic.ObjectMixin">
+<em class="property">class </em><code class="descclassname">crudlfap.views.generic.</code><code class="descname">ObjectMixin</code><a class="reference internal" href="_modules/crudlfap/views/generic.html#ObjectMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.ObjectMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make self.object call and cache self.get_object() automatically.</p>
+<p>WHAT A RELIEF</p>
+<p>However, if it has a router with the get_object() method, use it.</p>
+<dl class="method">
+<dt id="crudlfap.views.generic.ObjectMixin.get_object">
+<code class="descname">get_object</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/generic.html#ObjectMixin.get_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.ObjectMixin.get_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return router.get_object() by default, otherwise super().</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crudlfap.views.generic.ObjectMixin.object">
+<code class="descname">object</code><a class="headerlink" href="#crudlfap.views.generic.ObjectMixin.object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the object, uses get_object() if necessary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="crudlfap.views.generic.ObjectMixin.object_get">
+<code class="descname">object_get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/generic.html#ObjectMixin.object_get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.ObjectMixin.object_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the object, uses get_object() if necessary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="crudlfap.views.generic.ObjectMixin.object_set">
+<code class="descname">object_set</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/generic.html#ObjectMixin.object_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.ObjectMixin.object_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set self.object attribute.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="crudlfap.views.generic.ObjectViewMixin">
+<em class="property">class </em><code class="descclassname">crudlfap.views.generic.</code><code class="descname">ObjectViewMixin</code><a class="reference internal" href="_modules/crudlfap/views/generic.html#ObjectViewMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.ObjectViewMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mixin for views using a Model instance.</p>
+<dl class="method">
+<dt id="crudlfap.views.generic.ObjectViewMixin.get_slug_field">
+<code class="descname">get_slug_field</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/generic.html#ObjectViewMixin.get_slug_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.ObjectViewMixin.get_slug_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace Django’s get_slug_field with get_url_field.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="crudlfap.views.generic.ObjectViewMixin.get_url_args">
+<code class="descname">get_url_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/generic.html#ObjectViewMixin.get_url_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.ObjectViewMixin.get_url_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return <code class="docutils literal"><span class="pre">[self.object]</span></code>.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="crudlfap.views.generic.ObjectViewMixin.get_url_field">
+<em class="property">classmethod </em><code class="descname">get_url_field</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/generic.html#ObjectViewMixin.get_url_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.ObjectViewMixin.get_url_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the model field name to use in the url.</p>
+<p>By default, try router’s url_field, otherwise try <code class="docutils literal"><span class="pre">slug</span></code>,
+fallback on <code class="docutils literal"><span class="pre">pk</span></code>.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="crudlfap.views.generic.ObjectViewMixin.get_url_pattern">
+<em class="property">classmethod </em><code class="descname">get_url_pattern</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/generic.html#ObjectViewMixin.get_url_pattern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.ObjectViewMixin.get_url_pattern" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identify the object by slug or pk in the pattern.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crudlfap.views.generic.ObjectViewMixin.slug_url_kwarg">
+<code class="descname">slug_url_kwarg</code><a class="headerlink" href="#crudlfap.views.generic.ObjectViewMixin.slug_url_kwarg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace Django’s slug_url_kwarg with get_url_field.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="crudlfap.views.generic.ObjectViewMixin.to_url_args">
+<em class="property">classmethod </em><code class="descname">to_url_args</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/generic.html#ObjectViewMixin.to_url_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.ObjectViewMixin.to_url_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return first arg’s url_field attribute.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="crudlfap.views.generic.UpdateView">
+<em class="property">class </em><code class="descclassname">crudlfap.views.generic.</code><code class="descname">UpdateView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/generic.html#UpdateView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.UpdateView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model update view.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="crudlfap.views.generic.View">
+<em class="property">class </em><code class="descclassname">crudlfap.views.generic.</code><code class="descname">View</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/generic.html#View"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.View" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base view for CRUDLFA+.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="crudlfap.views.generic.ViewMixin">
+<em class="property">class </em><code class="descclassname">crudlfap.views.generic.</code><code class="descname">ViewMixin</code><a class="reference internal" href="_modules/crudlfap/views/generic.html#ViewMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.generic.ViewMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base View mixin for CRUDLFA+.</p>
+<p>If you have any question about style then find your answers in
+DefaultTemplateMixin, otherwise in RoutableViewMixin.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">CRUDLFA+</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="routable.html">View URL autogeneration mechanisms: RoutableViewMixin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="routers.html">URLPatterns autogeneration mechanisms: Router</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Views</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="routers.html" title="previous chapter">URLPatterns autogeneration mechanisms: Router</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, James Pic & Contributors.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/views.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

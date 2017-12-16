@@ -1,0 +1,321 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>View URL autogeneration mechanisms: RoutableViewMixin &#8212; CRUDLFA+ 0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="URLPatterns autogeneration mechanisms: Router" href="routers.html" />
+    <link rel="prev" title="Welcome to CRUDLFA+’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="view-url-autogeneration-mechanisms-routableviewmixin">
+<h1>View URL autogeneration mechanisms: RoutableViewMixin<a class="headerlink" href="#view-url-autogeneration-mechanisms-routableviewmixin" title="Permalink to this headline">¶</a></h1>
+<p>One of the key architectural concepts of CRUDLFA+ is the ability for views to
+generate their own URLs. This chapter reviews the different mechanisms in place
+and how they are overridable.</p>
+<p>Code which makes a view encapsulate what it takes to make it auto generate urls
+is located in the <a class="reference internal" href="#crudlfap.views.routable.RoutableViewMixin" title="crudlfap.views.routable.RoutableViewMixin"><code class="xref py py-class docutils literal"><span class="pre">RoutableViewMixin</span></code></a>, which
+we’ll describe intensively here.</p>
+<span class="target" id="module-crudlfap.views.routable"></span><p>Routable Views are fun.</p>
+<p>A view can reverse and generate its own URL:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span><span class="n">ExampleView</span><span class="o">.</span><span class="n">url</span><span class="p">()]</span>
+</pre></div>
+</div>
+<p>This means it must know its url pattern and name or how to generate them, but
+that doesn’t mean you can’t override them:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">ExampleView</span><span class="o">.</span><span class="n">factory</span><span class="p">(</span>
+        <span class="n">url_pattern</span><span class="o">=</span><span class="s1">&#39;yoururlpattern/$&#39;</span><span class="p">,</span>
+        <span class="n">url_name</span><span class="o">=</span><span class="s1">&#39;yoururlname&#39;</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">url</span><span class="p">()</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>The problem with all this magic is that then you loose the ability to read the
+truck load of urls.py that you have written manually to find your view or debug
+things. To compensate for this, consider using : we offer lovely debug views in
+crudflap.views.debug.</p>
+<dl class="class">
+<dt id="crudlfap.views.routable.RoutableViewMixin">
+<em class="property">class </em><code class="descclassname">crudlfap.views.routable.</code><code class="descname">RoutableViewMixin</code><a class="reference internal" href="_modules/crudlfap/views/routable.html#RoutableViewMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.routable.RoutableViewMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Let your view route itself.</p>
+<p>RoutableView differ from Django Views because they have a slug class
+attribute. This slug may be defined in the view class or is autocalculated
+based on the view class name. The slug is then used to generate the default
+url name and patterns, which you might has well want to override.</p>
+<p>The view may have a model, in which case it will prefix the url name with
+it.</p>
+<p>All the following attributes are optionnal, but if you want to override
+some of them you don’t have to create a subclass: just use
+RoutableView.factory(), it will dynamically create the subclass for you.</p>
+<dl class="attribute">
+<dt id="crudlfap.views.routable.RoutableViewMixin.slug">
+<code class="descname">slug</code><a class="headerlink" href="#crudlfap.views.routable.RoutableViewMixin.slug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slug name of this view, often properly automatically generated
+from view class name uppon registration.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crudlfap.views.routable.RoutableViewMixin.url_pattern">
+<code class="descname">url_pattern</code><a class="headerlink" href="#crudlfap.views.routable.RoutableViewMixin.url_pattern" title="Permalink to this definition">¶</a></dt>
+<dd><p>URL pattern to use for this view.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crudlfap.views.routable.RoutableViewMixin.url_prefix">
+<code class="descname">url_prefix</code><a class="headerlink" href="#crudlfap.views.routable.RoutableViewMixin.url_prefix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prefix for the URL pattern of this view.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crudlfap.views.routable.RoutableViewMixin.url_name">
+<code class="descname">url_name</code><a class="headerlink" href="#crudlfap.views.routable.RoutableViewMixin.url_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name for the URL this view should return in url().</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crudlfap.views.routable.RoutableViewMixin.model">
+<code class="descname">model</code><a class="headerlink" href="#crudlfap.views.routable.RoutableViewMixin.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optionnal model class, used to prefix url_name if set.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crudlfap.views.routable.RoutableViewMixin.router">
+<code class="descname">router</code><a class="headerlink" href="#crudlfap.views.routable.RoutableViewMixin.router" title="Permalink to this definition">¶</a></dt>
+<dd><p>If you’re using the CRUDLFA+ Router to register a View, then this will
+be automatically populated when the Router instanciates. So far, it’s
+only used in get_url_prefx() to get the url_prefix that the router for
+this view might have. But you should probably use it to also return the
+default form_class, fields, and so on, which is what CRUDLFA+ generic
+views do.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="crudlfap.views.routable.RoutableViewMixin.allow">
+<code class="descname">allow</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/routable.html#RoutableViewMixin.allow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.routable.RoutableViewMixin.allow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Must return True if it dispatching this view is allowed.</p>
+<p>This means that the view should be instanciated with all the context it
+needs for this method to work.</p>
+<p>The best way for you to understand the pattern being this is this
+pseudo code:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SomeDetailView</span><span class="p">(</span><span class="n">DetailView</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="c1"># For the object used in this view instance, we would</span>
+            <span class="c1"># also have been allowed to execute the delete view</span>
+            <span class="c1"># with this request.</span>
+            <span class="n">can_delete</span><span class="o">=</span><span class="n">SomeDeleteView</span><span class="p">(</span>
+                <span class="nb">object</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="p">,</span>
+                <span class="n">request</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">allow</span><span class="p">()</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+<p>This means that your view classes are ready for an allow() override
+which considers that the view object was instanciated with everything
+it would need to dispatch.</p>
+<p>By default, this proxies the router’s allow() method which returns True
+for staff users by default.  If the view has no router then it returns
+True if the request user is_staff.</p>
+<p>Override with a lambda in a factory if you want to open to all:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">YourView</span><span class="o">.</span><span class="n">factory</span><span class="p">(</span><span class="n">allow</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can also set allow on the router if you want to allow a whole
+router:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">YourRouter</span><span class="p">(</span><span class="n">YourModel</span><span class="p">,</span> <span class="n">allow</span><span class="o">=</span><span class="k">lambda</span> <span class="n">r</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="crudlfap.views.routable.RoutableViewMixin.dispatch">
+<code class="descname">dispatch</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/routable.html#RoutableViewMixin.dispatch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.routable.RoutableViewMixin.dispatch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run allow() before dispatch(), because that’s what its for.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="crudlfap.views.routable.RoutableViewMixin.factory">
+<em class="property">classmethod </em><code class="descname">factory</code><span class="sig-paren">(</span><em>**attributes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/routable.html#RoutableViewMixin.factory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.routable.RoutableViewMixin.factory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a subclass with the given attributes.</p>
+<p>Ie.:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">YourModelListView</span><span class="p">(</span><span class="n">ListView</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Foo</span>
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span><span class="n">YourModelListView</span><span class="o">.</span><span class="n">url</span><span class="p">()]</span>
+</pre></div>
+</div>
+<p>Becomes as easy as:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span><span class="n">ListView</span><span class="o">.</span><span class="n">factory</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">YourModel</span><span class="p">)</span><span class="o">.</span><span class="n">url</span><span class="p">()]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="crudlfap.views.routable.RoutableViewMixin.get_slug">
+<em class="property">classmethod </em><code class="descname">get_slug</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/routable.html#RoutableViewMixin.get_slug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.routable.RoutableViewMixin.get_slug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the view class slug.</p>
+<p>Strip model (if any) class name and ‘View’ suffix from view class name.
+Ie. YourModelCreateView gets the ‘create’ slug.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="crudlfap.views.routable.RoutableViewMixin.get_url_args">
+<code class="descname">get_url_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/routable.html#RoutableViewMixin.get_url_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.routable.RoutableViewMixin.get_url_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return args for reversing this view url from self.</p>
+<p>See <code class="docutils literal"><span class="pre">self_reverse()</span></code> for detail.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="crudlfap.views.routable.RoutableViewMixin.get_url_name">
+<em class="property">classmethod </em><code class="descname">get_url_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/routable.html#RoutableViewMixin.get_url_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.routable.RoutableViewMixin.get_url_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the url name for this view.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="crudlfap.views.routable.RoutableViewMixin.get_url_pattern">
+<em class="property">classmethod </em><code class="descname">get_url_pattern</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/routable.html#RoutableViewMixin.get_url_pattern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.routable.RoutableViewMixin.get_url_pattern" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the url pattern for this view.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="crudlfap.views.routable.RoutableViewMixin.get_url_prefix">
+<em class="property">classmethod </em><code class="descname">get_url_prefix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/routable.html#RoutableViewMixin.get_url_prefix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.routable.RoutableViewMixin.get_url_prefix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the router prefix or the view’s url_prefix.</p>
+<p>Prepended to get_url_pattern() by url().</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="crudlfap.views.routable.RoutableViewMixin.href">
+<code class="descname">href</code><a class="headerlink" href="#crudlfap.views.routable.RoutableViewMixin.href" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the URL for this view given its current state.</p>
+<p>Given that the <code class="docutils literal"><span class="pre">reverse()</span></code> method is a class method, this should
+allow things like:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="n">YourView</span><span class="p">(</span><span class="nb">object</span><span class="o">=</span><span class="n">your_object</span><span class="p">)</span><span class="o">.</span><span class="n">url</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="crudlfap.views.routable.RoutableViewMixin.reverse">
+<em class="property">classmethod </em><code class="descname">reverse</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/routable.html#RoutableViewMixin.reverse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.routable.RoutableViewMixin.reverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reverse a url to this view with the given args.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="crudlfap.views.routable.RoutableViewMixin.to_url_args">
+<em class="property">classmethod </em><code class="descname">to_url_args</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/routable.html#RoutableViewMixin.to_url_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.routable.RoutableViewMixin.to_url_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return url reverse args given these args.</p>
+<p>This method makes it possible to transform or add args passed to
+reverse() before they are used.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="crudlfap.views.routable.RoutableViewMixin.url">
+<em class="property">classmethod </em><code class="descname">url</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crudlfap/views/routable.html#RoutableViewMixin.url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crudlfap.views.routable.RoutableViewMixin.url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the Django url object.</p>
+<p>This class method does not take any argument, and won’t pass any when
+calling as_view(). Instead, you can use factory() as such:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span><span class="n">ListView</span><span class="o">.</span><span class="n">factory</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">Lul</span><span class="p">,</span> <span class="n">paginate_by</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">url</span><span class="p">()]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">CRUDLFA+</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">View URL autogeneration mechanisms: RoutableViewMixin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="routers.html">URLPatterns autogeneration mechanisms: Router</a></li>
+<li class="toctree-l1"><a class="reference internal" href="views.html">Views</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to CRUDLFA+’s documentation!</a></li>
+      <li>Next: <a href="routers.html" title="next chapter">URLPatterns autogeneration mechanisms: Router</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, James Pic & Contributors.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/routable.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

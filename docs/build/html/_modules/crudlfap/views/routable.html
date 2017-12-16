@@ -1,0 +1,364 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>crudlfap.views.routable &#8212; CRUDLFA+ 0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for crudlfap.views.routable</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Routable Views are fun.</span>
+
+<span class="sd">A view can reverse and generate its own URL::</span>
+
+<span class="sd">    urlpatterns = [ExampleView.url()]</span>
+
+<span class="sd">This means it must know its url pattern and name or how to generate them, but</span>
+<span class="sd">that doesn&#39;t mean you can&#39;t override them::</span>
+
+<span class="sd">    urlpatterns = [</span>
+<span class="sd">        ExampleView.factory(</span>
+<span class="sd">            url_pattern=&#39;yoururlpattern/$&#39;,</span>
+<span class="sd">            url_name=&#39;yoururlname&#39;,</span>
+<span class="sd">        ).url()</span>
+<span class="sd">    ]</span>
+
+<span class="sd">The problem with all this magic is that then you loose the ability to read the</span>
+<span class="sd">truck load of urls.py that you have written manually to find your view or debug</span>
+<span class="sd">things. To compensate for this, consider using : we offer lovely debug views in</span>
+<span class="sd">crudflap.views.debug.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">django</span> <span class="k">import</span> <span class="n">http</span>
+<span class="kn">from</span> <span class="nn">django.conf.urls</span> <span class="k">import</span> <span class="n">url</span>
+<span class="kn">from</span> <span class="nn">django.urls</span> <span class="k">import</span> <span class="n">reverse_lazy</span>
+
+
+<div class="viewcode-block" id="RoutableViewMixin"><a class="viewcode-back" href="../../../routable.html#crudlfap.views.routable.RoutableViewMixin">[docs]</a><span class="k">class</span> <span class="nc">RoutableViewMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Let your view route itself.</span>
+
+<span class="sd">    RoutableView differ from Django Views because they have a slug class</span>
+<span class="sd">    attribute. This slug may be defined in the view class or is autocalculated</span>
+<span class="sd">    based on the view class name. The slug is then used to generate the default</span>
+<span class="sd">    url name and patterns, which you might has well want to override.</span>
+
+<span class="sd">    The view may have a model, in which case it will prefix the url name with</span>
+<span class="sd">    it.</span>
+
+<span class="sd">    All the following attributes are optionnal, but if you want to override</span>
+<span class="sd">    some of them you don&#39;t have to create a subclass: just use</span>
+<span class="sd">    RoutableView.factory(), it will dynamically create the subclass for you.</span>
+
+<span class="sd">    .. py:attribute:: slug</span>
+
+<span class="sd">        Slug name of this view, often properly automatically generated</span>
+<span class="sd">        from view class name uppon registration.</span>
+
+<span class="sd">    .. py:attribute:: url_pattern</span>
+
+<span class="sd">        URL pattern to use for this view.</span>
+
+<span class="sd">    .. py:attribute:: url_prefix</span>
+
+<span class="sd">        Prefix for the URL pattern of this view.</span>
+
+<span class="sd">    .. py:attribute:: url_name</span>
+
+<span class="sd">        Name for the URL this view should return in url().</span>
+
+<span class="sd">    .. py:attribute:: model</span>
+
+<span class="sd">        Optionnal model class, used to prefix url_name if set.</span>
+
+<span class="sd">    .. py:attribute:: router</span>
+
+<span class="sd">        If you&#39;re using the CRUDLFA+ Router to register a View, then this will</span>
+<span class="sd">        be automatically populated when the Router instanciates. So far, it&#39;s</span>
+<span class="sd">        only used in get_url_prefx() to get the url_prefix that the router for</span>
+<span class="sd">        this view might have. But you should probably use it to also return the</span>
+<span class="sd">        default form_class, fields, and so on, which is what CRUDLFA+ generic</span>
+<span class="sd">        views do.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">url_pattern</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">url_prefix</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">url_name</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">router</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="RoutableViewMixin.factory"><a class="viewcode-back" href="../../../routable.html#crudlfap.views.routable.RoutableViewMixin.factory">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">factory</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">attributes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a subclass with the given attributes.</span>
+
+<span class="sd">        Ie.::</span>
+
+<span class="sd">            class YourModelListView(ListView):</span>
+<span class="sd">                model = Foo</span>
+<span class="sd">            urlpatterns = [YourModelListView.url()]</span>
+
+<span class="sd">        Becomes as easy as::</span>
+
+<span class="sd">            urlpatterns = [ListView.factory(model=YourModel).url()]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">attributes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="ow">and</span> <span class="n">model</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="bp">cls</span><span class="p">,),</span> <span class="n">attributes</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RoutableViewMixin.url"><a class="viewcode-back" href="../../../routable.html#crudlfap.views.routable.RoutableViewMixin.url">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the Django url object.</span>
+
+<span class="sd">        This class method does not take any argument, and won&#39;t pass any when</span>
+<span class="sd">        calling as_view(). Instead, you can use factory() as such::</span>
+
+<span class="sd">            urlpatterns = [ListView.factory(model=Lul, paginate_by=10).url()]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">url</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">get_url_prefix</span><span class="p">(),</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">get_url_pattern</span><span class="p">(),</span>
+            <span class="p">),</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span>
+            <span class="n">name</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">get_url_name</span><span class="p">(),</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="RoutableViewMixin.get_url_prefix"><a class="viewcode-back" href="../../../routable.html#crudlfap.views.routable.RoutableViewMixin.get_url_prefix">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_url_prefix</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the router prefix or the view&#39;s url_prefix.</span>
+
+<span class="sd">        Prepended to get_url_pattern() by url().</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">url_prefix</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;url_prefix&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">url_prefix</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;router&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">url_prefix</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">url_prefix</span>
+        <span class="k">return</span> <span class="n">url_prefix</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span></div>
+
+<div class="viewcode-block" id="RoutableViewMixin.get_url_pattern"><a class="viewcode-back" href="../../../routable.html#crudlfap.views.routable.RoutableViewMixin.get_url_pattern">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_url_pattern</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the url pattern for this view.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">url_pattern</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">url_pattern</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">get_slug</span><span class="p">())</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/$&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">get_slug</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="RoutableViewMixin.get_slug"><a class="viewcode-back" href="../../../routable.html#crudlfap.views.routable.RoutableViewMixin.get_slug">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_slug</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the view class slug.</span>
+
+<span class="sd">        Strip model (if any) class name and &#39;View&#39; suffix from view class name.</span>
+<span class="sd">        Ie. YourModelCreateView gets the &#39;create&#39; slug.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">slug</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;slug&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">slug</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">slug</span>
+
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">model</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;View&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;(.)([A-Z][a-z]+)&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\1_\2&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;([a-z0-9])([A-Z])&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\1_\2&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="RoutableViewMixin.get_url_name"><a class="viewcode-back" href="../../../routable.html#crudlfap.views.routable.RoutableViewMixin.get_url_name">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_url_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the url name for this view.&quot;&quot;&quot;</span>
+        <span class="n">url_name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;url_name&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">url_name</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">url_name</span>
+
+        <span class="n">parts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">model</span><span class="p">:</span>
+            <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">model_name</span><span class="p">)</span>
+        <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">get_slug</span><span class="p">())</span>
+        <span class="k">return</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RoutableViewMixin.to_url_args"><a class="viewcode-back" href="../../../routable.html#crudlfap.views.routable.RoutableViewMixin.to_url_args">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">to_url_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return url reverse args given these args.</span>
+
+<span class="sd">        This method makes it possible to transform or add args passed to</span>
+<span class="sd">        reverse() before they are used.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">args</span></div>
+
+<div class="viewcode-block" id="RoutableViewMixin.reverse"><a class="viewcode-back" href="../../../routable.html#crudlfap.views.routable.RoutableViewMixin.reverse">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">reverse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reverse a url to this view with the given args.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">reverse_lazy</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">get_url_name</span><span class="p">(),</span> <span class="n">args</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">to_url_args</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="RoutableViewMixin.get_url_args"><a class="viewcode-back" href="../../../routable.html#crudlfap.views.routable.RoutableViewMixin.get_url_args">[docs]</a>    <span class="k">def</span> <span class="nf">get_url_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return args for reversing this view url from self.</span>
+
+<span class="sd">        See ``self_reverse()`` for detail.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[]</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">href</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the URL for this view given its current state.</span>
+
+<span class="sd">        Given that the ``reverse()`` method is a class method, this should</span>
+<span class="sd">        allow things like::</span>
+
+<span class="sd">            url = YourView(object=your_object).url</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">get_url_args</span><span class="p">())</span>
+
+<div class="viewcode-block" id="RoutableViewMixin.allow"><a class="viewcode-back" href="../../../routable.html#crudlfap.views.routable.RoutableViewMixin.allow">[docs]</a>    <span class="k">def</span> <span class="nf">allow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Must return True if it dispatching this view is allowed.</span>
+
+<span class="sd">        This means that the view should be instanciated with all the context it</span>
+<span class="sd">        needs for this method to work.</span>
+
+<span class="sd">        The best way for you to understand the pattern being this is this</span>
+<span class="sd">        pseudo code::</span>
+
+<span class="sd">            class SomeDetailView(DetailView):</span>
+<span class="sd">                def get_context_data(self):</span>
+<span class="sd">                    return dict(</span>
+<span class="sd">                        # For the object used in this view instance, we would</span>
+<span class="sd">                        # also have been allowed to execute the delete view</span>
+<span class="sd">                        # with this request.</span>
+<span class="sd">                        can_delete=SomeDeleteView(</span>
+<span class="sd">                            object=self.object,</span>
+<span class="sd">                            request=self.request,</span>
+<span class="sd">                        ).allow()</span>
+<span class="sd">                    )</span>
+
+<span class="sd">        This means that your view classes are ready for an allow() override</span>
+<span class="sd">        which considers that the view object was instanciated with everything</span>
+<span class="sd">        it would need to dispatch.</span>
+
+<span class="sd">        By default, this proxies the router&#39;s allow() method which returns True</span>
+<span class="sd">        for staff users by default.  If the view has no router then it returns</span>
+<span class="sd">        True if the request user is_staff.</span>
+
+<span class="sd">        Override with a lambda in a factory if you want to open to all::</span>
+
+<span class="sd">            YourView.factory(allow=lambda v: True)</span>
+
+<span class="sd">        You can also set allow on the router if you want to allow a whole</span>
+<span class="sd">        router::</span>
+
+<span class="sd">            YourRouter(YourModel, allow=lambda r, v: True)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">router</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_staff</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">allow</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RoutableViewMixin.dispatch"><a class="viewcode-back" href="../../../routable.html#crudlfap.views.routable.RoutableViewMixin.dispatch">[docs]</a>    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run allow() before dispatch(), because that&#39;s what its for.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">allow</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">http</span><span class="o">.</span><span class="n">HttpResponseNotFound</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">CRUDLFA+</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../routable.html">View URL autogeneration mechanisms: RoutableViewMixin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../routers.html">URLPatterns autogeneration mechanisms: Router</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../views.html">Views</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, James Pic & Contributors.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

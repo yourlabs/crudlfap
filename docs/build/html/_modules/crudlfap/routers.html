@@ -1,0 +1,319 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>crudlfap.routers &#8212; CRUDLFA+ 0.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for crudlfap.routers</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">CRUDLFA+ router for Django 2.0.</span>
+
+<span class="sd">Note that you can also use non-database backed models, by inheriting from</span>
+<span class="sd">models.Model and setting their Meta.managed attribute to False. Then, you can</span>
+<span class="sd">use CRUDLFA+ views and routers.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">django.apps</span> <span class="k">import</span> <span class="n">apps</span>
+<span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="k">import</span> <span class="n">FieldDoesNotExist</span>
+<span class="kn">from</span> <span class="nn">django.utils.module_loading</span> <span class="k">import</span> <span class="n">import_string</span>
+
+<span class="kn">from</span> <span class="nn">.views.routable</span> <span class="k">import</span> <span class="n">RoutableViewMixin</span>
+
+
+<span class="n">crudlfap</span> <span class="o">=</span> <span class="n">apps</span><span class="o">.</span><span class="n">get_app_config</span><span class="p">(</span><span class="s1">&#39;crudlfap&#39;</span><span class="p">)</span>  <span class="c1"># pylint: disable=invalid-name</span>
+
+
+<div class="viewcode-block" id="RouterRegistry"><a class="viewcode-back" href="../../routers.html#crudlfap.routers.RouterRegistry">[docs]</a><span class="k">class</span> <span class="nc">RouterRegistry</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Registers Routers which have generated urlpatterns in this thread.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="RouterRegistry.get_app_menus"><a class="viewcode-back" href="../../routers.html#crudlfap.routers.RouterRegistry.get_app_menus">[docs]</a>    <span class="k">def</span> <span class="nf">get_app_menus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sort Router instances by app name.&quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">model</span><span class="p">,</span> <span class="n">router</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">menu</span> <span class="o">=</span> <span class="n">router</span><span class="o">.</span><span class="n">get_menu</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">menu</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">app</span> <span class="o">=</span> <span class="n">apps</span><span class="o">.</span><span class="n">get_app_config</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">app_label</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">app</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">router</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a router instance by model class, instance or dotted name.&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">django.db</span> <span class="k">import</span> <span class="n">models</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+            <span class="n">arg</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">arg</span> <span class="o">=</span> <span class="n">apps</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="o">*</span><span class="n">arg</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Router"><a class="viewcode-back" href="../../routers.html#crudlfap.routers.Router">[docs]</a><span class="k">class</span> <span class="nc">Router</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base router for CRUDLFA+ RoutableView.</span>
+
+<span class="sd">    .. py:attribute:: model</span>
+
+<span class="sd">        Optional model class for this Router and all its views.</span>
+
+<span class="sd">    .. py:attribute:: url_prefix</span>
+
+<span class="sd">        Optional url prefix for all of this Router&#39;s views.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">registry</span> <span class="o">=</span> <span class="n">RouterRegistry</span><span class="p">()</span>
+
+    <span class="n">views</span> <span class="o">=</span> <span class="n">crudlfap</span><span class="o">.</span><span class="n">get_default_views</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Router.generate_views"><a class="viewcode-back" href="../../routers.html#crudlfap.routers.Router.generate_views">[docs]</a>    <span class="k">def</span> <span class="nf">generate_views</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">views</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate views for this router, core of the automation in CRUDLFA+.</span>
+
+<span class="sd">        This method considers each view in given args or self.views and returns</span>
+<span class="sd">        a list of usable views.</span>
+
+<span class="sd">        Each arg may be a view class or a dict of attributes with a `_cls` key</span>
+<span class="sd">        for the actual view class.</span>
+
+<span class="sd">        It will copy the view class and bind the router on it in the list this</span>
+<span class="sd">        returns.</span>
+
+<span class="sd">        For example, this would cause two view classes to be returned, if</span>
+<span class="sd">        self.model is ``Artist``, then ``CreateView`` will be used as parent to</span>
+<span class="sd">        create ``ArtistCreateView`` and ``DetailView`` will be used to create</span>
+<span class="sd">        ``ArtistDetailView``, also setting the attribute</span>
+<span class="sd">        ``extra_stuff=&#39;bar&#39;``::</span>
+
+<span class="sd">            Router(Artist).generate_views(</span>
+<span class="sd">                [CreateView, dict(_cls=DetailView, extra_stuff=&#39;bar&#39;)]</span>
+<span class="sd">            )</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">views</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">views</span><span class="p">:</span>
+            <span class="n">view</span> <span class="o">=</span> <span class="n">arg</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">view</span> <span class="o">=</span> <span class="n">import_string</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">RoutableViewMixin</span><span class="p">):</span>
+                    <span class="n">view</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">RoutableViewMixin</span><span class="p">),</span> <span class="p">{})</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Got an error with view:&#39;</span><span class="p">,</span> <span class="n">view</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">e</span>
+
+            <span class="n">view</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">factory</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                <span class="n">router</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Set this after setting the model in the factory() call above</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">slug</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">get_slug</span><span class="p">()</span>
+
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">url_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">views</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">attributes</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Create a Router for a Model.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url_prefix</span> <span class="o">=</span> <span class="n">url_prefix</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">url_field</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="s1">&#39;slug&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">FieldDoesNotExist</span><span class="p">:</span>
+                <span class="n">url_field</span> <span class="o">=</span> <span class="s1">&#39;pk&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">url_field</span> <span class="o">=</span> <span class="s1">&#39;slug&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url_field</span> <span class="o">=</span> <span class="n">url_field</span>
+
+        <span class="k">if</span> <span class="n">fields</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> has no fields, defaulting to __all__ to get out of your&#39;</span>
+                <span class="s1">&#39; way, but this is not secure because it means users can see&#39;</span>
+                <span class="s1">&#39; and edit any field, which is not necessarily secure,&#39;</span>
+                <span class="s1">&#39; depending on your model.&#39;</span>
+                <span class="s1">&#39; If this is really what you want, please set fields=&quot;__all__&quot;&#39;</span>
+                <span class="s1">&#39; at the router level&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="s1">&#39;__all__&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="n">fields</span>
+
+        <span class="c1"># Save the user a type() call, really ? mehh</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">attributes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">views</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_views</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">views</span> <span class="ow">or</span> <span class="p">[]))</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slug</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get a view by slug.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">views</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">view</span><span class="o">.</span><span class="n">get_slug</span><span class="p">()</span> <span class="o">==</span> <span class="n">slug</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">view</span>
+
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+            <span class="s1">&#39;View with slug </span><span class="si">{}</span><span class="s1"> not in router </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">slug</span><span class="p">,</span>
+                <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="Router.urlpatterns"><a class="viewcode-back" href="../../routers.html#crudlfap.routers.Router.urlpatterns">[docs]</a>    <span class="k">def</span> <span class="nf">urlpatterns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate URL patterns for this Router views.</span>
+
+<span class="sd">        Also, adds the get_absolute_url() method to the model class if it has</span>
+<span class="sd">        None, to return the reversed url for this instance to the view of this</span>
+<span class="sd">        Router with the ``detail`` slug.</span>
+
+<span class="sd">        Set get_absolute_url in your model class to disable this feature. Until</span>
+<span class="sd">        then, welcome in 2017.</span>
+
+<span class="sd">        Also, register this router as default router for its model class in the</span>
+<span class="sd">        RouterRegistry.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">registry</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s1">&#39;get_absolute_url&#39;</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">get_absolute_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">Router</span><span class="o">.</span><span class="n">registry</span><span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)][</span><span class="s1">&#39;detail&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_absolute_url</span> <span class="o">=</span> <span class="n">get_absolute_url</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">view</span><span class="o">.</span><span class="n">url</span><span class="p">()</span> <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">views</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Router.get_menu"><a class="viewcode-back" href="../../routers.html#crudlfap.routers.Router.get_menu">[docs]</a>    <span class="k">def</span> <span class="nf">get_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return allowed view objects which have ``name`` in their ``menus``.</span>
+
+<span class="sd">        For each view class in self.views which have ``name`` in their</span>
+<span class="sd">        ``menus`` attribute, instanciate the view class with ``request`` and</span>
+<span class="sd">        kwargs, call ``allow()`` on it.</span>
+
+<span class="sd">        Return the list of view instances for which ``allow()`` has passed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">views</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">views</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">&#39;menus&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+                <span class="k">continue</span>
+
+            <span class="n">view</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">factory</span><span class="p">(</span><span class="n">request</span><span class="o">=</span><span class="n">request</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)()</span>
+
+            <span class="k">if</span> <span class="n">view</span><span class="o">.</span><span class="n">allow</span><span class="p">():</span>
+                <span class="n">views</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">views</span></div>
+
+<div class="viewcode-block" id="Router.allow"><a class="viewcode-back" href="../../routers.html#crudlfap.routers.Router.allow">[docs]</a>    <span class="k">def</span> <span class="nf">allow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return True to allow a access to a view.</span>
+
+<span class="sd">        Called by the default view.allow() implementation.</span>
+
+<span class="sd">        If you override the view.allow() method, then it&#39;s up to you</span>
+<span class="sd">        to decide if you want to call this method or not.</span>
+
+<span class="sd">        Returns True if user.is_staff by default.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">view</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_staff</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">CRUDLFA+</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../routable.html">View URL autogeneration mechanisms: RoutableViewMixin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../routers.html">URLPatterns autogeneration mechanisms: Router</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../views.html">Views</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, James Pic & Contributors.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
