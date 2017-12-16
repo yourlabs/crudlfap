@@ -215,3 +215,19 @@ class Router(object):
         Returns True if user.is_staff by default.
         """
         return view.request.user.is_staff
+
+    @property
+    def fields(self):
+        return self.fields_filter(lambda f: True)
+
+    @fields.setter
+    def fields(self, value):
+        self._fields = value
+
+    def fields_filter(self, condition):
+        fields = getattr(self, '_fields', None)
+        if fields == '__all__':
+            fields = [
+                f.name for f in self.model._meta.fields
+            ]
+        return [f for f in fields if condition(self.model._meta.get_field(f))]

@@ -70,15 +70,8 @@ class ModelViewMixin(ViewMixin):
 
     @property
     def fields(self):
-        """Return router.fields or None, field names if ``__all__``."""
-        fields = getattr(self.router, 'fields', None)
-        if fields == '__all__':
-            fields = [
-                f.name for f in self.model._meta.fields
-                if not f.primary_key or not getattr(
-                    self, 'with_pk', False)
-            ]
-        return fields
+        """Return router fields."""
+        return self.router.fields_filter(lambda f: True)
 
     @property
     def exclude(self):
@@ -206,6 +199,11 @@ class FormView(FormViewMixin, generic.FormView):
 
 class ModelFormViewMixin(ModelViewMixin, FormViewMixin):
     """ModelForm ViewMixin using readable"""
+
+    @property
+    def fields(self):
+        """Return router.fields_editable."""
+        return self.router.fields_filter(lambda f: f.editable)
 
     def form_invalid(self, form):
         messages.error(
