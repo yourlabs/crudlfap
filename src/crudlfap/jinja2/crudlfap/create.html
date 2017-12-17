@@ -1,8 +1,12 @@
 {% extends 'crudlfap/form.html' %}
 
 {% block breadcrumb %}
-<nav class="breadcrumb">
-  {% include 'crudlfap/_breadcrumb_object.html' %}
+<nav>
+  <div class="nav-wrapper">
+    <div class="col s12">
+      {% include 'crudlfap/_breadcrumb_object.html' %}
+    </div>
+  </div>
 </nav>
 {% endblock %}
 

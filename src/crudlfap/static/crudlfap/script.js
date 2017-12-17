@@ -105,6 +105,7 @@ crudlfap.completePage = function($data, options, jqXHR) {
 
 crudlfap.completeModal = function($data, options, jqXHR) {
     // Fill in Modal
+    /*
     $('#modal .modal-content').removeClass(function (index, className) {
         return (className.match (/(^|\s)panel-\S+/g) || []).join(' ');
     }).addClass('panel-' + crudlfap.state.style);
@@ -112,11 +113,26 @@ crudlfap.completeModal = function($data, options, jqXHR) {
     $('#modal .modal-title').removeClass(function (index, className) {
         return (className.match (/(^|\s)text-\S+/g) || []).join(' ');
     }).addClass('text-' + crudlfap.state.style);
+    */
 
     $('#modal .modal-body').html($data.find('#modal-body-ajax').html())
     $('#modal .modal-body-ajax').prepend($data.find('#messages'));
     $('#modal .modal-title').html($data.find('#modal-title-ajax').html());
-    $('#modal').modal();
+    $('#modal').modal({
+      	dismissible: true,
+		opacity: .5,
+		inDuration: 300, // Transition in duration
+        outDuration: 200, // Transition out duration
+        startingTop: '4%', // Starting top style attribute
+        endingTop: '10%', // Ending top style attribute
+        ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+            alert("Ready");
+            console.log(modal, trigger);
+        },
+        complete: function() { alert('Closed'); } // Callback for Modal close
+
+    });
+    console.log('modalcomplete !')
 }
 
 crudlfap.completeForm = function($data, options, jqXHR) {
@@ -287,5 +303,8 @@ $(document).ready(function() {
 
     $('body').on('keyup', '.django-filter-ajax input', window.crudlfap.list);
     $('body').on('change', '.django-filter-ajax select', window.crudlfap.list);
+
+    // sidebar
+    $('.button-collapse').sideNav();
 });
 

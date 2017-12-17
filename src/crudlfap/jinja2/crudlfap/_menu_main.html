@@ -1,75 +1,54 @@
-<!-- Static navbar -->
-<nav class="navbar navbar-inverse pmd-navbar pmd-z-depth navbar-fixed-top">
-  <div class="container-fluid">
-
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-
-      {% if settings.SITE_NAME %}
-      <a class="navbar-brand" href="/">{{ settings.SITE_NAME }}</a>
-      {% endif %}
-    </div>
-
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="/">Home</a></li>
-        {% for app, routers in Router.registry.get_app_menus('main', request).items() %}
-        <li class="dropdown pmd-dropdown">
-          <a href="#" class="dropdown-toggle pmd-ripple-effect" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ app.verbose_name }} <span class="caret"></span></a>
-            <ul class="dropdown-menu" role="menu">
-              {% for router in routers %}
-                {% for v in router.get_menu('main', request) %}
-                <li>
-                    <a
-                        href="{{ v.reverse() }}"
-                        class="{% if v == view %}active{% endif %}"
-                        title="{% if v.title %}{{ v.title }}{% endif %}"
-                        {% if v.ajax %}
-                        data-ajax="{{ v.ajax }}"
-                        {% endif %}
-                    >{{ v.model._meta.verbose_name_plural.capitalize() }} {{ _(v.slug|capfirst) }}</a>
-                </li>
-                {% endfor %}
-              {% endfor %}
-            </ul>
-        </li>
-        {% endfor %}
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        {% if not request.user.is_authenticated %}
-        <li>
-          <a
-              href="{{ url('login') }}"
-              data-ajax="_modal"
-              >{{ _('Login') }}</a>
-        </li>
-        {% else %}
-        <li class="dropdown pmd-dropdown">
-            <a href="#" class="dropdown-toggle pmd-ripple-effect" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ request.user }} <span class="caret"></span></a>
-            <ul class="dropdown-menu">
-                <li>
-                    <a class="dropdown-item" href="{{ url('logout') }}">{{ _('Logout') }}</a>
-                </li>
-            </ul>
-        </li>
-        {% endif %}
-        {% if request.user.is_superuser %}
-        <li class="dropdown pmd-dropdown">
-          <a href="#" class="dropdown-toggle pmd-ripple-effect" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">CRUDLFA+ <span class="caret"></span></a>
-          <ul class="dropdown-menu">
+<ul id="slide-out" class="side-nav fixed">
+  <li>
+    <a href="">{{ settings.SITE_NAME }}</a>
+  </li>
+  {% if request.user.is_authenticated %}
+  <li class="no-padding">
+    <ul class="collapsible collapsible-accordion">
+      <li>
+        <a class="collapsible-header waves-effect waves-teal">{{ request.user }}<i class="material-icons">arrow_drop_down</i></a>
+        <div class="collapsible-body">
+          <ul>
             <li>
-              <a class="dropdown-item" href="{{ url('crudlfap_urls') }}">URLs</a>
+              <a href="{{ url('logout') }}">{{ _('Logout') }}</a>
+              {% if request.user.is_superuser %}
+              <a href="{{ url('crudlfap_urls') }}">URLs</a>
+              {% endif %}
             </li>
           </ul>
-        </li>
-        {% endif %}
-      </ul>
-    </div><!--/.nav-collapse -->
-
-  </div><!--/.container-fluid -->
-</nav>
+        </div>
+      </li>
+    </ul>
+  </li>
+  {% else %}
+  <li>
+    <a
+      href="{{ url('login') }}"
+      data-ajax="_modal"
+    ><i class="material-icons">cloud</i>{{ _('Login') }}</a>
+  </li>
+  {% endif %}
+  {% for app, routers in Router.registry.get_app_menus('main', request).items() %}
+    {% for router in routers %}
+      {% for v in router.get_menu('main', request) %}
+      <li>
+        <a
+            href="{{ v.reverse() }}"
+            class="{% if v == view %}active{% endif %}"
+            title="{% if v.title %}{{ v.title }}{% endif %}"
+            {% if v.ajax %}
+            data-ajax="{{ v.ajax }}"
+            {% endif %}
+        ><i class="material-icons">{{ v.material_icon }}</i>{{ v.model._meta.verbose_name_plural.capitalize() }} {{ _(v.slug|capfirst) }}</a>
+      </li>
+      {% endfor %}
+    {% endfor %}
+  {% endfor %}
+</ul>
+<div id="menu-toggle">
+  <a
+    href="#"
+    data-activates="slide-out"
+    class="button-collapse btn-floating pulse"
+    ><i class="material-icons">menu</i></a>
+</div>
