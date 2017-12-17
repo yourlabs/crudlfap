@@ -1,52 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="{{ static('favicon.ico') }}">
+    <link href="{{ static ('material/fonts/material-design-icons/material-icons.css') }}" rel="stylesheet">
+    <link href="{{ static ('crudlfap/materialize/css/materialize.css') }}" rel="stylesheet">
+    <link href="{{ static ('material/css/materialize.forms.css') }}" rel="stylesheet">
+    <link href="{{ static ('material/css/jquery.datetimepicker.css') }}" rel="stylesheet">
 
-    <title>{% block title %}{% if getattr(view, 'get_title_html', None) %}{{ view.get_title_html() }}{% endif %}{% endblock %} {% if settings.SITE_TITLE %}- {{ settings.SITE_TITLE }}{% endif %}</title>
-
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{{ static('crudlfap/pmd-1.1.0/assets/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ static('crudlfap/pmd-1.1.0/assets/css/propeller.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ static('crudlfap/pmd-1.1.0/templates/admin-dashboard/themes/css/propeller-theme.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ static('crudlfap/pmd-1.1.0/templates/admin-dashboard/themes/css/propeller-admin.css') }}" />
-
-    <!-- Custom styles for this template -->
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link href="{{ static('crudlfap/style.css') }}" rel="stylesheet">
+    {{ render_bundle('crudlfap') }}
 
     {% block extra_style %}{% endblock %}
   </head>
 
   <body class="{% block body_class %}{% endblock %}">
-      {% include 'crudlfap/_menu_main.html' %}
+    {% include 'crudlfap/_menu_main.html' %}
     <div id="ajax-container">
+      {% block breadcrumb %}
+      {% endblock %}
 
       <div id="page">
         {% block before_container %}{% endblock %}
 
-        <div id="page-container" class="container-fluid">
+        <div id="page-container" class="container">
           <div id="messages">
             {% include 'crudlfap/_messages.html' %}
           </div>
 
-          {% block breadcrumb %}
-          {% endblock %}
-
           {% block content_open %}
-          <div class="pmd-card pmd-z-depth" style="padding: 1em" id="modal-body-ajax">
+          <div id="modal-body-ajax">
           {% endblock %}
 
             {% block title_heading %}
-            {% if getattr(view, 'get_title_heading', None) %}
-            <h2
-              class="text-{{ view.style|default('default') }} hide-in-modal"
-              id="modal-title-ajax"
-            >{{ view.get_title_heading() }}</h2>
+              {% if getattr(view, 'get_title_heading', None) %}
+              <h2
+                id="modal-title-ajax"
+                class="text-{{ view.style|default('default') }} hide-in-modal"
+              >
+              {{ view.get_title_heading() }}
+              <span class="hide-in-modal">
+                {% include 'crudlfap/_object_menu.html' %}
+              </span>
+              </h2>
             {% endif %}
             {% endblock %}
 
@@ -69,22 +65,11 @@
       </footer>
     </div>
 
-    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal-label">
-      <div class="modal-dialog" role="document" style="max-width:600px">
-        <div class="modal-content">
-          <div class="modal-header panel-heading">
-            <h4 class="modal-title"></h4>
-            <span class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
 
-          <div class="modal-body">
-          </div>
-
-          <div class="modal-footer">
-          </div>
-          <input type="hidden" name="_base" value="modal" />
+    <div id="modal" class="modal fade"tabindex="-1" role="dialog" aria-labelledby="modal-label">
+      <div class="modal-content">
+        <h4 class="modal-title"></h4>
+        <div class="modal-body">
         </div>
       </div>
     </div>
@@ -101,15 +86,11 @@
         "debug": "{{ settings.DEBUG }}"
     }
     </script>
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
     <script src="{{ static('crudlfap/jquery-3.2.1.min.js') }}" crossorigin="anonymous"></script>
-    <script src="{{ static('crudlfap/popper.js') }}"></script>
-    <script src="{{ static('crudlfap/pmd-1.1.0/assets/js/bootstrap.min.js') }}"></script>
-    <script src="{{ static('crudlfap/pmd-1.1.0/assets/js/propeller.min.js') }}"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="{{ static('crudlfap/ie10-viewport-bug-workaround.js') }}"></script>
-    <script src="{{ static('crudlfap/script.js') }}"></script>
+    <script src="{{ static('material/js/jquery.datetimepicker.full.js') }}" crossorigin="anonymous"></script>
+    <script src="{{ static('material/js/jquery.formset.js') }}" crossorigin="anonymous"></script>
+    <script src="{{ static('crudlfap/materialize/js/materialize.js') }}" crossorigin="anonymous"></script>
+    <script src="{{ static('material/js/materialize.forms.js') }}" crossorigin="anonymous"></script>
+    <script src="{{ static('crudlfap/script.js') }}" crossorigin="anonymous"></script>
   </body>
 </html>

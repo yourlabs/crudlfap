@@ -1,25 +1,40 @@
-/* Move down content because we have a fixed navbar that is 3.5rem tall */
-body {
-  padding-top: 3.5rem;
+#modal-title-ajax span .active {
+  display: none;
 }
 
-body.push-down .container {
-    padding-top: 100px;
+/* open sidenav by default on large screens */
+header, #page, footer, .nav-wrapper {
+  padding-left: 300px;
 }
 
-nav.breadcrumb {
-    padding: 0;
-    margin-top: 1rem;
-    padding-left: 1em;
-    padding-right: 1em;
+@media only screen and (max-width : 992px) {
+  header, #page, footer, .nav-wrapper {
+    padding-left: 0;
+  }
 }
 
-nav.breadcrumb .breadcrumb-item {
-    padding-top: 0.3125em;
+.nav-wrapper {
+  margin-left: 5%;
 }
 
-nav.breadcrumb .btn {
-    margin-bottom: 0;
+#menu-toggle {
+  float: left;
+}
+
+#menu-toggle {
+  margin: 12px 12px 0 22px ;
+  color: white;
+}
+
+@media only screen and (max-width : 601px) {
+  #menu-toggle {
+    margin: 8px 8px 0 18px ;
+  }
+}
+
+.container {
+  width: 90%;
+  max-width: none;
 }
 
 .django-filter .form-group {

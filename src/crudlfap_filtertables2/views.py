@@ -4,6 +4,7 @@ from crudlfap.views.generic import ListView
 
 from django import template
 from django.db import models
+from django.utils import html
 from django.utils.translation import ugettext_lazy as _
 
 import django_filters
@@ -31,7 +32,7 @@ class Table(tables.Table):
                 type(record)._meta.model_name,
                 ),
             'crudlfap/_actions.html',
-            ])
+        ])
         return template.render(context)
 
     def render_tags(self, record):
@@ -39,7 +40,7 @@ class Table(tables.Table):
         for tag in record.tags.all():
             html.append(unicode(tag))
 
-        return ' '.join(html)
+        return html.format_html(' '.join(html))
 
 
 class FilterTables2ListView(SingleTableMixin, FilterView, ListView):

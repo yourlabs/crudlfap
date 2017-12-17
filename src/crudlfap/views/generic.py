@@ -23,6 +23,7 @@ class DefaultTemplateMixin(object):
     """
 
     style = 'default'
+    color = 'cyan'
     fa_icon = 'question'
     material_icon = 'priority high'
     ajax = '#ajax-container'
@@ -252,6 +253,7 @@ class DeleteView(ObjectFormViewMixin, generic.DeleteView):
     style = 'danger'
     fa_icon = 'trash'
     material_icon = 'delete'
+    color = 'red'
     ajax = '_modal'
     success_url_next = True
 
@@ -271,6 +273,7 @@ class DetailView(ObjectViewMixin, generic.DetailView):
     fa_icon = 'search-plus'
     material_icon = 'search'
     default_template_name = 'crudlfap/detail.html'
+    color = 'green'
 
     @property
     def title(self):
@@ -306,6 +309,7 @@ class ListView(ModelViewMixin, generic.ListView):
     fa_icon = 'table'
     material_icon = 'list'
     menus = ['main']
+    color = 'green'
 
 
 class UpdateView(ObjectFormViewMixin, generic.UpdateView):
@@ -315,3 +319,4 @@ class UpdateView(ObjectFormViewMixin, generic.UpdateView):
     material_icon = 'edit'
     default_template_name = 'crudlfap/update.html'
     ajax = '_modal'
+    color = 'orange'

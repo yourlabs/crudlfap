@@ -1,0 +1,53 @@
+{
+  "name": "crudlfap",
+  "version": "0.0.0",
+  "description": "CRUDLFA+ Framework for Django 2.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack --config webpack.config.js",
+    "prepare": "webpack",
+    "test": "jest",
+    "lint": "eslint ./src/crudlfap/static/js/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourlabs/crudlfap.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yourlabs/crudlfap/issues"
+  },
+  "homepage": "https://github.com/yourlabs/crudlfap#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "codecov": "^3.0.0",
+    "eslint": "^4.13.1",
+    "jest": "^21.2.1",
+    "jsdom": "^11.5.1",
+    "node-sass": "^4.7.2",
+    "sass-loader": "^6.0.6",
+    "webpack": "^3.10.0",
+    "webpack-bundle-tracker": "^0.2.0"
+  },
+  "jest": {
+    "verbose": true,
+    "collectCoverage": true,
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "src/crudlfap/static/js/main.js"
+    ],
+    "collectCoverageFrom": [
+      "src/crudlfap/static/js/*{js,jsx}"
+    ]
+  },
+  "dependencies": {
+    "@material/drawer": "^0.27.0",
+    "jquery": "^3.2.1",
+    "material-components-web": "^0.27.0"
+  }
+}

@@ -26,11 +26,11 @@ setup(
     install_requires=[
         'jinja2',
         'django-jinja',
-        'django-bootstrap3',
+        'django-material',
     ],
     tests_require=['tox'],
     extras_require=dict(
-        django=['django>=2.0a1'],
+        django=['django>=2.0'],
         tables2=['django-tables2'],
         filter=['django-filter'],
         dal=['django-autocomplete-light'],

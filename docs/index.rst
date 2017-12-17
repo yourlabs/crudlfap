@@ -13,6 +13,7 @@ Welcome to CRUDLFA+'s documentation!
    routable
    routers
    views
+   settings
 
 Indices and tables
 ==================

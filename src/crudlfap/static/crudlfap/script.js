@@ -104,19 +104,20 @@ crudlfap.completePage = function($data, options, jqXHR) {
 }
 
 crudlfap.completeModal = function($data, options, jqXHR) {
-    // Fill in Modal
-    $('#modal .modal-content').removeClass(function (index, className) {
-        return (className.match (/(^|\s)panel-\S+/g) || []).join(' ');
-    }).addClass('panel-' + crudlfap.state.style);
-
-    $('#modal .modal-title').removeClass(function (index, className) {
-        return (className.match (/(^|\s)text-\S+/g) || []).join(' ');
-    }).addClass('text-' + crudlfap.state.style);
-
     $('#modal .modal-body').html($data.find('#modal-body-ajax').html())
     $('#modal .modal-body-ajax').prepend($data.find('#messages'));
     $('#modal .modal-title').html($data.find('#modal-title-ajax').html());
-    $('#modal').modal();
+    DjangoMaterial.initForms($data);
+    $('#modal').modal({
+      	dismissible: true,
+		opacity: .5,
+		inDuration: 300, // Transition in duration
+        outDuration: 200, // Transition out duration
+        startingTop: '4%', // Starting top style attribute
+        endingTop: '10%', // Ending top style attribute
+
+    });
+    $('#modal').modal('open')
 }
 
 crudlfap.completeForm = function($data, options, jqXHR) {
@@ -125,11 +126,12 @@ crudlfap.completeForm = function($data, options, jqXHR) {
     if (!$form.length) $form = $data.filter('#' + options.formId)
     if ($form.length) {
         // Form is still there, display again
+        DjangoMaterial.initForms($data);
         $('#' + options.formId).html($form.html())
     } else {
         // Form is gone, load page
         crudlfap.completePage($data, {history: true}, jqXHR)
-        $('#modal').modal('hide')
+        $('#modal').modal('close')
     }
 }
 
@@ -287,5 +289,8 @@ $(document).ready(function() {
 
     $('body').on('keyup', '.django-filter-ajax input', window.crudlfap.list);
     $('body').on('change', '.django-filter-ajax select', window.crudlfap.list);
+
+    // sidebar
+    $('.button-collapse').sideNav();
 });
 
