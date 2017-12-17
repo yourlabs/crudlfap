@@ -9,15 +9,20 @@ In your project setup.py, add::
         ],
     }
 
-Replace your manage.py content with::
+Then, setup your manage.py as such::
 
     #!/usr/bin/env python
+    import os
     from crudlfap.manage import main
 
-    if __name__ == '__main__':
-        main('yourproject.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'yourproject.settings')
 
-Note that it will enable DEBUG env var, which wsgi.py should **not** enable.
+    if __name__ == '__main__':
+        main()
+
+Note that it will enable DEBUG env var, which wsgi.py should **not** enable. By
+doing so, this prevents any server using the entry point from having DEBUG
+enabled by default and any developer from not having DEBUG enabled by default.
 """
 import os
 import sys
@@ -25,8 +30,6 @@ import warnings
 
 
 def main():
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mrs.settings')
-
     if 'DEBUG' not in os.environ:
         warnings.warn('DEFAULTING DEBUG=1')
         os.environ.setdefault('DEBUG', '1')
