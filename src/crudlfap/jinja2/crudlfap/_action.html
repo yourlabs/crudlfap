@@ -1,9 +1,9 @@
 <a
-  class="btn-floating btn-{{ view.style|default('default') }} waves-effect waves-light {{ view.color|default('') }}"
-  href="{{ view.href }}"
-  title="{{ view.title }}"
-  {% if view.ajax is defined %}
-  data-ajax="{{ view.ajax }}"
+  class="btn-floating btn-{{ v.style|default('default') }} waves-effect waves-light {{ v.color|default('') }} {% if view is defined and view.get_url_pattern() == v.get_url_pattern() %}active{% endif %}"
+  href="{{ v.href }}"
+  title="{{ v.title }}"
+  {% if v.ajax is defined %}
+  data-ajax="{{ v.ajax }}"
   {% endif %}
-  ><i class="material-icons">{{ view.material_icon }}</i>
+  ><i class="material-icons">{{ v.material_icon }}</i>
 </a>

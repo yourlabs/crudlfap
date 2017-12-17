@@ -1,4 +1,4 @@
-{% extends base %}
+{% extends 'base.html' %}
 
 {% block form_open %}
 <form
@@ -19,7 +19,7 @@
         <br />
         <progress></progress>
     </div>
-    {{ render_form(form) }}
+    {{ Template('{% load material_form %}{% form form=form %}{% endform %}').render(Context(dict(form=form))) }}
 {% endblock %}
 
 {% block buttons %}

@@ -1,3 +1,7 @@
+#modal-title-ajax span .active {
+  display: none;
+}
+
 /* open sidenav by default on large screens */
 header, #page, footer, .nav-wrapper {
   padding-left: 300px;

@@ -1,6 +1,14 @@
 import copy
 import urllib
 
+from django.template import Context
+from django.template.loader import select_template
+
+
+
+def render_django_template(template_name_list, **context):
+    return select_template(template_name_list).render(Context(context))
+
 
 def pagination_filter_params(data):
     data = copy.deepcopy(data)

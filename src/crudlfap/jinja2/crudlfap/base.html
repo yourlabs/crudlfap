@@ -9,6 +9,7 @@
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link href="{{ static('crudlfap/style.css') }}" rel="stylesheet">
+    {{ render_bundle('crudlfap') }}
 
     {% block extra_style %}{% endblock %}
   </head>
@@ -34,10 +35,13 @@
             {% block title_heading %}
               {% if getattr(view, 'get_title_heading', None) %}
               <h2
+                id="modal-title-ajax"
                 class="text-{{ view.style|default('default') }} hide-in-modal"
               >
               {{ view.get_title_heading() }}
-              {% include 'crudlfap/_object_menu.html' %}
+              <span class="hide-in-modal">
+                {% include 'crudlfap/_object_menu.html' %}
+              </span>
               </h2>
             {% endif %}
             {% endblock %}
@@ -62,17 +66,12 @@
     </div>
 
 
-    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal-label">
+    <div id="modal" class="modal fade"tabindex="-1" role="dialog" aria-labelledby="modal-label">
       <div class="modal-content">
         <h4 class="modal-title"></h4>
-        <p>A bunch of text</p>
+        <div class="modal-body">
+        </div>
       </div>
-      <div class="modal-body">
-      </div>
-      <div class="modal-footer">
-        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
-      </div>
-      <input type="hidden" name="_base" value="modal" />
     </div>
 
     {% block after_container %}

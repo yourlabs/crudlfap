@@ -34,20 +34,21 @@ TEMPLATE_CONSTANTS = {
     ),
 }
 
+TEMPLATE_CONTEXT_PROCESSORS = [
+    'django.template.context_processors.debug',
+    'django.template.context_processors.request',
+    'django.contrib.auth.context_processors.auth',
+    'django.contrib.messages.context_processors.messages',
+    'django.template.context_processors.i18n',
+]
+
 CRUDLFAP_TEMPLATE_BACKEND = {
     'BACKEND': 'django_jinja.backend.Jinja2',
     'APP_DIRS': True,
     'OPTIONS': {
         'app_dirname': 'jinja2',
         'match_extension': '.html',
-        'context_processors': [
-            'django.template.context_processors.debug',
-            'django.template.context_processors.request',
-            'django.contrib.auth.context_processors.auth',
-            'django.contrib.messages.context_processors.messages',
-            'django.template.context_processors.i18n',
-            'crudlfap.context_processors.base',
-        ],
+        'context_processors': TEMPLATE_CONTEXT_PROCESSORS,
         'extensions': [
             'jinja2.ext.do',
             'jinja2.ext.loopcontrols',
@@ -65,11 +66,15 @@ CRUDLFAP_TEMPLATE_BACKEND = {
         'globals': {
             'pagination_filter_params': 'crudlfap.jinja2.pagination_filter_params',  # noqa
             'Router': 'crudlfap.routers.Router',
+            'render_bundle': 'crudlfap.jinja2.render_bundle',
             'getattr': getattr,
             'str': str,
             'int': int,
             'isinstance': isinstance,
             'type': type,
+            'select_template': 'django.template.loader.select_template',
+            'Context': 'django.template.Context',
+            'Template': 'django.template.Template',
             'render_table': 'crudlfap_filtertables2.jinja2.render_table',
             'render_form': 'bootstrap3.forms.render_form',
             'render_button': 'bootstrap3.forms.render_button',
@@ -89,12 +94,7 @@ DEFAULT_TEMPLATE_BACKEND = {
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
     'APP_DIRS': True,
     'OPTIONS': {
-        'context_processors': [
-            'django.template.context_processors.debug',
-            'django.template.context_processors.request',
-            'django.contrib.auth.context_processors.auth',
-            'django.contrib.messages.context_processors.messages',
-        ],
+        'context_processors': TEMPLATE_CONTEXT_PROCESSORS,
     },
 }
 
@@ -120,8 +120,9 @@ REQUIRED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'crudlfap',
     'material',
+    'crudlfap',
+    'webpack_loader' if shutil.which('npm') else 'webpack_mock',
 ]
 
 MIDDLEWARE = [
