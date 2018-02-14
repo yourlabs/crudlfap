@@ -253,13 +253,18 @@ class RouterList(collections.MutableSequence):
     def __len__(self):
         return len(self._routers)
 
+    def get_index_view(self):
+        return import_string(self.index_view)
+
+    def get_index_as_view(self):
+        vc = self.get_index_view()
+        return vc.as_view(routers=self._routers, index_name=self.index_name,
+                          template_name=self.index_template)
+
     def get_index_urlpattern(self):
         from django.conf.urls import url
 
-        vc = import_string(self.index_view)
-        pattern = url(r'^$', vc.as_view(routers=self._routers,
-                                        index_name=self.index_name,
-                                        template_name=self.index_template),
+        pattern = url(r'^$', self.get_index_as_view(),
                       name=self.index_name.lower() + '_index')
         return pattern
 

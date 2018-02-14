@@ -80,6 +80,14 @@ def test_router_update(router):
     )
 
 
+def test_router_unknown_slug(router):
+    try:
+        v = router['nonexistent']
+    except KeyError:
+        return True
+    return False
+
+
 @pytest.fixture
 def router_prefix():
     return crudlfap.Router(ArtistPicture, url_prefix='photo/')
@@ -128,3 +136,29 @@ def test_router_prefix_update(router_prefix):
         'artistpicture_update',
         'photo/(?P<pk>[\w\d_-]+)/update/$'
     )
+
+
+@pytest.fixture
+def router_list():
+    return crudlfap.RouterList(
+        crudlfap.Router(model=Artist, menu_map={'list': ['index']}),
+        crudlfap.Router(model=ArtistPicture, menu_map={'list': ['index',
+                                                                'footer']}),
+        add_index_url=True, index_name='Artists',
+        index_template='crudlfap/base.html'
+    )
+
+
+def test_routerlist_init(router_list, rf):
+    from django.contrib.auth.models import AnonymousUser
+    assert len(router_list) == 2
+    assert router_list[0].model == Artist
+    assert router_list[1].model == ArtistPicture
+    assert router_list.index_view == 'crudlfap.views.generic.AppIndexView'
+    vc = router_list.get_index_view()
+    assert vc.template_name == 'crudlfap/app_index.html'
+    request = rf.get('/')
+    request.user = AnonymousUser()
+    v = router_list.get_index_as_view()
+    view = v(request)
+    assert view.template_name[0] == 'crudlfap/base.html'
