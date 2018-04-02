@@ -1,46 +1,11 @@
-<!-- Static navbar -->
-<nav class="navbar navbar-inverse pmd-navbar pmd-z-depth navbar-fixed-top">
-  <div class="container-fluid">
-
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-
+<div class="navbar-fixed">
+  <nav>
+    <div class="nav-wrapper">
+      <span href="#" data-action="click->sidenav#click" data-controller="sidenav" data-target="slide-out" class="sidenav-trigger"><i class="waves-effect material-icons">menu</i></span>
       {% if settings.SITE_NAME %}
-      <a class="navbar-brand" href="/">{{ settings.SITE_NAME }}</a>
+      <a class="brand-logo" href="/" class="waves-effect brand-logo">{{ settings.SITE_NAME }}</a>
       {% endif %}
-    </div>
-
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="/">Home</a></li>
-        {% for app, routers in Router.registry.get_app_menus('main', request).items() %}
-        <li class="dropdown pmd-dropdown">
-          <a href="#" class="dropdown-toggle pmd-ripple-effect" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ app.verbose_name }} <span class="caret"></span></a>
-            <ul class="dropdown-menu" role="menu">
-              {% for router in routers %}
-                {% for v in router.get_menu('main', request) %}
-                <li>
-                    <a
-                        href="{{ v.reverse() }}"
-                        class="{% if v == view %}active{% endif %}"
-                        title="{% if v.title %}{{ v.title }}{% endif %}"
-                        {% if v.ajax %}
-                        data-ajax="{{ v.ajax }}"
-                        {% endif %}
-                    >{{ v.model._meta.verbose_name_plural.capitalize() }} {{ _(v.slug|capfirst) }}</a>
-                </li>
-                {% endfor %}
-              {% endfor %}
-            </ul>
-        </li>
-        {% endfor %}
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
+      <ul class="right">
         {% if not request.user.is_authenticated %}
         <li>
           <a
@@ -49,27 +14,33 @@
               >{{ _('Login') }}</a>
         </li>
         {% else %}
-        <li class="dropdown pmd-dropdown">
-            <a href="#" class="dropdown-toggle pmd-ripple-effect" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ request.user }} <span class="caret"></span></a>
-            <ul class="dropdown-menu">
-                <li>
-                    <a class="dropdown-item" href="{{ url('logout') }}">{{ _('Logout') }}</a>
-                </li>
-            </ul>
+        <li>
+          <a class="waves-effect dropdown-item" href="{{ url('logout') }}">{{ _('Logout') }}</a>
         </li>
         {% endif %}
         {% if request.user.is_superuser %}
-        <li class="dropdown pmd-dropdown">
-          <a href="#" class="dropdown-toggle pmd-ripple-effect" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">CRUDLFA+ <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li>
-              <a class="dropdown-item" href="{{ url('crudlfap_urls') }}">URLs</a>
-            </li>
-          </ul>
+        <li>
+          <a class="waves-effect dropdown-item" href="{{ url('crudlfap_urls') }}">URLs</a>
         </li>
         {% endif %}
       </ul>
-    </div><!--/.nav-collapse -->
+    </div>
+  </nav>
+</div>
 
-  </div><!--/.container-fluid -->
-</nav>
+<ul id="slide-out" class="sidenav">
+  <li class="{% if request.path == '/' %}active{% endif %}"><a href="/">Home</a></li>
+  {% for app, routers in Router.registry.get_app_menus('main', request).items() %}
+    {% for router in routers %}
+      {% for v in router.get_menu('main', request) %}
+      <li class="{% if v == view %}active{% endif %}">
+          <a
+            class="waves-effect"
+            href="{{ v.reverse() }}"
+            title="{% if v.title %}{{ v.title }}{% endif %}"
+          >{% if view.material_icon %}<i class="material-icons">{{ view.material_icon }}</i>{% endif %}{{ v.model._meta.verbose_name_plural.capitalize() }} {{ _(v.slug|capfirst) }}</a>
+      </li>
+      {% endfor %}
+    {% endfor %}
+  {% endfor %}
+</ul>

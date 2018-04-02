@@ -10,3 +10,9 @@
 {% block before_form %}
 <h1>{{ _('Login') }}</h1>
 {% endblock %}
+
+{% block form_close %}
+    <input type="hidden" name="next" value="{{ request.GET.get('next', request.POST.get('next', '/')) }}" />
+    {% csrf_token %}
+</form>
+{% endblock %}

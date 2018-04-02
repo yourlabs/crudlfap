@@ -3,38 +3,28 @@ Welcome to CRUDLFA+ for Django 2.0: because Django is FUN !
 
 CRUDLFA+ stands for Create Read Update Delete List Form Autocomplete and more.
 
-This package provides a more DRY way to rapidely develop modern web
-applications by thinking differently:
-
-- Composition over inheritance with an intermediary layer to use in urls.py,
-- JavaScript is a first class citizen,
-- Integration with external Django apps more than welcome,
-
-Consider this as a brand new framework with a lot of modern features, except
-you don't have to learn a new framework because this is still Django, with a
-2017 feels: https://www.youtube.com/watch?v=lGqeXp6zeo8
+This plugin for Django makes a rich user interface from Django models.
 
 Try
 ===
 
 This should start the example project in ``src/crudlfap_example`` where each
-documented example lives::
+documented example lives, without virtualenv::
 
-    # Clean virtual env
-    rm -rf /tmp/crudlfap_env ; virtualenv /tmp/crudlfap_env ; source /tmp/crudlfap_env/bin/activate
-    # Stable
-    pip install crudlfap[django,tables2,filter,dal,reversion,debug]; crudlfap dev
-    # or Development
-    pip install -e git+https://github.com/yourlabs/crudlfap.git#egg=crudlfap[django,tables2,filter,dal,reversion,debug]; crudlfap dev
+    # This installs the repo in ./src/crudlfap and in your python user packages, i run this from ~
+    pip install --user -e git+https://github.com/yourlabs/crudlfap.git#egg=crudlfap[dev]
+
+    # Migrate SQLite database, create some users and starts a server on localhost:8000
+    crudlfap dev
+
+    # Start webpack watcher
+    yarn start
 
 Features
 ========
 
-- Modern url router,
-- Ajax routing framework,
-- Ajax / modal forms (ie. ajax file upload with progressbar),
-- Default templates for CRUD with Propeller CSS framework (provides Material
-  design for bootstrap3's HTML and select2.js !)
+- DRY into ModelRouter for all views of a Model,
+- Rich frontend interface out of the box, MaterializeCSS/Turbolinks/StimulusJS/Webpack
 
 Install
 =======

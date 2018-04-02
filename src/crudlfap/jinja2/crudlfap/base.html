@@ -11,87 +11,11 @@
     <title>{% block title %}{% if getattr(view, 'get_title_html', None) %}{{ view.get_title_html() }}{% endif %}{% endblock %} {% if settings.SITE_TITLE %}- {{ settings.SITE_TITLE }}{% endif %}</title>
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{{ static('crudlfap/pmd-1.1.0/assets/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ static('crudlfap/pmd-1.1.0/assets/css/propeller.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ static('crudlfap/pmd-1.1.0/templates/admin-dashboard/themes/css/propeller-theme.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ static('crudlfap/pmd-1.1.0/templates/admin-dashboard/themes/css/propeller-admin.css') }}" />
 
     <!-- Custom styles for this template -->
-    <link href="{{ static('crudlfap/style.css') }}" rel="stylesheet">
+    <link href="{{ static('crudlfap.css') }}" rel="stylesheet">
 
     {% block extra_style %}{% endblock %}
-  </head>
-
-  <body class="{% block body_class %}{% endblock %}">
-      {% include 'crudlfap/_menu_main.html' %}
-    <div id="ajax-container">
-
-      <div id="page">
-        {% block before_container %}{% endblock %}
-
-        <div id="page-container" class="container-fluid">
-          <div id="messages">
-            {% include 'crudlfap/_messages.html' %}
-          </div>
-
-          {% block breadcrumb %}
-          {% endblock %}
-
-          {% block content_open %}
-          <div class="pmd-card pmd-z-depth" style="padding: 1em" id="modal-body-ajax">
-          {% endblock %}
-
-            {% block title_heading %}
-            {% if getattr(view, 'get_title_heading', None) %}
-            <h2
-              class="text-{{ view.style|default('default') }} hide-in-modal"
-              id="modal-title-ajax"
-            >{{ view.get_title_heading() }}</h2>
-            {% endif %}
-            {% endblock %}
-
-            {% block form_open %}{% endblock %}
-            {% block content %}{% block form %}{% endblock %}{% endblock %}
-            {% block buttons %}{% endblock %}
-            {% block form_close %}{% endblock %}
-
-          {% block content_close %}
-          </div>
-          {% endblock %}
-        </div>
-      </div>
-    </div>
-
-    <div class="container">
-      <hr>
-      <footer id="footer">
-        <p>&copy; Company 2017</p>
-      </footer>
-    </div>
-
-    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal-label">
-      <div class="modal-dialog" role="document" style="max-width:600px">
-        <div class="modal-content">
-          <div class="modal-header panel-heading">
-            <h4 class="modal-title"></h4>
-            <span class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-
-          <div class="modal-body">
-          </div>
-
-          <div class="modal-footer">
-          </div>
-          <input type="hidden" name="_base" value="modal" />
-        </div>
-      </div>
-    </div>
-
-    {% block after_container %}
-    {# i wish you put some super elegant hack here #}
-    {% endblock %}
 
     <script type="text/crudlfap-state" id="ajax-state">
     {
@@ -101,15 +25,38 @@
         "debug": "{{ settings.DEBUG }}"
     }
     </script>
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="{{ static('crudlfap/jquery-3.2.1.min.js') }}" crossorigin="anonymous"></script>
-    <script src="{{ static('crudlfap/popper.js') }}"></script>
-    <script src="{{ static('crudlfap/pmd-1.1.0/assets/js/bootstrap.min.js') }}"></script>
-    <script src="{{ static('crudlfap/pmd-1.1.0/assets/js/propeller.min.js') }}"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="{{ static('crudlfap/ie10-viewport-bug-workaround.js') }}"></script>
-    <script src="{{ static('crudlfap/script.js') }}"></script>
+    <script src="{{ static('crudlfap.js') }}" defer></script>
+  </head>
+
+  <body class="{% block body_class %}{% endblock %}">
+    {% include 'crudlfap/_menu_main.html' %}
+    {% block breadcrumb %}{% endblock %}
+    {% include 'crudlfap/_messages.html' %}
+    {% block before_container %}{% endblock %}
+    {% block content_open %}<div class="container" id="modal-body-ajax">{% endblock %}
+    {% block title_heading %}
+      {% if getattr(view, 'get_title_heading', None) %}
+      <h2
+        class="text-{{ view.style|default('default') }} hide-in-modal"
+        id="modal-title-ajax"
+      >{{ view.get_title_heading() }}</h2>
+      {% endif %}
+    {% endblock %}
+
+    {% block form_open %}{% endblock %}
+    {% block content %}{% block form %}{% endblock %}{% endblock %}
+    {% block buttons %}{% endblock %}
+    {% block form_close %}{% endblock %}
+    {% block content_close %}</div>{% endblock %}
+
+    <div id="modal" class="modal">
+        <div class="modal-content" id="modal-body">
+           <p>Ooopsy</p>
+        </div>
+    </div>
+
+    {% block after_container %}
+    {# i wish you put some super elegant hack here #}
+    {% endblock %}
   </body>
 </html>

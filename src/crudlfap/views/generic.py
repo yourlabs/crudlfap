@@ -8,6 +8,7 @@ Crudlfa+ takes views further than Django and are expected to:
 - declare the names of the navigation menus they belong to.
 """
 from django.contrib import messages
+from django.contrib.admin.views.main import ChangeList
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
 
@@ -239,10 +240,11 @@ class CreateView(ModelFormViewMixin, generic.CreateView):
     """View to create a model object."""
 
     style = 'success'
-    fa_icon = 'plus'
     material_icon = 'add'
     default_template_name = 'crudlfap/create.html'
-    ajax = '_modal'
+    controller = 'modal'
+    action = 'click->modal#open'
+    color = 'green'
 
 
 class DeleteView(ObjectFormViewMixin, generic.DeleteView):
@@ -252,8 +254,10 @@ class DeleteView(ObjectFormViewMixin, generic.DeleteView):
     style = 'danger'
     fa_icon = 'trash'
     material_icon = 'delete'
-    ajax = '_modal'
     success_url_next = True
+    controller = 'modal'
+    action = 'click->modal#open'
+    color = 'red'
 
     def get_success_url(self):
         messages.success(
@@ -271,6 +275,7 @@ class DetailView(ObjectViewMixin, generic.DetailView):
     fa_icon = 'search-plus'
     material_icon = 'search'
     default_template_name = 'crudlfap/detail.html'
+    color = 'blue'
 
     @property
     def title(self):
@@ -311,7 +316,8 @@ class ListView(ModelViewMixin, generic.ListView):
 class UpdateView(ObjectFormViewMixin, generic.UpdateView):
     """Model update view."""
 
-    fa_icon = 'edit'
     material_icon = 'edit'
     default_template_name = 'crudlfap/update.html'
-    ajax = '_modal'
+    controller = 'modal'
+    action = 'click->modal#open'
+    color = 'orange'

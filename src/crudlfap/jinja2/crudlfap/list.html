@@ -1,21 +1,15 @@
 {% extends base %}
 
 {% block breadcrumb %}
-<ul class="breadcrumb">
-  {% include 'crudlfap/_breadcrumb_object.html' %}
-</ul>
-
-<div class="pull-right">
-{% for menu_view in view.router.get_menu('model', request) %}
-  {% if type(view) != type(menu_view) %}
-    {% with view=menu_view %}
-    {% include 'crudlfap/_action.html' %}
-    {% endwith %}
-  {% endif %}
-{% endfor %}
-</div>
+{% include 'crudlfap/_breadcrumb_object.html' %}
 {% endblock %}
 
 {% block content %}
 {% include 'crudlfap/_list.html' %}
+{% endblock %}
+
+{% block after_container %}
+{% with menu=view.router.get_menu('model', request) %}
+{% include 'crudlfap/_fixed_actions.html' %}
+{% endwith %}
 {% endblock %}

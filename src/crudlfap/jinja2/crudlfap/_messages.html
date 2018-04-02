@@ -1,6 +1,5 @@
-{% for message in messages %}
-<div class="alert alert-dismissible alert-{{ message.tags }} {% if message.level >= 40 %}alert-danger{% endif %}">
-    {{ message }}
-    <button aria-label="Close" data-dismiss="alert" class="close" type="button"><span aria-hidden="true">×</span></button>
-</div>
-{% endfor %}
+<ul style="display: none" data-controller="messages">
+  {% for message in messages %}
+  <li class="{% if message.level == 25 %}teal{% endif %}">{{ message }}</li>
+  {% endfor %}
+</ul>

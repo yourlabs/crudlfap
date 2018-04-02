@@ -1,22 +1,22 @@
-{% if view.model %}
-  {% set v = Router.registry[view.model]['list'](request=request) %}
-  {% if v.allow() %}
-  <li>
-    <a
-      class="breadcrumb-item"
-      data-ajax="{{ v.ajax }}"
-      href="{{ v.reverse() }}"
-    >{{ v.model._meta.verbose_name_plural.capitalize() }}</a>
-  </li>
-  {% endif %}
-{% endif %}
-{% if object %}
-  <li>
-    <a data-ajax="#page-container" class="breadcrumb-item" href="{{ object.get_absolute_url() }}">{{ object }}</a>
-  </li>
-{% endif %}
-{% if view.slug %}
-  <li>
-    <span class="breadcrumb-item active">{{ _(view.slug).capitalize() }}</span>
-  </li>
-{% endif %}
+<nav>
+  <div class="nav-wrapper">
+    <div class="col s12">
+      {% if view.model %}
+        {% set v = Router.registry[view.model]['list'](request=request) %}
+        {% if v.allow() %}
+          <a
+            class="breadcrumb"
+            data-ajax="{{ v.ajax }}"
+            href="{{ v.reverse() }}"
+          >{{ v.model._meta.verbose_name_plural.capitalize() }}</a>
+        {% endif %}
+      {% endif %}
+      {% if object %}
+        <a class="breadcrumb" href="{{ object.get_absolute_url() }}">{{ object }}</a>
+      {% endif %}
+      {% if view.slug %}
+        <a class="breadcrumb active">{{ _(view.slug).capitalize() }}</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>

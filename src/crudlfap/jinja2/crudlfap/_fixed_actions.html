@@ -1,0 +1,23 @@
+{% if menu|length %}
+<div class="fixed-action-btn">
+  {% if menu|length > 1 %}
+    <a class="btn-floating btn-large red">
+      <i class="large material-icons">mode_edit</i>
+    </a>
+
+    <ul>
+    {% for view in menu %}
+      <li>
+        {% include 'crudlfap/_action.html' %}
+      </li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    {% for view in menu %}
+      {% with extra_class='btn-large red' %}
+        {% include 'crudlfap/_action.html' %}
+      {% endwith %}
+    {% endfor %}
+  {% endif %}
+</div>
+{% endif %}

@@ -85,6 +85,8 @@ class FilterTables2ListView(SingleTableMixin, FilterView, ListView):
             crudlfap=tables.TemplateColumn(
                 template_name='crudlfap/_actions.html',
                 verbose_name=_('Actions'),
+                extra_context=dict(extra_class='btn-small'),
+                orderable=False,
             ),
         ))
 

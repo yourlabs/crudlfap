@@ -12,8 +12,8 @@ def read(fname):
 
 setup(
     name='crudlfap',
-    version='0.1.2',
-    description='2017 OOAO DRY BUZZWORDS FOR DJANGO 2.0 with Material design',
+    version='0.2.0',
+    description='Rich frontend for generic views with Django',
     author='James Pic',
     author_email='jamespic@gmail.com',
     url='https://github.com/yourlabs/crudlfap',
@@ -30,12 +30,16 @@ setup(
     ],
     tests_require=['tox'],
     extras_require=dict(
-        django=['django>=2.0a1'],
-        tables2=['django-tables2'],
-        filter=['django-filter'],
-        dal=['django-autocomplete-light'],
-        reversion=['django-reversion'],
-        debug=['django-debug-toolbar', 'devpy'],
+        dev=[
+          'django>=2.0',
+          'django-tables2',
+          'django-filter',
+          'django-reversion',
+          'django-debug-toolbar',
+          'django-extensions',
+          'devpy',
+          'dj-static',
+        ],
     ),
     entry_points={
         'console_scripts': [

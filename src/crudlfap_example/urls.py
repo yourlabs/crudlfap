@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.conf.urls import include, url
 from django.views import generic
+from django.contrib.auth.views import LoginView
 
 urlpatterns = [
     # CRUDLFA+ examples
@@ -10,6 +11,7 @@ urlpatterns = [
 
     url(r'^user/', include('crudlfap_user.urls')),
 
+    url(r'^auth/login/', LoginView.as_view(redirect_authenticated_user=True)),
     url(r'^auth/', include('django.contrib.auth.urls')),
     url(r'^debug/', include('crudlfap.urls')),
     url(r'^$', generic.TemplateView.as_view(

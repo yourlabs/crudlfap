@@ -54,16 +54,11 @@ class Command(Command):
                 defaults=defaults,
             )
 
-            last_login = None
-            if user.last_login:
-                last_login = now() - user.last_login
-
-            if created or (last_login and last_login.seconds >= 3600):
-                password = rnpw()
-                user.set_password(password)
-                user.save()
-                logger.warning('\n{}\nLogin with {} / {}\n'.format(
-                    '*' * 12, username, password))
+            password = rnpw()
+            user.set_password(password)
+            user.save()
+            logger.warning('\n{}\nLogin with {} / {}\n'.format(
+                '*' * 12, username, password))
 
             return user, created
 
