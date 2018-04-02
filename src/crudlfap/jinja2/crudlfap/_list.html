@@ -1,5 +1,8 @@
 <div id="table-list">
-  <table class="table">
+  <div class="row center-align">
+    {% include 'crudlfap/_pagination.html' %}
+  </div>
+  <table class="table striped">
     <thead class="thead-inverse">
       <tr>
         {% for field in view.fields %}
@@ -16,13 +19,13 @@
         {% endfor %}
         <td>
           {% for view in view.router.get_menu('object', request, object=object) %}
+            {% with extra_class='btn-small' %}
             {% include 'crudlfap/_action.html' %}
+            {% endwith %}
           {% endfor %}
         </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
-
-  {% include 'crudlfap/_pagination.html' %}
 </div>

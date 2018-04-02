@@ -225,7 +225,7 @@ class Router(object):
         self._fields = value
 
     def fields_filter(self, condition):
-        fields = getattr(self, '_fields', None)
+        fields = getattr(self, '_fields', '__all__')
         if fields == '__all__':
             fields = [
                 f.name for f in self.model._meta.fields

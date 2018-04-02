@@ -1,0 +1,98 @@
+version: 2
+
+workflows:
+  version: 2
+  pipeline:
+    jobs:
+      - py-qa
+      - docs
+      - py36-dj20
+      - js-qa
+      - js-test
+
+jobs:
+  docs:
+    docker:
+    - image: circleci/node:9
+    steps:
+    - checkout
+    - restore_cache:
+        keys:
+        - qa-dependencies-{{ checksum "tox.ini" }}
+    - run:
+        name: tox environment setup
+        command: sudo apt install -y python-tox && sudo npm install -g jsdoc && tox -r -e docs --notest
+    - save_cache:
+        paths: [~/.cache/pip]
+        key: qa-dependencies-{{ checksum "tox.ini" }}
+    - run:
+        name: try docs build
+        command: tox -e docs
+
+  py-qa:
+    docker:
+    - image: circleci/python:3.6
+    steps:
+    - checkout
+    - restore_cache:
+        keys:
+        - qa-dependencies-{{ checksum "tox.ini" }}
+    - run:
+        name: tox environment setup
+        command: pip install --user tox && ~/.local/bin/tox -r -e qa --notest
+    - save_cache:
+        paths: [~/.local, ~/.cache/pip]
+        key: qa-dependencies-{{ checksum "tox.ini" }}
+    - run:
+        name: run qa checks
+        command: ~/.local/bin/tox -e qa
+
+  py36-dj20:
+    docker:
+    - image: circleci/python:3.6
+    working_directory: ~/repo
+    steps:
+    - checkout
+    - restore_cache:
+        keys:
+        - test-dependencies-{{ checksum "tox.ini" }}
+    - run:
+        name: Tox environment setup
+        command: pip install --user tox && ~/.local/bin/tox -r -e py36-dj20 --notest
+    - save_cache:
+        paths: [~/.local, ~/.cache/pip]
+        key: test-dependencies-{{ checksum "tox.ini" }}
+    - run:
+        name: TEST tox -e py36-dj20
+        command: |
+          ~/.local/bin/tox -e py36-dj20
+          PATH=.tox/py36-dj20/bin:$PATH codecov -e $TOXENV
+
+  js-qa:
+    docker:
+    - image: circleci/node:8
+    working_directory: ~/repo
+    steps:
+    - checkout
+    - run:
+        name: RUN yarn install
+        command: cd src/facond; yarn install
+    - run:
+        name: RUN yarn run lint
+        command: cd src/facond; yarn run lint
+
+  js-test:
+    docker:
+    - image: circleci/node:8
+    working_directory: ~/repo/src/facond
+    steps:
+    - checkout
+    - run:
+        name: RUN yarn install
+        command: cd src/facond; yarn install
+    - run:
+        name: RUN yarn test & coverage upload
+        command: |
+          cd src/facond
+          yarn test
+          ./node_modules/.bin/codecov

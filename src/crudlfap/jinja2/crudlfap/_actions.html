@@ -1,3 +1,5 @@
 {% for view in views %}
+{% with extra_class='btn-small' %}
 {% include 'crudlfap/_action.html' %}
+{% endwith %}
 {% endfor %}

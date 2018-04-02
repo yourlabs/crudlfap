@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-
     # CRUDLFA+ dependencies
     'crudlfap',
     'bootstrap3',
@@ -47,11 +46,12 @@ INSTALLED_APPS = [
 
 # CRUDLFA+ optional dependencies
 OPTIONAL_APPS = [
-    {'debug_toolbar': {'after': 'django.contrib.staticfiles'}},
+    #{'debug_toolbar': {'after': 'django.contrib.staticfiles'}},
     {'crudlfap_filtertables2': {'after': 'crudlfap'}},
     {'django_filters': {'after': 'crudlfap'}},
     {'django_tables2': {'after': 'crudlfap'}},
     {'dal': {'before': 'crudlfap'}},
+    {'django_extensions': {'before': 'crudlfap'}},
     {'dal_select2': {'before': 'crudlfap'}},
 ]
 
@@ -66,7 +66,7 @@ MIDDLEWARE = [
 ]
 
 OPTIONAL_MIDDLEWARE = [
-    {'debug_toolbar.middleware.DebugToolbarMiddleware': None}
+        #{'debug_toolbar.middleware.DebugToolbarMiddleware': None}
 ]
 INTERNAL_IPS = ('127.0.0.1',)
 
@@ -119,6 +119,7 @@ CRUDLFAP_TEMPLATE_BACKEND = {
             "render_table": "crudlfap_filtertables2.jinja2.render_table",
             "render_form": "bootstrap3.forms.render_form",
             "render_button": "bootstrap3.forms.render_button",
+            "json": "crudlfap.jinja2.json",
         },
         "newstyle_gettext": True,
         "bytecode_cache": {
