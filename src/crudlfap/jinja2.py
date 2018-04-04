@@ -1,3 +1,4 @@
+from django import template
 import copy
 import urllib
 
@@ -20,3 +21,9 @@ def get_view(url_name):
 def json(arg):
     import json
     return json.dumps(arg)
+
+
+def render_form(form):
+    return template.Template(
+        '{% load material_form %}{% form form=form %}{% endform %}'
+    ).render(template.Context(dict(form=form)))

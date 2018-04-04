@@ -41,7 +41,9 @@ INSTALLED_APPS = [
 
     # CRUDLFA+ dependencies
     'crudlfap',
+    'betterforms',
     'bootstrap3',
+    'material',
 ]
 
 # CRUDLFA+ optional dependencies
@@ -117,7 +119,7 @@ CRUDLFAP_TEMPLATE_BACKEND = {
             "isinstance": isinstance,
             "type": type,
             "render_table": "crudlfap_filtertables2.jinja2.render_table",
-            "render_form": "bootstrap3.forms.render_form",
+            "render_form": "crudlfap.jinja2.render_form",
             "render_button": "bootstrap3.forms.render_button",
             "json": "crudlfap.jinja2.json",
         },

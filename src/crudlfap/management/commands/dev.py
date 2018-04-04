@@ -54,11 +54,11 @@ class Command(Command):
                 defaults=defaults,
             )
 
-            password = rnpw()
-            user.set_password(password)
-            user.save()
+            if created:
+                user.set_password(username)
+                user.save()
             logger.warning('\n{}\nLogin with {} / {}\n'.format(
-                '*' * 12, username, password))
+                '*' * 12, username, username))
 
             return user, created
 
