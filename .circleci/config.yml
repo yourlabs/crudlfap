@@ -76,23 +76,20 @@ jobs:
     - checkout
     - run:
         name: RUN yarn install
-        command: cd src/facond; yarn install
+        command: yarn install
     - run:
         name: RUN yarn run lint
-        command: cd src/facond; yarn run lint
+        command: yarn run lint
 
   js-test:
     docker:
     - image: circleci/node:8
-    working_directory: ~/repo/src/facond
+    working_directory: ~/repo/src/crudlfap
     steps:
     - checkout
     - run:
         name: RUN yarn install
-        command: cd src/facond; yarn install
+        command: yarn install
     - run:
         name: RUN yarn test & coverage upload
-        command: |
-          cd src/facond
-          yarn test
-          ./node_modules/.bin/codecov
+        command: yarn test && ./node_modules/.bin/codecov
