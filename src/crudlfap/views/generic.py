@@ -312,6 +312,54 @@ class ListView(ModelViewMixin, generic.ListView):
     material_icon = 'list'
     menus = ['main']
 
+    @property
+    def changelist(self):
+        list_display = self.get_list_display(request)
+        list_display_links = self.get_list_display_links(request, list_display)
+        # Add the action checkboxes if any actions are available.
+        if self.get_actions(request):
+            list_display = ['action_checkbox'] + list(list_display)
+        ChangeList = self.get_changelist(request)
+
+        return ChangeList(
+            self.request,
+            self.model,
+            list_display,
+            list_display_links,
+            getattr(self, 'list_filter', None),
+            getattr(self, 'date_hierarchy', None),
+            getattr(self, 'search_fields', None),
+            getattr(self, 'list_select_related', None),
+            getattr(self, 'list_per_page', None),
+            getattr(self, 'list_max_show_all', None),
+            getattr(self, 'list_editable', None),
+            self,
+        )
+
+    def get_context_data(self):
+        c = super().get_context_data()
+        c['cl'] = self.changelist
+        c['object_list']
+        return c
+
+    def get_queryset(self, request):
+        """
+        Return a QuerySet of all model instances that can be edited by the
+        admin site. This is used by changelist_view.
+        """
+        qs = self.model._default_manager.get_queryset()
+        # TODO: this should be handled by some parameter to the ChangeList.
+        ordering = self.get_ordering(request)
+        if ordering:
+            qs = qs.order_by(*ordering)
+        return qs
+
+    def get_ordering(self, request):
+        """
+        Hook for specifying field ordering.
+        """
+        return self.ordering or ()  # otherwise we might try to *None, which is bad ;)
+
 
 class UpdateView(ObjectFormViewMixin, generic.UpdateView):
     """Model update view."""
