@@ -2,8 +2,9 @@
 
 {% block content %}
 <div class="django-filter django-filter-ajax pm-card">
-  <form method="get" action="">
+    <form method="get" action="" data-controller="autosubmit" data-target="render-table" data-action="input->autosubmit#input change->autosubmit#input">
     {{ render_form(filter.form, layout='inline') }}
+    {{ render_form(view.search_form, layout='inline') }}
   </form>
 </div>
 

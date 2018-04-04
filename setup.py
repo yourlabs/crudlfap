@@ -37,6 +37,7 @@ setup(
           'django-reversion',
           'django-debug-toolbar',
           'django-extensions',
+          'django-betterforms',
           'devpy',
           'dj-static',
         ],

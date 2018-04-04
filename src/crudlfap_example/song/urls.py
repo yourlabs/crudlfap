@@ -32,6 +32,7 @@ class SongRouter(crudlfap.Router):
         crudlfap.DetailView.factory(allow=authenticated),
         crudlfap.FilterTables2ListView.factory(
             filter_fields=['artist', 'name'],
+            search_fields=['artist__name', 'name'],
         ),
     ]
 

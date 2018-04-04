@@ -1,5 +1,6 @@
 import collections
 
+from betterforms.changelist import SearchForm
 from crudlfap.views.generic import ListView
 
 from django import template
@@ -57,6 +58,19 @@ class FilterTables2ListView(SingleTableMixin, FilterView, ListView):
             self.table_fields = self.fields
         return super().dispatch(*a, **k)
 
+    def get_searchform_class(self):
+        if not getattr(self, 'search_fields', None):
+            return
+
+        return type(
+            self.model.__name__ + 'SearchForm',
+            (SearchForm,),
+            dict(
+                SEARCH_FIELDS=self.search_fields,
+                model=self.model
+            )
+        )
+
     def get_table_class(self):
         list_display_links = getattr(self, 'list_display_links', None)
         if not list_display_links:
@@ -96,7 +110,20 @@ class FilterTables2ListView(SingleTableMixin, FilterView, ListView):
             attrs
         )
 
+    @property
+    def search_form(self):
+        SearchForm = self.get_searchform_class()
+        if SearchForm:
+            form = SearchForm(
+                self.request.GET,
+                queryset=self.filterset.qs
+            )
+            form.full_clean()
+            return form
+
     def get_table_data(self):
+        if self.search_form.is_valid():
+            return self.search_form.get_queryset()
         return self.filterset.qs
 
     def get_filterset_class(self):
