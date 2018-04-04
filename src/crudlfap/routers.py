@@ -166,7 +166,7 @@ class Router(object):
         Router with the ``detail`` slug.
 
         Set get_absolute_url in your model class to disable this feature. Until
-        then, welcome in 2017.
+        then, welcome in 2018.
 
         Also, register this router as default router for its model class in the
         RouterRegistry.

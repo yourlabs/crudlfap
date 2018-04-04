@@ -9,7 +9,7 @@ urlpatterns = [
     url(r'^song/', include('crudlfap_example.song.urls')),
     url(r'^nondb/', include('crudlfap_example.nondb.urls')),
 
-    url(r'^user/', include('crudlfap_user.urls')),
+    url(r'^auth/', include('crudlfap_user.urls')),
 
     url(r'^auth/login/', LoginView.as_view(redirect_authenticated_user=True)),
     url(r'^auth/', include('django.contrib.auth.urls')),

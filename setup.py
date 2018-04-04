@@ -27,6 +27,7 @@ setup(
         'jinja2',
         'django-jinja',
         'django-bootstrap3',
+        'django-material',
     ],
     tests_require=['tox'],
     extras_require=dict(

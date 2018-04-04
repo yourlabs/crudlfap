@@ -86,7 +86,7 @@ class FilterTables2ListView(SingleTableMixin, FilterView, ListView):
                     (object,),
                     dict(
                         model=self.model,
-                        fields=self.fields,
+                        fields=self.table_fields,
                         ),
                     ),
                 )
