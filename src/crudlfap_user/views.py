@@ -60,12 +60,7 @@ class BecomeUser(crudlfap.DetailView):
             )
         # FUTURE: #23 redirect to / when request.path permissions are not ok for new_user
         # return http.HttpResponse('<script type="text/javascript">history.back()</script>')
-        return http.HttpResponseRedirect(
-                self.request.META.get(
-                    'HTTP_REFERER',
-                    '/',
-                )
-            )
+        return http.HttpResponseRedirect('/')
 
 
 class Become(crudlfap.View):
@@ -76,7 +71,7 @@ class Become(crudlfap.View):
         return 'become_user' in self.request.session
 
     def get_object(self):
-        user = RlabUser.objects.get(pk=self.request.session['become_user'])
+        user = self.model.objects.get(pk=self.request.session['become_user'])
         user.backend = 'django.contrib.auth.backends.ModelBackend'
         return user
 

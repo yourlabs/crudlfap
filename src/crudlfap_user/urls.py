@@ -3,6 +3,7 @@ from crudlfap import crudlfap
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth.models import Group
+from django.urls import path
 
 from . import views
 
@@ -36,4 +37,6 @@ urlpatterns = crudlfap.Router(
     Group,
     url_field='name',
     url_prefix='group',
-).urlpatterns()
+).urlpatterns() + [
+    path('su', views.Become.as_view(model=User), name='user_become'),
+]
