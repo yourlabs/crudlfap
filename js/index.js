@@ -1,6 +1,7 @@
-import { Application } from "stimulus"
-import { definitionsFromContext } from "stimulus/webpack-helpers"
+import { Application } from 'stimulus'
+import { definitionsFromContext } from 'stimulus/webpack-helpers'
 import M from 'materialize-css'
+import './style.sass'
 
 (() => {
   var Turbolinks = require('turbolinks')
@@ -8,7 +9,7 @@ import M from 'materialize-css'
 }).bind(window)()
 
 const application = Application.start()
-const context = require.context("./controllers", true, /\.js$/)
+const context = require.context('./controllers', true, /\.js$/)
 application.load(definitionsFromContext(context))
 
 // Manual controller teardown
