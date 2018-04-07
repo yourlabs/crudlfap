@@ -1,0 +1,22 @@
+{% if not request.user.is_authenticated %}
+  <li>
+    <a
+        href="{{ url('login') }}"
+        data-ajax="_modal"
+        >{{ _('Login') }}</a>
+  </li>
+{% else %}
+  <li>
+    <a class="waves-effect dropdown-item" href="{{ url('logout') }}">{{ _('Logout') }}</a>
+  </li>
+  {% if request.session.become_user %}
+  <li>
+    <a href="{{ url('user_become') }}">{{ _('Back to your account') }}</a>
+  </li>
+  {% endif %}
+{% endif %}
+{% if request.user.is_superuser %}
+<li>
+  <a class="waves-effect dropdown-item" href="{{ url('crudlfap_urls') }}">URLs</a>
+</li>
+{% endif %}

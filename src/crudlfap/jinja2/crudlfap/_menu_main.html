@@ -6,28 +6,7 @@
       <a class="brand-logo" href="/" class="waves-effect brand-logo">{{ settings.SITE_NAME }}</a>
       {% endif %}
       <ul class="right">
-        {% if not request.user.is_authenticated %}
-          <li>
-            <a
-                href="{{ url('login') }}"
-                data-ajax="_modal"
-                >{{ _('Login') }}</a>
-          </li>
-        {% else %}
-          <li>
-            <a class="waves-effect dropdown-item" href="{{ url('logout') }}">{{ _('Logout') }}</a>
-          </li>
-          {% if request.session.become_user %}
-          <li>
-            <a href="{{ url('user_become') }}">{{ _('Back to your account') }}</a>
-          </li>
-          {% endif %}
-        {% endif %}
-        {% if request.user.is_superuser %}
-        <li>
-          <a class="waves-effect dropdown-item" href="{{ url('crudlfap_urls') }}">URLs</a>
-        </li>
-        {% endif %}
+        {% include 'crudlfap/_menu_auth.html' %}
       </ul>
     </div>
   </nav>
@@ -48,4 +27,6 @@
       {% endfor %}
     {% endfor %}
   {% endfor %}
+
+  {% include 'crudlfap/_menu_auth.html' %}
 </ul>
