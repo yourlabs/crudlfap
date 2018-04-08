@@ -14,14 +14,14 @@ application.load(definitionsFromContext(context))
 
 // Manual controller teardown
 // https://github.com/stimulusjs/stimulus/issues/104
-document.addEventListener('turbolinks:before-cache', function(e) {
+document.addEventListener('turbolinks:before-cache', function() {
   application.controllers.forEach(function(controller) {
     if(typeof controller.teardown === 'function') {
       controller.teardown()
     }
   })
-});
+})
 
-document.addEventListener('turbolinks:load', function(e) {
-  M.AutoInit();
+document.addEventListener('turbolinks:load', function() {
+  M.AutoInit()
 })
