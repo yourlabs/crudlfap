@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.conf.urls import include, url
-from django.views import generic
 from django.contrib.auth.views import LoginView
+from django.views import generic
 
 urlpatterns = [
     # CRUDLFA+ examples

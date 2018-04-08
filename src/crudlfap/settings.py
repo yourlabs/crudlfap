@@ -48,7 +48,7 @@ INSTALLED_APPS = [
 
 # CRUDLFA+ optional dependencies
 OPTIONAL_APPS = [
-    #{'debug_toolbar': {'after': 'django.contrib.staticfiles'}},
+    # {'debug_toolbar': {'after': 'django.contrib.staticfiles'}},
     {'crudlfap_filtertables2': {'after': 'crudlfap'}},
     {'django_filters': {'after': 'crudlfap'}},
     {'django_tables2': {'after': 'crudlfap'}},
@@ -68,7 +68,7 @@ MIDDLEWARE = [
 ]
 
 OPTIONAL_MIDDLEWARE = [
-        #{'debug_toolbar.middleware.DebugToolbarMiddleware': None}
+    # {'debug_toolbar.middleware.DebugToolbarMiddleware': None}
 ]
 INTERNAL_IPS = ('127.0.0.1',)
 

@@ -8,7 +8,6 @@ Crudlfa+ takes views further than Django and are expected to:
 - declare the names of the navigation menus they belong to.
 """
 from django.contrib import messages
-from django.contrib.admin.views.main import ChangeList
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
 
