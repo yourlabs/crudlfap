@@ -1,5 +1,3 @@
-import Cookie from 'js-cookie'
-import M from 'materialize-css'
 import { Controller } from 'stimulus'
 
 export default class extends Controller {

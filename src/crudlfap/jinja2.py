@@ -1,6 +1,7 @@
-from django import template
 import copy
 import urllib
+
+from django import template
 
 
 def pagination_filter_params(data):

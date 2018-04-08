@@ -2,8 +2,8 @@
   <div class="nav-wrapper">
     <div class="col s12">
       {% if view.model %}
-        {% set v = Router.registry[view.model]['list'](request=request) %}
-        {% if v.allow() %}
+        {% set v = site[view.model]['list'](request=request) %}
+        {% if v.allowed %}
           <a
             class="breadcrumb"
             data-ajax="{{ v.ajax }}"
@@ -14,8 +14,8 @@
       {% if object %}
         <a class="breadcrumb" href="{{ object.get_absolute_url() }}">{{ object }}</a>
       {% endif %}
-      {% if view.slug %}
-        <a class="breadcrumb active">{{ _(view.slug).capitalize() }}</a>
+      {% if view.urlname %}
+        <a class="breadcrumb active">{{ _(view.urlname).capitalize() }}</a>
       {% endif %}
     </div>
   </div>

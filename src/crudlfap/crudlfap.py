@@ -3,7 +3,10 @@
 from django.utils.module_loading import import_string
 
 from .apps import _installed
-from .routers import Router
+from .factory import Factory
+from .registry import Registry
+from .route import Route
+from .router import Router
 from .views.generic import (
     CreateView,
     DeleteView,
@@ -12,6 +15,7 @@ from .views.generic import (
     ListView,
     ModelViewMixin,
     ObjectFormView,
+    ObjectView,
     ObjectViewMixin,
     UpdateView,
     View,
@@ -20,3 +24,5 @@ from .views.generic import (
 
 if _installed('crudlfap_filtertables2'):
     from crudlfap_filtertables2.views import FilterTables2ListView
+
+site = Registry()

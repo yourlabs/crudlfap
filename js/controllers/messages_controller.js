@@ -8,7 +8,6 @@ export default class extends Controller {
         html: el.innerHTML,
         classes: el.getAttribute('class'),
       })
-        console.log(el.innerHTML)
       el.parentNode.removeChild(el)
     }
   }

@@ -1,15 +1,17 @@
+from crudlfap import crudlfap
+
 from django.conf import settings
 from django.conf.urls import include, url
-from django.views import generic
 from django.contrib.auth.views import LoginView
+from django.views import generic
 
-urlpatterns = [
-    # CRUDLFA+ examples
-    url(r'^artist/', include('crudlfap_example.artist.urls')),
-    url(r'^song/', include('crudlfap_example.song.urls')),
-    url(r'^nondb/', include('crudlfap_example.nondb.urls')),
+urlpatterns = crudlfap.site.urlpatterns + [
+    # CRUDLFA+ examples, we favor new include with registry
+    # url(r'^artist/', include('crudlfap_example.artist.urls')),
+    # url(r'^song/', include('crudlfap_example.song.urls')),
+    # url(r'^nondb/', include('crudlfap_example.nondb.urls')),
 
-    url(r'^auth/', include('crudlfap_user.urls')),
+    # url(r'^auth/', include('crudlfap_user.urls')),
 
     url(r'^auth/login/', LoginView.as_view(redirect_authenticated_user=True)),
     url(r'^auth/', include('django.contrib.auth.urls')),

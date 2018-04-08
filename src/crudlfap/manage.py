@@ -25,7 +25,10 @@ import warnings
 
 
 def main():
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'crudlfap_example.settings')
+    os.environ.setdefault(
+        'DJANGO_SETTINGS_MODULE',
+        'crudlfap_example.settings'
+    )
 
     if 'DEBUG' not in os.environ:
         warnings.warn('DEFAULTING DEBUG=1')

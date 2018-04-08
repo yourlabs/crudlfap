@@ -11,7 +11,7 @@
   </li>
   {% if request.session.become_user %}
   <li>
-    <a href="{{ url('user_become') }}">{{ _('Back to your account') }}</a>
+    <a href="{{ url('su') }}">{{ _('Back to your account') }}</a>
   </li>
   {% endif %}
 {% endif %}

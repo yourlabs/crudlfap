@@ -9,7 +9,6 @@ from django.apps import apps
 from django.conf import settings
 from django.core.management import call_command
 from django.core.management.commands.runserver import Command
-from django.utils.timezone import now
 
 try:
     import devpy.develop as logger

@@ -1,11 +1,10 @@
 import Cookie from 'js-cookie'
-import M from 'materialize-css'
 import { Controller } from 'stimulus'
 
 export default class extends Controller {
   submit(e) {
     if (this.element.id === undefined) {
-      console.warn('Skipping ajax because form tag has no id attr')
+      // console.warn('Skipping ajax because form tag has no id attr')
       return
     }
     e.preventDefault()
@@ -27,7 +26,6 @@ export default class extends Controller {
         return require('turbolinks').visit(res.headers['Location'])
 
       res.text().then(text => {
-        console.log(text)
         var parser = new DOMParser()
         var doc = parser.parseFromString(text, 'text/html')
         var newForm = doc.getElementById(this.element.id)

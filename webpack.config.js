@@ -1,19 +1,19 @@
 var path = require('path')
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 const extractSass = new ExtractTextPlugin({
-    filename: "crudlfap.css",
-});
+  filename: 'crudlfap.css',
+})
 
 /* eslint-disable */
 module.exports = {
 /* eslint-enable */
   entry: {
-      main: [
-          'babel-polyfill',
-          './js/index.js',
-          './node_modules/materialize-css/sass/materialize.scss',
-      ],
+    main: [
+      'babel-polyfill',
+      './js/index.js',
+      './node_modules/materialize-css/sass/materialize.scss',
+    ],
   },
   output: {
     path: path.resolve('src/crudlfap/static/'),

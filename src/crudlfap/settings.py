@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     # CRUDLFA+ dependencies
     'crudlfap',
+    'crudlfap_auth',
     'betterforms',
     'bootstrap3',
     'material',
@@ -48,7 +49,7 @@ INSTALLED_APPS = [
 
 # CRUDLFA+ optional dependencies
 OPTIONAL_APPS = [
-    #{'debug_toolbar': {'after': 'django.contrib.staticfiles'}},
+    # {'debug_toolbar': {'after': 'django.contrib.staticfiles'}},
     {'crudlfap_filtertables2': {'after': 'crudlfap'}},
     {'django_filters': {'after': 'crudlfap'}},
     {'django_tables2': {'after': 'crudlfap'}},
@@ -68,7 +69,7 @@ MIDDLEWARE = [
 ]
 
 OPTIONAL_MIDDLEWARE = [
-        #{'debug_toolbar.middleware.DebugToolbarMiddleware': None}
+    # {'debug_toolbar.middleware.DebugToolbarMiddleware': None}
 ]
 INTERNAL_IPS = ('127.0.0.1',)
 
@@ -112,7 +113,7 @@ CRUDLFAP_TEMPLATE_BACKEND = {
         "constants": TEMPLATE_CONSTANTS,
         "globals": {
             "pagination_filter_params": "crudlfap.jinja2.pagination_filter_params",  # noqa
-            "Router": "crudlfap.routers.Router",
+            "site": "crudlfap.crudlfap.site",
             "getattr": getattr,
             "str": str,
             "int": int,
