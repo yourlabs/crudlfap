@@ -17,10 +17,10 @@ from django_tables2.views import SingleTableMixin
 class Table(tables.Table):
     def render_crudlfap(self, record):
         from django.template import loader
-        from crudlfap.routers import Router
+        from crudlfap import crudlfap
         context = dict(
             object=record,
-            views=Router.registry[type(record)].get_menu(
+            views=crudlfap.site[type(record)].get_menu(
                 'object',
                 self.context['request'],
                 object=record,
@@ -48,18 +48,57 @@ class FilterTables2ListView(SingleTableMixin, FilterView, ListView):
     default_template_name = 'crudlfap_filtertables2/list.html'
     template_name_suffix = '_list'
     icon = 'fa fa-fw fa-table'
-    slug = 'list'
+    urlname = 'list'
     table_class = Table
 
-    def dispatch(self, *a, **k):
-        if not getattr(self, 'filter_fields', None):
-            self.filter_fields = self.fields
-        if not getattr(self, 'table_fields', None):
-            self.table_fields = self.fields
-        return super().dispatch(*a, **k)
+    def get_table_link_fields(self):
+        for field in self.table_fields:
+            model_field = self.model._meta.get_field(field)
+            if isinstance(model_field, models.CharField):
+                return [field]
 
-    def get_searchform_class(self):
-        if not getattr(self, 'search_fields', None):
+    def get_table_meta_link_columns(self):
+        return {i: tables.LinkColumn() for i in self.table_link_fields}
+
+    def get_table_meta_action_columns(self):
+        return dict(
+            crudlfap=tables.TemplateColumn(
+                template_name='crudlfap/_actions.html',
+                verbose_name=_('Actions'),
+                extra_context=dict(extra_class='btn-small'),
+                orderable=False,
+            ),
+        )
+
+    def get_table_meta_attributes(self):
+        return dict(model=self.model, fields=self.table_fields)
+        return attrs
+
+    def get_table_meta_class(self):
+        return type('Meta', (object,), self.table_meta_attributes)
+
+    def get_table_class_attributes(self):
+        attrs = collections.OrderedDict(
+            Meta=self.table_meta_class,
+        )
+        attrs.update(self.table_meta_link_columns)
+        attrs.update(self.table_meta_action_columns)
+        return attrs
+
+    def get_table_class(self):
+        return type(
+            '{}Table'.format(self.model.__name__),
+            (self.table_class,),
+            self.table_class_attributes
+        )
+
+    def get_table_data(self):
+        if self.search_form.is_valid():
+            return self.search_form.get_queryset()
+        return self.filterset.qs
+
+    def get_search_form_class(self):
+        if not self.search_fields:
             return
 
         return type(
@@ -71,81 +110,44 @@ class FilterTables2ListView(SingleTableMixin, FilterView, ListView):
             )
         )
 
-    def get_table_class(self):
-        list_display_links = getattr(self, 'list_display_links', None)
-        if not list_display_links:
-            for field in self.table_fields:
-                model_field = self.model._meta.get_field(field)
-                if isinstance(model_field, models.CharField):
-                    list_display_links = [field]
-                    break
-
-        attrs = collections.OrderedDict(
-                Meta=type(
-                    'Meta',
-                    (object,),
-                    dict(
-                        model=self.model,
-                        fields=self.table_fields,
-                        ),
-                    ),
-                )
-
-        attrs.update({
-            i: tables.LinkColumn() for i in list_display_links
-        })
-
-        attrs.update(dict(
-            crudlfap=tables.TemplateColumn(
-                template_name='crudlfap/_actions.html',
-                verbose_name=_('Actions'),
-                extra_context=dict(extra_class='btn-small'),
-                orderable=False,
-            ),
-        ))
-
-        return type(
-            '{}Table'.format(self.model.__name__),
-            (self.table_class,),
-            attrs
-        )
-
-    @property
-    def search_form(self):
-        SearchForm = self.get_searchform_class()
+    def get_search_form(self):
         if SearchForm:
-            form = SearchForm(
+            form = self.search_form_class(
                 self.request.GET,
                 queryset=self.filterset.qs
             )
             form.full_clean()
             return form
 
-    def get_table_data(self):
-        if self.search_form.is_valid():
-            return self.search_form.get_queryset()
-        return self.filterset.qs
+    def get_filterset_meta_filter_overrides(self):
+        return {
+            models.CharField: {
+               'filterset_class': django_filters.CharFilter,
+               'extra': lambda f: {
+                   'lookup_expr': 'icontains',
+               },
+           },
+        }
+
+    def get_filter_fields(self):
+        return []
+
+    def get_filterset_meta_attributes(self):
+        return dict(
+            model=self.model,
+            fields=self.filter_fields,
+            filter_overrides=self.filterset_meta_filter_overrides
+        )
+
+    def get_filterset_meta_class(self):
+        return type('Meta', (object,), self.filterset_meta_attributes)
+
+    def get_filterset_class_attributes(self):
+        return dict(Meta=self.filterset_meta_class)
 
     def get_filterset_class(self):
         return type(
             '{}FilterSet'.format(self.model.__name__),
             (django_filters.FilterSet,),
-            dict(
-                Meta=getattr(self, 'filterset_meta', type(
-                    'Meta',
-                    (object,),
-                    dict(
-                        model=self.model,
-                        fields=self.filter_fields,
-                        filter_overrides={
-                            models.CharField: {
-                               'filter_class': django_filters.CharFilter,
-                               'extra': lambda f: {
-                                   'lookup_expr': 'icontains',
-                               },
-                           },
-                        }
-                    )
-                ))
-            )
+            self.filterset_class_attributes
         )

@@ -14,7 +14,7 @@ application.load(definitionsFromContext(context))
 
 // Manual controller teardown
 // https://github.com/stimulusjs/stimulus/issues/104
-document.addEventListener('turbolinks:before-cache', function() {
+document.addEventListener('turbolinks:before-render', function() {
   application.controllers.forEach(function(controller) {
     if(typeof controller.teardown === 'function') {
       controller.teardown()

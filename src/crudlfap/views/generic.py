@@ -7,11 +7,11 @@ Crudlfa+ takes views further than Django and are expected to:
 - check if a user has permission for an object,
 - declare the names of the navigation menus they belong to.
 """
+from crudlfap.route import Route
+
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
-
-from .routable import RoutableViewMixin
 
 
 class DefaultTemplateMixin(object):
@@ -44,7 +44,7 @@ class DefaultTemplateMixin(object):
         return template_names
 
 
-class ViewMixin(DefaultTemplateMixin, RoutableViewMixin):
+class ViewMixin(DefaultTemplateMixin, Route):
     """Base View mixin for CRUDLFA+.
 
     If you have any question about style then find your answers in
@@ -60,23 +60,39 @@ class ModelViewMixin(ViewMixin):
     """Mixin for views using a Model class but no instance."""
 
     menus = ['model']
+    pluralize = False
 
-    @property
-    def title(self):
+    def get_exclude(self):
+        return []
+
+    def get_required_permissions(self):
+        return [
+            '{}.{}_{}'.format(
+                self.urlname,
+                self.app_name,
+                self.model._meta.model_name
+            )
+        ]
+
+    def get_fields(self):
+        return [
+            f for f in self.router.get_fields_for_user(
+                self.request.user,
+                self.required_permissions
+            ) if f not in self.exclude
+        ]
+
+    def get_model_verbose_name(self):
+        if self.pluralize:
+            return self.model._meta.verbose_name_plural
+        else:
+            return self.model._meta.verbose_name
+
+    def get_title(self):
         return '{} {}'.format(
-            _(self.slug),
-            self.model._meta.verbose_name_plural,
+            _(self.urlname),
+            self.model_verbose_name,
         ).capitalize()
-
-    @property
-    def fields(self):
-        """Return router fields."""
-        return self.router.fields_filter(lambda f: True)
-
-    @property
-    def exclude(self):
-        """Return router.exclude or None, field names if ``__all__``.."""
-        return getattr(self.router, 'ecxlude', None)
 
     def get_queryset(self):
         """Return router.get_queryset() by default, otherwise super()."""
@@ -127,33 +143,18 @@ class ObjectViewMixin(ObjectMixin, ModelViewMixin):
 
     menus = ['object']
 
-    def get_url_args(self):
-        """Return ``[self.object]``."""
-        return [self.object]
+    def get_urlargs(self):
+        """Return list with object's urlfield attribute."""
+        return [getattr(self.object, self.urlfield)]
 
     def get_slug_field(self):
         """Replace Django's get_slug_field with get_url_field."""
-        return self.get_url_field()
+        return self.urlfield
 
     @property
     def slug_url_kwarg(self):
         """Replace Django's slug_url_kwarg with get_url_field."""
-        return self.get_url_field()
-
-    @classmethod
-    def get_url_field(cls):
-        """
-        Return the model field name to use in the url.
-
-        By default, try router's url_field, otherwise try ``slug``,
-        fallback on ``pk``.
-        """
-        url_field = getattr(cls, 'url_field', None)
-        if url_field is None:
-            router = getattr(cls, 'router', None)
-            return router.url_field
-
-        return url_field or 'pk'
+        return self.urlfield
 
     @classmethod
     def to_url_args(cls, *args):
@@ -162,21 +163,20 @@ class ObjectViewMixin(ObjectMixin, ModelViewMixin):
         return [getattr(args[0], url_field)]
 
     @classmethod
-    def get_url_pattern(cls):
+    def get_urlregex(cls):
         """Identify the object by slug or pk in the pattern."""
-        if cls.url_pattern:
-            return cls.url_pattern.format(cls.slug)
+        return r'(?P<{}>[^/]+)/{}$'.format(cls.urlfield, cls.urlname)
 
-        url_field = cls.get_url_field()
-        return r'(?P<{}>[\w\d_-]+)/{}/$'.format(url_field, cls.slug)
-
-    @property
-    def title(self):
+    def get_title(self):
         return '{} {} "{}"'.format(
-            _(self.slug),
-            self.model._meta.verbose_name,
+            _(self.urlname),
+            self.model_verbose_name,
             self.object
         ).capitalize()
+
+
+class ObjectView(ObjectViewMixin, View):
+    pass
 
 
 class FormViewMixin(ViewMixin):
@@ -200,30 +200,28 @@ class FormView(FormViewMixin, generic.FormView):
 class ModelFormViewMixin(ModelViewMixin, FormViewMixin):
     """ModelForm ViewMixin using readable"""
 
-    @property
-    def fields(self):
-        """Return router.fields_editable."""
-        return self.router.fields_filter(lambda f: f.editable)
+    def get_form_class(self):
+        if self.fields is None:
+            self.fields = self.get_fields()
+        return super().get_form_class()
+
+    def get_form_invalid_message(self):
+        return '{} {} error'.format(
+            self.urlname,
+            self.model_verbose_name
+        ).capitalize()
+
+    def get_form_valid_message(self):
+        return _(
+            '%s %s: {}' % (self.urlname, self.model_verbose_name)
+        ).format(self.form.instance).capitalize()
 
     def form_invalid(self, form):
-        messages.error(
-            self.request,
-            _(
-                '{} {} error'.format(
-                    self.slug,
-                    self.model._meta.verbose_name
-                ).capitalize()
-            )
-        )
+        messages.error(self.request, self.form_invalid_message)
         return super().form_invalid(form)
 
     def form_valid(self, form):
-        messages.success(
-            self.request,
-            _(
-                '%s %s: {}' % (self.slug, self.model._meta.verbose_name)
-            ).format(form.instance).capitalize()
-        )
+        messages.success(self.request, self.form_valid_message)
         return super().form_valid(form)
 
 
@@ -258,14 +256,18 @@ class DeleteView(ObjectFormViewMixin, generic.DeleteView):
     action = 'click->modal#open'
     color = 'red'
 
+    def get_success_message(self):
+        return _(
+            '%s %s: {}' % (self.urlname, self.model_verbose_name)
+        ).format(self.object).capitalize()
+
     def get_success_url(self):
-        messages.success(
-            self.request,
-            _(
-                '%s %s: {}' % (self.slug, self.model._meta.verbose_name)
-            ).format(self.object).capitalize()
-        )
+        messages.success(self.request, self.success_message)
         return self.router['list'].reverse()
+
+    def get_required_permissions(self):
+        return ['{}.delete_{}'.format(
+            self.app_name, self.model._meta.model_name)]
 
 
 class DetailView(ObjectViewMixin, generic.DetailView):
@@ -276,8 +278,7 @@ class DetailView(ObjectViewMixin, generic.DetailView):
     default_template_name = 'crudlfap/detail.html'
     color = 'blue'
 
-    @property
-    def title(self):
+    def get_title(self):
         return str(self.object)
 
     def get_context_data(self, *a, **k):
@@ -287,29 +288,34 @@ class DetailView(ObjectViewMixin, generic.DetailView):
                 'field': self.model._meta.get_field(field),
                 'value': getattr(self.object, field)
             }
-            for field in self.fields
+            for field in (
+                [f.name for f in self.model._meta.fields]
+                if self.fields == '__all__'
+                else self.fields
+            ) if field not in self.exclude
         ]
         return c
 
     @classmethod
-    def get_url_pattern(cls):
+    def get_urlregex(cls):
         """Identify the object by slug or pk in the pattern."""
-        if cls.url_pattern:
-            return cls.url_pattern.format(cls.slug)
+        return r'(?P<{}>[^/]+)$'.format(cls.urlfield)
 
-        url_field = cls.get_url_field()
-        return r'(?P<{}>[\w\d_-]+)/$'.format(url_field)
+    def get_required_permissions(self):
+        return ['{}.detail_{}'.format(
+            self.app_name, self.model._meta.model_name)]
 
 
 class ListView(ModelViewMixin, generic.ListView):
     """Model list view."""
 
     default_template_name = 'crudlfap/list.html'
-    url_pattern = '$'
+    urlregex = '$'
     paginate_by = 10
     fa_icon = 'table'
     material_icon = 'list'
     menus = ['main']
+    pluralize = True
 
 
 class UpdateView(ObjectFormViewMixin, generic.UpdateView):
@@ -320,3 +326,7 @@ class UpdateView(ObjectFormViewMixin, generic.UpdateView):
     controller = 'modal'
     action = 'click->modal#open'
     color = 'orange'
+
+    def get_required_permissions(self):
+        return ['{}.change_{}'.format(
+            self.app_name, self.model._meta.model_name)]
