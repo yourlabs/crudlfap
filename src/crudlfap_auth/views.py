@@ -24,15 +24,16 @@ class PasswordView(crudlfap.UpdateView):
         return SetPasswordForm
 
     def get_form_kwargs(self):
-        return dict(user=self.object)
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = kwargs.pop('instance')
+        return kwargs
 
 
 class BecomeUser(crudlfap.DetailView):
-    slug = 'su'
+    urlname = 'su'
     menus = ['object']
     material_icon = 'attach_money'
     color = 'pink darken-4'
-    url_pattern = '(?P<username>[^/]+)/su/$'
 
     def get_object(self, queryset=None):
         user = super().get_object()
@@ -64,8 +65,7 @@ class BecomeUser(crudlfap.DetailView):
 
 
 class Become(crudlfap.View):
-    slug = 'me'
-    urlre = 'su/?$'
+    urlname = 'su'
 
     def allow(self):
         return 'become_user' in self.request.session

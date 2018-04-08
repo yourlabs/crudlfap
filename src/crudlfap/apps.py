@@ -31,3 +31,7 @@ class DefaultConfig(apps.AppConfig):
         )
 
         return views
+
+    def ready(self):
+        super().ready()
+        self.module.autodiscover()

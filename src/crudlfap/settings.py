@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     # CRUDLFA+ dependencies
     'crudlfap',
+    'crudlfap_auth',
     'betterforms',
     'bootstrap3',
     'material',
@@ -112,7 +113,7 @@ CRUDLFAP_TEMPLATE_BACKEND = {
         "constants": TEMPLATE_CONSTANTS,
         "globals": {
             "pagination_filter_params": "crudlfap.jinja2.pagination_filter_params",  # noqa
-            "Router": "crudlfap.routers.Router",
+            "site": "crudlfap.crudlfap.site",
             "getattr": getattr,
             "str": str,
             "int": int,

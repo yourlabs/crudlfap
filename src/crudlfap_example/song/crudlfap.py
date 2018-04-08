@@ -24,16 +24,17 @@ class SongUpdateView(crudlfap.UpdateView):
 class SongRouter(crudlfap.Router):
     fields = '__all__'
     icon = 'music'
+    model = Song
 
     views = [
-        crudlfap.DeleteView.factory(allow=owner_or_staff),
+        crudlfap.DeleteView.clone(allow=owner_or_staff),
         crudlfap.UpdateView,
-        crudlfap.CreateView.factory(allow=authenticated),
-        crudlfap.DetailView.factory(allow=authenticated),
-        crudlfap.FilterTables2ListView.factory(
+        crudlfap.CreateView.clone(allow=authenticated),
+        crudlfap.DetailView.clone(allow=authenticated),
+        crudlfap.FilterTables2ListView.clone(
             filter_fields=['artist'],
             search_fields=['artist__name', 'name'],
         ),
     ]
 
-urlpatterns = SongRouter(Song).urlpatterns()
+SongRouter().register()

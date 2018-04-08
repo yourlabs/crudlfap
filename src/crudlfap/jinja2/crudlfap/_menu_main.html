@@ -14,15 +14,15 @@
 
 <ul id="slide-out" class="sidenav">
   <li class="{% if request.path == '/' %}active{% endif %}"><a href="/">Home</a></li>
-  {% for app, routers in Router.registry.get_app_menus('main', request).items() %}
+  {% for app, routers in site.get_app_menus('main', request).items() %}
     {% for router in routers %}
       {% for v in router.get_menu('main', request) %}
-      <li class="{% if v == view %}active{% endif %}">
+      <li class="{% if v.url == view.url %}active{% endif %}">
           <a
             class="waves-effect"
-            href="{{ v.reverse() }}"
+            href="{{ v.url }}"
             title="{% if v.title %}{{ v.title }}{% endif %}"
-          >{% if view.material_icon %}<i class="material-icons">{{ view.material_icon }}</i>{% endif %}{{ v.model._meta.verbose_name_plural.capitalize() }} {{ _(v.slug|capfirst) }}</a>
+          >{% if view.material_icon %}<i class="material-icons">{{ view.material_icon }}</i>{% endif %}{{ v.model._meta.verbose_name_plural.capitalize() }} {{ _(v.urlname|capfirst) }}</a>
       </li>
       {% endfor %}
     {% endfor %}

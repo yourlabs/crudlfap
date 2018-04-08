@@ -1,11 +1,1 @@
-{% extends 'crudlfap/form.html' %}
-
-{% block breadcrumb %}
-  {% include 'crudlfap/_breadcrumb_object.html' %}
-{% endblock %}
-
-{% block before_form %}<h1>{{ _(view.slug).capitalize() }} {{ view.model._meta.verbose_name.capitalize() }}<h1>{% endblock %}
-
-{% block buttons %}
-{{ render_button(_(view.slug), button_type="submit", button_class="btn-primary") }}
-{% endblock %}
+{% extends 'crudlfap/form_object.html' %}
