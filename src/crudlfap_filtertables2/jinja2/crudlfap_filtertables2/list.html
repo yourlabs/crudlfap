@@ -5,12 +5,12 @@
   <div class="col s2">
     <form method="get" action="" data-controller="autosubmit" data-target="render-table" data-action="input->autosubmit#input change->autosubmit#input">
       {{ render_form(view.search_form) }}
-      {{ render_form(filter.form) }}
+      {{ render_form(view.filterset.form) }}
     </form>
   </div>
 
   <div class="table-responsive col s10" id="render-table">
-    {{ render_table(request, table, object_list) }}
+    {{ render_table(request, view.table, view.object_list) }}
   </div>
 </div>
 {% include 'crudlfap/_pagination.html' %}
