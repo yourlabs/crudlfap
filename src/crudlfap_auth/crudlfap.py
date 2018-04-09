@@ -65,6 +65,7 @@ crudlfap.Router(
 
 crudlfap.Router(
     Group,
+    form_fields=['name', 'permissions'],
     urlfield='name',
 ).register()
 
