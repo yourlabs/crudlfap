@@ -62,6 +62,7 @@ class ModelViewMixin(ViewMixin):
 
     menus = ['model']
     pluralize = False
+    object_permission_check = False
 
     def get_exclude(self):
         return []
@@ -143,6 +144,7 @@ class ObjectViewMixin(ObjectMixin, ModelViewMixin, SingleObjectMixin):
     """Mixin for views using a Model instance."""
 
     menus = ['object']
+    object_permission_check = True
 
     def get_urlargs(self):
         """Return list with object's urlfield attribute."""
@@ -243,6 +245,7 @@ class CreateView(ModelFormViewMixin, generic.CreateView):
     controller = 'modal'
     action = 'click->modal#open'
     color = 'green'
+    object_permission_check = False
 
 
 class DeleteView(ObjectFormViewMixin, generic.DeleteView):

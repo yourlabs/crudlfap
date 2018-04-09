@@ -14,7 +14,7 @@ def user():
 
 @pytest.mark.django_db
 def test_get_menu(srf):
-    srf.user = User.objects.create(is_staff=True)
+    srf.user = User.objects.create(is_superuser=True)
     result = crudlfap.site[User].get_menu('model', srf.get('/'))
     assert result[0].urlargs == []
     assert result[0].url == '/user/create'
@@ -91,7 +91,13 @@ def test_user_create_post_with_next(admin_client):
 
 
 @pytest.mark.django_db
-def test_user_detail_get(admin_client, user):
+def test_user_detail_get(client, user):
+    result = client.get('/user/foo')
+    assert result.status_code == 404
+
+
+@pytest.mark.django_db
+def test_user_detail_get_admin(admin_client, user):
     result = admin_client.get('/user/foo')
     assert result.status_code == 200
 
