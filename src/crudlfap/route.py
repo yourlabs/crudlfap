@@ -41,7 +41,9 @@ class RouteMetaclass(type):
         return urlname or None
 
     def get_urlpattern(self):
-        return re_path(self.urlregex, self.as_view(), name=self.urlname)
+        u = self.urlregex
+        regex = u if u.endswith('$') else u + '$'
+        return re_path(regex, self.as_view(), name=self.urlname)
 
     def get_urlfullname(self):
         return '{}:{}'.format(self.router.namespace, self.urlname)
