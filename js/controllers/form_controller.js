@@ -34,12 +34,13 @@ export default class extends Controller {
 
         // In case we find the same form in the response, we refresh only the
         // form tag, this works both inside modal and in normal page view.
+        var source, target
         if (newForm) {
-          var source = newForm
-          var target = this.element
+          source = newForm
+          target = this.element
         } else {
-          var source = doc.querySelector('body')
-          var target = document.querySelector('body')
+          source = doc.querySelector('body')
+          target = document.querySelector('body')
         }
 
         application.controllers.forEach(function(controller) {

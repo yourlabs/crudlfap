@@ -7,7 +7,7 @@
     "start": "webpack --watch",
     "prepare": "webpack",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint js"
   },
   "repository": {
     "type": "git",
