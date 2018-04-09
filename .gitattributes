@@ -1,3 +1,2 @@
 yarn.lock binary
-src/crudlfap/static/crudlfap.*
-src/crudlfap/static/*.woff*
+src/crudlfap/static/* binary
