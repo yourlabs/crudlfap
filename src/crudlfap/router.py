@@ -36,6 +36,8 @@ class Router(object):
         if hasattr(self, 'get_' + attr):
             return getattr(self, 'get_' + attr)()
 
+        raise AttributeError('{} or get_{}()'.format(attr, attr))
+
     def get_views(self):
         return crudlfap.get_default_views()
 
