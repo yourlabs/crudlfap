@@ -8,10 +8,9 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 import django_filters
-from django_filters.views import FilterView
+from django_filters.filterset import filterset_factory
 
 import django_tables2 as tables
-from django_tables2.views import SingleTableMixin
 
 
 class Table(tables.Table):
@@ -43,88 +42,25 @@ class Table(tables.Table):
         return ' '.join(html)
 
 
-class FilterTables2ListView(SingleTableMixin, FilterView, ListView):
-    urlre = r'$'
-    default_template_name = 'crudlfap_filtertables2/list.html'
-    template_name_suffix = '_list'
-    icon = 'fa fa-fw fa-table'
-    urlname = 'list'
-    table_class = Table
+class FilterMixin(object):
+    def get_filterset_class(self):
+        return filterset_factory(model=self.model, fields=self.filter_fields)
 
-    def get_table_fields(self):
-        return [
-            f.name
-            for f in self.model._meta.fields
-            if f.name not in self.exclude
-        ]
+    def get_filterset(self):
+        """
+        Returns an instance of the filterset to be used in this view.
+        """
+        return self.filterset_class(**self.filterset_kwargs)
 
-    def get_table_link_fields(self):
-        for field in self.table_fields:
-            model_field = self.model._meta.get_field(field)
-            if isinstance(model_field, models.CharField):
-                return [field]
-
-    def get_table_meta_link_columns(self):
-        return {i: tables.LinkColumn() for i in self.table_link_fields}
-
-    def get_table_meta_action_columns(self):
-        return dict(
-            crudlfap=tables.TemplateColumn(
-                template_name='crudlfap/_actions.html',
-                verbose_name=_('Actions'),
-                extra_context=dict(extra_class='btn-small'),
-                orderable=False,
-            ),
-        )
-
-    def get_table_meta_attributes(self):
-        return dict(model=self.model, fields=self.table_fields)
-        return attrs
-
-    def get_table_meta_class(self):
-        return type('Meta', (object,), self.table_meta_attributes)
-
-    def get_table_class_attributes(self):
-        attrs = collections.OrderedDict(
-            Meta=self.table_meta_class,
-        )
-        attrs.update(self.table_meta_link_columns)
-        attrs.update(self.table_meta_action_columns)
-        return attrs
-
-    def get_table_class(self):
-        return type(
-            '{}Table'.format(self.model.__name__),
-            (self.table_class,),
-            self.table_class_attributes
-        )
-
-    def get_table_data(self):
-        if self.search_form.is_valid():
-            return self.search_form.get_queryset()
-        return self.filterset.qs
-
-    def get_search_form_class(self):
-        if not self.search_fields:
-            return
-
-        return type(
-            self.model.__name__ + 'SearchForm',
-            (SearchForm,),
-            dict(
-                SEARCH_FIELDS=self.search_fields,
-                model=self.model
-            )
-        )
-
-    def get_search_form(self):
-        if SearchForm:
-            form = self.search_form_class(
-                self.request.GET,
-                queryset=self.filterset.qs
-            )
-            form.full_clean()
-            return form
+    def get_filterset_kwargs(self):
+        """
+        Returns the keyword arguments for instanciating the filterset.
+        """
+        return {
+            'data': self.request.GET or None,
+            'request': self.request,
+            'queryset': self.get_queryset(),
+        }
 
     def get_filterset_meta_filter_overrides(self):
         return {
@@ -158,3 +94,119 @@ class FilterTables2ListView(SingleTableMixin, FilterView, ListView):
             (django_filters.FilterSet,),
             self.filterset_class_attributes
         )
+
+
+class TableMixin(object):
+    def get_table_fields(self):
+        return [
+            f.name
+            for f in self.model._meta.fields
+            if f.name not in self.exclude
+        ]
+
+    def get_table_link_fields(self):
+        for field in self.table_fields:
+            model_field = self.model._meta.get_field(field)
+            if isinstance(model_field, models.CharField):
+                return [field]
+
+    def get_table_meta_link_columns(self):
+        return {i: tables.LinkColumn() for i in self.table_link_fields}
+
+    def get_table_meta_action_columns(self):
+        return dict(
+            crudlfap=tables.TemplateColumn(
+                template_name='crudlfap/_actions.html',
+                verbose_name=_('Actions'),
+                extra_context=dict(extra_class='btn-small'),
+                orderable=False,
+            ),
+        )
+
+    def get_table_meta_attributes(self):
+        return dict(model=self.model, fields=self.table_fields)
+
+    def get_table_meta_class(self):
+        return type('Meta', (object,), self.table_meta_attributes)
+
+    def get_table_class_attributes(self):
+        attrs = collections.OrderedDict(
+            Meta=self.table_meta_class,
+        )
+        attrs.update(self.table_meta_link_columns)
+        attrs.update(self.table_meta_action_columns)
+        return attrs
+
+    def get_table_class(self):
+        return Table
+
+    def build_table_class(self):
+        return type(
+            '{}Table'.format(self.model.__name__),
+            (self.table_class,),
+            self.table_class_attributes
+        )
+
+    def get_table_kwargs(self):
+        return {}
+
+    def get_table(self):
+        kwargs = self.table_kwargs
+        kwargs.update(data=self.object_list)
+        table = self.build_table_class()(**kwargs)
+        return table
+
+
+class SearchMixin(object):
+    def get_search_fields(self):
+        if hasattr(self.router, 'search_fields'):
+            return self.router.search_fields
+        return [
+            f.name
+            for f in self.model._meta.fields
+            if isinstance(f, models.CharField)
+        ]
+
+    def get_search_form_class(self):
+        if not self.search_fields:
+            return
+
+        return type(
+            self.model.__name__ + 'SearchForm',
+            (SearchForm,),
+            dict(
+                SEARCH_FIELDS=self.search_fields,
+                model=self.model
+            )
+        )
+
+
+class FilterTables2ListView(SearchMixin, FilterMixin, TableMixin, ListView):
+    urlre = r'$'
+    default_template_name = 'crudlfap_filtertables2/list.html'
+    template_name_suffix = '_list'
+    icon = 'fa fa-fw fa-table'
+    urlname = 'list'
+
+    def get(self, request, *args, **kwargs):
+        if self.filterset:
+            self.object_list = self.filterset.qs
+        else:
+            self.object_list = self.get_queryset()
+
+        if self.search_fields:
+            self.search_form = self.get_search_form()
+            self.object_list = self.search_form.get_queryset()
+
+        # Trick super()
+        self.get_queryset = lambda *a: self.object_list
+        return super().get(request, *args, **kwargs)
+
+    def get_search_form(self):
+        if SearchForm:
+            form = self.search_form_class(
+                self.request.GET,
+                queryset=self.object_list
+            )
+            form.full_clean()
+            return form
