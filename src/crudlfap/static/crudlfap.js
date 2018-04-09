@@ -22769,8 +22769,8 @@ document.addEventListener('turbolinks:before-render', function () {
   });
 });
 
-document.addEventListener('turbolinks:load', function () {
-  _materializeCss2.default.AutoInit();
+document.addEventListener('turbolinks:load', function (e) {
+  _materializeCss2.default.AutoInit(e.target.body);
 });
 
 /***/ }),
@@ -24158,6 +24158,10 @@ var _jsCookie2 = _interopRequireDefault(_jsCookie);
 
 var _stimulus = __webpack_require__(46);
 
+var _materializeCss = __webpack_require__(64);
+
+var _materializeCss2 = _interopRequireDefault(_materializeCss);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -24188,6 +24192,7 @@ var _class = function (_Controller) {
       var url = this.element.getAttribute('action');
       var formData = new FormData(this.element);
 
+      var application = this.application;
       var req = new Request(url);
       fetch(req, {
         credentials: 'same-origin',
@@ -24209,10 +24214,20 @@ var _class = function (_Controller) {
           // In case we find the same form in the response, we refresh only the
           // form tag, this works both inside modal and in normal page view.
           if (newForm) {
-            _this2.element.innerHTML = newForm.innerHTML;
+            var source = newForm;
+            var target = _this2.element;
           } else {
-            document.querySelector('body').innerHTML = doc.querySelector('body');
+            var source = doc.querySelector('body');
+            var target = document.querySelector('body');
           }
+
+          application.controllers.forEach(function (controller) {
+            if (target.contains(controller.element) && typeof controller.teardown === 'function') {
+              controller.teardown();
+            }
+          });
+          target.innerHTML = source.innerHTML;
+          _materializeCss2.default.AutoInit(target);
         });
       });
     }

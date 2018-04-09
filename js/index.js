@@ -22,6 +22,6 @@ document.addEventListener('turbolinks:before-render', function() {
   })
 })
 
-document.addEventListener('turbolinks:load', function() {
-  M.AutoInit()
+document.addEventListener('turbolinks:load', function(e) {
+  M.AutoInit(e.target.body)
 })

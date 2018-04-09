@@ -1,5 +1,6 @@
 import Cookie from 'js-cookie'
 import { Controller } from 'stimulus'
+import M from 'materialize-css'
 
 export default class extends Controller {
   submit(e) {
@@ -11,6 +12,7 @@ export default class extends Controller {
     var url = this.element.getAttribute('action')
     var formData = new FormData(this.element)
 
+    var application = this.application
     var req = new Request(url)
     fetch(req, {
       credentials: 'same-origin',
@@ -33,10 +35,20 @@ export default class extends Controller {
         // In case we find the same form in the response, we refresh only the
         // form tag, this works both inside modal and in normal page view.
         if (newForm) {
-          this.element.innerHTML = newForm.innerHTML
+          var source = newForm
+          var target = this.element
         } else {
-          document.querySelector('body').innerHTML = doc.querySelector('body')
+          var source = doc.querySelector('body')
+          var target = document.querySelector('body')
         }
+
+        application.controllers.forEach(function(controller) {
+          if(target.contains(controller.element) && typeof controller.teardown === 'function') {
+            controller.teardown()
+          }
+        })
+        target.innerHTML = source.innerHTML
+        M.AutoInit(target)
       })
     })
   }
