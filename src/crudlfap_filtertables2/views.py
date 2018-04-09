@@ -11,6 +11,7 @@ import django_filters
 from django_filters.filterset import filterset_factory
 
 import django_tables2 as tables
+from django_tables2.config import RequestConfig
 
 
 class Table(tables.Table):
@@ -150,11 +151,20 @@ class TableMixin(object):
     def get_table_kwargs(self):
         return {}
 
+    def get_table_pagination(self):
+        if not self.paginate_by:
+            return True
+        return dict(per_page=self.paginate_by)
+
     def get_table(self):
         kwargs = self.table_kwargs
         kwargs.update(data=self.object_list)
-        table = self.build_table_class()(**kwargs)
-        return table
+        self.table = self.build_table_class()(**kwargs)
+        RequestConfig(
+            self.request,
+            paginate=self.table_pagination,
+        ).configure(self.table)
+        return self.table
 
 
 class SearchMixin(object):
@@ -184,7 +194,6 @@ class SearchMixin(object):
 class FilterTables2ListView(SearchMixin, FilterMixin, TableMixin, ListView):
     urlre = r'$'
     default_template_name = 'crudlfap_filtertables2/list.html'
-    template_name_suffix = '_list'
     icon = 'fa fa-fw fa-table'
     urlname = 'list'
 

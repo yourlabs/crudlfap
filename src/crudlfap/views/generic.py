@@ -329,11 +329,22 @@ class ListView(ModelViewMixin, generic.ListView):
 
     default_template_name = 'crudlfap/list.html'
     urlregex = '$'
-    paginate_by = 10
     fa_icon = 'table'
     material_icon = 'list'
     menus = ['main']
     pluralize = True
+
+    def get(self, *a, **k):
+        '''Enforce sane default paginate_by if not False.'''
+        if getattr(self, 'paginate_by', None) is None:
+            self.paginate_by = self.get_paginate_by()
+        return super().get(*a, **k)
+
+    def get_paginate_by(self, queryset=None):
+        if self.router and hasattr(self.router, 'paginate_by'):
+            return self.router.paginate_by
+
+        return 10
 
 
 class UpdateView(ObjectFormViewMixin, generic.UpdateView):
