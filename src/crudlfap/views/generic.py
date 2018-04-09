@@ -203,6 +203,8 @@ class FormView(FormViewMixin, generic.FormView):
 class ModelFormViewMixin(ModelViewMixin, FormViewMixin):
     """ModelForm ViewMixin using readable"""
 
+    menus = ['model']
+
     def get_form_fields(self):
         if hasattr(self.router, 'form_fields'):
             return self.router.form_fields
@@ -331,7 +333,7 @@ class ListView(ModelViewMixin, generic.ListView):
     urlregex = '$'
     fa_icon = 'table'
     material_icon = 'list'
-    menus = ['main']
+    menus = ['main', 'model']
     pluralize = True
 
     def get(self, *a, **k):
