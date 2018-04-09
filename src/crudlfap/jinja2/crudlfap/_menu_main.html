@@ -13,20 +13,32 @@
 </div>
 
 <ul id="slide-out" class="sidenav">
-  <li class="{% if request.path == '/' %}active{% endif %}"><a href="/">Home</a></li>
-  {% for app, routers in crudlfap_site.get_app_menus('main', request).items() %}
-    {% for router in routers %}
-      {% for v in router.get_menu('main', request) %}
-      <li class="{% if v.url == view.url %}active{% endif %}">
-          <a
-            class="waves-effect"
-            href="{{ v.url }}"
-            title="{% if v.title %}{{ v.title }}{% endif %}"
-          >{% if view.material_icon %}<i class="material-icons">{{ view.material_icon }}</i>{% endif %}{{ v.model._meta.verbose_name_plural.capitalize() }} {{ _(v.urlname|capfirst) }}</a>
-      </li>
+
+  <li class="no-padding {% if request.path == '/' %}active{% endif %}"><a href="/">Home</a></li>
+  <li class="no-padding">
+    <ul class="collapsible collapsible-accordion">
+      {% for app, routers in crudlfap_site.get_app_menus('main', request).items() %}
+        {% for router in routers %}
+          <li class="{% if router == view.router %}active{% endif %}">
+            <a class="collapsible-header waves-effect waves-teal">{% if router.material_icon %}<i class="material-icons">{{ router.material_icon }}</i>{% endif %} {{ router.model._meta.verbose_name_plural.capitalize() }}</a>
+            <div class="collapsible-body">
+              <ul>
+                {% for v in router.get_menu('model', request) %}
+                  <li>
+                    <a
+                      class="waves-effect"
+                      href="{{ v.url }}"
+                      title="{% if v.title %}{{ v.title }}{% endif %}"
+                    >{% if v.material_icon %}<i class="material-icons">{{ v.material_icon }}</i>{% endif %}{{ _(v.urlname).capitalize() }}</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </li>
+        {% endfor %}
       {% endfor %}
-    {% endfor %}
-  {% endfor %}
+    </ul>
+  </li>
 
   {% include 'crudlfap/_menu_auth.html' %}
 </ul>

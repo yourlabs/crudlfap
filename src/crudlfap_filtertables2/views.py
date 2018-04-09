@@ -25,6 +25,7 @@ class Table(tables.Table):
                 self.context['request'],
                 object=record,
             ),
+            extra_class='btn-small secondary-content'
         )
         template = loader.select_template([
             '{}/_{}_actions.html'.format(

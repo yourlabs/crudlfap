@@ -61,12 +61,14 @@ crudlfap.Router(
     ],
     allow=lambda view: view.request.user.is_superuser,
     urlfield='username',
+    material_icon='person',
 ).register()
 
 crudlfap.Router(
     Group,
     fields=['name', 'permissions'],
     urlfield='name',
+    material_icon='group',
 ).register()
 
 crudlfap.site.views.append(views.Become.clone(model=User))
