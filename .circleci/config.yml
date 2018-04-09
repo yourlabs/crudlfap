@@ -21,7 +21,12 @@ jobs:
         - qa-dependencies-{{ checksum "tox.ini" }}
     - run:
         name: tox environment setup
-        command: sudo apt install -y python-tox && sudo npm install -g jsdoc && tox -r -e docs --notest
+        command: |
+          set -eux
+          sudo apt install -y python3-pip
+          sudo pip3 install tox
+          sudo npm install -g jsdoc
+          tox -r -e docs --notest
     - save_cache:
         paths: [~/.cache/pip]
         key: qa-dependencies-{{ checksum "tox.ini" }}
@@ -66,7 +71,7 @@ jobs:
         name: TEST tox -e py36-dj20
         command: |
           ~/.local/bin/tox -e py36-dj20
-          PATH=.tox/py36-dj20/bin:$PATH codecov -e $TOXENV
+          PATH=./.tox/py36-dj20/bin:$PATH codecov -e $TOXENV
 
   js-qa:
     docker:
