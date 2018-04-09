@@ -216,7 +216,14 @@ class Router(object):
 
         Returns True if user.is_staff by default.
         """
-        return view.request.user.is_staff
+        if view.required_permissions:
+            for permission in view.required_permissions:
+                args = [view.object] if view.object_permission_check else []
+                if not view.request.user.has_perm(permission, *args):
+                    return False
+        else:
+            return view.request.user.is_staff
+        return True
 
     def get_objects_for_user(self, user, perms):
         """Return the list of objects for a given set of perms."""

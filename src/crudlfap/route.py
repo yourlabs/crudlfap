@@ -68,7 +68,7 @@ class Route(Factory, metaclass=RouteMetaclass):
     url = Bridge('url')
     urlargs = Bridge('urlargs')
     allowed = Bridge('allowed')
-    get_required_permissions = Bridge('get_required_permissions')
+    required_permissions = Bridge('required_permissions')
 
     @classmethod
     def reverse(cls, *args, **kwargs):
@@ -103,15 +103,7 @@ class Route(Factory, metaclass=RouteMetaclass):
     def get_required_permissions(self):
         return None
 
-    def get_has_required_permissions(self):
-        if self.required_permissions:
-            for permission in self.required_permissions:
-                args = [self.object] if hasattr(self, 'get_object') else []
-                if not self.request.user.has_perm(permission, *args):
-                    return False
-        return True
-
-    def allowed(self):
+    def get_allowed(self):
         """
         Must return True if it dispatching this view is allowed.
 
@@ -154,9 +146,6 @@ class Route(Factory, metaclass=RouteMetaclass):
             return self.request.user.is_staff
 
         if not self.router.allowed(self):
-            return False
-
-        if not self.has_allowed_permissions:
             return False
 
         return True
