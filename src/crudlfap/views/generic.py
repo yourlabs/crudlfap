@@ -12,6 +12,7 @@ from crudlfap.route import Route
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
+from django.views.generic.detail import SingleObjectMixin
 
 
 class DefaultTemplateMixin(object):
@@ -138,7 +139,7 @@ class ObjectMixin(object):
     object = property(object_get, object_set)
 
 
-class ObjectViewMixin(ObjectMixin, ModelViewMixin):
+class ObjectViewMixin(ObjectMixin, ModelViewMixin, SingleObjectMixin):
     """Mixin for views using a Model instance."""
 
     menus = ['object']

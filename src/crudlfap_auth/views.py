@@ -29,7 +29,7 @@ class PasswordView(crudlfap.UpdateView):
         return kwargs
 
 
-class BecomeUser(crudlfap.DetailView):
+class BecomeUser(crudlfap.ObjectView):
     urlname = 'su'
     menus = ['object']
     material_icon = 'attach_money'
@@ -59,6 +59,7 @@ class BecomeUser(crudlfap.DetailView):
                 request,
                 'Switched to user {}'.format(new_user)
             )
+
         # FUTURE: #23 redirect to / when request.path permissions are not ok for new_user
         # return http.HttpResponse('<script type="text/javascript">history.back()</script>')
         return http.HttpResponseRedirect('/')

@@ -100,3 +100,4 @@ def test_user_detail_get(admin_client, user):
 def test_user_password_get(admin_client, user):
     result = admin_client.get('/user/foo/password')
     assert result.status_code == 200
+    assert b'id_new_password2' in result.content
