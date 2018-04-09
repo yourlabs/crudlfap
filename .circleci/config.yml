@@ -8,7 +8,6 @@ workflows:
       - docs
       - py36-dj20
       - js-qa
-      - js-test
 
 jobs:
   docs:

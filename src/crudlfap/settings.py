@@ -53,9 +53,7 @@ OPTIONAL_APPS = [
     {'crudlfap_filtertables2': {'after': 'crudlfap'}},
     {'django_filters': {'after': 'crudlfap'}},
     {'django_tables2': {'after': 'crudlfap'}},
-    {'dal': {'before': 'crudlfap'}},
     {'django_extensions': {'before': 'crudlfap'}},
-    {'dal_select2': {'before': 'crudlfap'}},
 ]
 
 MIDDLEWARE = [
