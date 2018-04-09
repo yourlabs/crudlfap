@@ -9,8 +9,9 @@
     </form>
   </div>
 
+  <style type="text/css">.table-container .pager { display: none; }</style>
   <div class="table-responsive col s10" id="render-table">
-    {{ render_table(request, view.table, view.object_list) }}
+    {{ render_table(request, view.table, object_list) }}
   </div>
 </div>
 {% include 'crudlfap/_pagination.html' %}
