@@ -51,6 +51,13 @@ class FilterTables2ListView(SingleTableMixin, FilterView, ListView):
     urlname = 'list'
     table_class = Table
 
+    def get_table_fields(self):
+        return [
+            f.name
+            for f in self.model._meta.fields
+            if f.name not in self.exclude
+        ]
+
     def get_table_link_fields(self):
         for field in self.table_fields:
             model_field = self.model._meta.get_field(field)
