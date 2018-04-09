@@ -2,15 +2,19 @@
 
 {% block content %}
 <div class="row">
-  <div class="col s2">
+  <div class="col s12 l2">
     <form method="get" action="" data-controller="autosubmit" data-target="render-table" data-action="input->autosubmit#input change->autosubmit#input">
       {{ render_form(view.search_form) }}
       {{ render_form(view.filterset.form) }}
     </form>
   </div>
 
-  <style type="text/css">.table-container .pager { display: none; }</style>
-  <div class="table-responsive col s10" id="render-table">
+  <style type="text/css">
+  .table-container .pager { display: none; }
+  .table-container .btn-floating { margin-left: 6px; }
+  </style>
+
+  <div class="table-responsive col s12 l10" id="render-table">
     {{ render_table(request, view.table, object_list) }}
   </div>
 </div>
