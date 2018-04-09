@@ -14,7 +14,7 @@
 
 <ul id="slide-out" class="sidenav">
   <li class="{% if request.path == '/' %}active{% endif %}"><a href="/">Home</a></li>
-  {% for app, routers in site.get_app_menus('main', request).items() %}
+  {% for app, routers in crudlfap_site.get_app_menus('main', request).items() %}
     {% for router in routers %}
       {% for v in router.get_menu('main', request) %}
       <li class="{% if v.url == view.url %}active{% endif %}">

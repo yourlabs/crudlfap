@@ -113,7 +113,7 @@ CRUDLFAP_TEMPLATE_BACKEND = {
         "constants": TEMPLATE_CONSTANTS,
         "globals": {
             "pagination_filter_params": "crudlfap.jinja2.pagination_filter_params",  # noqa
-            "site": "crudlfap.crudlfap.site",
+            "crudlfap_site": "crudlfap.crudlfap.site",
             "getattr": getattr,
             "str": str,
             "int": int,

@@ -2,7 +2,7 @@
   <div class="nav-wrapper">
     <div class="col s12">
       {% if view.model %}
-        {% set v = site[view.model]['list'](request=request) %}
+        {% set v = crudlfap_site[view.model]['list'](request=request) %}
         {% if v.allowed %}
           <a
             class="breadcrumb"
