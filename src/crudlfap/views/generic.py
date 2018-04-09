@@ -203,9 +203,16 @@ class FormView(FormViewMixin, generic.FormView):
 class ModelFormViewMixin(ModelViewMixin, FormViewMixin):
     """ModelForm ViewMixin using readable"""
 
+    def get_form_fields(self):
+        if hasattr(self.router, 'form_fields'):
+            return self.router.form_fields
+        if hasattr(self.router, 'fields'):
+            return self.router.fields
+        return self.get_fields()
+
     def get_form_class(self):
         if self.fields is None:
-            self.fields = self.get_fields()
+            self.fields = self.form_fields
         return super().get_form_class()
 
     def get_form_invalid_message(self):
@@ -246,6 +253,13 @@ class CreateView(ModelFormViewMixin, generic.CreateView):
     action = 'click->modal#open'
     color = 'green'
     object_permission_check = False
+
+    def get_form_fields(self):
+        if hasattr(self, 'create_fields'):
+            return self.create_fields
+        if hasattr(self.router, 'create_fields'):
+            return self.router.create_fields
+        return super().get_form_fields()
 
 
 class DeleteView(ObjectFormViewMixin, generic.DeleteView):
@@ -330,6 +344,13 @@ class UpdateView(ObjectFormViewMixin, generic.UpdateView):
     controller = 'modal'
     action = 'click->modal#open'
     color = 'orange'
+
+    def get_form_fields(self):
+        if hasattr(self, 'update_fields'):
+            return self.update_fields
+        if hasattr(self.router, 'update_fields'):
+            return self.router.update_fields
+        return super().get_form_fields()
 
     def get_required_permissions(self):
         return ['{}.change_{}'.format(
