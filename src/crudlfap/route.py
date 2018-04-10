@@ -1,4 +1,5 @@
 from django import http
+from django.utils.module_loading import import_string
 from django.urls import re_path, reverse_lazy
 
 from .factory import Factory
@@ -157,3 +158,9 @@ class Route(Factory, metaclass=RouteMetaclass):
         if not self.allowed:
             return http.HttpResponseNotFound()
         return super().dispatch(request, *args, **kwargs)
+
+    @classmethod
+    def factory(cls, view, **attributes):
+        if isinstance(view, str):
+            view = import_string(view)
+        return type(view.__name__, (view, cls), attributes)
