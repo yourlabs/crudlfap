@@ -1,10 +1,11 @@
 from django import http
 from django.conf import settings
 from django.utils.module_loading import import_string
-from django.views import generic
+
+from .generic import TemplateView
 
 
-class UrlsView(generic.TemplateView):
+class UrlsView(TemplateView):
     template_name = 'crudlfap/debug_urls.html'
 
     def printurl(self, parent, url):
