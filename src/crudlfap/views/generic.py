@@ -105,10 +105,10 @@ class ModelViewMixin(ViewMixin):
 
     def get_queryset(self):
         """Return router.get_queryset() by default, otherwise super()."""
-        router = getattr(self, 'router', None)
-        if getattr(router, 'get_queryset', None):
-            return router.get_queryset(self)
-        return super().get_queryset()
+        return self.router.get_objects_for_user(
+            self.request.user,
+            self.required_permissions,
+        )
 
 
 class ObjectMixin(object):
