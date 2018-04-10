@@ -1,5 +1,5 @@
 from django import http
-from django.urls import re_path, reverse_lazy
+from django.urls import re_path, reverse, reverse_lazy
 from django.utils.module_loading import import_string
 
 from .factory import Factory
@@ -156,7 +156,9 @@ class Route(Factory, metaclass=RouteMetaclass):
     def dispatch(self, request, *args, **kwargs):
         """Run allow() before dispatch(), because that's what its for."""
         if not self.allowed:
-            return http.HttpResponseNotFound()
+            return http.HttpResponseRedirect(
+                reverse('login') + '?next=' + request.path_info
+            )
         return super().dispatch(request, *args, **kwargs)
 
     @classmethod
