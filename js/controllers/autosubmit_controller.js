@@ -27,6 +27,7 @@ export default class extends Controller {
     var parser = new DOMParser()
     var doc = parser.parseFromString(e.target.responseText, 'text/html')
     document.getElementById(this.targetId).innerHTML = doc.getElementById(this.targetId).innerHTML
+    window.history.pushState({}, doc.querySelector('title').innerHTML, e.target.responseURL)
   }
 
   get targetId() {
