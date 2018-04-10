@@ -9,11 +9,12 @@
     <meta name="turbolinks-cache-control" content="no-cache">
     <link rel="icon" href="{{ static('favicon.ico') }}">
 
-    <title>{% block title %}{{ view.title_html|default('') }}{% endblock %} {% if settings.SITE_TITLE %}- {{ settings.SITE_TITLE }}{% endif %}</title>
+    <title>{% block title %}{{ view.title_html }}{% endblock %} {% if settings.SITE_TITLE %}- {{ settings.SITE_TITLE }}{% endif %}</title>
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <link href="{{ static('crudlfap.css') }}" rel="stylesheet">
+    <script src="{{ static('crudlfap.js') }}" defer></script>
 
     {% block extra_style %}{% endblock %}
   </head>
@@ -29,7 +30,7 @@
       <h2
         class="text-{{ view.style|default('default') }} hide-in-modal"
         id="modal-title-ajax"
-      >{{ view.get_title_heading() }}</h2>
+      >{{ view.title_heading }}</h2>
       {% endif %}
     {% endblock %}
 
