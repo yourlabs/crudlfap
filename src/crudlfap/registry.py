@@ -8,7 +8,7 @@ class Registry(collections.OrderedDict):
     lazy_properties = [
         'app_name',
         'namespace',
-        'regex',
+        'urlregex',
         'urlpattern',
         'urlpatterns',
     ]
@@ -50,8 +50,12 @@ class Registry(collections.OrderedDict):
             router.urlpattern for router in self.values()
         ] + [view.urlpattern for view in self.views]
 
-    def get_urlpattern(self):
-        return re_path(self.regex + '/', (
+    def get_urlpattern(self, urlregex=None):
+        urlregex = urlregex or self.urlregex
+        if not urlregex.endswith('/'):
+            urlregex += '/'
+
+        return re_path(urlregex, (
             self.urlpatterns,
             self.app_name,
             self.namespace,
@@ -63,5 +67,5 @@ class Registry(collections.OrderedDict):
     def get_namespace(self):
         return None
 
-    def get_regex(self):
+    def get_urlregex(self):
         return ''
