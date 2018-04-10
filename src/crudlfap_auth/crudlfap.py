@@ -32,7 +32,7 @@ crudlfap.Router(
             ]
         ),
         crudlfap.CreateView.clone(
-            fields=['username', 'email', 'is_staff', 'is_superuser']
+            fields=['username', 'email', 'groups', 'is_staff', 'is_superuser']
         ),
         views.PasswordView,
         views.BecomeUser,
