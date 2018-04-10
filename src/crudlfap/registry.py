@@ -48,7 +48,7 @@ class Registry(collections.OrderedDict):
     def get_urlpatterns(self):
         return [
             router.urlpattern for router in self.values()
-        ] + [view.urlpattern for view in self.views]
+        ] + [view.urlpattern for view in self.views] + self.extra_urls
 
     def get_urlpattern(self, urlregex=None):
         urlregex = urlregex or self.urlregex

@@ -57,6 +57,10 @@ class View(ViewMixin, generic.View):
     """Base view for CRUDLFA+."""
 
 
+class TemplateView(ViewMixin, generic.TemplateView):
+    """TemplateView for CRUDLFA+."""
+
+
 class ModelViewMixin(ViewMixin):
     """Mixin for views using a Model class but no instance."""
 
