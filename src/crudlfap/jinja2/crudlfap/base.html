@@ -9,7 +9,7 @@
     <meta name="turbolinks-cache-control" content="no-cache">
     <link rel="icon" href="{{ static('favicon.ico') }}">
 
-    <title>{% block title %}{% if getattr(view, 'get_title_html', None) %}{{ view.get_title_html() }}{% endif %}{% endblock %} {% if settings.SITE_TITLE %}- {{ settings.SITE_TITLE }}{% endif %}</title>
+    <title>{% block title %}{{ view.title_html|default('') }}{% endblock %} {% if settings.SITE_TITLE %}- {{ settings.SITE_TITLE }}{% endif %}</title>
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
