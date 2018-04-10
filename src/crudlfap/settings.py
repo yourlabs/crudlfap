@@ -33,11 +33,13 @@ ALLOWED_HOSTS = []
 # Application definition
 CRUDLFAP_APPS = [
     'crudlfap',
-    'crudlfap_filtertables2',
-    'crudlfap_auth',
     'betterforms',
     'bootstrap3',
     'material',
+    'crudlfap_filtertables2',
+    'crudlfap_auth',
+    'django_filters',
+    'django_tables2',
 ]
 
 INSTALLED_APPS = [
@@ -51,9 +53,6 @@ INSTALLED_APPS = [
 # CRUDLFA+ optional dependencies
 OPTIONAL_APPS = [
     # {'debug_toolbar': {'after': 'django.contrib.staticfiles'}},
-    # {'crudlfap_filtertables2': {'after': 'crudlfap'}},
-    {'django_filters': {'after': 'crudlfap'}},
-    {'django_tables2': {'after': 'crudlfap'}},
     {'django_extensions': {'before': 'crudlfap'}},
 ]
 
