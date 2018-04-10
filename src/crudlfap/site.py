@@ -26,9 +26,11 @@ site.extra_urls = [
     ),
     path(
         '',
-        TemplateView.as_view(
-            template_name='crudlfap/home.html'
-        )
+        TemplateView.clone(
+            template_name='crudlfap/home.html',
+            title_heading='',
+            title='Home',
+        ).as_view()
     ),
 ]
 
