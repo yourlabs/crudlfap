@@ -1,22 +1,27 @@
 {% extends 'crudlfap/list.html' %}
 
 {% block content %}
+<style type="text/css">
+#render-table .table-container .pagination { display: none; }
+#render-table .btn-floating { margin-left: 6px; }
+</style>
+
 <div class="row">
+  {% if view.search_form or view.filterset.form.fields %}
   <div class="col s12 m2">
     <form method="get" action="" data-controller="autosubmit" data-target="render-table" data-action="input->autosubmit#input change->autosubmit#input">
       {{ render_form(view.search_form) }}
       {{ render_form(view.filterset.form) }}
     </form>
   </div>
+  {% endif %}
 
-  <style type="text/css">
-  .table-container .pager { display: none; }
-  .table-container .btn-floating { margin-left: 6px; }
-  </style>
+  <div class="table-responsive col s12 {% if view.search_form or view.filterset.form.fields %}m10{% endif %}" id="render-table">
+    <div class="table-container">
+      {{ render_table(request, view.table, object_list) }}
+    </div>
 
-  <div class="table-responsive col s12 m10" id="render-table">
-    {{ render_table(request, view.table, object_list) }}
+    {% include 'crudlfap/_pagination.html' %}
   </div>
 </div>
-{% include 'crudlfap/_pagination.html' %}
 {% endblock %}
