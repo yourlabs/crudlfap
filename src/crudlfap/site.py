@@ -1,10 +1,9 @@
 from django.contrib.auth.views import LoginView, LogoutView
-from django.views import generic
-from django.urls import include, path
+from django.urls import path
 
 from .registry import Registry
-from .views.generic import TemplateView
 from .views.debug import UrlsView
+from .views.generic import TemplateView
 
 
 site = Registry()
@@ -27,7 +26,7 @@ site.extra_urls = [
     ),
     path(
         '',
-        generic.TemplateView.as_view(
+        TemplateView.as_view(
             template_name='crudlfap/home.html'
         )
     ),

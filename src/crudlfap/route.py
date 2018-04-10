@@ -1,6 +1,6 @@
 from django import http
-from django.utils.module_loading import import_string
 from django.urls import re_path, reverse_lazy
+from django.utils.module_loading import import_string
 
 from .factory import Factory
 from .utils import guess_urlfield

@@ -5,9 +5,9 @@ from django.utils.module_loading import import_string
 from .apps import _installed
 from .factory import Factory
 from .registry import Registry
-from .site import site
 from .route import Route
 from .router import Router
+from .site import site
 from .views.debug import UrlsView
 from .views.generic import (
     CreateView,
