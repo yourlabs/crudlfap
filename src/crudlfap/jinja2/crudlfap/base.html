@@ -13,20 +13,9 @@
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <!-- Custom styles for this template -->
     <link href="{{ static('crudlfap.css') }}" rel="stylesheet">
 
     {% block extra_style %}{% endblock %}
-
-    <script type="text/crudlfap-state" id="ajax-state">
-    {
-        "url": "{{ request.get_full_path() }}",
-        "style": "{{ view.style|default("default") }}",
-        "ajax": "{{ view.ajax|default("#ajax-container") }}",
-        "debug": "{{ settings.DEBUG }}"
-    }
-    </script>
-    <script src="{{ static('crudlfap.js') }}" defer></script>
   </head>
 
   <body class="{% block body_class %}{% endblock %}">
