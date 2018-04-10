@@ -16,7 +16,7 @@ def test_install_optional():
         'nonexistent': None,
     }
     ctx = {
-        'crudlfap.context_processors.base': None,
+        'crudlfap_auth': None,
     }
     after = get_installed()
     install_optional([bs3], after)
@@ -33,5 +33,5 @@ def test_install_optional():
     mod_attr = get_installed()
     install_optional([ctx], mod_attr)
     expected = ['django.contrib.staticfiles', 'crudlfap', 'myapp',
-                'crudlfap.context_processors.base']
+                'crudlfap_auth']
     assert mod_attr == expected, "Failed to append module attribute reference"

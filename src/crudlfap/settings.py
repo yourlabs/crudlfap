@@ -94,7 +94,6 @@ CRUDLFAP_TEMPLATE_BACKEND = {
             "django.contrib.auth.context_processors.auth",
             "django.contrib.messages.context_processors.messages",
             "django.template.context_processors.i18n",
-            "crudlfap.context_processors.base",
         ],
         "extensions": [
             "jinja2.ext.do",
