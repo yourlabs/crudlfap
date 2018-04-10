@@ -28,6 +28,9 @@ class DefaultTemplateMixin(object):
     material_icon = 'priority high'
     ajax = '#ajax-container'
 
+    def get_title(self):
+        return _(self.urlname).capitalize()
+
     def get_title_html(self):
         """Return text for HTML title tag."""
         return self.title
