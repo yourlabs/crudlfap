@@ -100,6 +100,13 @@ class FilterMixin(object):
 
 class TableMixin(object):
     def get_table_fields(self):
+        if self.table_sequence:
+            return [
+                f.name
+                for f in self.model._meta.fields
+                if f.name in self.table_sequence
+            ]
+
         return [
             f.name
             for f in self.model._meta.fields
@@ -111,6 +118,7 @@ class TableMixin(object):
             model_field = self.model._meta.get_field(field)
             if isinstance(model_field, models.CharField):
                 return [field]
+        return []
 
     def get_table_meta_link_columns(self):
         return {i: tables.LinkColumn() for i in self.table_link_fields}
@@ -125,8 +133,22 @@ class TableMixin(object):
             ),
         )
 
+    def get_table_sequence(self):
+        return None
+
+    def get_table_columns(self):
+        return dict()
+
     def get_table_meta_attributes(self):
-        return dict(model=self.model, fields=self.table_fields)
+        attrs = dict(model=self.model)
+
+        if self.table_sequence:
+            attrs['sequence'] = self.table_sequence
+
+        if self.table_fields:
+            attrs['fields'] = self.table_fields
+
+        return attrs
 
     def get_table_meta_class(self):
         return type('Meta', (object,), self.table_meta_attributes)
@@ -137,15 +159,22 @@ class TableMixin(object):
         )
         attrs.update(self.table_meta_link_columns)
         attrs.update(self.table_meta_action_columns)
+        attrs.update(self.table_columns)
         return attrs
 
     def get_table_class(self):
         return Table
 
     def build_table_class(self):
+        bases = (self.table_class,)
+        if (self.table_class != Table
+                and not issubclass(self.table_class, Table)):
+
+            bases = (self.table_class, Table)
+
         return type(
             '{}Table'.format(self.model.__name__),
-            (self.table_class,),
+            bases,
             self.table_class_attributes
         )
 
@@ -213,7 +242,7 @@ class FilterTables2ListView(SearchMixin, FilterMixin, TableMixin, ListView):
         return super().get(request, *args, **kwargs)
 
     def get_search_form(self):
-        if SearchForm:
+        if self.search_fields:
             form = self.search_form_class(
                 self.request.GET,
                 queryset=self.object_list
