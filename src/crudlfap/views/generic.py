@@ -173,9 +173,9 @@ class ObjectViewMixin(ObjectMixin, ModelViewMixin, SingleObjectMixin):
         return [getattr(args[0], url_field)]
 
     @classmethod
-    def get_urlregex(cls):
+    def get_urlpath(cls):
         """Identify the object by slug or pk in the pattern."""
-        return r'(?P<{}>[^/]+)/{}$'.format(cls.urlfield, cls.urlname)
+        return r'<{}>/{}'.format(cls.urlfield, cls.urlname)
 
     def get_title(self):
         return '{} {} "{}"'.format(
@@ -324,9 +324,9 @@ class DetailView(ObjectViewMixin, generic.DetailView):
         return c
 
     @classmethod
-    def get_urlregex(cls):
+    def get_urlpath(cls):
         """Identify the object by slug or pk in the pattern."""
-        return r'(?P<{}>[^/]+)$'.format(cls.urlfield)
+        return r'<{}>'.format(cls.urlfield)
 
     def get_required_permissions(self):
         return ['{}.detail_{}'.format(
@@ -337,7 +337,7 @@ class ListView(ModelViewMixin, generic.ListView):
     """Model list view."""
 
     default_template_name = 'crudlfap/list.html'
-    urlregex = '$'
+    urlpath = ''
     fa_icon = 'table'
     material_icon = 'list'
     menus = ['main', 'model']

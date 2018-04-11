@@ -29,15 +29,15 @@ def test_urlname_from_name():
     assert FooRoute.urlname == 'foo'
 
 
-def test_urlregex():
-    route = Route.clone(urlregex='foo')
-    assert route.urlregex == 'foo'
+def test_urlpath():
+    route = Route.clone(urlpath='foo')
+    assert route.urlpath == 'foo'
 
 
-def test_urlregex_from_urlname():
+def test_urlpath_from_urlname():
     class FooRoute(Route):
         pass
-    assert FooRoute.urlregex == 'foo$'
+    assert FooRoute.urlpath == 'foo'
 
 
 def test_urlpattern():
@@ -45,5 +45,5 @@ def test_urlpattern():
         model = Artist
     p = DetailView.urlpattern
     assert p.name == 'detail'
-    assert p.pattern.regex == re.compile('detail$')
+    assert p.pattern.regex == re.compile('^detail$')
     assert p.callback.view_class == DetailView

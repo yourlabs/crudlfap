@@ -1,17 +1,17 @@
 {% if not request.user.is_authenticated %}
   <li class="{{ liclass|default('') }}">
     <a
-        href="{{ url('login') }}"
+        href="{{ url('crudlfap:login') }}"
         data-ajax="_modal"
         >{{ _('Login') }}</a>
   </li>
 {% else %}
   <li class="{{ liclass|default('') }}">
-    <a class="waves-effect" href="{{ url('logout') }}">{{ _('Logout') }}</a>
+    <a class="waves-effect" href="{{ url('crudlfap:logout') }}">{{ _('Logout') }}</a>
   </li>
   {% if request.session.become_user %}
   <li class="{{ liclass|default('') }}">
-    <a href="{{ url('su') }}">{{ _('Back to your account') }}</a>
+    <a href="{{ url('crudlfap:su') }}">{{ _('Back to your account') }}</a>
   </li>
   {% endif %}
 {% endif %}
