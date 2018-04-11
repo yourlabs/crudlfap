@@ -41,6 +41,26 @@ def test_user_update_reverse():
     assert reverse('crudlfap:user:update', args=['a']) == '/user/a/update'
 
 
+def test_group_list_reverse():
+    assert reverse('group:list') == '/group'
+
+
+def test_group_create_reverse():
+    assert reverse('group:create') == '/group/create'
+
+
+def test_group_detail_reverse():
+    assert reverse('group:detail', args=['hr']) == '/group/hr'
+
+
+def test_group_delete_reverse():
+    assert reverse('group:delete', args=['hr']) == '/group/hr/delete'
+
+
+def test_group_update_reverse():
+    assert reverse('group:update', args=['hr']) == '/group/hr/update'
+
+
 @pytest.mark.django_db
 def test_user_update_resolve(user):
     result = resolve('/user/foo/update')
@@ -69,6 +89,34 @@ def test_user_list_get(admin_client):
 def test_user_create_get(admin_client):
     result = admin_client.get('/user/create')
     assert result.status_code == 200
+
+
+def test_group_list_get(admin_client):
+    result = admin_client.get('/group')
+    assert result.status_code == 200
+
+
+def test_group_create_get(admin_client):
+    result = admin_client.get('/group/create')
+    assert result.status_code == 200
+
+
+@pytest.mark.django_db
+def test_group_create_post(admin_client):
+    result = admin_client.post('/group/create', dict(
+        name='hr',
+    ))
+    assert result.status_code == 302
+    assert result['Location'] == '/group/hr'
+
+
+# @pytest.mark.django_db
+# def test_group_create_post_with_permission(admin_client):
+#     result = admin_client.post('/group/create', dict(
+#         name='hr',
+#     ))
+#     assert result.status_code == 302
+#     assert result['Location'] == '/group/hr'
 
 
 @pytest.mark.django_db
