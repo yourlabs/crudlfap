@@ -6,7 +6,7 @@ models.Model and setting their Meta.managed attribute to False. Then, you can
 use CRUDLFA+ views and routers.
 """
 from django.apps import apps
-from django.urls import re_path
+from django.urls import path
 from django.utils.module_loading import import_string
 
 from .route import Route
@@ -23,10 +23,6 @@ class Router(object):
     .. py:attribute:: model
 
         Optional model class for this Router and all its views.
-
-    .. py:attribute:: url_prefix
-
-        Optional url prefix for all of this Router's views.
     """
 
     def __getattr__(self, attr):
@@ -48,7 +44,7 @@ class Router(object):
         if self.model:
             return self.model._meta.model_name
 
-    def get_regex(self):
+    def get_urlpath(self):
         if self.model:
             return self.model._meta.model_name
 
@@ -169,14 +165,14 @@ class Router(object):
         return [view.urlpattern for view in self.views]
 
     def get_urlpattern(self):
-        return re_path(self.regex, (
+        return path(self.urlpath, (
             [
-                re_path('/', (
-                    [v.urlpattern for v in self.views if v.urlregex != '$'],
+                path('/', (
+                    [v.urlpattern for v in self.views if v.urlpath],
                     None,
                     None
                 ))
-            ] + [v.urlpattern for v in self.views if v.urlregex == '$'],
+            ] + [v.urlpattern for v in self.views if not v.urlpath],
             self.app_name,
             self.namespace,
         ))

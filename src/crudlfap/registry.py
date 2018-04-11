@@ -1,17 +1,18 @@
 import collections
 
 from django.apps import apps
-from django.urls import re_path
+from django.urls import path
 
 
 class Registry(collections.OrderedDict):
-    lazy_properties = [
-        'app_name',
-        'namespace',
-        'urlregex',
-        'urlpattern',
-        'urlpatterns',
-    ]
+    def __getattr__(self, attr):
+        if attr.startswith('get_'):
+            raise AttributeError('{} or {}()'.format(attr[4:], attr))
+
+        if hasattr(self, 'get_' + attr):
+            return getattr(self, 'get_' + attr)()
+
+        raise AttributeError('{} or get_{}()'.format(attr, attr))
 
     def get_app_menus(self, name, request, **kwargs):
         """Sort Router instances by app name."""
@@ -32,40 +33,40 @@ class Registry(collections.OrderedDict):
         from django.db import models
         if isinstance(arg, models.Model):
             arg = type(arg)
-        if isinstance(arg, str):
+        elif isinstance(arg, str) and '.' in arg:
             arg = apps.get_model(*arg.split('.'))
         return super().__getitem__(arg)
 
-    def __getattr__(self, attr):
-        if attr in self.lazy_properties:
-            return getattr(self, 'get_' + attr)()
-        raise AttributeError(attr)
-
-    def __init__(self, *a):
-        self.views = []
+    def __init__(self, views=None, *a, **attrs):
+        self.views = views or []
         super().__init__(*a)
+        for k, v in attrs.items():
+            setattr(self, k, v)
 
     def get_urlpatterns(self):
+        for view in self.views:
+            view.registry = self
+
         return [
             router.urlpattern for router in self.values()
-        ] + [view.urlpattern for view in self.views] + self.extra_urls
+        ] + [view.urlpattern for view in self.views]
 
-    def get_urlpattern(self, urlregex=None):
-        urlregex = urlregex or self.urlregex
-        if not urlregex.endswith('/'):
-            urlregex += '/'
+    def get_urlpattern(self, urlpath=None, namespace=None, app_name=None):
+        urlpath = urlpath or self.urlpath
+        if urlpath and not urlpath.endswith('/'):
+            urlpath += '/'
 
-        return re_path(urlregex, (
+        return path(urlpath, (
             self.urlpatterns,
-            self.app_name,
-            self.namespace,
+            app_name or self.app_name,
+            namespace or self.namespace,
         ))
 
     def get_app_name(self):
-        return None
+        return 'crudlfap'
 
     def get_namespace(self):
         return None
 
-    def get_urlregex(self):
+    def get_urlpath(self):
         return ''

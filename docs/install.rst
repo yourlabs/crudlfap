@@ -28,14 +28,14 @@ The easiest configuration is to generate patterns from the default registry::
 
     from crudlfap import crudlfap
 
-    urlpatterns = crudlfap.site.urlpatterns + [
-        # your patterns ... if any
+    urlpatterns = [
+        crudlfap.site.urlpattern
     ]
 
-Or::
+Or, to sit in ``/admin``::
 
     urlpatterns = [
-        crudlfap.site.get_urlpattern('newadmin'),
+        crudlfap.site.get_urlpattern('admin'),
         # your patterns ..
     ]
 

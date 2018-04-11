@@ -44,12 +44,12 @@ def test_namespace_with_model():
     assert Router(model=Artist).namespace == 'artist'
 
 
-def test_regex():
-    assert Router(regex='foo').regex == 'foo'
+def test_path():
+    assert Router(urlpath='foo').urlpath == 'foo'
 
 
-def test_regex_with_model():
-    assert Router(model=Artist).regex == 'artist'
+def test_path_with_model():
+    assert Router(model=Artist).urlpath == 'artist'
 
 
 def test_app_name():

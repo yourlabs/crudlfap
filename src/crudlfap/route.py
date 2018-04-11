@@ -1,5 +1,7 @@
+import inspect
+
 from django import http
-from django.urls import re_path, reverse, reverse_lazy
+from django.urls import path, reverse, reverse_lazy
 from django.utils.module_loading import import_string
 
 from .factory import Factory
@@ -13,7 +15,12 @@ class RouteMetaclass(type):
         if attr.startswith('get_'):
             raise AttributeError('{} or {}'.format(attr[4:], attr))
 
-        return getattr(self, 'get_' + attr)()
+        getter = getattr(self, 'get_' + attr)
+
+        if inspect.ismethod(getter):
+            return getter()
+        else:
+            return getter(self)
 
     def get_app_name(self):
         return self.model._meta.app_label if self.model else None
@@ -21,8 +28,8 @@ class RouteMetaclass(type):
     def get_model(self):
         return self.router.model if self.router else None
 
-    def get_urlregex(self):
-        return self.urlname + '$'
+    def get_urlpath(self):
+        return self.urlname
 
     def get_urlname(self):
         urlname = self.__name__.lower()
@@ -42,12 +49,27 @@ class RouteMetaclass(type):
         return urlname or None
 
     def get_urlpattern(self):
-        u = self.urlregex
-        regex = u if u.endswith('$') else u + '$'
-        return re_path(regex, self.as_view(), name=self.urlname)
+        return path(self.urlpath, self.as_view(), name=self.urlname)
 
     def get_urlfullname(self):
-        return '{}:{}'.format(self.router.namespace, self.urlname)
+        if self.router and self.registry:
+            return '{}:{}:{}'.format(
+                self.router.registry.app_name,
+                self.router.namespace,
+                self.urlname
+            )
+        elif self.registry:
+            return '{}:{}'.format(
+                self.registry.app_name,
+                self.urlname
+            )
+        elif self.router:
+            return '{}:{}'.format(
+                self.router.namespace,
+                self.urlname
+            )
+        else:
+            return self.urlname
 
     def get_urlfield(self):
         if self.router and self.router.urlfield:
@@ -55,24 +77,7 @@ class RouteMetaclass(type):
         return guess_urlfield(self.model)
 
 
-class Bridge(object):
-    def __init__(self, name, getter=None):
-        self.name = name
-        self.getter = getter or 'get_' + name
-
-    def __get__(self, ins, typ):
-        if ins:
-            return getattr(ins, self.getter)()
-        else:
-            return getattr(typ, self.getter)(typ())
-
-
 class Route(Factory, metaclass=RouteMetaclass):
-    url = Bridge('url')
-    urlargs = Bridge('urlargs')
-    allowed = Bridge('allowed')
-    required_permissions = Bridge('required_permissions')
-
     @classmethod
     def reverse(cls, *args, **kwargs):
         """Reverse a url to this view with the given args."""
@@ -153,11 +158,21 @@ class Route(Factory, metaclass=RouteMetaclass):
 
         return True
 
+    def get_registry(self):
+        if self.router:
+            return self.router.registry
+        return None
+
+    def get_login_url(self):
+        if self.registry:
+            return reverse('{}:login'.format(self.registry.app_name))
+        return reverse('login')
+
     def dispatch(self, request, *args, **kwargs):
         """Run allow() before dispatch(), because that's what its for."""
         if not self.allowed:
             return http.HttpResponseRedirect(
-                reverse('login') + '?next=' + request.path_info
+                self.login_url + '?next=' + request.path_info
             )
         return super().dispatch(request, *args, **kwargs)
 

@@ -22,23 +22,23 @@ def test_get_menu(srf):
 
 
 def test_user_list_reverse():
-    assert reverse('user:list') == '/user'
+    assert reverse('crudlfap:user:list') == '/user'
 
 
 def test_user_create_reverse():
-    assert reverse('user:create') == '/user/create'
+    assert reverse('crudlfap:user:create') == '/user/create'
 
 
 def test_user_detail_reverse():
-    assert reverse('user:detail', args=['a']) == '/user/a'
+    assert reverse('crudlfap:user:detail', args=['a']) == '/user/a'
 
 
 def test_user_delete_reverse():
-    assert reverse('user:delete', args=['a']) == '/user/a/delete'
+    assert reverse('crudlfap:user:delete', args=['a']) == '/user/a/delete'
 
 
 def test_user_update_reverse():
-    assert reverse('user:update', args=['a']) == '/user/a/update'
+    assert reverse('crudlfap:user:update', args=['a']) == '/user/a/update'
 
 
 @pytest.mark.django_db
@@ -93,7 +93,7 @@ def test_user_create_post_with_next(admin_client):
 @pytest.mark.django_db
 def test_user_detail_get(client, user):
     result = client.get('/user/foo')
-    assert result.status_code == 404
+    assert result.status_code == 302
 
 
 @pytest.mark.django_db

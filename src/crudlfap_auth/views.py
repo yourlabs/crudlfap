@@ -99,10 +99,4 @@ class Become(crudlfap.View):
                 'Your are still superuser {}'.format(self.request.user)
             )
 
-        # return http.HttpResponse('<script type="text/javascript">history.back()</script>')
-        return http.HttpResponseRedirect(
-                self.request.META.get(
-                    'HTTP_REFERER',
-                    '/',
-                )
-            )
+        return http.HttpResponseRedirect('/')
