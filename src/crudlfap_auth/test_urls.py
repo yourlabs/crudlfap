@@ -1,6 +1,6 @@
 from crudlfap import crudlfap
 
-from django.contrib.auth.models import Permission, Group
+from django.contrib.auth.models import Group, Permission
 from django.urls import resolve, reverse
 
 import pytest
