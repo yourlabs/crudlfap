@@ -67,10 +67,44 @@ def test_group_update_reverse():
     assert reverse('crudlfap:group:update', args=['hr']) == '/group/hr/update'
 
 
+def test_su_user_reverse():
+    assert reverse('crudlfap:su') == '/su'
+
+
+def test_login_reverse():
+    assert reverse('crudlfap:login') == '/login'
+
+
+def test_logout_reverse():
+    assert reverse('crudlfap:logout') == '/logout'
+
+
+def test_url_reverse():
+    assert reverse('crudlfap:urls') == '/urls'
+
+
 @pytest.mark.django_db
 def test_user_update_resolve(user):
     result = resolve('/user/foo/update')
     assert result.func.view_class.urlname == 'update'
+
+
+@pytest.mark.django_db
+def test_user_delete_resolve(user):
+    result = resolve('/user/foo/delete')
+    assert result.func.view_class.urlname == 'delete'
+
+
+@pytest.mark.django_db
+def test_user_create_resolve(user):
+    result = resolve('/user/create')
+    assert result.func.view_class.urlname == 'create'
+
+
+@pytest.mark.django_db
+def test_user_detail_resolve(user):
+    result = resolve('/user/foo')
+    assert result.func.view_class.urlname == 'detail'
 
 
 def test_user_list_resolve():
@@ -80,6 +114,39 @@ def test_user_list_resolve():
     assert result.__name__ == 'UserFilterTables2ListView'
     assert result.urlname == 'list'
     assert result.url == '/user'
+
+
+def test_group_list_resolve():
+    from crudlfap_filtertables2.views import FilterTables2ListView
+    result = resolve('/group').func.view_class
+    assert issubclass(result, FilterTables2ListView)
+    assert result.__name__ == 'GroupFilterTables2ListView'
+    assert result.urlname == 'list'
+    assert result.url == '/group'
+
+
+@pytest.mark.django_db
+def test_group_update_resolve(group):
+    result = resolve('/group/hr/update')
+    assert result.func.view_class.urlname == 'update'
+
+
+@pytest.mark.django_db
+def test_group_delete_resolve(group):
+    result = resolve('/group/hr/delete')
+    assert result.func.view_class.urlname == 'delete'
+
+
+@pytest.mark.django_db
+def test_group_create_resolve(group):
+    result = resolve('/group/create')
+    assert result.func.view_class.urlname == 'create'
+
+
+@pytest.mark.django_db
+def test_group_detail_resolve(group):
+    result = resolve('/group/hr')
+    assert result.func.view_class.urlname == 'detail'
 
 
 def test_user_detail_url():
@@ -151,10 +218,22 @@ def test_user_create_post(admin_client):
 def test_user_create_post_with_next(admin_client):
     result = admin_client.post('/user/create', dict(
         username='lol',
+        password='Download@123',
         _next='/user',
     ))
     assert result.status_code == 302
     assert result['Location'] == '/user'
+
+
+@pytest.mark.django_db
+def test_user_password_post(admin_client, user):
+    result = admin_client.post('/user/foo/password', dict(
+        old_password='Download@123',
+        new_password1='Download123',
+        new_password2='Download123',
+    ))
+    assert result.status_code == 302
+    assert result['Location'] == '/user/foo'
 
 
 @pytest.mark.django_db
