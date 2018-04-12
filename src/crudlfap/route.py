@@ -161,7 +161,8 @@ class Route(Factory, metaclass=RouteMetaclass):
     def get_registry(self):
         if self.router:
             return self.router.registry
-        return None
+        from .site import site
+        return site
 
     def get_login_url(self):
         if self.registry:
