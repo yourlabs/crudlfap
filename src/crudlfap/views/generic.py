@@ -61,14 +61,23 @@ class ViewMixin(DefaultTemplateMixin, Route):
         return dict()
 
     def get_menu_views(self):
-        return [
-            view
-            for view in self.router.get_menu(
-                self.menu,
-                self.request,
-                **self.menu_kwargs
-            ) if view.urlname != self.urlname
-        ]
+        views = []
+        for view in self.router.views:
+            for menu in view.menus:
+                if menu in self.menus_display:
+                    view = view.clone(
+                        request=self.request,
+                        **self.menu_kwargs,
+                    )
+
+                    if not view().allowed:
+                        continue
+                    if view.urlname == self.urlname:
+                        continue
+                    if view.urlname in [v.urlname for v in views]:
+                        continue
+                    views.append(view)
+        return views
 
 
 class View(ViewMixin, generic.View):
@@ -83,7 +92,7 @@ class ModelViewMixin(ViewMixin):
     """Mixin for views using a Model class but no instance."""
 
     menus = ['model']
-    menu = 'model'
+    menus_display = ['model']
     pluralize = False
     object_permission_check = False
 
@@ -168,8 +177,8 @@ class ObjectMixin(object):
 class ObjectViewMixin(ObjectMixin, ModelViewMixin, SingleObjectMixin):
     """Mixin for views using a Model instance."""
 
-    menus = ['object']
-    menu = 'object'
+    menus = ['object', 'object_detail']
+    menus_display = ['object', 'object_detail']
     object_permission_check = True
 
     def get_urlargs(self):
@@ -326,6 +335,7 @@ class DetailView(ObjectViewMixin, generic.DetailView):
     material_icon = 'search'
     default_template_name = 'crudlfap/detail.html'
     color = 'blue'
+    menus_display = ['object', 'object_detail']
 
     def get_title(self):
         return str(self.object)
