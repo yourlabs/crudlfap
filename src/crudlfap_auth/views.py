@@ -20,8 +20,11 @@ class PasswordView(crudlfap.UpdateView):
 
     def get_form_class(self):
         if self.object == self.request.user:
-            return PasswordChangeForm
-        return SetPasswordForm
+            cls = PasswordChangeForm
+        else:
+            cls = SetPasswordForm
+        # This fixes the form messages feature from UpdateView
+        return type(cls.__name__, (cls,), dict(instance=self.object))
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
