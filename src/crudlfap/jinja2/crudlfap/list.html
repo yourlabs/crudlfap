@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block after_container %}
-{% with menu=view.router.get_menu('model', request) %}
+{% with menu=view.menu_views %}
 {% include 'crudlfap/_fixed_actions.html' %}
 {% endwith %}
 {% endblock %}
