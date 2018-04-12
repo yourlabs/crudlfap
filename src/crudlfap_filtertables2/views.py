@@ -52,7 +52,24 @@ class FilterMixin(object):
         """
         Returns an instance of the filterset to be used in this view.
         """
-        return self.filterset_class(**self.filterset_kwargs)
+        fs = self.filterset_class(**self.filterset_kwargs)
+
+        # filter out choices which have no result to avoid filter pollution
+        # with choices which would empty out results
+        for name, field in fs.form.fields.items():
+            try:
+                mf = self.model._meta.get_field(name)
+            except:
+                continue
+
+            if not isinstance(mf, models.ForeignKey):
+                continue
+
+            field.queryset = field.queryset.annotate(
+                c=models.Count(mf.related_query_name())
+            ).filter(c__gt=0)
+
+        return fs
 
     def get_filterset_kwargs(self):
         """
