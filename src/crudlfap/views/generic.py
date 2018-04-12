@@ -220,7 +220,7 @@ class ModelFormViewMixin(ModelViewMixin, FormViewMixin):
         return self.get_fields()
 
     def get_form_class(self):
-        if self.fields is None:
+        if self.fields is None and not self.form_class:
             self.fields = self.form_fields
         return super().get_form_class()
 
