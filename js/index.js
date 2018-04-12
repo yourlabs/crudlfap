@@ -4,8 +4,8 @@ import M from 'materialize-css'
 import './style.sass'
 
 (() => {
-  window.Turbolinks = require('turbolinks')
-  window.Turbolinks.start()
+  Turbolinks = require('turbolinks')
+  Turbolinks.start()
 }).bind(window)()
 
 const application = Application.start()
