@@ -70,3 +70,9 @@ class Registry(collections.OrderedDict):
 
     def get_urlpath(self):
         return ''
+
+    def get_title(self):
+        return 'CRUDLFA+'
+
+    def get_navbar_color(self):
+        return 'teal darken-3'
