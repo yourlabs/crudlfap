@@ -13,8 +13,15 @@
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <link href="{{ static('crudlfap.css') }}" rel="stylesheet">
-    <script src="{{ static('crudlfap.js') }}" defer></script>
+    {% block bundles %}
+      {% block style_bundle %}
+      <link href="{{ static('crudlfap.css') }}" rel="stylesheet">
+      {% endblock %}
+
+      {% block script_bundle %}
+      <script src="{{ static('crudlfap.js') }}" defer></script>
+      {% endblock %}
+    {% endblock %}
 
     {% block extra_style %}{% endblock %}
   </head>
