@@ -132,6 +132,17 @@ CRUDLFAP_TEMPLATE_BACKEND = {
         "translation_engine": "django.utils.translation",
     }
 }
+
+try:
+    import webpack_loader  # noqa
+except ImportError:
+    pass
+else:
+    CRUDLFAP_TEMPLATE_BACKEND['OPTIONS']['globals'].setdefault(
+        'render_bundle',
+        'webpack_loader.templatetags.webpack_loader.render_bundle',
+    )
+
 DEFAULT_TEMPLATE_BACKEND = {
     "BACKEND": "django.template.backends.django.DjangoTemplates",
     "APP_DIRS": True,
