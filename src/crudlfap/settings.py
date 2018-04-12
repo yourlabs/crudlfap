@@ -134,7 +134,7 @@ CRUDLFAP_TEMPLATE_BACKEND = {
 }
 
 try:
-    import webpack_loader
+    import webpack_loader  # noqa
 except ImportError:
     pass
 else:
