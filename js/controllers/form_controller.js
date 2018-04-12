@@ -24,8 +24,9 @@ export default class extends Controller {
         'Cache-Control': 'no-cache',
       }
     }).then(res => {
-      if (res.type == 'opaqueredirect')
-        return require('turbolinks').visit(res.headers['Location'])
+      if (res.type == 'opaqueredirect') {
+        window.Turbolinks.visit(res.headers['Location'])
+      }
 
       res.text().then(text => {
         var parser = new DOMParser()
