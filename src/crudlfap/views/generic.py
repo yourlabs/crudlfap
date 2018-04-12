@@ -54,6 +54,21 @@ class ViewMixin(DefaultTemplateMixin, Route):
     If you have any question about style then find your answers in
     DefaultTemplateMixin, otherwise in RoutableViewMixin.
     """
+    def get_menu(self):
+        return None
+
+    def get_menu_kwargs(self):
+        return dict()
+
+    def get_menu_views(self):
+        return [
+            view
+            for view in self.router.get_menu(
+                self.menu,
+                self.request,
+                **self.menu_kwargs
+            ) if view.urlname != self.urlname
+        ]
 
 
 class View(ViewMixin, generic.View):
@@ -68,6 +83,7 @@ class ModelViewMixin(ViewMixin):
     """Mixin for views using a Model class but no instance."""
 
     menus = ['model']
+    menu = 'model'
     pluralize = False
     object_permission_check = False
 
@@ -151,6 +167,7 @@ class ObjectViewMixin(ObjectMixin, ModelViewMixin, SingleObjectMixin):
     """Mixin for views using a Model instance."""
 
     menus = ['object']
+    menu = 'object'
     object_permission_check = True
 
     def get_urlargs(self):
@@ -183,6 +200,9 @@ class ObjectViewMixin(ObjectMixin, ModelViewMixin, SingleObjectMixin):
             self.model_verbose_name,
             self.object
         ).capitalize()
+
+    def get_menu_kwargs(self):
+        return dict(object=self.object)
 
 
 class ObjectView(ObjectViewMixin, View):
