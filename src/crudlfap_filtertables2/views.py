@@ -131,10 +131,14 @@ class TableMixin(object):
         ]
 
     def get_table_link_fields(self):
+        if not hasattr(self.model, 'get_absolute_url'):
+            return []
+
         for field in self.table_fields:
             model_field = self.model._meta.get_field(field)
             if isinstance(model_field, models.CharField):
                 return [field]
+
         return []
 
     def get_table_meta_link_columns(self):
