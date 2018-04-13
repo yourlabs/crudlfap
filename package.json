@@ -7,7 +7,8 @@
     "start": "webpack --watch",
     "prepare": "webpack",
     "test": "jest",
-    "lint": "eslint js"
+    "lint": "eslint js",
+    "browser-test": "cd nightwatch && yarn test"
   },
   "repository": {
     "type": "git",
@@ -39,10 +40,24 @@
     "js-cookie": "^2.2.0",
     "materialize-css": "^1.0.0-beta",
     "materialize-loader": "^2.0.2",
+    "sauce-connect-launcher": "^1.2.4",
+    "sauce-tunnel": "^2.5.0",
     "stimulus": "^1.0.1",
     "turbolinks": "^5.1.1",
     "url-loader": "^1.0.1",
     "webpack": "3"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-jest": "^22.4.1",
+    "babel-loader": "^7.1.3",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "codecov": "^3.0.0",
+    "eslint": "^4.18.1",
+    "file-loader": "^1.1.11",
+    "jest": "^22.4.2",
+    "url-loader": "^1.0.1"
   },
   "jest": {
     "verbose": true,
