@@ -227,10 +227,15 @@ class FormViewMixin(ViewMixin):
     success_url_next = True
 
     def get_success_url(self):
-        url = super().get_success_url()
-        if self.success_url_next and '_next' in self.request.POST:
-            url = self.request.POST['_next']
-        return url
+        if '_next' in self.request.POST:
+            return self.request.POST['_next']
+        if self.success_url_next:
+            return self.success_url_next
+        if self.object and hasattr(self.object, 'get_absolute_url'):
+            return self.object.get_absolute_url()
+        if self.router['list']:
+            return self.router['list'].url
+        return super().get_success_url()
 
 
 class FormView(FormViewMixin, generic.FormView):
