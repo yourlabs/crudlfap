@@ -1,0 +1,28 @@
+{
+  "name": "nightwatch-typescript-starter",
+  "version": "1.0.0",
+  "description": "Simple nightwatch.js Typescript starter",
+  "main": "index.js",
+  "scripts": {
+    "build": "./node_modules/.bin/tsc",
+    "pretest": "yarn install && yarn run build",
+    "test": "./node_modules/.bin/nightwatch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anjmao/nightwatch-typescript-starter.git"
+  },
+  "author": "Andzej Maciusovic",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/anjmao/nightwatch-typescript-starter/issues"
+  },
+  "homepage": "https://github.com/anjmao/nightwatch-typescript-starter#readme",
+  "devDependencies": {
+    "@types/nightwatch": "^0.9.4",
+    "@types/node": "^8.0.53",
+    "chromedriver": "^2.33.2",
+    "nightwatch": "^0.9.16",
+    "typescript": "^2.6.2"
+  }
+}

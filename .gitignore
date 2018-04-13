@@ -3,5 +3,11 @@ __pycache__
 *.egg-info
 .tox
 .coverage
+node_modules
 src/db.sqlite
 src/.coverage
+
+nightwatch/node_modules
+nightwatch/dist
+nightwatch/reports
+nightwatch/yarn.lock
