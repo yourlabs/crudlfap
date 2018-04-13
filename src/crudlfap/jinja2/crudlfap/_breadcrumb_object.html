@@ -12,7 +12,7 @@
           >{{ v.model._meta.verbose_name_plural.capitalize() }}</a>
         {% endif %}
       {% endif %}
-      {% if object %}
+      {% if object and getattr(object, 'get_absolute_url', None) %}
         <a class="breadcrumb" href="{{ object.get_absolute_url() }}">{{ object }}</a>
       {% endif %}
       {% if view.urlname %}

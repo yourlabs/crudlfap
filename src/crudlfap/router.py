@@ -150,13 +150,19 @@ class Router(object):
         Also, register this router as default router for its model class in the
         RouterRegistry.
         """
+        self.registry[self.model] = self
+
+        for view in self.views:
+            if view.urlname == 'detail':
+                break
+        if not self.views or view.urlname != 'detail':
+            return
+
         if not hasattr(self.model, 'get_absolute_url'):
             def get_absolute_url(self):
                 from crudlfap import crudlfap
                 return crudlfap.site[type(self)]['detail'].reverse(self)
             self.model.get_absolute_url = get_absolute_url
-
-        self.registry[self.model] = self
 
     def get_urlpatterns(self):
         """
