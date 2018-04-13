@@ -1,6 +1,6 @@
 {
   "name": "crudlfap",
-  "version": "0.3.4",
+  "version": "0.3.6",
   "description": "CRUDLFA+ framework for Django 2.0",
   "main": "index.js",
   "scripts": {
