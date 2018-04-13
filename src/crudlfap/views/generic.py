@@ -113,7 +113,9 @@ class ModelViewMixin(ViewMixin):
             f for f in self.router.get_fields_for_user(
                 self.request.user,
                 self.required_permissions
-            ) if f not in self.exclude
+            )
+            if self.model._meta.get_field(f).editable
+            and f not in self.exclude
         ]
 
     def get_model_verbose_name(self):
