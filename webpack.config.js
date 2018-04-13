@@ -8,11 +8,12 @@ const extractSass = new ExtractTextPlugin({
 /* eslint-disable */
 module.exports = {
 /* eslint-enable */
+  context: __dirname,
+
   entry: {
     main: [
       'babel-polyfill',
       './js/index.js',
-      './node_modules/materialize-css/sass/materialize.scss',
     ],
   },
   output: {
@@ -26,7 +27,7 @@ module.exports = {
       { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file-loader' },
       {
         test: /\.js$/,
-        exclude: /(turbolinks)/,
+        exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
           options: {
