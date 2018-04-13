@@ -272,12 +272,14 @@ class ModelFormViewMixin(ModelViewMixin, FormViewMixin):
         ).format(self.form.instance).capitalize()
 
     def form_invalid(self, form):
+        response = super().form_invalid(form)
         messages.error(self.request, self.form_invalid_message)
-        return super().form_invalid(form)
+        return response
 
     def form_valid(self, form):
+        response = super().form_valid(form)
         messages.success(self.request, self.form_valid_message)
-        return super().form_valid(form)
+        return response
 
 
 class ObjectFormViewMixin(ObjectViewMixin, ModelFormViewMixin):
