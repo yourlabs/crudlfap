@@ -107,6 +107,18 @@ def test_user_detail_resolve(user):
     assert result.func.view_class.urlname == 'detail'
 
 
+@pytest.mark.django_db
+def test_user_logout_resolve(user):
+    result = resolve('/logout')
+    assert result.func.view_class.urlname == 'logout'
+
+
+@pytest.mark.django_db
+def test_user_login_resolve():
+    result = resolve('/login')
+    assert result.func.view_class.urlname == 'login'
+
+
 def test_user_list_resolve():
     from crudlfap_filtertables2.views import FilterTables2ListView
     result = resolve('/user').func.view_class
@@ -267,3 +279,25 @@ def test_group_delete(admin_client):
         _next='/user',
     ))
     assert result.status_code == 404
+
+
+@pytest.mark.django_db
+def test_user_logout_get(admin_client):
+    result = admin_client.get('/logout')
+    assert result.status_code == 200
+
+
+@pytest.mark.django_db
+def test_user_login_get(admin_client):
+    result = admin_client.get('/login')
+    assert result.status_code == 302
+
+
+@pytest.mark.django_db
+def test_user_login_post(admin_client):
+    result = admin_client.post('/login', dict(
+        username='lol',
+        new_password1='123',
+    ))
+    assert result.status_code == 302
+    assert result['Location'] == '/'
