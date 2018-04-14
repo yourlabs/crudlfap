@@ -31,6 +31,7 @@ setup(
         'django-tables2',
         'django-filter',
         'django-betterforms',
+        'timeago',
     ],
     tests_require=['tox'],
     extras_require=dict(

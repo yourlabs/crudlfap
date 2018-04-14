@@ -7,6 +7,7 @@ export default class extends Controller {
       M.toast({
         html: el.innerHTML,
         classes: el.getAttribute('class'),
+        displayLength: 15000,
       })
       el.parentNode.removeChild(el)
     }
