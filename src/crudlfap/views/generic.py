@@ -14,6 +14,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.views import generic
 from django.views.generic.detail import SingleObjectMixin
 
+from .lock import LockViewMixin
+
 
 class DefaultTemplateMixin(object):
     """
@@ -48,7 +50,7 @@ class DefaultTemplateMixin(object):
         return template_names
 
 
-class ViewMixin(DefaultTemplateMixin, Route):
+class ViewMixin(LockViewMixin, DefaultTemplateMixin, Route):
     """Base View mixin for CRUDLFA+.
 
     If you have any question about style then find your answers in
@@ -403,6 +405,7 @@ class UpdateView(ObjectFormViewMixin, generic.UpdateView):
     controller = 'modal'
     action = 'click->modal#open'
     color = 'orange'
+    locks = True
 
     def get_form_fields(self):
         if hasattr(self, 'update_fields'):
