@@ -5,6 +5,7 @@ INSTALLED_APPS += [  # noqa
     'crudlfap_example.artist',
     'crudlfap_example.song',
     'crudlfap_example.nondb',
+    'crudlfap_example.blog',
 ]
 
 install_optional(OPTIONAL_APPS, INSTALLED_APPS)  # noqa
