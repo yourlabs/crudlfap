@@ -161,7 +161,8 @@ class Router(object):
         if not hasattr(self.model, 'get_absolute_url'):
             def get_absolute_url(self):
                 from crudlfap import crudlfap
-                return crudlfap.site[type(self)]['detail'].reverse(self)
+                return crudlfap.site[type(self)]['detail'].clone(
+                    object=self).url
             self.model.get_absolute_url = get_absolute_url
 
     def get_urlpatterns(self):
