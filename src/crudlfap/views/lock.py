@@ -1,5 +1,6 @@
 import datetime
 
+from django.conf import settings
 from django.contrib import messages
 from django.core.cache import cache
 from django.utils import timezone
@@ -41,7 +42,7 @@ class LockViewMixin(object):
             self.lock_value.get('username', _('unknown user')),
             timeago.format(
                 timezone.now() - self.lock_value['datetime'],
-                self.request.LANGUAGE_CODE
+                getattr(self.request, 'LANGUAGE_CODE', settings.LANGUAGE_CODE)
             )
         )
 
