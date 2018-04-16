@@ -172,9 +172,12 @@ class Route(Factory, metaclass=RouteMetaclass):
     def dispatch(self, request, *args, **kwargs):
         """Run allow() before dispatch(), because that's what its for."""
         if not self.allowed:
-            return http.HttpResponseRedirect(
-                self.login_url + '?next=' + request.path_info
-            )
+            if not request.user.is_authenticated:
+                return http.HttpResponseRedirect(
+                    self.login_url + '?next=' + request.path_info
+                )
+            else:
+                return http.HttpResponseForbidden()
         return super().dispatch(request, *args, **kwargs)
 
     @classmethod
