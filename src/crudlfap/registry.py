@@ -51,15 +51,15 @@ class Registry(collections.OrderedDict):
             router.urlpattern for router in self.values()
         ] + [view.urlpattern for view in self.views]
 
-    def get_urlpattern(self, urlpath=None, namespace=None, app_name=None):
-        urlpath = urlpath or self.urlpath
+    def get_urlpattern(self):
+        urlpath = self.urlpath
         if urlpath and not urlpath.endswith('/'):
             urlpath += '/'
 
         return path(urlpath, (
             self.urlpatterns,
-            app_name or self.app_name,
-            namespace or self.namespace,
+            self.app_name,
+            self.namespace,
         ))
 
     def get_app_name(self):
