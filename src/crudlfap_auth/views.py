@@ -65,7 +65,7 @@ class BecomeUser(crudlfap.ObjectView):
 
         # FUTURE: #23 redirect to / when request.path permissions are not ok for new_user
         # return http.HttpResponse('<script type="text/javascript">history.back()</script>')
-        return http.HttpResponseRedirect('/')
+        return http.HttpResponseRedirect('/' + self.router.registry.urlpath)
 
 
 class Become(crudlfap.View):
@@ -102,4 +102,4 @@ class Become(crudlfap.View):
                 'Your are still superuser {}'.format(self.request.user)
             )
 
-        return http.HttpResponseRedirect('/')
+        return http.HttpResponseRedirect('/' + self.registry.urlpath)
