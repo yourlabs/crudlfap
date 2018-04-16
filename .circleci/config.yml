@@ -99,16 +99,12 @@ jobs:
         name: RUN yarn test & coverage upload
         command: yarn test && ./node_modules/.bin/codecov
 
-
-   js-qa-nightwatch:
+  js-qa-nightwatch:
     docker:
     - image: circleci/node:9
-    working_directory: ~/repo/src/crudlfap/nightwatch
+    working_directory: ~/repo
     steps:
     - checkout
-    - run:
-        name: RUN npm install
-        command: npm install
     - run:
         name: RUN yarn test
         command: yarn test
