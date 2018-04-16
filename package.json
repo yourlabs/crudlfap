@@ -7,7 +7,8 @@
     "start": "webpack --watch",
     "prepare": "webpack",
     "test": "jest",
-    "lint": "eslint js"
+    "lint": "eslint js",
+    "browser-test": "cd nightwatch && yarn test"
   },
   "repository": {
     "type": "git",

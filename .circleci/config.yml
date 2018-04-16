@@ -101,11 +101,11 @@ jobs:
 
   js-qa-nightwatch:
     docker:
-    - image: circleci/node:9
+    - image: circleci/node:8
     working_directory: ~/repo
     steps:
     - checkout
     - run:
-        name: RUN yarn test
-        command: yarn test
+        name: RUN yarn run browser-test
+        command: yarn run browser-test
     
