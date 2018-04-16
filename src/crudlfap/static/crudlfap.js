@@ -23482,7 +23482,8 @@ var _class = function (_Controller) {
 
           _materializeCss2.default.toast({
             html: el.innerHTML,
-            classes: el.getAttribute('class')
+            classes: el.getAttribute('class'),
+            displayLength: 15000
           });
           el.parentNode.removeChild(el);
         }
