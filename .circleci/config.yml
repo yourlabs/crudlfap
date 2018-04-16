@@ -8,6 +8,7 @@ workflows:
       - docs
       - py36-dj20
       - js-qa
+      - js-qa-nightwatch
 
 jobs:
   docs:
@@ -97,3 +98,18 @@ jobs:
     - run:
         name: RUN yarn test & coverage upload
         command: yarn test && ./node_modules/.bin/codecov
+
+
+   js-qa-nightwatch:
+    docker:
+    - image: circleci/node:9
+    working_directory: ~/repo/src/crudlfap/nightwatch
+    steps:
+    - checkout
+    - run:
+        name: RUN npm install
+        command: npm install
+    - run:
+        name: RUN yarn test
+        command: yarn test
+    
