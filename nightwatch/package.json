@@ -19,10 +19,10 @@
   },
   "homepage": "https://github.com/anjmao/nightwatch-typescript-starter#readme",
   "devDependencies": {
-    "@types/nightwatch": "^0.9.4",
-    "@types/node": "^8.0.53",
-    "chromedriver": "^2.33.2",
-    "nightwatch": "^0.9.16",
-    "typescript": "^2.6.2"
+    "@types/nightwatch": "^0.9.8",
+    "@types/node": "^8.10.8",
+    "chromedriver": "^2.37.0",
+    "nightwatch": "^0.9.20",
+    "typescript": "^2.8.1"
   }
 }

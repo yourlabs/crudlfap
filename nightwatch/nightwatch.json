@@ -9,27 +9,24 @@
     "globals_path": "./globals.js",
     "selenium": {
         "start_process": true,
-        "log_path": "reports",
-        "port": 4444
+        "server_path": "./bin/selenium.jar",
+        "log_path": "./reports",
+        "host": "127.0.0.1",
+        "port": 4444,
+        "cli_args": {
+            "webdriver.chrome.driver": "./bin/chromedriver"
+        }
     },
     "test_settings": {
         "default": {
-            "selenium_port": 9515,
+            "launch_url": "https://localhost:3000",
+            "selenium_port": 4444,
             "selenium_host": "localhost",
-            "default_path_prefix": "",
+            "silent": true,
             "desiredCapabilities": {
                 "browserName": "chrome",
-                "chromeOptions": {
-                    "args": [
-                        "--no-sandbox"
-                    ]
-                },
+                "javascriptEnabled": true,
                 "acceptSslCerts": true
-            }
-        },
-        "chrome": {
-            "desiredCapabilities": {
-                "browserName": "chrome"
             }
         }
     }
