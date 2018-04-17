@@ -19,6 +19,7 @@ from .views.generic import (
     ObjectFormView,
     ObjectView,
     ObjectViewMixin,
+    TemplateView,
     UpdateView,
     View,
     ViewMixin,
