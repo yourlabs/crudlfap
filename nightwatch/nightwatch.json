@@ -8,7 +8,9 @@
     "page_objects_path": "",
     "globals_path": "./globals.js",
     "selenium": {
-        "start_process": false
+        "start_process": true,
+        "log_path": "reports",
+        "port": 4444
     },
     "test_settings": {
         "default": {
