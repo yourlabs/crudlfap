@@ -14,6 +14,12 @@ def user():
 
 
 @pytest.fixture
+def suuser():
+    return User.objects.create_superuser(
+        username='suuser', password='123', email='')
+
+
+@pytest.fixture
 def group():
     return Group.objects.get_or_create(name='hr')[0]
 
@@ -282,12 +288,6 @@ def test_group_delete(admin_client):
 
 
 @pytest.mark.django_db
-def test_user_logout_get(admin_client):
-    result = admin_client.get('/logout')
-    assert result.status_code == 200
-
-
-@pytest.mark.django_db
 def test_user_login_get(admin_client):
     result = admin_client.get('/login')
     assert result.status_code == 302
@@ -301,3 +301,20 @@ def test_user_login_post(admin_client):
     ))
     assert result.status_code == 302
     assert result['Location'] == '/'
+
+
+@pytest.mark.django_db
+def test_user_logout_get(admin_client):
+    result = admin_client.get('/logout')
+    assert result.status_code == 200
+
+
+def test_become_user(admin_client, admin_user, suuser):
+    if admin_client.session.get('become_user') is None:
+        assert True
+    result = admin_client.get('/user/admin/su', follow=True)
+    assert result.status_code == 200
+    assert admin_client.session.get('become_user') == admin_user.id
+    result = admin_client.get('/user/suuser/su', follow=True)
+    assert result.status_code == 200
+    assert admin_client.session.get('become_user') == admin_user.id
