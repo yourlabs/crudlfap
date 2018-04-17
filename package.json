@@ -31,7 +31,6 @@
     "js-cookie": "^2.2.0",
     "materialize-css": "^1.0.0-beta",
     "materialize-loader": "^2.0.2",
-    "selenium-webdriver": "^4.0.0-alpha.1",
     "stimulus": "^1.0.1",
     "turbolinks": "^5.1.1",
     "webpack": "3"
@@ -46,8 +45,7 @@
     "eslint": "^4.18.1",
     "file-loader": "^1.1.11",
     "jest": "^22.4.2",
-    "url-loader": "^1.0.1",
-    "selenium-standalone": "^6.14.0"
+    "url-loader": "^1.0.1"
   },
   "jest": {
     "verbose": true,
