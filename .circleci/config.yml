@@ -106,6 +106,9 @@ jobs:
     steps:
     - checkout
     - run:
+        name: RUN sudo apt install default-jre
+        command: sudo apt install default-jre
+    - run:
         name: RUN yarn run browser-test
         command: yarn run browser-test
     
