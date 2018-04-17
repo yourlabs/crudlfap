@@ -8,25 +8,73 @@
     "page_objects_path": "",
     "globals_path": "./globals.js",
     "selenium": {
-        "start_process": true,
-        "server_path": "./bin/selenium-server-standalone-2.45.0.jar",
-        "log_path": "./reports",
+        "start_process": false,
+        "server_path": "",
+        "log_path": "",
         "host": "127.0.0.1",
         "port": 4444,
         "cli_args": {
-            "webdriver.chrome.driver": "./bin/chromedriver"
+            "webdriver.chrome.driver": "",
+            "webdriver.ie.driver": ""
         }
+    },
+    "test_workers": {
+        "enabled": true,
+        "workers": "auto"
     },
     "test_settings": {
         "default": {
-            "launch_url": "https://localhost:3000",
-            "selenium_port": 4444,
-            "selenium_host": "localhost",
+            "launch_url": "http://localhost:8000",
+            "selenium_port": 80,
+            "selenium_host": "ondemand.saucelabs.com",
             "silent": true,
+            "screenshots": {
+                "enabled": false,
+                "path": ""
+            },
+            "username": "navjot.g",
+            "access_key": "f817b186-0804-45a3-bdff-597eafc9da71",
+            "skip_testcases_on_fail": false,
             "desiredCapabilities": {
-                "browserName": "chrome",
                 "javascriptEnabled": true,
                 "acceptSslCerts": true
+            }
+        },
+        "chrome": {
+            "desiredCapabilities": {
+                "platform": "Windows 7",
+                "browserName": "chrome",
+                "version": "latest"
+            }
+        },
+        "firefox": {
+            "desiredCapabilities": {
+                "platform": "Windows 8",
+                "browserName": "firefox",
+                "version": "33"
+            }
+        },
+        "internet_explorer_edge": {
+            "desiredCapabilities": {
+                "platform": "Windows 10",
+                "browserName": "MicrosoftEdge",
+                "version": "latest"
+            }
+        },
+        "android_s4_emulator": {
+            "desiredCapabilities": {
+                "browserName": "android",
+                "deviceOrientation": "portrait",
+                "deviceName": "Samsung Galaxy S4 Emulator"
+            }
+        },
+        "iphone_6_simulator": {
+            "desiredCapabilities": {
+                "browserName": "iPhone",
+                "deviceOrientation": "portrait",
+                "deviceName": "iPhone 6",
+                "platform": "OSX 10.10",
+                "version": "8.4"
             }
         }
     }

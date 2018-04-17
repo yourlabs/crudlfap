@@ -8,7 +8,7 @@ workflows:
       - docs
       - py36-dj20
       - js-qa
-      - js-qa-nightwatch
+      - js-qa-nightwatch-with-saucelabs
 
 jobs:
   docs:
@@ -108,6 +108,22 @@ jobs:
     - run:
         name: RUN sudo apt install default-jre
         command: sudo apt install default-jre
+    - run:
+        name: RUN yarn run browser-test
+        command: yarn run browser-test
+
+
+  js-qa-nightwatch-with-saucelabs:
+    docker:
+    - image: circleci/node:8
+    working_directory: ~/repo
+    steps:
+    - checkout
+    - run:
+        name: Start SauceLabs Tunnel (required if testing on CircleCI container)
+        command: |
+            curl https://saucelabs.com/downloads/sc-4.4.12-linux.tar.gz -o saucelabs.tar.gz
+            tar -xzf saucelabs.tar.gz
     - run:
         name: RUN yarn run browser-test
         command: yarn run browser-test
