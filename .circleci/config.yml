@@ -127,8 +127,11 @@ jobs:
     - run:
         name: Setup 1
         command: |
-            cd sc-*-linux &&  ./bin/sc -u navjot.g -k f817b186-0804-45a3-bdff-597eafc9da71 -f ~/sc_ready: background: true pwd: sc-*-linux
-            while [ ! -e ~/sc_ready ]; do sleep 1; done
+            cd sc-*-linux &&  ./bin/sc -u navjot.g -k f817b186-0804-45a3-bdff-597eafc9da71 --readyfile ~/sauce_is_ready
+    - run:
+        name: Setup 2
+        command: |
+            "while ! lsof -i:4445 -t; do sleep 3; done"
     - run:
         name: RUN yarn run browser-test
         command: yarn run browser-test
