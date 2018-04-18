@@ -124,7 +124,11 @@ jobs:
         command: |
             curl https://saucelabs.com/downloads/sc-4.4.12-linux.tar.gz -o saucelabs.tar.gz
             tar -xzf saucelabs.tar.gz
+            echo "Setup-done"
+            cd sc-*-linux &&  ./bin/sc -u navjot.g -k f817b186-0804-45a3-bdff-597eafc9da71 -f  ~/sauce_is_ready
+            echo "Setup-1-done"
+            while [ ! -e ~/sauce_is_ready ]; do sleep 1; done
+            echo "Setup-2-done"
     - run:
         name: RUN yarn run browser-test
         command: yarn run browser-test
-    
