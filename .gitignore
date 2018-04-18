@@ -6,7 +6,6 @@ __pycache__
 node_modules
 src/db.sqlite
 src/.coverage
-package-lock.json
 
 nightwatch/node_modules
 nightwatch/dist
