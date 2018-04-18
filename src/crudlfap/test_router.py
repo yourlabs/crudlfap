@@ -1,3 +1,4 @@
+from crudlfap import crudlfap
 from crudlfap.crudlfap import site
 
 from crudlfap_example.artist.models import Artist
@@ -14,6 +15,20 @@ from .router import Router
 
 class TestRouter(Router):
     fields = '__all__'
+
+
+def test_views():
+    router = TestRouter()
+    view = crudlfap.TemplateView.clone(urlname='home')
+    router.views = [view]
+    assert router.views['home'] == view
+    assert router.views[0].urlname == 'home'
+
+    router.views['home'] = router.views['home'].clone(template_name='lol')
+    assert router.views['home'].template_name == 'lol'
+
+    del router.views['home']
+    assert len(router.views) == 0
 
 
 def test_urlfield():

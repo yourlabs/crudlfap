@@ -16,7 +16,7 @@ class DefaultConfig(apps.AppConfig):
 
     name = 'crudlfap'
 
-    def get_default_views(self):  # pylint: disable=no-self-use
+    def get_default_model_views(self):  # pylint: disable=no-self-use
         """Return the default views to use in a new router."""
         crudlfap = getattr(settings, 'CRUDFLAP', {})
 

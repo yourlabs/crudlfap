@@ -16,6 +16,48 @@ from .utils import guess_urlfield
 crudlfap = apps.get_app_config('crudlfap')  # pylint: disable=invalid-name
 
 
+class ViewsDescriptor(object):
+    def __init__(self, default=None):
+        self.default = default or []
+
+    def __get__(self, obj, objtype):
+        if getattr(obj, '_views', None) is None:
+            if callable(self.default):
+                obj.views = self.default()
+            else:
+                obj.views = self.default
+        return obj._views
+
+    def __set__(self, obj, value):
+        obj._views = Views(value)
+
+
+class Views(list):
+    def __getitem__(self, key):
+        if isinstance(key, int):
+            return super().__getitem__(key)
+
+        for view in self:
+            if view.urlname == key:
+                return view
+
+    def __setitem__(self, key, value):
+        if isinstance(key, int):
+            return super().__setitem__(key, value)
+
+        for i, view in enumerate(self):
+            if view.urlname == key:
+                return super().__setitem__(i, value)
+
+    def __delitem__(self, key):
+        if isinstance(key, int):
+            return super().__delitem__(key)
+
+        for i, view in enumerate(self):
+            if view.urlname == key:
+                return super().__delitem__(i)
+
+
 class Router(object):
     """
     Base router for CRUDLFA+ Route.
@@ -24,6 +66,7 @@ class Router(object):
 
         Optional model class for this Router and all its views.
     """
+    views = ViewsDescriptor(crudlfap.get_default_model_views)
 
     def __getattr__(self, attr):
         if attr.startswith('get_'):
@@ -33,9 +76,6 @@ class Router(object):
             return getattr(self, 'get_' + attr)()
 
         raise AttributeError('{} or get_{}()'.format(attr, attr))
-
-    def get_views(self):
-        return crudlfap.get_default_views()
 
     def get_urlfield(self):
         return guess_urlfield(self.model)
