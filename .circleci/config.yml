@@ -120,8 +120,8 @@ jobs:
     steps:
     - checkout
     - run:
-        name: add sauce-tunnel
-        command: npm add sauce-tunnel
+        name: add sauce-connect-launcher
+        command: npm install sauce-connect-launcher
     - run:
         name: RUN yarn run browser-test
         command: yarn run browser-test
