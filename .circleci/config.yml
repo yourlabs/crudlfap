@@ -127,7 +127,7 @@ jobs:
     - run:
         name: Setup 1
         command: |
-            cd sc-*-linux &&  ./bin/sc -u navjot.g -k f817b186-0804-45a3-bdff-597eafc9da71 --readyfile ~/sauce_is_ready
+            cd sc-*-linux &&  ./bin/sc -u navjot.g -k f817b186-0804-45a3-bdff-597eafc9da7
     - run:
         name: Setup 2
         command: |
