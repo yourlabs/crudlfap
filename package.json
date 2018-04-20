@@ -7,7 +7,8 @@
     "start": "webpack --watch",
     "prepare": "webpack",
     "test": "jest",
-    "lint": "eslint js"
+    "lint": "eslint js",
+    "browser-test": "cd nightwatch && yarn test"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,8 @@
     "js-cookie": "^2.2.0",
     "materialize-css": "^1.0.0-beta",
     "materialize-loader": "^2.0.2",
+    "sauce-connect-launcher": "^1.2.4",
+    "sauce-tunnel": "^2.5.0",
     "stimulus": "^1.0.1",
     "turbolinks": "^5.1.1",
     "webpack": "3"
