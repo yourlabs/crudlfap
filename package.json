@@ -45,9 +45,7 @@
     "stimulus": "^1.0.1",
     "turbolinks": "^5.1.1",
     "url-loader": "^1.0.1",
-    "webpack": "3"
-  },
-  "devDependencies": {
+    "webpack": "3",
     "babel-core": "^6.26.0",
     "babel-jest": "^22.4.1",
     "babel-loader": "^7.1.3",
