@@ -1,12 +1,15 @@
-FROM alpine:latest
+FROM ubuntu:artful
 
 # utf8
 ENV PYTHONIOENCODING UTF-8
 ENV PYTHONUNBUFFERED 1
 
-RUN apk update && apk upgrade && apk add nodejs bash dumb-init python3 gettext nodejs-npm && npm install -g yarn
+RUN apt update -y && apt upgrade -y && apt install -y bash dumb-init python3 python3-pip gettext curl
+RUN curl -sL https://deb.nodesource.com/setup_9.x | bash -
+RUN apt install -y nodejs
+RUN npm install -g yarn
 
-RUN adduser -D -h /code code
+RUN useradd -md /code code
 WORKDIR /code
 EXPOSE 8000
 
@@ -22,4 +25,4 @@ RUN pip3 install --editable /code[dev]
 ARG GIT_COMMIT
 ENV GIT_COMMIT ${GIT_COMMIT}
 
-CMD /usr/bin/dumb-init crudlfap dev 0:8000
+CMD su code -c '/usr/bin/dumb-init crudlfap dev 0:8000'
