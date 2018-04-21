@@ -8,6 +8,7 @@ workflows:
       - docs
       - py36-dj20
       - js-qa
+      - docker-build
 
 jobs:
   docs:
@@ -98,3 +99,23 @@ jobs:
     - run:
         name: RUN yarn test & coverage upload
         command: yarn test && ./node_modules/.bin/codecov
+
+  docker-build:
+    docker:
+    - image: docker:latest
+    steps:
+    - checkout
+    - setup_remote_docker:
+        docker_layer_caching: true
+    - run:
+        name: DOCKER build
+        command: |
+          docker pull yourlabs/crudlfap:$CIRCLE_BRANCH || true
+          docker build -t yourlabs/crudlfap:$CIRCLE_SHA1 --build-arg GIT_COMMIT=$CIRCLE_SHA1 .
+    - deploy:
+        name: DOCKER image push yourlabs/crudlfap:{{ .Branch }} & yourlabs/crudlfap:{{ .Environment.CIRCLE_SHA1 }} tags
+        command: |
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+          docker push yourlabs/crudlfap:$CIRCLE_SHA1
+          docker tag yourlabs/crudlfap:$CIRCLE_SHA1 yourlabs/crudlfap:$CIRCLE_BRANCH
+          docker push yourlabs/crudlfap:$CIRCLE_BRANCH
