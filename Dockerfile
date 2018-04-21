@@ -25,4 +25,5 @@ RUN pip3 install --editable /code[dev]
 ARG GIT_COMMIT
 ENV GIT_COMMIT ${GIT_COMMIT}
 
-CMD su code -c '/usr/bin/dumb-init crudlfap dev 0:8000'
+USER code
+CMD /usr/bin/dumb-init crudlfap dev 0:8000
