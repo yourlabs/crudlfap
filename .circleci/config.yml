@@ -9,7 +9,9 @@ workflows:
       - py36-dj20
       - js-qa
       - docker-build
-      - js-qa-nightwatch-with-saucelabs
+      - browser:
+          requires:
+          - docker-build
 
 jobs:
   docs:
@@ -121,25 +123,23 @@ jobs:
           docker tag yourlabs/crudlfap:$CIRCLE_SHA1 yourlabs/crudlfap:$CIRCLE_BRANCH
           docker push yourlabs/crudlfap:$CIRCLE_BRANCH
 
-  js-qa-nightwatch:
+  browser:
     docker:
-    - image: circleci/node:8
+    - image: yourlabs/crudlfap:$CIRCLE_SHA1
     working_directory: ~/repo
     steps:
+    - run:
+        name: Runserver
+        command: crudlfap dev 0:8000
+        working_directory: /code
+        background: true
+    - run:
+        name: Install test deps
+        command: apk update; apk add git curl
     - checkout
     - run:
-        name: RUN sudo apt install default-jre
-        command: sudo apt install default-jre
-    - run:
-        name: RUN yarn run browser-test
-        command: yarn run browser-test
-
-  js-qa-nightwatch-with-saucelabs:
-    docker:
-    - image: circleci/node:8
-    working_directory: ~/repo
-    steps:
-    - checkout
+        name: WAIT runserver
+        command: until curl localhost:8000 &> /dev/null; do sleep 1; done
     - run:
         name: add sauce-connect-launcher
         command: npm install sauce-connect-launcher
