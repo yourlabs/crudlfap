@@ -309,7 +309,7 @@ def test_user_logout_get(admin_client):
     assert result.status_code == 200
 
 
-def test_become_user(admin_client, admin_user, suuser):
+def test_become_user(admin_client, admin_user, suuser, user):
     if admin_client.session.get('become_user') is None:
         assert True
     result = admin_client.get('/user/admin/su', follow=True)
@@ -318,3 +318,11 @@ def test_become_user(admin_client, admin_user, suuser):
     result = admin_client.get('/user/suuser/su', follow=True)
     assert result.status_code == 200
     assert admin_client.session.get('become_user') == admin_user.id
+    result = admin_client.get('/su', follow=True)
+    assert result.status_code == 200
+    if admin_client.session.get('become_user') is None:
+        assert True
+    result = admin_client.get('/su', follow=True)
+    assert result.status_code == 404
+    result = admin_client.get('/user/foo/su', follow=True)
+    assert result.status_code == 403
