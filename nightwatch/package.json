@@ -6,7 +6,8 @@
   "scripts": {
     "build": "./node_modules/.bin/tsc",
     "pretest": "yarn install && yarn run build",
-    "test": "./node_modules/.bin/nightwatch"
+    "test": "./node_modules/.bin/nightwatch",
+    "lint": "eslint -c ./eslintrc.json ."
   },
   "repository": {
     "type": "git",
@@ -24,5 +25,9 @@
     "chromedriver": "^2.37.0",
     "nightwatch": "^0.9.20",
     "typescript": "^2.8.1"
+  },
+  "dependencies": {
+    "eslint": "^4.19.1",
+    "sauce-connect-launcher": "^1.2.4"
   }
 }
