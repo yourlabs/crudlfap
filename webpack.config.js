@@ -1,13 +1,14 @@
 var path = require('path')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const extractSass = new ExtractTextPlugin({
   filename: 'crudlfap.css',
 })
 
-/* eslint-disable */
-module.exports = {
-/* eslint-enable */
+var production = process.env.NODE_ENV == 'production'
+
+var cfg = {
   context: __dirname,
 
   entry: {
@@ -73,3 +74,9 @@ module.exports = {
     extractSass
   ]
 }
+
+if (production) {
+  cfg.plugins.push(new UglifyJSPlugin())
+}
+
+module.exports = cfg
