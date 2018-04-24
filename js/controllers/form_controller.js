@@ -17,17 +17,12 @@ export default class extends Controller {
     fetch(req, {
       credentials: 'same-origin',
       body: formData,
-      redirect: 'manual',
       method: 'POST',
       headers: {
         'X-CSRFToken': Cookie.get('csrftoken'),
         'Cache-Control': 'no-cache',
       }
     }).then(res => {
-      if (res.type == 'opaqueredirect') {
-        window.Turbolinks.visit(res.headers['Location'])
-      }
-
       res.text().then(text => {
         var parser = new DOMParser()
         var doc = parser.parseFromString(text, 'text/html')
