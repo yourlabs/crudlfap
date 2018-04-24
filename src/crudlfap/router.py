@@ -174,7 +174,7 @@ class Router(object):
         for name, value in attributes.items():
             setattr(self, name, value)
 
-        self.views = self.generate_views(*(views or []))
+        self.views = Views(self.generate_views(*(views or [])))
 
     def register(self):
         """
