@@ -8,7 +8,9 @@
     "prepare": "webpack",
     "test": "jest",
     "lint": "eslint js",
-    "browser-test": "cd nightwatch && yarn test",
+    "chrome-browser-test": "cd nightwatch && yarn test",
+    "ie-browser-test": "cd nightwatch && yarn test -e internet_explorer",
+    "firefox-browser-test": "cd nightwatch && yarn test -e firefox",
     "eslint-nightwatch": "cd nightwatch && yarn run lint"
   },
   "repository": {
@@ -42,6 +44,7 @@
     "materialize-css": "^1.0.0-beta",
     "materialize-loader": "^2.0.2",
     "sauce-connect-launcher": "^1.2.4",
+    "selenium-webdriver": "^4.0.0-alpha.1",
     "stimulus": "^1.0.1",
     "turbolinks": "^5.1.1",
     "url-loader": "^1.0.1",

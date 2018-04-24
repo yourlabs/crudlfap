@@ -1,12 +1,12 @@
 import { NightwatchBrowser } from 'nightwatch';
 
 module.exports = {
-  'Open Google': (browser: NightwatchBrowser) => {
-    browser
-      .url('http://www.google.com')
-      .waitForElementVisible('body', 1000)
-      .end();
-  },
+  // 'Open Google': (browser: NightwatchBrowser) => {
+  //   browser
+  //     .url('http://www.google.com')
+  //     .waitForElementVisible('body', 1000)
+  //     .end();
+  // },
 
   'Login : submit with wrong credentials': (browser: NightwatchBrowser) => {
     browser

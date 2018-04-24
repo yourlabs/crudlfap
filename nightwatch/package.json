@@ -22,7 +22,6 @@
   "devDependencies": {
     "@types/nightwatch": "^0.9.8",
     "@types/node": "^8.10.8",
-    "chromedriver": "^2.37.0",
     "nightwatch": "^0.9.20",
     "typescript": "^2.8.1"
   },
