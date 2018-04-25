@@ -5,8 +5,8 @@ One of the key architectural concepts of CRUDLFA+ is the ability to tie a group
 of view with a model class to autogenerate urlpatterns. This chapter reviews
 the different mechanisms in place and how they are overridable.
 
-Source is located in the :py:class:`~crudlfap.views.routers.Router`, which
+Source is located in the :py:class:`~crudlfap.router.Router`, which
 we'll describe here.
 
-.. automodule:: crudlfap.routers
+.. automodule:: crudlfap.router
    :members:
