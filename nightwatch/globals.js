@@ -1,3 +1,4 @@
+/* globals process */
 const sauceConnectLauncher = require('sauce-connect-launcher');
 
 let sauceConnectTunnel;
@@ -5,8 +6,8 @@ let sauceConnectTunnel;
 module.exports = {
   before: (done) => {
     sauceConnectLauncher({
-      username: 'navjot.g',
-      accessKey: 'f817b186-0804-45a3-bdff-597eafc9da71'
+      username: process.env.SAUCELABS_USERNAME,
+      accessKey: process.env.SAUCELABS_TOKEN
     }, function (err, sauceConnectProcess) {
       if (err) {
         console.error(err.message);
