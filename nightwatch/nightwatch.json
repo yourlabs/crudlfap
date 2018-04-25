@@ -28,8 +28,8 @@
         "enabled": false,
         "path": ""
       },
-      "username": "navjot.g",
-      "access_key": "f817b186-0804-45a3-bdff-597eafc9da71",
+      "username": "jpic",
+      "access_key": "626cba16-37e5-4ff8-8fc2-4df389fa7c29",
       "skip_testcases_on_fail": false,
       "desiredCapabilities": {
         "browserName": "chrome",
