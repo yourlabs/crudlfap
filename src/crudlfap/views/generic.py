@@ -10,6 +10,8 @@ Crudlfa+ takes views further than Django and are expected to:
 from crudlfap.route import Route
 
 from django.contrib import messages
+from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
+from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
 from django.views.generic.detail import SingleObjectMixin
@@ -247,7 +249,7 @@ class FormView(FormViewMixin, generic.FormView):
 
 class ModelFormViewMixin(ModelViewMixin, FormViewMixin):
     """ModelForm ViewMixin using readable"""
-
+    log_action_flag = False
     menus = ['model']
 
     def get_form_fields(self):
@@ -278,14 +280,35 @@ class ModelFormViewMixin(ModelViewMixin, FormViewMixin):
         messages.error(self.request, self.form_invalid_message)
         return response
 
+    def get_log_message(self):
+        return _(self.urlname)
+
+    def log_insert(self):
+        if not self.request.user.is_authenticated:
+            return
+
+        if not self.log_action_flag:
+            return
+
+        LogEntry.objects.log_action(
+            self.request.user.pk,
+            ContentType.objects.get_for_model(self.model).pk,
+            self.object.pk,
+            str(self.object),
+            self.log_action_flag,
+            self.log_message,
+        )
+
     def form_valid(self, form):
         response = super().form_valid(form)
         messages.success(self.request, self.form_valid_message)
+        self.log_insert()
         return response
 
 
 class ObjectFormViewMixin(ObjectViewMixin, ModelFormViewMixin):
     """Custom form view mixin on an object."""
+    log_action_flag = CHANGE
 
 
 class ObjectFormView(ObjectFormViewMixin, generic.FormView):
@@ -302,6 +325,7 @@ class CreateView(ModelFormViewMixin, generic.CreateView):
     action = 'click->modal#open'
     color = 'green'
     object_permission_check = False
+    log_action_flag = ADDITION
 
     def get_form_fields(self):
         if hasattr(self, 'create_fields'):
@@ -322,6 +346,7 @@ class DeleteView(ObjectFormViewMixin, generic.DeleteView):
     controller = 'modal'
     action = 'click->modal#open'
     color = 'red'
+    log_action_flag = DELETION
 
     def get_success_message(self):
         return _(
@@ -417,3 +442,18 @@ class UpdateView(ObjectFormViewMixin, generic.UpdateView):
     def get_required_permissions(self):
         return ['{}.change_{}'.format(
             self.app_name, self.model._meta.model_name)]
+
+
+class HistoryView(ObjectViewMixin, generic.DetailView):
+    material_icon = 'history'
+    template_name_suffix = '_history'
+    default_template_name = 'crudlfap/history.html'
+    controller = None
+    action = None
+
+    def get_object_list(self):
+        ctype = ContentType.objects.get_for_model(self.model)
+        return LogEntry.objects.filter(
+            content_type=ctype,
+            object_id=self.object.pk,
+        )
