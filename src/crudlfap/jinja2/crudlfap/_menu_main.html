@@ -2,7 +2,7 @@
   <nav>
     <div class="nav-wrapper {{ crudlfap_site.navbar_color }}">
       <span href="#" data-action="click->sidenav#click" data-controller="sidenav" data-target="slide-out" class="sidenav-trigger"><i class="waves-effect material-icons">menu</i></span>
-      <a class="brand-logo" href="/" class="waves-effect brand-logo">{{ crudlfap_site.title }}</a>
+      <a class="brand-logo" href="{{ crudlfap_site.views['home'].url }}" class="waves-effect brand-logo">{{ crudlfap_site.title }}</a>
       <ul class="right">
         {% include 'crudlfap/_menu_auth.html' %}
       </ul>
