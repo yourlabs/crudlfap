@@ -41,9 +41,11 @@ module.exports = {
 
       .assert.visible('button[type=submit]')
       .click('button[type=submit]')
-      .pause(1000)
 
+      
       // after login
+      .waitForElementVisible('.container .orange-text', 1000)
+
       .assert.title('Home - CRUDLFA+ demo !')
       .assert.visible('a[class=waves-effect]')
       .end();
