@@ -1,13 +1,6 @@
 import { NightwatchBrowser } from 'nightwatch';
 
 module.exports = {
-  // 'Open Google': (browser: NightwatchBrowser) => {
-  //   browser
-  //     .url('http://www.google.com')
-  //     .waitForElementVisible('body', 1000)
-  //     .end();
-  // },
-
   'Login : submit with wrong credentials': (browser: NightwatchBrowser) => {
     browser
       .url('http://localhost:8000')
@@ -41,9 +34,9 @@ module.exports = {
 
       .assert.visible('button[type=submit]')
       .click('button[type=submit]')
-      .pause(1000)
-
+     
       // after login
+      .waitForElementVisible('.container .orange-text', 1000)
       .assert.title('Home - CRUDLFA+ demo !')
       .assert.visible('a[class=waves-effect]')
       .end();
