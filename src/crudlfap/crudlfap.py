@@ -14,6 +14,7 @@ from .views.generic import (
     DeleteView,
     DetailView,
     FormView,
+    HistoryView,
     ListView,
     ModelViewMixin,
     ObjectFormView,

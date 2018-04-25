@@ -40,6 +40,7 @@ CRUDLFAP_APPS = [
     'crudlfap_auth',
     'django_filters',
     'django_tables2',
+    'django.contrib.admin',
 ]
 
 INSTALLED_APPS = [
