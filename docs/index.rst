@@ -10,8 +10,9 @@ Welcome to CRUDLFA+'s documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   routable
-   routers
+   install
+   route
+   router
    views
 
 Indices and tables

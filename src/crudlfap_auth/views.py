@@ -1,3 +1,13 @@
+"""
+Crudlfa+ PasswordView, Become and BecomeUser views.
+
+Crudlfa+ takes views further than Django and are expected to:
+
+- generate their URL definitions and reversions,
+- check if a user has permission for an object,
+- declare the names of the navigation menus they belong to.
+"""
+
 import logging
 
 from crudlfap import crudlfap
