@@ -14,6 +14,7 @@ var cfg = {
   entry: {
     main: [
       'babel-polyfill',
+      'whatwg-fetch',
       './node_modules/formdata-polyfill/formdata.min.js',
       './js/index.js',
     ],
