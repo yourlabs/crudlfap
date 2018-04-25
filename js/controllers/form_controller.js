@@ -13,8 +13,7 @@ export default class extends Controller {
     var formData = new FormData(this.element)
 
     var application = this.application
-    var req = new Request(url)
-    fetch(req, {
+    fetch(url, {
       credentials: 'same-origin',
       body: formData,
       method: 'POST',
@@ -37,7 +36,10 @@ export default class extends Controller {
         } else {
           source = doc.querySelector('body')
           target = document.querySelector('body')
-          url = doc.querySelector('link[rel=canonical]').getAttribute('href')
+          var canonical = doc.querySelector('link[rel=canonical]')
+          if (canonical) {
+            url = canonical.getAttribute('href')
+          }
           title = doc.querySelector('title').innerHTML
         }
 
@@ -48,7 +50,7 @@ export default class extends Controller {
         })
         target.innerHTML = source.innerHTML
         M.AutoInit(target)
-        if (url !== undefined && url != window.location.href) {
+        if (url && url != window.location.href) {
           window.history.pushState({}, title, url)
         }
       })

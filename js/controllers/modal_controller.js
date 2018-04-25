@@ -9,8 +9,7 @@ export default class extends Controller {
   open(e) {
     e.preventDefault()
     var url = this.element.getAttribute('href')
-    var req = new Request(url)
-    fetch(req, {
+    fetch(url, {
       credentials: 'same-origin',
       headers: {
         'X-CSRFToken': Cookie.get('csrftoken'),
