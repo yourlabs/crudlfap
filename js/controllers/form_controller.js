@@ -30,13 +30,15 @@ export default class extends Controller {
 
         // In case we find the same form in the response, we refresh only the
         // form tag, this works both inside modal and in normal page view.
-        var source, target
+        var source, target, url, title
         if (newForm) {
           source = newForm
           target = this.element
         } else {
           source = doc.querySelector('body')
           target = document.querySelector('body')
+          url = doc.querySelector('link[rel=canonical]').getAttribute('href')
+          title = doc.querySelector('title').innerHTML
         }
 
         application.controllers.forEach(function(controller) {
@@ -46,6 +48,9 @@ export default class extends Controller {
         })
         target.innerHTML = source.innerHTML
         M.AutoInit(target)
+        if (url !== undefined && url != window.location.href) {
+          window.history.pushState({}, title, url)
+        }
       })
     })
   }
