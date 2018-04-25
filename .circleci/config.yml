@@ -1,5 +1,23 @@
 version: 2
 
+# https://docs.gitlab.com/ee/ci/yaml/#anchors
+.browser_template: &browser_template
+  docker:
+  - image: circleci/node:9
+  - image: yourlabs/crudlfap:$CIRCLE_SHA1
+  working_directory: ~/repo
+  steps:
+  - checkout
+  - run:
+      name: WAIT runserver
+      command: until curl localhost:8000 &> /dev/null; do sleep 1; done
+  - run:
+      name: add sauce-connect-launcher
+      command: npm install sauce-connect-launcher
+  - run:
+      name: RUN yarn run ${CIRCLE_STAGE}-browser-test
+      command: yarn run ${CIRCLE_STAGE}-browser-test
+
 workflows:
   version: 2
   pipeline:
@@ -9,15 +27,19 @@ workflows:
       - py36-dj20
       - js-qa
       - docker-build
-      - chrome-browser:
+      - validate-browser:
+          type: approval
           requires:
           - docker-build
-      - ie-browser:
+      - chrome:
           requires:
-          - docker-build
-      - firefox-browser:
+          - validate-browser
+      - ie:
           requires:
-          - docker-build
+          - validate-browser
+      - firefox:
+          requires:
+          - validate-browser
       - js-lint-nightwatch
 
 jobs:
@@ -130,57 +152,15 @@ jobs:
           docker tag yourlabs/crudlfap:$CIRCLE_SHA1 yourlabs/crudlfap:$CIRCLE_BRANCH
           docker push yourlabs/crudlfap:$CIRCLE_BRANCH
 
-  chrome-browser:
-    docker:
-    - image: circleci/node:9
-    - image: yourlabs/crudlfap:$CIRCLE_SHA1
-    working_directory: ~/repo
-    steps:
-    - checkout
-    - run:
-        name: WAIT runserver
-        command: until curl localhost:8000 &> /dev/null; do sleep 1; done
-    - run:
-        name: add sauce-connect-launcher
-        command: npm install sauce-connect-launcher
-    - run:
-        name: RUN yarn run chrome-browser-test
-        command: yarn run chrome-browser-test
+  ie:
+    <<: *browser_template
 
-  ie-browser:
-    docker:
-    - image: circleci/node:9
-    - image: yourlabs/crudlfap:$CIRCLE_SHA1
-    working_directory: ~/repo
-    steps:
-    - checkout
-    - run:
-        name: WAIT runserver
-        command: until curl localhost:8000 &> /dev/null; do sleep 1; done
-    - run:
-        name: add sauce-connect-launcher
-        command: npm install sauce-connect-launcher
-    - run:
-        name: RUN yarn run ie-browser-test
-        command: yarn run ie-browser-test
+  chrome:
+    <<: *browser_template
 
-  firefox-browser:
-    docker:
-    - image: circleci/node:9
-    - image: yourlabs/crudlfap:$CIRCLE_SHA1
-    working_directory: ~/repo
-    steps:
-    - checkout
-    - run:
-        name: WAIT runserver
-        command: until curl localhost:8000 &> /dev/null; do sleep 1; done
-    - run:
-        name: add sauce-connect-launcher
-        command: npm install sauce-connect-launcher
-    - run:
-        name: RUN yarn run firefox-browser-test
-        command: yarn run firefox-browser-test
-  
+  firefox:
+    <<: *browser_template
+
   js-lint-nightwatch:
     docker:
     - image: circleci/node:8
