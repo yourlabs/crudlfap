@@ -56,5 +56,7 @@ Resources
 - `Continuous integration graciously hosted
   <http://circleci.com/gh/yourlabs/crudlfap>`_ by `CircleCI
   <http://circleci.com>`_
+- Browser test graciously hosted by `SauceLabs
+  <https://saucelabs.com>`_
 - `**Online paid support** provided via HackHands
   <https://hackhands.com/jpic/>`_,
