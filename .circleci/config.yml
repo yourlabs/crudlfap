@@ -108,7 +108,7 @@ jobs:
 
   js-qa:
     docker:
-    - image: circleci/node:8
+    - image: circleci/node:9
     working_directory: ~/repo
     steps:
     - checkout
@@ -121,7 +121,7 @@ jobs:
 
   js-test:
     docker:
-    - image: circleci/node:8
+    - image: circleci/node:9
     working_directory: ~/repo/src/crudlfap
     steps:
     - checkout
@@ -163,7 +163,7 @@ jobs:
 
   js-lint-nightwatch:
     docker:
-    - image: circleci/node:8
+    - image: circleci/node:9
     working_directory: ~/repo
     steps:
     - checkout
