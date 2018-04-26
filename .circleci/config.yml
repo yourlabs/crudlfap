@@ -27,19 +27,15 @@ workflows:
       - py36-dj20
       - js-qa
       - docker-build
-      - validate-browser:
-          type: approval
-          requires:
-          - docker-build
       - chrome:
           requires:
-          - validate-browser
+          - docker-build
       - ie:
           requires:
-          - validate-browser
+          - docker-build
       - firefox:
           requires:
-          - validate-browser
+          - docker-build
       - js-lint-nightwatch
 
 jobs:
