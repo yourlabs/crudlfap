@@ -12,7 +12,7 @@
 
 <ul id="slide-out" class="sidenav">
 
-  <li class="no-padding {% if request.path == '/' %}active{% endif %}"><a href="/">Home</a></li>
+  <li class="no-padding {% if request.path == crudlfap_site.views['home'].url %}active{% endif %}"><a href="{{ crudlfap_site.views['home'].url }}">Home</a></li>
   <li class="no-padding">
     <ul class="collapsible collapsible-accordion">
       {% for app, routers in crudlfap_site.get_app_menus('main', request).items() %}
