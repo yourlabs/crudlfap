@@ -23,12 +23,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ')2m96!l47(!3)pvl#2@7wjh9&frxtq89*lrg(u(45gt(mnyi6d'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'notsecret')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.environ.get('DEBUG', False))
 
-ALLOWED_HOSTS = []
+if SECRET_KEY == 'notsecret' and not DEBUG:
+    raise Exception('SECRET_KEY may not equal "notsecret" if not DEBUG')
+
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
 
 # Application definition
 CRUDLFAP_APPS = [
