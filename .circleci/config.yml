@@ -127,10 +127,10 @@ jobs:
     - checkout
     - run:
         name: RUN yarn install
-        command: yarn install
+        command: sudo npm install -g codecov; yarn install
     - run:
         name: RUN yarn test & coverage upload
-        command: yarn test && ./node_modules/.bin/codecov
+        command: yarn test && codecov
 
   docker-build:
     docker:
