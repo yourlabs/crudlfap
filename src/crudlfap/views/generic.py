@@ -9,12 +9,18 @@ Crudlfa+ takes views further than Django and are expected to:
 """
 from crudlfap.route import Route
 
+from django.conf import settings
 from django.contrib import messages
-from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
+from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
 from django.views.generic.detail import SingleObjectMixin
+
+if 'django.contrib.admin' in settings.INSTALLED_APPS:
+    from django.contrib.admin.models import LogEntry
+else:
+    LogEntry = None
 
 from .lock import LockViewMixin
 
@@ -284,6 +290,9 @@ class ModelFormViewMixin(ModelViewMixin, FormViewMixin):
         return _(self.urlname)
 
     def log_insert(self):
+        if not LogEntry:
+            return
+
         if not self.request.user.is_authenticated:
             return
 
