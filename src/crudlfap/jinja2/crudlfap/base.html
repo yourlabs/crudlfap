@@ -10,7 +10,7 @@
     <link rel="canonical" href="{{ view.url }}" />
     <link rel="icon" href="{{ static('favicon.ico') }}">
 
-    <title>{% block title %}{{ view.title_html }}{% endblock %} {% if settings.SITE_TITLE %}- {{ settings.SITE_TITLE }}{% endif %}</title>
+    <title>{% block title %}{{ view.title_html }}{% endblock %} {% if settings.SITE_TITLE %}- {{ crudlfap_site.title }}{% endif %}</title>
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
