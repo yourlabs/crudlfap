@@ -1,6 +1,6 @@
 {
   "name": "crudlfap",
-  "version": "0.3.29",
+  "version": "0.3.32",
   "description": "CRUDLFA+ framework for Django 2.0",
   "main": "index.js",
   "scripts": {
@@ -13,6 +13,9 @@
     "firefox-browser-test": "cd nightwatch && yarn test -e firefox",
     "eslint-nightwatch": "cd nightwatch && yarn run lint"
   },
+  "files": [
+    "js"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yourlabs/crudlfap.git"
