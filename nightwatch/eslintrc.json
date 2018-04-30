@@ -11,7 +11,8 @@
     },
     "globals": {
         "module": true,
-        "exports": true
+        "exports": true,
+        "process": true
     },
     "rules": {
         "indent": [
