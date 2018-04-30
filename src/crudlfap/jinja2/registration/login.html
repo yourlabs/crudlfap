@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block form_close %}
-    <input type="hidden" name="next" value="{{ request.GET.get('next', request.POST.get('next', '/')) }}" />
+    <input type="hidden" name="next" value="{{ request.GET.get('next', request.POST.get('next', crudlfap_site.views['home'].url)) }}" />
     {% csrf_token %}
 </form>
 {% endblock %}
