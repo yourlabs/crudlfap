@@ -11,3 +11,4 @@ nightwatch/node_modules
 nightwatch/dist
 nightwatch/reports
 nightwatch/yarn.lock
+nightwatch/package-lock.json
