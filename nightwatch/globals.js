@@ -6,7 +6,7 @@ const expect = chai.expect;
 let sauceConnectTunnel;
 
 module.exports = {
-  before: (done) => {
+  before: (browser, done) => {
     sauceConnectLauncher({
       username: process.env.SAUCELABS_USERNAME,
       accessKey: process.env.SAUCELABS_TOKEN
@@ -14,6 +14,7 @@ module.exports = {
       expect(err).to.be.null;
       if (err) {
         console.error('Sauce Connect Error : ', err.message);
+        browser.end();
 
         return;
       }
@@ -22,7 +23,7 @@ module.exports = {
       done();
     });
   },
-  after: (done) => {
+  after: (browser, done) => {
     sauceConnectTunnel.close(function () {
       console.log('Closed Sauce Connect process');
       done();
