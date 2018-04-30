@@ -15,14 +15,14 @@ export default class extends Controller {
         'X-CSRFToken': Cookie.get('csrftoken'),
       }
     })
-    .then(res => res.text())
-    .then(res => {
-      var parser = new DOMParser()
-      var doc = parser.parseFromString(res, 'text/html')
-      document.getElementById('modal-body').innerHTML = doc.getElementById('modal-body-ajax').innerHTML
-      M.AutoInit(document.getElementById('modal'))
-      var instance = M.Modal.init(document.getElementById('modal'))
-      instance.open()
-    })
+      .then(res => res.text())
+      .then(res => {
+        var parser = new DOMParser()
+        var doc = parser.parseFromString(res, 'text/html')
+        document.getElementById('modal-body').innerHTML = doc.getElementById('modal-body-ajax').innerHTML
+        M.AutoInit(document.getElementById('modal'))
+        var instance = M.Modal.init(document.getElementById('modal'))
+        instance.open()
+      })
   }
 }

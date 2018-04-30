@@ -17,12 +17,12 @@ from django.utils.translation import ugettext as _
 from django.views import generic
 from django.views.generic.detail import SingleObjectMixin
 
+from .lock import LockViewMixin
+
 if 'django.contrib.admin' in settings.INSTALLED_APPS:
     from django.contrib.admin.models import LogEntry
 else:
     LogEntry = None
-
-from .lock import LockViewMixin
 
 
 class DefaultTemplateMixin(object):
