@@ -21,9 +21,9 @@
   "homepage": "https://github.com/anjmao/nightwatch-typescript-starter#readme",
   "devDependencies": {
     "@types/nightwatch": "^0.9.8",
-    "@types/node": "^8.10.8",
-    "nightwatch": "^0.9.20",
-    "typescript": "^2.8.1"
+    "@types/node": "^8.10.10",
+    "nightwatch": "^0.9.21",
+    "typescript": "^2.8.3"
   },
   "dependencies": {
     "eslint": "^4.19.1",
