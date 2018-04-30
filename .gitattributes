@@ -1,2 +1,2 @@
-yarn.lock binary
 src/crudlfap/static/* binary
+src/crudlfap/locale/*/*/*.po binary

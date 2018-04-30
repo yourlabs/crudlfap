@@ -3,6 +3,7 @@ import collections
 from betterforms.changelist import SearchForm
 from crudlfap.views.generic import ListView
 
+from django import forms
 from django import template
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -237,7 +238,8 @@ class SearchMixin(object):
             (SearchForm,),
             dict(
                 SEARCH_FIELDS=self.search_fields,
-                model=self.model
+                model=self.model,
+                q=forms.CharField(label=_('Search'), required=False)
             )
         )
 

@@ -13,7 +13,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.contenttypes.models import ContentType
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 from django.views import generic
 from django.views.generic.detail import SingleObjectMixin
 
@@ -38,8 +38,19 @@ class DefaultTemplateMixin(object):
     material_icon = 'priority high'
     ajax = '#ajax-container'
 
+    def get_view_label(self):
+        return self.urlname
+
     def get_title(self):
-        return _(self.urlname).capitalize()
+        return _(self.view_label).capitalize()
+
+    def get_title_menu(self):
+        """Return title for menu links to this view."""
+        return _(self.view_label).capitalize()
+
+    def get_title_link(self):
+        """Return title attribute for links to this view."""
+        return self.title
 
     def get_title_html(self):
         """Return text for HTML title tag."""
@@ -135,9 +146,9 @@ class ModelViewMixin(ViewMixin):
             return self.model._meta.verbose_name
 
     def get_title(self):
-        return '{} {}'.format(
-            _(self.urlname),
-            self.model_verbose_name,
+        return '{}: {}'.format(
+            self.model_verbose_name.capitalize(),
+            _(self.view_label),
         ).capitalize()
 
     def get_queryset(self):
@@ -218,10 +229,10 @@ class ObjectViewMixin(ObjectMixin, ModelViewMixin, SingleObjectMixin):
         return r'<{}>/{}'.format(cls.urlfield, cls.urlname)
 
     def get_title(self):
-        return '{} {} "{}"'.format(
-            _(self.urlname),
+        return '{} "{}": {}'.format(
             self.model_verbose_name,
-            self.object
+            self.object,
+            _(self.view_label).capitalize(),
         ).capitalize()
 
     def get_menu_kwargs(self):
@@ -244,6 +255,9 @@ class FormViewMixin(ViewMixin):
         if self.router['list']:
             return self.router['list'].url
         return super().get_success_url()
+
+    def get_title_submit(self):
+        return self.view_label
 
 
 class FormView(FormViewMixin, generic.FormView):
@@ -271,15 +285,17 @@ class ModelFormViewMixin(ModelViewMixin, FormViewMixin):
         return super().get_form_class()
 
     def get_form_invalid_message(self):
-        return '{} {} error'.format(
-            self.urlname,
-            self.model_verbose_name
+        return '{}: {}: {}'.format(
+            _(self.view_label),
+            self.model_verbose_name,
+            _('failure'),
         ).capitalize()
 
     def get_form_valid_message(self):
-        return _(
-            '%s %s: {}' % (self.urlname, self.model_verbose_name)
-        ).format(self.form.instance).capitalize()
+        return '{}: {}'.format(
+            _(self.view_label),
+            self.form.instance,
+        ).capitalize()
 
     def form_invalid(self, form):
         response = super().form_invalid(form)
@@ -287,7 +303,7 @@ class ModelFormViewMixin(ModelViewMixin, FormViewMixin):
         return response
 
     def get_log_message(self):
-        return _(self.urlname)
+        return _(self.view_label)
 
     def log_insert(self):
         if not LogEntry:
@@ -335,6 +351,7 @@ class CreateView(ModelFormViewMixin, generic.CreateView):
     color = 'green'
     object_permission_check = False
     log_action_flag = ADDITION
+    view_label = 'Add'
 
     def get_form_fields(self):
         if hasattr(self, 'create_fields'):
@@ -359,7 +376,7 @@ class DeleteView(ObjectFormViewMixin, generic.DeleteView):
 
     def get_success_message(self):
         return _(
-            '%s %s: {}' % (self.urlname, self.model_verbose_name)
+            '%s %s: {}' % (_(self.view_label), self.model_verbose_name)
         ).format(self.object).capitalize()
 
     def get_success_url(self):
@@ -440,6 +457,7 @@ class UpdateView(ObjectFormViewMixin, generic.UpdateView):
     action = 'click->modal#open'
     color = 'orange'
     locks = True
+    view_label = 'Change'
 
     def get_form_fields(self):
         if hasattr(self, 'update_fields'):
