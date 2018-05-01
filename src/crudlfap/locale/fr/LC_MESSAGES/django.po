@@ -15,6 +15,15 @@ msgstr ""
 msgid "home"
 msgstr "accueil"
 
+msgid "create"
+msgstr "ajouter"
+
+msgid "delete"
+msgstr "effacer"
+
+msgid "update"
+msgstr "modifier"
+
 msgid "list"
 msgstr "liste"
 
@@ -25,4 +34,16 @@ msgid "Back to your account"
 msgstr "Retour vers votre compte"
 
 msgid "fail"
-msgstr "Echec"
+msgstr "échec"
+
+
+msgid "User"
+msgstr "Utilisateur"
+
+msgid "Users"
+msgstr "Utilisateurs"
+msgid "user"
+msgstr "Utilisateur"
+
+msgid "users"
+msgstr "Utilisateurs"

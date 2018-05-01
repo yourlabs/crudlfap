@@ -30,7 +30,7 @@ def test_get_menu(srf):
     result = crudlfap.site[User].get_menu('model', srf.get('/'))
     assert result[0].urlargs == []
     assert result[0].url == '/user/create'
-    assert result[0].title == 'User: add'
+    assert result[0].title == 'User: create'
 
 
 def test_user_list_reverse():

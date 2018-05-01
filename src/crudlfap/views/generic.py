@@ -351,7 +351,6 @@ class CreateView(ModelFormViewMixin, generic.CreateView):
     color = 'green'
     object_permission_check = False
     log_action_flag = ADDITION
-    view_label = 'Add'
 
     def get_form_fields(self):
         if hasattr(self, 'create_fields'):
@@ -457,7 +456,6 @@ class UpdateView(ObjectFormViewMixin, generic.UpdateView):
     action = 'click->modal#open'
     color = 'orange'
     locks = True
-    view_label = 'Change'
 
     def get_form_fields(self):
         if hasattr(self, 'update_fields'):
