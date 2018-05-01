@@ -7,6 +7,7 @@
   </li>
 {% else %}
   <li class="{{ liclass|default('') }}">
+    {{ request.user }}
     <a class="waves-effect" href="{{ url('crudlfap:logout') }}">{{ _('Log out') }}</a>
   </li>
   {% if request.session.become_user %}
