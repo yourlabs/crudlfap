@@ -31,34 +31,26 @@ const config = { // we use a nightwatch.conf.js file so we can include comments 
       'access_key': process.env.SAUCELABS_TOKEN,
       'skip_testcases_on_fail': false,
       'desiredCapabilities': {
-        'browserName': 'chrome',
-        'version': 'latest',
         'acceptSslCerts': true,
         'javascriptEnabled': true
       }
     },
     'chrome': {
       'desiredCapabilities': {
-        'browserName': 'chrome',
-        'version': 'latest',
-        'javascriptEnabled': true,
-        'acceptSslCerts': true
+        'browserName': 'Chrome',
+        'version': 'latest'
       }
     },
     'internet_explorer': {
       'desiredCapabilities': {
         'browserName': 'internet explorer',
-        'version': 'latest',
-        'javascriptEnabled': true,
-        'acceptSslCerts': true
+        'version': 'latest'
       }
     },
     'firefox': {
       'desiredCapabilities': {
-        'browserName': 'mozilla firefox',
-        'version': 'latest',
-        'javascriptEnabled': true,
-        'acceptSslCerts': true
+        'browserName': 'firefox',
+        'version': 'latest'
       }
     }
   }
