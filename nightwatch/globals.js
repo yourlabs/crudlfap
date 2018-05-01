@@ -11,8 +11,7 @@ module.exports = {
     }, function (err, sauceConnectProcess) {
       if (err) {
         console.error('Sauce Connect Error : ', err.message);
-
-        return false;
+        throw err.message;
       }
       console.log('Sauce Connect ready');
       sauceConnectTunnel = sauceConnectProcess;
