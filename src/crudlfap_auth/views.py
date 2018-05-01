@@ -5,6 +5,7 @@ from crudlfap import crudlfap
 from django.contrib import auth
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
+from django.utils.translation import ugettext_lazy as _
 from django import http
 
 
@@ -17,6 +18,9 @@ class PasswordView(crudlfap.UpdateView):
     color = 'purple darken-4'
     controller = 'modal'
     action = 'click->modal#open'
+
+    def get_title_submit(self):
+        return _('update').capitalize()
 
     def get_form_class(self):
         if self.object == self.request.user:
