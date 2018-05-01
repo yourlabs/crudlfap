@@ -9,15 +9,17 @@
 <div class="row">
   {% if view.search_form or view.filterset.form.fields %}
   <div class="col s12 m2">
-    <form method="get" action="" data-controller="autosubmit" data-target="render-table" data-action="input->autosubmit#input change->autosubmit#input">
-      {{ render_form(view.search_form) }}
-      {{ render_form(view.filterset.form) }}
-    </form>
+    <div class="card-panel">
+      <form method="get" action="" data-controller="autosubmit" data-target="render-table" data-action="input->autosubmit#input change->autosubmit#input">
+        {{ render_form(view.search_form) }}
+        {{ render_form(view.filterset.form) }}
+      </form>
+    </div>
   </div>
   {% endif %}
 
   <div class="table-responsive col s12 {% if view.search_form or view.filterset.form.fields %}m10{% endif %}" id="render-table">
-    <div class="table-container">
+    <div class="table-container card-panel">
       {{ render_table(request, view.table, object_list) }}
     </div>
 
