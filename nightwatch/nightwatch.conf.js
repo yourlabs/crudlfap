@@ -37,7 +37,7 @@ const config = { // we use a nightwatch.conf.js file so we can include comments 
     },
     'chrome': {
       'desiredCapabilities': {
-        'browserName': 'Chrome',
+        'browserName': 'chrome',
         'version': 'latest'
       }
     },
