@@ -35,15 +35,3 @@ msgstr "Retour vers votre compte"
 
 msgid "fail"
 msgstr "échec"
-
-
-msgid "User"
-msgstr "Utilisateur"
-
-msgid "Users"
-msgstr "Utilisateurs"
-msgid "user"
-msgstr "Utilisateur"
-
-msgid "users"
-msgstr "Utilisateurs"
