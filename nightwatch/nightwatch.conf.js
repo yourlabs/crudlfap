@@ -14,9 +14,9 @@ const config = { // we use a nightwatch.conf.js file so we can include comments 
     'host': '127.0.0.1',
     'port': 4444
   },
-  // 'test_workers': {
-  //   'enabled': true, 'workers': 'auto'
-  // }, // perform tests in parallel where possible
+  'test_workers': {
+    'enabled': true, 'workers': 'auto'
+  }, // perform tests in parallel where possible
   'test_settings': {
     'default': {
       'launch_url': 'http://ondemand.saucelabs.com:80',
@@ -31,26 +31,38 @@ const config = { // we use a nightwatch.conf.js file so we can include comments 
       'access_key': process.env.SAUCELABS_TOKEN,
       'skip_testcases_on_fail': false,
       'desiredCapabilities': {
-        'acceptSslCerts': true,
-        'javascriptEnabled': true
+        'browserName': 'chrome',
+        'version': 'latest',
+        'chromeOptions': {
+          'args': [
+            '--no-sandbox'
+          ]
+        },
+        'acceptSslCerts': true
       }
     },
     'chrome': {
       'desiredCapabilities': {
         'browserName': 'chrome',
-        'version': 'latest'
+        'version': 'latest',
+        'javascriptEnabled': true,
+        'acceptSslCerts': true
       }
     },
     'internet_explorer': {
       'desiredCapabilities': {
         'browserName': 'internet explorer',
-        'version': 'latest'
+        'version': 'latest',
+        'javascriptEnabled': true,
+        'acceptSslCerts': true
       }
     },
     'firefox': {
       'desiredCapabilities': {
         'browserName': 'firefox',
-        'version': 'latest'
+        'version': 'latest',
+        'javascriptEnabled': true,
+        'acceptSslCerts': true
       }
     }
   }
