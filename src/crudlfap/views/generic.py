@@ -257,7 +257,7 @@ class FormViewMixin(ViewMixin):
         return super().get_success_url()
 
     def get_title_submit(self):
-        return self.view_label
+        return self.title_menu
 
 
 class FormView(FormViewMixin, generic.FormView):
