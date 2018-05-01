@@ -27,11 +27,11 @@ module.exports = {
             // on logout page
             .waitForElementVisible('ul[class="right"] li a[href="/login"]', 1000)
 
-            .assert.visible('div[id="modal-body-ajax"] h2')
-            .assert.containsText('div[id="modal-body-ajax"] h2', 'You have been logged-out !')
+            // .assert.visible('div[id="modal-body-ajax"] h2')
+            // .assert.containsText('div[id="modal-body-ajax"] h2', 'You have been logged-out !')
 
-            .assert.visible('div[id="modal-body-ajax"] p')
-            .assert.containsText('div[id="modal-body-ajax"] p', 'Thanks for the time you spent with us today')
+            // .assert.visible('div[id="modal-body-ajax"] p')
+            // .assert.containsText('div[id="modal-body-ajax"] p', 'Thanks for the time you spent with us today')
 
             .end();
     }
