@@ -14,9 +14,9 @@ const config = { // we use a nightwatch.conf.js file so we can include comments 
     'host': '127.0.0.1',
     'port': 4444
   },
-  'test_workers': {
-    'enabled': true, 'workers': 'auto'
-  }, // perform tests in parallel where possible
+  // 'test_workers': {
+  //   'enabled': true, 'workers': 'auto'
+  // }, // perform tests in parallel where possible
   'test_settings': {
     'default': {
       'launch_url': 'http://ondemand.saucelabs.com:80',
@@ -33,12 +33,8 @@ const config = { // we use a nightwatch.conf.js file so we can include comments 
       'desiredCapabilities': {
         'browserName': 'chrome',
         'version': 'latest',
-        'chromeOptions': {
-          'args': [
-            '--no-sandbox'
-          ]
-        },
-        'acceptSslCerts': true
+        'acceptSslCerts': true,
+        'javascriptEnabled': true
       }
     },
     'chrome': {
