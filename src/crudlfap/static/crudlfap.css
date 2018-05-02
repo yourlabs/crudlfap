@@ -6513,4 +6513,10 @@ input[type=range].focused:focus:not(.active)::-ms-thumb {
 div small.error {
   font-size: 120%; }
 
+#modal-buttons-ajax {
+  position: fixed;
+  bottom: 23px;
+  z-index: 997;
+  margin-bottom: 0; }
+
 /*# sourceMappingURL=crudlfap.css.map*/

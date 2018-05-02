@@ -43,7 +43,7 @@
     "formdata-polyfill": "^3.0.10",
     "jest": "^22.4.2",
     "js-cookie": "^2.2.0",
-    "materialize-css": "^1.0.0-beta",
+    "materialize-css": "1.0.0-rc.1",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.1",
     "selenium-webdriver": "^4.0.0-alpha.1",
