@@ -37,7 +37,7 @@ module.exports = {
      
       // after login
       .waitForElementVisible('.container .orange-text', 1000)
-      .assert.title('Home - CRUDLFA+')
+      // .assert.title('Home - CRUDLFA+')
       .assert.visible('a[class=waves-effect]')
       .end();
   }
