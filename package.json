@@ -11,7 +11,8 @@
     "chrome-browser-test": "cd nightwatch && yarn test",
     "ie-browser-test": "cd nightwatch && yarn test -e internet_explorer",
     "firefox-browser-test": "cd nightwatch && yarn test -e firefox",
-    "eslint-nightwatch": "cd nightwatch && yarn run lint"
+    "eslint-nightwatch": "cd nightwatch && yarn run lint",
+    "browser-test": "cd nightwatch && yarn run test --config nightwatch-driver.json"
   },
   "repository": {
     "type": "git",
