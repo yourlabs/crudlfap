@@ -20,6 +20,7 @@ crudlfap.Router(
     views=[
         crudlfap.DeleteView,
         crudlfap.UpdateView.clone(
+            body_class='modal-fixed-footer',
             fields=[
                 'username',
                 'email',
@@ -32,7 +33,8 @@ crudlfap.Router(
             ]
         ),
         crudlfap.CreateView.clone(
-            fields=['username', 'email', 'groups', 'is_staff', 'is_superuser']
+            body_class='modal-fixed-footer',
+            fields=['username', 'email', 'groups', 'is_staff', 'is_superuser'],
         ),
         views.PasswordView,
         views.BecomeUser,
