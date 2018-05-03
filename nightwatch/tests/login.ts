@@ -1,20 +1,21 @@
 import { NightwatchBrowser } from 'nightwatch';
+import { CONSTANTS } from '../shared/CONSTANTS';
 
 module.exports = {
   'Login : submit with wrong credentials': (browser: NightwatchBrowser) => {
     browser
-      .url('http://localhost:8000')
-      .waitForElementVisible('body', 1000)
+      .url(CONSTANTS.BASE_URL)
+      .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
 
       .assert.visible('input[id=id_username]')
-      .setValue('input[id=id_username]', 'dev11')
+      .setValue('input[id=id_username]', CONSTANTS.USER_CREDENTIALS.WRONG.USERNAME)
 
       .assert.visible('input[id=id_password]')
-      .setValue('input[id=id_password]', 'dev11')
+      .setValue('input[id=id_password]', CONSTANTS.USER_CREDENTIALS.WRONG.PASSWORD)
 
       .assert.visible('button[type=submit]')
       .click('button[type=submit]')
-      .pause(1000)
+      .pause(CONSTANTS.PAUSE_TIMEOUT)
 
       // after login
       .assert.containsText('small[class=error]', 'Please enter a correct username and password. Note that both fields may be case-sensitive.')
@@ -23,20 +24,20 @@ module.exports = {
 
   'Login : submit with correct credentials': (browser: NightwatchBrowser) => {
     browser
-      .url('http://localhost:8000')
-      .waitForElementVisible('body', 1000)
+      .url(CONSTANTS.BASE_URL)
+      .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
 
       .assert.visible('input[id=id_username]')
-      .setValue('input[id=id_username]', 'dev')
+      .setValue('input[id=id_username]', CONSTANTS.USER_CREDENTIALS.RIGHT.USERNAME)
 
       .assert.visible('input[id=id_password]')
-      .setValue('input[id=id_password]', 'dev')
+      .setValue('input[id=id_password]', CONSTANTS.USER_CREDENTIALS.RIGHT.PASSWORD)
 
       .assert.visible('button[type=submit]')
       .click('button[type=submit]')
      
       // after login
-      .waitForElementVisible('.container .orange-text', 1000)
+      .waitForElementVisible('.container .orange-text', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
       // .assert.title('Home - CRUDLFA+')
       .assert.visible('a[class=waves-effect]')
       .end();
