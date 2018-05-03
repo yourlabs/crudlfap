@@ -1,4 +1,3 @@
 sphinx
 sphinx-js
 django
--e ..[dev]
