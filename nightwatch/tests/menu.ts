@@ -1,13 +1,15 @@
 import { NightwatchBrowser } from 'nightwatch';
 import {CONSTANTS} from './../shared/CONSTANTS';
 module.exports = {
-    before: (browser: NightwatchBrowser) => {
+    // before: (browser: NightwatchBrowser) => {
+    //     browser
+    //         .url(CONSTANTS.BASE_URL)
+    //         .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+    // },
+    'Before Login: Menu should visible when click on the menu icon': (browser: NightwatchBrowser) => {
         browser
             .url(CONSTANTS.BASE_URL)
             .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
-    },
-    'Before Login: Menu should visible when click on the menu icon': (browser: NightwatchBrowser) => {
-        browser
             .assert.visible('span[data-action="click->sidenav#click"]')
             .isVisible('ul[id="slide-out"]', (result) => {
                 browser.assert.equal(result.value, false)
