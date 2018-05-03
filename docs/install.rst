@@ -52,13 +52,13 @@ The easy way, in settings.py::
     INSTALLED_APPS += CRUDLFAP_APPS
 
 
-You also need to remove the ``django.contrib.admin`` from the your existing INSTALLED_APPS or you can pop this::
+You also need to remove the ``django.contrib.admin`` from the your existing ``INSTALLED_APPS`` or you can pop this::
 
     CRUDLFAP_APPS.pop(CRUDLFAP_APPS.index('django.contrib.admin'))
 
 
-If you already have a TEMPLATES settings, import CRUDLFAP_TEMPLATE_BACKEND
-instead of TEMPLATES::
+If you already have a ``TEMPLATES`` settings, import ``CRUDLFAP_TEMPLATE_BACKEND``
+instead of ``TEMPLATES``::
 
     TEMPLATES = [
         CRUDLFAP_TEMPLATE_BACKEND,

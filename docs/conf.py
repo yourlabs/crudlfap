@@ -2,13 +2,10 @@
 import django
 import os
 
-os.environ.setdefault(
-    "DJANGO_SETTINGS_MODULE",
-    "crudlfap_example.settings"
-)
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crudlfap_example.settings")
+os.environ.setdefault("DEBUG", "1")
 
 django.setup()
-
 
 # -*- coding: utf-8 -*-
 #
