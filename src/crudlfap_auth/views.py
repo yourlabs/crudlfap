@@ -42,6 +42,9 @@ class BecomeUser(crudlfap.ObjectView):
     material_icon = 'attach_money'
     color = 'pink darken-4'
 
+    def get_title_menu(self):
+        return _('become').capitalize()
+
     def get_object(self, queryset=None):
         user = super().get_object()
 

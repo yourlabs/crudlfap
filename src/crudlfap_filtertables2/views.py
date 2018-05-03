@@ -21,7 +21,7 @@ class Table(tables.Table):
         from crudlfap import crudlfap
         context = dict(
             object=record,
-            views=crudlfap.site[type(record)].get_menu(
+            menu=crudlfap.site[type(record)].get_menu(
                 'object',
                 self.context['request'],
                 object=record,
@@ -249,6 +249,7 @@ class FilterTables2ListView(SearchMixin, FilterMixin, TableMixin, ListView):
     default_template_name = 'crudlfap_filtertables2/list.html'
     icon = 'fa fa-fw fa-table'
     urlname = 'list'
+    body_class = 'full-width'
 
     def get(self, request, *args, **kwargs):
         if self.filterset:

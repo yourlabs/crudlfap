@@ -1,5 +1,6 @@
 import { Application } from 'stimulus'
 import { definitionsFromContext } from 'stimulus/webpack-helpers'
+import init from './init.js'
 import M from 'materialize-css'
 import 'materialize-css/sass/materialize.scss'
 import './style.sass'
@@ -44,7 +45,24 @@ document.addEventListener('turbolinks:before-render', function() {
 })
 
 document.addEventListener('turbolinks:load', function(e) {
-  M.AutoInit(e.target.body)
+  init(e.target.body)
+})
+
+document.addEventListener('click', function(e) {
+  // dismiss any toast if clicking outside them
+  var toast = document.getElementById('toast-container')
+  if (toast && ! toast.contains(e.target)) {
+    M.Toast.dismissAll()
+  }
+
+  // fixed-actions doesn't like
+  var dropdowns = document.querySelectorAll('.dropdown-trigger')
+  for (var dropdown of dropdowns) {
+    var instance = M.Dropdown.getInstance(dropdown)
+    if (instance && instance.isOpen && ! dropdown.parentElement.contains(e.target)) {
+      instance.close()
+    }
+  }
 })
 
 export default application

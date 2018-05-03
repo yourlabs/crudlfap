@@ -1,6 +1,7 @@
 import Cookie from 'js-cookie'
 import { Controller } from 'stimulus'
 import M from 'materialize-css'
+import init from '../init.js'
 
 export default class extends Controller {
   submit(e) {
@@ -41,15 +42,29 @@ export default class extends Controller {
             url = canonical.getAttribute('href')
           }
           title = doc.querySelector('title').innerHTML
+
+          // we're going to replace the body, that means we close the modal
+          // which will restore the browser scrollbars if any
+          var modal = M.Modal.getInstance(document.getElementById('modal'))
+          if (modal && modal.isOpen) {
+            modal.close()
+          }
         }
 
+        /**
+         * Tear down controller before removing HTML
+         */
         application.controllers.forEach(function(controller) {
           if(target.contains(controller.element) && typeof controller.teardown === 'function') {
             controller.teardown()
           }
         })
+
         target.innerHTML = source.innerHTML
-        M.AutoInit(target)
+
+        init(target)
+        this.focus()
+
         if (url && url != window.location.href) {
           window.history.pushState({}, title, url)
         }

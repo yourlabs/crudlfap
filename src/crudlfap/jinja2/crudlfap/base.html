@@ -28,32 +28,33 @@
     {% block extra_style %}{% endblock %}
   </head>
 
-  <body class="{% block body_class %}{% endblock %}">
+  <body class="{% block body_class %}{{ view.body_class|default('') }}{% endblock %}">
     {% include 'crudlfap/_menu_main.html' %}
     {% block breadcrumb %}{% endblock %}
     {% include 'crudlfap/_messages.html' %}
     {% block before_container %}{% endblock %}
     {% block content_open %}<div class="container" id="modal-body-ajax">{% endblock %}
-    {% block title_heading %}
-      {% if view.title_heading %}
-      <h2
-        class="text-{{ view.style|default('default') }} hide-in-modal"
-        id="modal-title-ajax"
-      >{{ view.title_heading }}</h2>
-      {% endif %}
-    {% endblock %}
+      {% block title_heading %}
+        {% if view.title_heading %}
+        <h4
+          class="text-{{ view.style|default('default') }} hide-in-modal"
+          id="modal-title-ajax"
+        >{{ view.title_heading }}</h4>
+        {% endif %}
+      {% endblock %}
 
-    {% block form_open %}{% endblock %}
-    {% block content %}{% block form %}{% endblock %}{% endblock %}
-    {% block buttons %}{% endblock %}
-    {% block form_close %}{% endblock %}
+      {% block form_open %}{% endblock %}
+        <div class="modal-content">
+          {% block content %}{% block form %}{% endblock %}{% endblock %}
+        </div>
+        <div class="modal-footer">
+          {% block buttons %}{% endblock %}
+        </div>
+      {% block form_close %}{% endblock %}
+
     {% block content_close %}</div>{% endblock %}
 
-    <div id="modal" class="modal">
-        <div class="modal-content" id="modal-body">
-           <p>Ooopsy</p>
-        </div>
-    </div>
+    <div id="modal" class="modal modal-fixed-footer"></div>
 
     {% block after_container %}
     {# i wish you put some super elegant hack here #}
