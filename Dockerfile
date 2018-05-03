@@ -1,15 +1,12 @@
-FROM ubuntu:artful
+FROM node:9-alpine
 
 # utf8
 ENV PYTHONIOENCODING UTF-8
 ENV PYTHONUNBUFFERED 1
 
-RUN apt update -y && apt upgrade -y && apt install -y bash dumb-init python3 python3-pip gettext curl
-RUN curl -sL https://deb.nodesource.com/setup_9.x | bash -
-RUN apt install -y nodejs
-RUN npm install -g yarn
+RUN apk update -y && apk add python3 dumb-init gettext
 
-RUN useradd -md /code code
+RUN adduser -h /code -D code
 WORKDIR /code
 EXPOSE 8000
 
