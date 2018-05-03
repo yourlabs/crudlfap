@@ -1,7 +1,7 @@
 import { NightwatchBrowser } from 'nightwatch';
 import {CONSTANTS} from './../shared/CONSTANTS';
 module.exports = {
-    before: (browser) => {
+    before: (browser: NightwatchBrowser) => {
         browser
             .url(CONSTANTS.BASE_URL)
             .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
