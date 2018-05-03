@@ -1,5 +1,4 @@
 {% if is_paginated %}
-<div class="container">
   <ul class="pagination">
     {% if page_obj.has_previous() %}
       <li class="page-item">
@@ -25,5 +24,4 @@
       </li>
     {% endif %}
   </ul>
-</div>
 {% endif %}

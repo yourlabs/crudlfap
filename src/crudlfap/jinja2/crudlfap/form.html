@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
 
 {% block form_open %}
+{% if not request.META.get('HTTP_X_MODAL') %}
+<div class="card-panel">
+{% endif %}
 <form
-  id="main-form"
+  id="{% block form_id %}main-form{% endblock %}"
   action="{{ request.get_full_path() }}"
   method="post"
   enctype="multipart/form-data"
@@ -16,14 +19,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="form-loading" style="display: none">
-        {{ _('Data upload progress') }}
-        <br />
-        <progress></progress>
-    </div>
-    <div class="card-panel">
-        {{ render_form(form) }}
-    </div>
+  {{ render_form(form) }}
 {% endblock %}
 
 {% block buttons %}
@@ -31,7 +27,10 @@
 {% endblock %}
 
 {% block form_close %}
-    <input type="hidden" name="_next" value="{{ request.GET.get('_next', request.POST.get('_next', request.META.get('HTTP_REFERER', '/'))) }}" />
+    <input type="hidden" name="_next" value="{{ request.GET.get('_next', request.POST.get('_next', request.META.get('HTTP_REFERER', ''))) }}" />
     {% csrf_token %}
 </form>
+{% if not request.META.get('HTTP_X_MODAL') %}
+</div>
+{% endif %}
 {% endblock %}

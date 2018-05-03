@@ -6511,6 +6511,34 @@ input[type=range].focused:focus:not(.active)::-ms-thumb {
     text-align: center;
     margin-top: 1.2rem; } }
 div small.error {
-  font-size: 120%; }
+  font-size: 110%;
+  color: #F44336; }
+
+body.full-width div.container {
+  margin-bottom: 100px;
+  padding-left: 0;
+  padding-right: 0;
+  width: 100%; }
+
+body.list div.container {
+  margin-bottom: 50px; }
+
+body #toast-container {
+  min-width: 100%;
+  top: auto;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: block;
+  position: fixed;
+  z-index: 10000; }
+
+.fixed-actions {
+  bottom: 0;
+  right: 0;
+  margin-bottom: 12px;
+  margin-right: 12px;
+  position: fixed;
+  z-index: 999; }
 
 /*# sourceMappingURL=crudlfap.css.map*/

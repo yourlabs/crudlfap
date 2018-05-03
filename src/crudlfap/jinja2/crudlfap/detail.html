@@ -5,20 +5,22 @@
 {% endblock %}
 
 {% block content %}
-<table class="table">
-  <thead class="thead-inverse">
-    {% for field in fields %}
-    <tr>
-        <th>
-            {{ field['field'].name.capitalize() }}
-        </th>
-        <td>
-            {{ field['value'] }}
-        </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="card-panel">
+  <table class="table">
+    <thead class="thead-inverse">
+      {% for field in fields %}
+      <tr>
+          <th>
+              {{ field['field'].verbose_name.capitalize() }}
+          </th>
+          <td>
+              {{ field['value'] }}
+          </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}
 
 {% block after_container %}

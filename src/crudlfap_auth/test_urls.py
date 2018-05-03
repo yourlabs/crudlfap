@@ -21,7 +21,7 @@ def suuser():
 
 @pytest.fixture
 def group():
-    return Group.objects.get_or_create(name='hr')[0]
+    return Group.objects.get_or_create(name='1')[0]
 
 
 @pytest.mark.django_db
@@ -62,15 +62,15 @@ def test_group_create_reverse():
 
 
 def test_group_detail_reverse():
-    assert reverse('crudlfap:group:detail', args=['hr']) == '/group/hr'
+    assert reverse('crudlfap:group:detail', args=['1']) == '/group/1'
 
 
 def test_group_delete_reverse():
-    assert reverse('crudlfap:group:delete', args=['hr']) == '/group/hr/delete'
+    assert reverse('crudlfap:group:delete', args=['1']) == '/group/1/delete'
 
 
 def test_group_update_reverse():
-    assert reverse('crudlfap:group:update', args=['hr']) == '/group/hr/update'
+    assert reverse('crudlfap:group:update', args=['1']) == '/group/1/update'
 
 
 def test_su_user_reverse():
@@ -145,13 +145,13 @@ def test_group_list_resolve():
 
 @pytest.mark.django_db
 def test_group_update_resolve(group):
-    result = resolve('/group/hr/update')
+    result = resolve('/group/1/update')
     assert result.func.view_class.urlname == 'update'
 
 
 @pytest.mark.django_db
 def test_group_delete_resolve(group):
-    result = resolve('/group/hr/delete')
+    result = resolve('/group/1/delete')
     assert result.func.view_class.urlname == 'delete'
 
 
@@ -163,7 +163,7 @@ def test_group_create_resolve(group):
 
 @pytest.mark.django_db
 def test_group_detail_resolve(group):
-    result = resolve('/group/hr')
+    result = resolve('/group/1')
     assert result.func.view_class.urlname == 'detail'
 
 
@@ -195,32 +195,32 @@ def test_group_create_get(admin_client):
 @pytest.mark.django_db
 def test_group_create_post(admin_client):
     result = admin_client.post('/group/create', dict(
-        name='hr',
+        name='1',
     ))
     assert result.status_code == 302
-    assert result['Location'] == '/group/hr'
+    assert result['Location'] == '/group/1'
 
 
 @pytest.mark.django_db
 def test_group_create_post_with_permission(admin_client):
     permission = Permission.objects.filter().first()
     result = admin_client.post('/group/create', dict(
-        name='hr',
+        name='1',
         permissions=permission.id
     ))
     assert result.status_code == 302
-    assert result['Location'] == '/group/hr'
+    assert result['Location'] == '/group/1'
 
 
 @pytest.mark.django_db
 def test_group_update_post(admin_client, group):
     permission = Permission.objects.filter().first()
-    result = admin_client.post('/group/hr/update', dict(
-        name='hr',
+    result = admin_client.post('/group/1/update', dict(
+        name='1',
         permissions=permission.id
     ))
     assert result.status_code == 302
-    assert result['Location'] == '/group/hr'
+    assert result['Location'] == '/group/1'
 
 
 @pytest.mark.django_db
@@ -275,13 +275,13 @@ def test_user_password_get(admin_client, user):
 
 @pytest.mark.django_db
 def test_group_detail_get(admin_client, group):
-    result = admin_client.get('/group/hr')
+    result = admin_client.get('/group/1')
     assert result.status_code == 200
 
 
 @pytest.mark.django_db
 def test_group_delete(admin_client):
-    result = admin_client.get('/group/hr/delete', dict(
+    result = admin_client.get('/group/1/delete', dict(
         _next='/user',
     ))
     assert result.status_code == 404

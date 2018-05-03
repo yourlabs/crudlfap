@@ -297,9 +297,29 @@ class ModelFormViewMixin(ModelViewMixin, FormViewMixin):
             self.form.instance,
         ).capitalize()
 
+    def message_html(self, message):
+        """Add the detail url for form.instance, if possible."""
+        if self.form.instance:
+            try:
+                url = self.form.instance.get_absolute_url()
+            except:
+                return message
+
+            return ' '.join((
+                message,
+                '<a href="{}" class="btn-flat toast-action">{}</a>'.format(
+                    url,
+                    _('detail').capitalize(),
+                ),
+            ))
+        return message
+
     def form_invalid(self, form):
         response = super().form_invalid(form)
-        messages.error(self.request, self.form_invalid_message)
+        messages.error(
+            self.request,
+            self.message_html(self.form_invalid_message)
+        )
         return response
 
     def get_log_message(self):
@@ -326,7 +346,10 @@ class ModelFormViewMixin(ModelViewMixin, FormViewMixin):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        messages.success(self.request, self.form_valid_message)
+        messages.success(
+            self.request,
+            self.message_html(self.form_valid_message)
+        )
         self.log_insert()
         return response
 
@@ -439,6 +462,9 @@ class ListView(ModelViewMixin, generic.ListView):
         if getattr(self, 'paginate_by', None) is None:
             self.paginate_by = self.get_paginate_by()
         return super().get(*a, **k)
+
+    def get_title_heading(self):
+        return self.model._meta.verbose_name_plural.capitalize()
 
     def get_paginate_by(self, queryset=None):
         if self.router and hasattr(self.router, 'paginate_by'):

@@ -8,7 +8,7 @@
 
 <div class="row">
   {% if view.search_form or view.filterset.form.fields %}
-  <div class="col s12 m2">
+  <div class="col s12 m3">
     <div class="card-panel">
       <form method="get" action="" data-controller="autosubmit" data-target="render-table" data-action="input->autosubmit#input change->autosubmit#input">
         {{ render_form(view.search_form) }}
@@ -18,12 +18,13 @@
   </div>
   {% endif %}
 
-  <div class="table-responsive col s12 {% if view.search_form or view.filterset.form.fields %}m10{% endif %}" id="render-table">
-    <div class="table-container card-panel">
-      {{ render_table(request, view.table, object_list) }}
+  <div class="table-responsive col s12 {% if view.search_form or view.filterset.form.fields %}m9{% endif %}" id="render-table">
+    <div class="card-panel">
+      <div class="table-container">
+        {{ render_table(request, view.table, object_list) }}
+      </div>
+      {% include 'crudlfap/_pagination.html' %}
     </div>
-
-    {% include 'crudlfap/_pagination.html' %}
   </div>
 </div>
 {% endblock %}
