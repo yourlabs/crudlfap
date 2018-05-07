@@ -1,6 +1,6 @@
 const config = { // we use a nightwatch.conf.js file so we can include comments and helper functions
   'src_folders': [
-    'dist'
+    'dist/tests'
   ],
   'output_folder': 'reports',
   'custom_commands_path': '',
