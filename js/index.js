@@ -63,6 +63,11 @@ document.addEventListener('click', function(e) {
       instance.close()
     }
   }
+
+  var modal = document.getElementById('modal')
+  if (modal && ! modal.contains(e.target)) {
+    modal.parentElement.removeChild(modal)
+  }
 })
 
 export default application
