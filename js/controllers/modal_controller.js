@@ -23,6 +23,13 @@ export default class extends Controller {
       }
     })
       .then(res => res.text())
+      .catch((e) => {
+        M.toast({
+          html: e,
+          classes: 'red darken-3',
+          displayLength: 7500,
+        })
+      })
       .then(res => {
         var parser = new DOMParser()
         var doc = parser.parseFromString(res, 'text/html')
