@@ -4,7 +4,7 @@ FROM node:9-alpine
 ENV PYTHONIOENCODING UTF-8
 ENV PYTHONUNBUFFERED 1
 
-RUN apk update -y && apk add python3 dumb-init gettext
+RUN apk update && apk add python3 dumb-init gettext
 
 RUN adduser -h /code -D code
 WORKDIR /code
