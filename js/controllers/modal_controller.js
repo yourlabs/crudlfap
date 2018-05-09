@@ -56,50 +56,51 @@ export default class extends Controller {
   }
 
   show() {
+      console.log('show')
     this.modal.style.display = 'block'
     this.modal.style.position = 'fixed';
     this.modal.style.zIndex = '10000';
     this.modal.style.marginBottom = '10px';
-    this.modal.style.maxHeight = '90%'
+    this.modal.style.maxHeight = '85vh'
     this.modal.setAttribute('id', 'modal')
     this.content.style.maxHeight = '90vh'
     this.content.style.overflow = 'auto'
     this.startAnimation()
-    this.modal.addEventListener('input', this.startAnimation.bind(this))
   }
 
-  startAnimation() {
+  startAnimation(e) {
+      console.log('startanimation')
     this.targetMarginY = (window.document.documentElement.clientHeight - this.modal.clientHeight) / 2
-    if (this.targetMarginY <= 10) this.targetMarginY = 10
+    if (this.targetMarginY < 30) this.targetMarginY = 30
     this.currentMarginY = window.document.documentElement.clientHeight
 
-    var winWidth = window.document.documentElement.clientWidth
-    var modWidth = this.modal.clientWidth
-    if (winWidth < modWidth * 0.9) {
-      this.targetMarginX = winWidth * 0.45
-    } else {
-      this.targetMarginX = (winWidth - modWidth) / 2.20
-    }
-    this.currentMarginX = winWidth
-
     this.targetMarginX = (window.document.documentElement.clientWidth - this.modal.clientWidth) / 2
-    if (this.targetMarginX <= 50) this.targetMarginX = 50
+    if (this.targetMarginX < 50) this.targetMarginX = 50
     this.currentMarginX = window.document.documentElement.clientWidth
     this.raq = window.requestAnimationFrame(this.step.bind(this))
   }
 
-  step(timestamp) {
+  step(e) {
+      console.log('step', e.target, e)
+    var overlay = document.getElementById('overlay')
+    if (!overlay) {
+      overlay = document.createElement('div')
+      overlay.setAttribute('id', 'overlay')
+      overlay.style.display = 'block'
+    }
     this.modal.style.width = window.document.documentElement.clientWidth - 100
     this.modal.style.left = this.targetMarginX + 'px'
     this.modal.style.right = this.targetMarginX + 'px'
     if ((this.currentMarginY <= this.targetMarginY)) {
+      var observer = new MutationObserver(this.step.bind(this))
+      observer.observe(this.modal, {childList: true, subtree: true})
       return
     }
     if (this.currentMarginX >= this.targetMarginX) {
       this.currentMarginX -= 30
     }
     if (this.currentMarginY >= this.targetMarginY) {
-      this.currentMarginY -= 30
+      this.currentMarginY -= 50
     }
     this.modal.style.top = this.currentMarginY + 'px'
     this.raq = window.requestAnimationFrame(this.step.bind(this))
