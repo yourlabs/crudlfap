@@ -3,6 +3,10 @@ import { Controller } from 'stimulus'
 import M from 'materialize-css'
 import init from '../init.js'
 
+function pair(num) {
+  return num % 2 == 0 ? num : num - 1
+}
+
 export default class extends Controller {
   connect() {
     this.element.setAttribute('data-turbolinks', 'false')
@@ -27,104 +31,181 @@ export default class extends Controller {
         })
       })
       .then(res => {
+        // disconnect any existing observer
+        if (this.observer !== undefined) {
+          this.observer.disconnect()
+        }
+
+        // remove old modal if any
+        var oldmodal = document.getElementById('modal')
+        if (oldmodal) document.body.removeChild(oldmodal)
+
+        // parse new modal content from response
         var parser = new DOMParser()
         var doc = parser.parseFromString(res, 'text/html')
         var newbody = doc.getElementById('modal-body-ajax')
 
-        var body = document.querySelector('body')
-        var oldmodal = document.getElementById('modal')
-        if (oldmodal) body.removeChild(oldmodal)
+        // create modal element
         this.modal = document.createElement('div')
-        body.appendChild(this.modal)
 
-        /*
-        if (doc.querySelector('body.modal-fixed-footer')) {
-          modal.classList.add('modal-fixed-footer')
-        } else {
-          modal.classList.remove('modal-fixed-footer')
-        }
-        */
+        // mount content in modal
+        this.content = newbody.querySelector('.modal-content')
+        this.modal.appendChild(this.content)
 
-        this.wrapper = document.createElement('div')
-        this.wrapper.innerHTML = newbody.innerHTML
-        this.modal.appendChild(this.wrapper)
+        // mount footer in modal
+        this.modal.appendChild(newbody.querySelector('.modal-footer'))
         this.footer = this.modal.querySelector('.modal-footer')
-        this.content = this.modal.querySelector('.modal-content')
+
+        // apply styles
+        this.modal.setAttribute('id', 'modal')
+        this.modal.style.position = 'fixed'
+        this.modal.style.padding = '12px'
+        this.modal.style.zIndex = '10000'
+        this.modal.style.backgroundColor = '#DDDDDD'
+
+        this.content.style.overflow = 'auto'
+        this.content.style.backgroundColor = '#AAAAAA'
+
+        // mount modal in body
+        document.body.appendChild(this.modal)
+
+        // proceed our initialization of elements
         init(this.wrapper)
-        this.show()
+
+        // mount resize observer
+        this.observer = new MutationObserver(this.decayObserve.bind(this))
+        this.observer.observe(this.modal, {
+            attributes: true,
+            characterData: true,
+            childList: true,
+            subtree: true,
+        })
+
+        // reset margins
+        this.margin = {
+          top: 50,
+        }
+
+        this.margin.bottom = this.browserHeight - this.footerHeight - this.contentHeight - this.margin.top
+        if (this.margin.bottom < 50) this.margin.bottom = 50
+        console.log(this.browserHeight,this.footerHeight,this.contentHeight,this.margin.top,this.margin.bottom)
+
+        this.margin.left = (this.browserWidth - this.contentWidth) / 2
+        if (this.margin.left < 50) this.margin.left = 50
+
+        this.margin.right = this.browserWidth - this.contentWidth - this.margin.left
+        if (this.margin.right < 50) this.margin.right = 50
+
+        // show modal, should trigger observer
+        this.modal.style.display = 'block'
       })
   }
 
+  decayObserve() {
+    if (this.oldContentWidth == this.contentWith && this.oldContentHeight == this.contentHeight) return
+    if (this.timeout) window.clearTimeout(this.timeout)
+    this.timeout = window.setTimeout(this.observe.bind(this), 50)
+  }
+
+  observe() {
+    this.margin.bottom = this.browserHeight - this.footerHeight - 50 * 2 - this.contentHeight - this.margin.top
+    if (this.raq) window.cancelAnimationFrame(this.raq)
+    this.raq = window.requestAnimationFrame(this.resize.bind(this))
+  }
+
+  resize() {
+    console.log('resize')
+    var maxHeight = (this.browserHeight - this.footerHeight - 50 * 2) + 'px'
+    if (this.content.style.maxHeight != maxHeight)
+      this.content.style.maxHeight = maxHeight
+
+    var maxWidth = (this.browserWidth - 50 * 2) + 'px'
+    if (this.content.style.maxWidth != maxHeight)
+      this.content.style.maxWidth = maxHeight
+
+    var top = this.margin.top + 'px'
+    if (this.modal.style.top != top) this.modal.style.top = top
+
+    var bottom = this.margin.bottom + 'px'
+    if (this.modal.style.bottom != bottom) this.modal.style.bottom = bottom
+
+    var right = this.margin.right + 'px'
+    if (this.modal.style.left != left) this.modal.style.left = left
+
+    var left = this.margin.left + 'px'
+    if (this.modal.style.right != right) this.modal.style.right = right
+
+    this.oldContentHeight = this.contentHeight
+    this.oldContentWidth = this.contentWidth
+    this.raq = false
+  }
+
+  get bottomMargin() {
+    var result = this.browserHeight - this.footerHeight - 50 * 2 - this.margin.top - this.contentHeight
+    return result > this.bottomMinMargin ? result : this.bottomMinMargin
+  }
+
+  get bottomMinMargin() {
+    return 50 + this.footerHeight
+  }
+
+  get topMargin() {
+    var result = this.browserWidth - 50 * 2 - this.margin.left - this.contentWidth
+    return result > 50 ? result : 50
+  }
+
+  get browserHeight() {
+    return window.document.documentElement.clientHeight
+  }
+
+  get browserWidth() {
+    return window.document.documentElement.clientHeight
+  }
+
+  get contentHeight() {
+    return this.content.clientHeight
+  }
+
+  get contentMaxHeight() {
+    return this.browserHeight - 50 * 2 - this.footer.clientHeight
+  }
+
+  get contentWidth() {
+    return this.content.clientWidth
+  }
+
+  get contentMaxWidth() {
+    return this.browserWidth - 50 * 2
+  }
+
+  get footerHeight() {
+    return this.footer.clientHeight
+  }
+
   show() {
-      console.log('show')
-    this.modal.style.display = 'block'
-    this.modal.style.position = 'fixed';
-    this.modal.style.zIndex = '10000';
-    this.modal.style.marginBottom = '10px';
-    this.modal.style.maxHeight = '85vh'
-    this.modal.setAttribute('id', 'modal')
-    this.content.style.maxHeight = '90vh'
-    this.content.style.overflow = 'auto'
-    this.startAnimation()
-  }
+    if (this.raq) window.cancelAnimationFrame(this.raq)
 
-  startAnimation(e) {
-      console.log('startanimation')
-    this.targetMarginY = (window.document.documentElement.clientHeight - this.modal.clientHeight) / 2
-    if (this.targetMarginY < 30) this.targetMarginY = 30
-    this.currentMarginY = window.document.documentElement.clientHeight
+    if (Object.keys(this.margin).length && this.clientHeight - this.margin.top - this.margin.bottom >= this.contentHeight) {
+      this.margin.bottom = this.clientHeight - this.margin.top - this.contentHeight
+      console.log('touching bottom')
+    } else {  // grow
+      this.margin.top = this.margin.bottom = parseInt((this.clientHeight - this.contentHeight) / 2)
+      console.log('touching top and bottom')
+    }
+    console.log('after', this.contentHeight, this.margin, this.modal.style.top, this.modal.style.bottom)
 
-    this.targetMarginX = (window.document.documentElement.clientWidth - this.modal.clientWidth) / 2
-    if (this.targetMarginX < 50) this.targetMarginX = 50
-    this.currentMarginX = window.document.documentElement.clientWidth
-    this.raq = window.requestAnimationFrame(this.step.bind(this))
-  }
+    if (this.margin.left && this.margin.right && this.clientWidth - this.margin.left - this.margin.right >= this.content.clientWidth) {
+      this.margin.right = this.clientWidth - this.content.clientWidth - this.margin.left
+    } else {
+      this.margin.right = this.margin.left = parseInt((this.clientWidth - this.content.clientWidth) / 2)
+    }
 
-  step(e) {
-      console.log('step', e.target, e)
-    var overlay = document.getElementById('overlay')
-    if (!overlay) {
-      overlay = document.createElement('div')
-      overlay.setAttribute('id', 'overlay')
-      overlay.style.display = 'block'
-    }
-    this.modal.style.width = window.document.documentElement.clientWidth - 100
-    this.modal.style.left = this.targetMarginX + 'px'
-    this.modal.style.right = this.targetMarginX + 'px'
-    if ((this.currentMarginY <= this.targetMarginY)) {
-      var observer = new MutationObserver(this.step.bind(this))
-      observer.observe(this.modal, {childList: true, subtree: true})
-      return
-    }
-    if (this.currentMarginX >= this.targetMarginX) {
-      this.currentMarginX -= 30
-    }
-    if (this.currentMarginY >= this.targetMarginY) {
-      this.currentMarginY -= 50
-    }
-    this.modal.style.top = this.currentMarginY + 'px'
-    this.raq = window.requestAnimationFrame(this.step.bind(this))
-  }
+    if (this.margin.top < 50) this.margin.top = 50
+    if (this.margin.bottom < 50) this.margin.bottom = 50
+    if (this.margin.left < 50) this.margin.left = 50
+    if (this.margin.right < 50) this.margin.right = 50
 
-  /*
-  open() {
-        var instance = M.Modal.init(this.modal, {
-          preventScrolling: false,
-          onOpenEnd: () => {
-            this.raq = window.requestAnimationFrame(this.step.bind(this))
-          }
-        })
-        instance.open()
+    this.raq = window.requestAnimationFrame(this.resize.bind(this))
+
   }
-  step(timestamp) {
-    while(this.wrapper.offsetHeight > this.modal.offsetHeight) {
-      if (this.modal.offsetHeight > window.document.documentElement.clientHeight * 0.9) {
-        break
-      }
-      debugger
-      this.modal.offsetHeight += this.modal.offsetHeight * 0.1
-      this.raq = window.requestAnimationFrame(this.step.bind(this))
-    }
-  }
-  */
 }
