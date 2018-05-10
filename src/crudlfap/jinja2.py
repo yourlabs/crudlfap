@@ -3,6 +3,8 @@ import urllib
 
 from django import template
 
+from react.render import render_component
+
 
 def pagination_filter_params(data):
     data = copy.deepcopy(data)

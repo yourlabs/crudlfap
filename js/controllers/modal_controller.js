@@ -2,10 +2,49 @@ import Cookie from 'js-cookie'
 import { Controller } from 'stimulus'
 import M from 'materialize-css'
 import init from '../init.js'
+import Dialog from 'react-toolbox/lib/dialog'
+import React from 'react'
+import ReactDOM from 'react-dom'
+
+
+class DialogTest extends React.Component {
+  state = {
+    active: false
+  };
+
+  handleToggle = () => {
+    this.setState({active: !this.state.active});
+  }
+
+  actions = [
+    { label: "Cancel", onClick: this.handleToggle },
+    { label: "Save", onClick: this.handleToggle }
+  ];
+
+  render () {
+    return (
+      <div>
+        <Button label='Show my dialog' onClick={this.handleToggle} />
+        <Dialog
+          actions={this.actions}
+          active={this.state.active}
+          onEscKeyDown={this.handleToggle}
+          onOverlayClick={this.handleToggle}
+          title='My awesome dialog'
+        >
+          <p>Here you can add arbitrary content. Components like Pickers are using dialogs now.</p>
+        </Dialog>
+      </div>
+    )
+  }
+}
+
+
 
 export default class extends Controller {
   connect() {
     this.element.setAttribute('data-turbolinks', 'false')
+
   }
 
   get modal() {
@@ -14,6 +53,9 @@ export default class extends Controller {
 
   open(e) {
     e.preventDefault()
+    var elem = document.createElement('div')
+    document.body.appendChild(elem)
+    ReactDOM.render(DialogTest, elem)
     var url = this.element.getAttribute('href')
     fetch(url, {
       credentials: 'same-origin',

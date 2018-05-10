@@ -6,6 +6,10 @@ const extractSass = new ExtractTextPlugin({
   filename: 'crudlfap.css',
 })
 
+const extractToolbox = new ExtractTextPlugin({
+  filename: 'toolbox.css',
+})
+
 var production = process.env.NODE_ENV == 'production'
 
 var cfg = {
@@ -29,12 +33,29 @@ var cfg = {
       { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader?limit=10000&mimetype=application/font-woff' },
       { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file-loader' },
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['stage-2', 'babel-preset-env'],
+            "presets": ["es2015", "react", "stage-0"],
+            "plugins": ["transform-class-properties"],
+            "env": {
+              "development": {
+                "plugins": [
+                  ["react-transform", {
+                    "transforms": [{
+                      "transform": "react-transform-hmr",
+                      "imports": ["react"],
+                      "locals": ["module"]
+                    }, {
+                      "transform": "react-transform-catch-errors",
+                      "imports": ["react", "redbox-react"]
+                    }]
+                  }]
+                ]
+              }
+            },
             sourceMap: true
           }
         }
@@ -52,12 +73,24 @@ var cfg = {
         }
       },
       {
-        test: /\.s(a|c)ss$/,
+        test: /\.s?(c|a)ss$/,
         use: extractSass.extract({
           use: [
             {
               loader: 'css-loader',
               options: {
+                modules: true, // default is false
+                sourceMap: true,
+                importLoaders: 1,
+                sourceMap: true
+              }
+            },
+            {
+              loader: 'postcss-loader',
+              options: {
+                config: {
+                  path: path.join(__dirname, './postcss.config.js')
+                },
                 sourceMap: true
               }
             },
@@ -66,10 +99,10 @@ var cfg = {
               options: {
                 sourceMap: true
               }
-            }
+            },
           ]
         })
-      }
+      },
     ]
   },
   plugins: [

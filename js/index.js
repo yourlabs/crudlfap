@@ -2,8 +2,17 @@ import { Application } from 'stimulus'
 import { definitionsFromContext } from 'stimulus/webpack-helpers'
 import init from './init.js'
 import M from 'materialize-css'
-import 'materialize-css/sass/materialize.scss'
 import './style.sass'
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Button } from 'react-toolbox/lib/button';
+
+ReactDOM.render(
+  <Button label="Hello World!" />,
+  document.getElementById('app')
+);
+
 
 (() => {
   if (window.Turbolinks === undefined) {

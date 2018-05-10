@@ -28,12 +28,19 @@
   },
   "homepage": "https://github.com/yourlabs/crudlfap#readme",
   "dependencies": {
+    "@babel/core": "7.0.0-beta.46",
     "babel-core": "^6.26.0",
     "babel-jest": "^22.4.1",
     "babel-loader": "^7.1.3",
+    "babel-plugin-react-transform": "^3.0.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
+    "classnames": "^2.2.0",
     "css-loader": "^0.28.11",
     "debug": "^3.1.0",
     "enhanced-resolve": "^4.0.0",
@@ -46,9 +53,28 @@
     "js-cookie": "^2.2.0",
     "materialize-css": "^1.0.0-beta",
     "node-sass": "^4.9.0",
+    "postcss-apply": "^0.10.0",
+    "postcss-cssnext": "^3.1.0",
+    "postcss-each": "^0.10.0",
+    "postcss-import": "^11.1.0",
+    "postcss-loader": "^2.1.5",
+    "postcss-mixins": "^6.2.0",
+    "postcss-nesting": "^5.0.0",
+    "postcss-reporter": "^5.0.0",
+    "prop-types": "^15.5.7",
+    "react": "^15.5.0",
+    "react-dom": "^15.5.0",
+    "react-render": "^1.2.1",
+    "react-render-server": "^0.1.5",
+    "react-toolbox": "2.0.0-beta.12",
+    "react-transform-catch-errors": "^1.0.2",
+    "react-transform-hmr": "^1.0.4",
+    "react-transition-group": "^1.1.3",
+    "redbox-react": "^1.6.0",
     "sass-loader": "^7.0.1",
     "selenium-webdriver": "^4.0.0-alpha.1",
     "stimulus": "^1.0.1",
+    "style-loader": "^0.21.0",
     "turbolinks": "^5.1.1",
     "url-loader": "^1.0.1",
     "viewerjs": "^1.0.0",
@@ -64,6 +90,12 @@
     "collectCoverageFrom": [
       "*{js,jsx}",
       "webpack.config.js"
+    ]
+  },
+  "babel": {
+    "presets": [
+      "es2015",
+      "react"
     ]
   }
 }

@@ -126,6 +126,7 @@ CRUDLFAP_TEMPLATE_BACKEND = {
             "render_table": "crudlfap_filtertables2.jinja2.render_table",
             "render_form": "crudlfap.jinja2.render_form",
             "render_button": "bootstrap3.forms.render_button",
+            "render_component": "react.render.render_component",
             "json": "crudlfap.jinja2.json",
         },
         "newstyle_gettext": True,
