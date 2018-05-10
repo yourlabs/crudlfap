@@ -78,17 +78,27 @@ class Router(object):
         raise AttributeError('{} or get_{}()'.format(attr, attr))
 
     def get_urlfield(self):
+        """
+        Return Field name of model for reversing url.
+
+        This will return model ` slug ` field if available or ` pk ` field.
+
+        See ``guess_urlfield()`` for detail.
+        """
         return guess_urlfield(self.model)
 
     def get_namespace(self):
+        """Generate namespace for this Router views."""
         if self.model:
             return self.model._meta.model_name
 
     def get_urlpath(self):
+        """Return Model name for urlpath."""
         if self.model:
             return self.model._meta.model_name
 
     def get_app_name(self):
+        """Generate app name for this Router views."""
         return self.model._meta.app_label
 
     def get_registry(self):
