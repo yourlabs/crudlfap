@@ -22,10 +22,11 @@ module.exports = {
             .click('#form-object-group .modal-footer button[type=submit]')
 
             // verify it created or not
-            .url(CONSTANTS.GROUP.LIST + "?q=" + groupName)
+            .url(CONSTANTS.GROUP.BASE_URL + "?q=" + groupName)
             .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
             .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td.name a', groupName, "Testing if group list contains new added group")
+
             .end();
     },
 
@@ -48,6 +49,16 @@ module.exports = {
             // verify error message
             .pause(CONSTANTS.PAUSE_TIMEOUT)
             .assert.containsText('#id_name_container > div > small', 'Group with this Name already exists.')
+
+            .url(CONSTANTS.GROUP.BASE_URL + "?q=" + groupName)
+            // get id and delete that one
+            .getText('#render-table > div > div > div > table > tbody > tr > td.id', async (tdContentId) => {
+                const groupId = tdContentId.value;
+                browser
+                    .getText('#render-table > div > div > div > table > tbody > tr > td.name', async (tdContentName) => {
+                        await CommonFunction.deleteByGrpId(browser, tdContentId.value, tdContentName.value);
+                    })
+            })
             .end();
     },
 
@@ -75,7 +86,7 @@ module.exports = {
             .pause(CONSTANTS.PAUSE_TIMEOUT)
             .click('#id_permissions_container > div > ul > li:nth-child(6)')
             .pause(CONSTANTS.PAUSE_TIMEOUT)
-            .click('body')
+            .click('input[id=id_name]')
             .pause(CONSTANTS.PAUSE_TIMEOUT)
 
             // submit button
@@ -83,17 +94,76 @@ module.exports = {
             .click('#form-object-group .modal-footer button[type=submit]')
 
             // verify it created or not
-            .url(CONSTANTS.GROUP.LIST + "?q=" + groupName)
+            .url(CONSTANTS.GROUP.BASE_URL + "?q=" + groupName)
             .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
             .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td.name a', groupName, "Testing if group list contains new added group")
+
+            // get id and delete that one
+            .getText('#render-table > div > div > div > table > tbody > tr > td.id', async (tdContentId) => {
+                const groupId = tdContentId.value;
+                browser
+                    .getText('#render-table > div > div > div > table > tbody > tr > td.name', async (tdContentName) => {
+                        await CommonFunction.deleteByGrpId(browser, tdContentId.value, tdContentName.value);
+                    })
+            })
+            .end();
+    },
+
+    'Group : create group by popup': async (browser: NightwatchBrowser) => {
+        await CommonFunction.loginByDev(browser);
+        const groupName = Math.random() + CONSTANTS.GROUP.INPUT2 + Math.random();
+
+        browser
+            // after login go to group create page direct
+            .url(CONSTANTS.GROUP.BASE_URL)
+            .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+
+            .assert.visible('body > div.fixed-actions > a[href="/group/create"]')
+            .click('body > div.fixed-actions > a[href="/group/create"]', () => {
+                browser
+                    .waitForElementVisible('#modal', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+                    .pause(CONSTANTS.PAUSE_TIMEOUT)
+                    .expect.element('#modal').to.have.css('display').which.equal('block');
+                browser
+                    .assert.containsText('#modal #modal-title-ajax', 'Group: create', "Testing if heading is Group: create")
+                    // name input
+                    .assert.visible('input[id=id_name]')
+                    .setValue('input[id=id_name]', groupName)
+                    // permission input
+                    .assert.visible('#id_permissions_container > div > input')
+                    .click('#id_permissions_container > div > input', () => {
+                        browser
+                            .expect.element('#id_permissions_container > div > ul').to.have.css('display').which.equal('block')
+                    })
+                    .pause(CONSTANTS.PAUSE_TIMEOUT)
+                    // click on option
+                    .click('#id_permissions_container > div > ul > li:nth-child(4)')
+                    .pause(CONSTANTS.PAUSE_TIMEOUT)
+                    .click('#id_permissions_container > div > ul > li:nth-child(6)')
+                    .pause(CONSTANTS.PAUSE_TIMEOUT)
+                    .click('input[id=id_name]')
+
+                    .pause(CONSTANTS.PAUSE_TIMEOUT)
+
+                    // submit button
+                    .assert.visible('#modal #form-object-group > div.modal-footer > button[type=submit]')
+                    .click('#modal #form-object-group > div.modal-footer > button[type=submit]', () => {
+                        // verify it created or not
+                        browser
+                            .url(CONSTANTS.GROUP.BASE_URL + "?q=" + groupName)
+                            .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+                            .pause(CONSTANTS.PAUSE_TIMEOUT)
+                            .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td.name a', groupName, "Testing if group list contains new added group")
+                    })
+            })
             .end();
     },
 
     'Group : Detail group': async (browser: NightwatchBrowser) => {
         await CommonFunction.loginByDev(browser);
         browser
-            .url(CONSTANTS.GROUP.LIST)
+            .url(CONSTANTS.GROUP.BASE_URL)
             .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
 
@@ -131,7 +201,7 @@ module.exports = {
         const groupName = Math.random() + CONSTANTS.GROUP.EDIT_INPUT + Math.random();
         let contentId;
         browser
-            .url(CONSTANTS.GROUP.LIST)
+            .url(CONSTANTS.GROUP.BASE_URL)
             .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
 
@@ -170,6 +240,7 @@ module.exports = {
                                         }
                                     })
                                     .click('input[id=id_name]')
+                                    .pause(CONSTANTS.PAUSE_TIMEOUT)
                                     // click on update
                                     .click('#form-object-group > div.modal-footer > button[type="submit"]', () => {
                                         console.log("update button clicked");
@@ -191,13 +262,17 @@ module.exports = {
         await CommonFunction.loginByDev(browser);
         let contentId;
         browser
-            .url(CONSTANTS.GROUP.LIST)
+            .url(CONSTANTS.GROUP.BASE_URL)
             .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-            .getText('#render-table > div > div > div > table > tbody > tr > td.id', async (tdContentID) => {
-                contentId = tdContentID.value;
-                await CommonFunction.deleteByGrpId(browser, contentId);
+            // get id and delete that one
+            .getText('#render-table > div > div > div > table > tbody > tr > td.id', async (tdContentId) => {
+                const groupId = tdContentId.value;
+                browser
+                    .getText('#render-table > div > div > div > table > tbody > tr > td.name', async (tdContentName) => {
+                        await CommonFunction.deleteByGrpId(browser, tdContentId.value, tdContentName.value);
+                    })
             })
             .pause(CONSTANTS.PAUSE_TIMEOUT)
             .end();
