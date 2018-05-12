@@ -8,7 +8,7 @@ import django.dispatch
 from django.apps import apps
 from django.conf import settings
 from django.core.management import call_command
-from django.core.management.commands.runserver import Command
+from django.core.management.base import BaseCommand
 
 try:
     import devpy.develop as logger
@@ -24,7 +24,7 @@ def rnpw(num=28):
         string.ascii_uppercase + string.digits) for _ in range(num))
 
 
-class Command(Command):
+class Command(BaseCommand):
     help = 'Start development environment'
 
     def handle(self, *args, **options):
@@ -42,7 +42,7 @@ class Command(Command):
             signal.send(sender=self)
         else:
             options['nothreading'] = True
-            return super().handle(*args, **options)
+            call_command('runserver', *args, **options)
 
     def createusers(self):
         user_model = apps.get_model(settings.AUTH_USER_MODEL)
