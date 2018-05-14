@@ -13,6 +13,7 @@
     <title>{% block title %}{{ view.title_html }}{% endblock %} {% if settings.SITE_TITLE %}- {{ crudlfap_site.title }}{% endif %}</title>
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://fengyuanchen.github.io/viewerjs/css/viewer.css" />
 
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
     {% block bundles %}
@@ -34,17 +35,16 @@
     {% include 'crudlfap/_messages.html' %}
     {% block before_container %}{% endblock %}
     {% block content_open %}<div class="container" id="modal-body-ajax">{% endblock %}
-      {% block title_heading %}
-        {% if view.title_heading %}
-        <h4
-          class="text-{{ view.style|default('default') }} hide-in-modal"
-          id="modal-title-ajax"
-        >{{ view.title_heading }}</h4>
-        {% endif %}
-      {% endblock %}
-
       {% block form_open %}{% endblock %}
         <div class="modal-content">
+        {% block title_heading %}
+          {% if view.title_heading %}
+          <h4
+            class="text-{{ view.style|default('default') }} hide-in-modal"
+            id="modal-title-ajax"
+          >{{ view.title_heading }}</h4>
+          {% endif %}
+        {% endblock %}
           {% block content %}{% block form %}{% endblock %}{% endblock %}
         </div>
         <div class="modal-footer">

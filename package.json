@@ -1,6 +1,6 @@
 {
   "name": "crudlfap",
-  "version": "0.3.40",
+  "version": "0.3.42",
   "description": "CRUDLFA+ framework for Django 2.0",
   "main": "index.js",
   "scripts": {
@@ -51,6 +51,7 @@
     "stimulus": "^1.0.1",
     "turbolinks": "^5.1.1",
     "url-loader": "^1.0.1",
+    "viewerjs": "^1.0.0",
     "webpack": "3",
     "whatwg-fetch": "^2.0.4"
   },

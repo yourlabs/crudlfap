@@ -1,23 +1,24 @@
 import { NightwatchBrowser } from 'nightwatch';
+import { CONSTANTS } from '../shared/CONSTANTS';
 
 module.exports = {
     before: function (browser) {
         // console.log("Before working!");
         // login user with correct crednetials
         browser
-            .url('http://localhost:8000')
-            .waitForElementVisible('body', 1000)
+            .url(CONSTANTS.BASE_URL)
+            .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
 
             .assert.visible('input[id=id_username]')
-            .setValue('input[id=id_username]', 'dev')
+            .setValue('input[id=id_username]', CONSTANTS.USER_CREDENTIALS.RIGHT.USERNAME)
 
             .assert.visible('input[id=id_password]')
-            .setValue('input[id=id_password]', 'dev')
+            .setValue('input[id=id_password]', CONSTANTS.USER_CREDENTIALS.RIGHT.PASSWORD)
 
             .assert.visible('button[type=submit]')
             .click('button[type=submit]')
 
-            .waitForElementVisible('ul[class="right"] li a[href="/logout"]', 1000)
+            .waitForElementVisible('ul[class="right"] li a[href="/logout"]', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
     },
     'Logout': (browser: NightwatchBrowser) => {
         browser
@@ -25,7 +26,7 @@ module.exports = {
             .click('a[href="/logout"]')
 
             // on logout page
-            .waitForElementVisible('ul[class="right"] li a[href="/login"]', 1000)
+            .waitForElementVisible('ul[class="right"] li a[href="/login"]', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
 
             // .assert.visible('div[id="modal-body-ajax"] h2')
             // .assert.containsText('div[id="modal-body-ajax"] h2', 'You have been logged-out !')

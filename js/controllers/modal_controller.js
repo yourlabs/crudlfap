@@ -7,6 +7,11 @@ export default class extends Controller {
   connect() {
     this.element.setAttribute('data-turbolinks', 'false')
   }
+
+  get modal() {
+    return document.getElementById('modal')
+  }
+
   open(e) {
     e.preventDefault()
     var url = this.element.getAttribute('href')
@@ -22,11 +27,16 @@ export default class extends Controller {
         var parser = new DOMParser()
         var doc = parser.parseFromString(res, 'text/html')
         var newbody = doc.getElementById('modal-body-ajax')
-        var targetbody = document.getElementById('modal')
-        targetbody.innerHTML = newbody.innerHTML
-        init(targetbody)
+        if (doc.querySelector('body.modal-fixed-footer')) {
+          this.modal.classList.add('modal-fixed-footer')
+        } else {
+          this.modal.classList.remove('modal-fixed-footer')
+        }
+        this.modal.innerHTML = newbody.innerHTML
+        init(this.modal)
+
         var instance = M.Modal.init(document.getElementById('modal'), {
-          preventScrolling: false,
+          endingTop: '5%',
         })
         instance.open()
       })

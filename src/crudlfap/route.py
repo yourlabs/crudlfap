@@ -11,70 +11,70 @@ from .utils import guess_urlfield
 class RouteMetaclass(type):
     router = None
 
-    def __getattr__(self, attr):
+    def __getattr__(cls, attr):
         if attr.startswith('get_'):
             raise AttributeError('{} or {}'.format(attr[4:], attr))
 
-        getter = getattr(self, 'get_' + attr)
+        getter = getattr(cls, 'get_' + attr)
 
         if inspect.ismethod(getter):
             return getter()
         else:
-            return getter(self)
+            return getter(cls)
 
-    def get_app_name(self):
-        return self.model._meta.app_label if self.model else None
+    def get_app_name(cls):
+        return cls.model._meta.app_label if cls.model else None
 
-    def get_model(self):
-        return self.router.model if self.router else None
+    def get_model(cls):
+        return cls.router.model if cls.router else None
 
-    def get_urlpath(self):
-        return self.urlname
+    def get_urlpath(cls):
+        return cls.urlname
 
-    def get_urlname(self):
-        urlname = self.__name__.lower()
+    def get_urlname(cls):
+        urlname = cls.__name__.lower()
         if urlname.endswith('view'):
             urlname = urlname[:-4]
         elif urlname.endswith('route'):
             urlname = urlname[:-5]
 
-        if self.model:
-            model_name = self.model._meta.model_name.lower()
+        if cls.model:
+            model_name = cls.model._meta.model_name.lower()
             if urlname.startswith(model_name):
                 urlname = urlname[len(model_name):]
 
-        if not urlname and self.model:
-            urlname = self.model._meta.model_name
+        if not urlname and cls.model:
+            urlname = cls.model._meta.model_name
 
         return urlname or None
 
-    def get_urlpattern(self):
-        return path(self.urlpath, self.as_view(), name=self.urlname)
+    def get_urlpattern(cls):
+        return path(cls.urlpath, cls.as_view(), name=cls.urlname)
 
-    def get_urlfullname(self):
-        if self.router and self.registry:
+    def get_urlfullname(cls):
+        if cls.router and cls.registry:
             return '{}:{}:{}'.format(
-                self.router.registry.app_name,
-                self.router.namespace,
-                self.urlname
+                cls.router.registry.app_name,
+                cls.router.namespace,
+                cls.urlname
             )
-        elif self.registry:
+        elif cls.registry:
             return '{}:{}'.format(
-                self.registry.app_name,
-                self.urlname
+                cls.registry.app_name,
+                cls.urlname
             )
-        elif self.router:
+        elif cls.router:
             return '{}:{}'.format(
-                self.router.namespace,
-                self.urlname
+                cls.router.namespace,
+                cls.urlname
             )
         else:
-            return self.urlname
+            return cls.urlname
 
-    def get_urlfield(self):
-        if self.router and self.router.urlfield:
-            return self.router.urlfield
-        return guess_urlfield(self.model)
+    def get_urlfield(cls):
+        if cls.router and cls.router.urlfield:
+            return cls.router.urlfield
+        return guess_urlfield(cls.model)
 
 
 class Route(Factory, metaclass=RouteMetaclass):
