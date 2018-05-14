@@ -23,6 +23,9 @@
 {% endblock %}
 
 {% block buttons %}
+    {% if request.META.get('HTTP_X_MODAL') %}
+    <a class="modal-close waves-effect waves-green btn-flat">{{ _('cancel') }}</a>
+    {% endif %}
     {{ render_button(view.title_submit, button_type="submit", button_class="btn-primary") }}
 {% endblock %}
 
