@@ -36,7 +36,7 @@ export default class extends Controller {
         init(this.modal)
 
         var instance = M.Modal.init(document.getElementById('modal'), {
-          preventScrolling: false,
+          endingTop: '5%',
         })
         instance.open()
       })

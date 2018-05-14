@@ -35,3 +35,6 @@ msgstr "Retour vers votre compte"
 
 msgid "fail"
 msgstr "échec"
+
+msgid "cancel"
+msgstr "annuler"
