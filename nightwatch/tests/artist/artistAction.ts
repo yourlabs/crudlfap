@@ -25,8 +25,20 @@ module.exports = {
             .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
             .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td.name a', artistName, "Testing if artist list contains new added artist")
+
+
+            .url(CONSTANTS.ARTIST.BASE_URL + "?q=" + artistName)
+            // get id and delete that one
+            .getText('#render-table > div > div > div > table > tbody > tr > td.id', async (tdContentId) => {
+                const groupId = tdContentId.value;
+                browser
+                    .getText('#render-table > div > div > div > table > tbody > tr > td.name', async (tdContentName) => {
+                        await CommonFunction.deleteByArtistId(browser, tdContentId.value);
+                    })
+            })
             .end();
     },
+
     'Artist : create artist by popup': async (browser: NightwatchBrowser) => {
         await CommonFunction.loginByDev(browser);
         const artistName = Math.random() + CONSTANTS.ARTIST.INPUT2 + Math.random();
