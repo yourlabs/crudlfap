@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 import timeago
 
 
-class LockViewMixin(object):
+class LockMixin(object):
     """Currently implements soft lock."""
     locks = False
 

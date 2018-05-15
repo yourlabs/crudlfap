@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% import 'crudlfap.html' as crudlfap %}
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -40,7 +41,7 @@
         {% block title_heading %}
           {% if view.title_heading %}
           <h4
-            class="text-{{ view.style|default('default') }} hide-in-modal"
+            class="text-{{ view.style|default('default') }} {% block title_heading_class %}{% endblock %}"
             id="modal-title-ajax"
           >{{ view.title_heading }}</h4>
           {% endif %}
@@ -57,7 +58,14 @@
     <div id="modal" class="modal modal-fixed-footer"></div>
 
     {% block after_container %}
-    {# i wish you put some super elegant hack here #}
+    <div class="fixed-actions">
+      {{ crudlfap.dropdown(
+        view.menu_views,
+        'fixed-actions',
+        class='btn btn-floating red',
+        next=view.request.path_info
+      ) }}
+    </div>
     {% endblock %}
   </body>
 </html>

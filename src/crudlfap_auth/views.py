@@ -42,7 +42,7 @@ class PasswordView(crudlfap.UpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['user'] = kwargs.pop('instance')
+        kwargs['user'] = self.object
         return kwargs
 
 
@@ -51,6 +51,9 @@ class BecomeUser(crudlfap.ObjectView):
     menus = ['object']
     material_icon = 'attach_money'
     color = 'pink darken-4'
+
+    def get_allowed(self):
+        return self.request.user.is_superuser
 
     def get_title_menu(self):
         return _('become').capitalize()
@@ -69,23 +72,24 @@ class BecomeUser(crudlfap.ObjectView):
         return user
 
     def get(self, request, *a, **k):
+        if not request.user.is_superuser:
+            return http.HttpResponseForbidden()
+
         logger.info('BecomeUser by {}'.format(self.request.user))
         become_user = request.session.get('become_user', request.user.pk)
-        new_user = self.get_object()
-        if new_user:
-            auth.login(request, new_user)
-            request.session['become_user'] = become_user
-            messages.info(
-                request,
-                'Switched to user {}'.format(new_user)
-            )
+        auth.login(request, self.object)
+        request.session['become_user'] = become_user
+        messages.info(
+            request,
+            'Switched to user {}'.format(request.user)
+        )
         return http.HttpResponseRedirect('/' + self.router.registry.urlpath)
 
 
 class Become(crudlfap.View):
     urlname = 'su'
 
-    def allow(self):
+    def get_allowed(self):
         return 'become_user' in self.request.session
 
     def get_object(self):
