@@ -1,5 +1,14 @@
 {% extends 'crudlfap/list.html' %}
 
+{% block title_heading %}
+    <div style="float: right">
+        {% include 'crudlfap/_listaction.html' %}
+    </div>
+    {{ super() }}
+{% endblock %}
+
+{% block title_heading_class %}col{% endblock %}
+
 {% block content %}
 <style type="text/css">
 #render-table .table-container .pagination { display: none; }

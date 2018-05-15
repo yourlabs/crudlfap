@@ -40,7 +40,7 @@
         {% block title_heading %}
           {% if view.title_heading %}
           <h4
-            class="text-{{ view.style|default('default') }} hide-in-modal"
+            class="text-{{ view.style|default('default') }} {% block title_heading_class %}{% endblock %}"
             id="modal-title-ajax"
           >{{ view.title_heading }}</h4>
           {% endif %}

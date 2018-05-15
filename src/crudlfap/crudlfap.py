@@ -12,9 +12,11 @@ from .views.debug import UrlsView
 from .views.generic import (
     CreateView,
     DeleteView,
+    ListDeleteView,
     DetailView,
     FormView,
     HistoryView,
+    ModelFormViewMixin,
     ModelViewMixin,
     ObjectFormView,
     ObjectView,

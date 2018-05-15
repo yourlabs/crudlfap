@@ -39,7 +39,7 @@ class DefaultTemplateMixin(object):
     ajax = '#ajax-container'
 
     def get_view_label(self):
-        return self.urlname
+        return self.label
 
     def get_title(self):
         return _(self.view_label).capitalize()
@@ -354,6 +354,10 @@ class ModelFormViewMixin(ModelViewMixin, FormViewMixin):
         return response
 
 
+class ModelFormView(ModelFormViewMixin, View):
+    pass
+
+
 class ObjectFormViewMixin(ObjectViewMixin, ModelFormViewMixin):
     """Custom form view mixin on an object."""
     log_action_flag = CHANGE
@@ -383,7 +387,7 @@ class CreateView(ModelFormViewMixin, generic.CreateView):
         return super().get_form_fields()
 
 
-class DeleteView(ObjectFormViewMixin, generic.DeleteView):
+class DeleteAction(object):
     """View to delete a model object."""
 
     default_template_name = 'crudlfap/delete.html'
@@ -408,6 +412,14 @@ class DeleteView(ObjectFormViewMixin, generic.DeleteView):
     def get_required_permissions(self):
         return ['{}.delete_{}'.format(
             self.app_name, self.model._meta.model_name)]
+
+
+class DeleteView(DeleteAction, ObjectFormViewMixin, generic.DeleteView):
+    menus = ['object', 'object_detail']
+
+
+class ListDeleteView(DeleteAction, ModelFormView):
+    menus = ['list_action']
 
 
 class DetailView(ObjectViewMixin, generic.DetailView):

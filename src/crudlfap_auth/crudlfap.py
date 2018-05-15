@@ -38,6 +38,7 @@ crudlfap.Router(
         views.PasswordView,
         views.BecomeUser,
         crudlfap.DetailView.clone(exclude=['password']),
+        crudlfap.ListDeleteView,
         crudlfap.ListView.clone(
             search_fields=[
                 'username',

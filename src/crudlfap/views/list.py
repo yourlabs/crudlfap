@@ -6,6 +6,7 @@ from django import forms
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
+from django.utils.safestring import mark_safe
 
 import django_filters
 
@@ -112,6 +113,9 @@ class FilterMixin(object):
             self.filterset_class_attributes
         )
 
+    def get_listactions(self):
+        return self.router.get_menu('list_action', self.request)
+
 
 class TableMixin(object):
     def get_table_fields(self):
@@ -149,7 +153,39 @@ class TableMixin(object):
                 verbose_name=_('Actions'),
                 extra_context=dict(extra_class='btn-small'),
                 orderable=False,
-            ),
+            )
+        )
+
+    def get_table_meta_checkbox_column(self):
+        if not self.listactions:
+            return dict()
+
+        return dict(
+            crudlfap_checkbox=tables.TemplateColumn(
+                '''
+                <label>
+                    <input
+                        type="checkbox"
+                        data-controller="listaction"
+                        data-action="change->listaction#checkboxChange"
+                        data-pk="{{ record.pk }}"
+                    />
+                    <span></span>
+                </label>
+                ''',
+                verbose_name=mark_safe('''
+                <label>
+                    <input
+                        type="checkbox"
+                        data-controller="listaction"
+                        data-action="change->listaction#selectAllChange"
+                        data-master="1"
+                    />
+                    <span></span>
+                </label>
+                '''),
+                orderable=False,
+            )
         )
 
     def get_table_sequence(self):
@@ -167,6 +203,12 @@ class TableMixin(object):
         if self.table_fields:
             attrs['fields'] = self.table_fields
 
+        if self.listactions:
+            if 'sequence' in attrs:
+                attrs['sequence'].insert(0, 'crudlfap_checkbox')
+            else:
+                attrs['sequence'] = ['crudlfap_checkbox', '...']
+
         return attrs
 
     def get_table_meta_class(self):
@@ -176,6 +218,7 @@ class TableMixin(object):
         attrs = collections.OrderedDict(
             Meta=self.table_meta_class,
         )
+        attrs.update(self.table_meta_checkbox_column)
         attrs.update(self.table_meta_link_columns)
         attrs.update(self.table_meta_action_columns)
         attrs.update(self.table_columns)
@@ -273,6 +316,7 @@ class ListView(SearchMixin, FilterMixin, TableMixin, BaseListView):
     icon = 'fa fa-fw fa-table'
     urlname = 'list'
     body_class = 'full-width'
+    label = 'list'
 
     def get(self, request, *args, **kwargs):
         if self.filterset:

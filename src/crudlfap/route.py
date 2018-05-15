@@ -6,6 +6,7 @@ refactoring sessions from a corporate project, and re-written for Django 2.0
 from scratch. L
 """
 import inspect
+import re
 
 from django import http
 from django.urls import path, reverse, reverse_lazy
@@ -54,6 +55,12 @@ class RouteMetaclass(type):
             urlname = cls.model._meta.model_name
 
         return urlname or None
+
+    def get_label(cls):
+        name = re.sub('(View|Route)$', '', cls.__name__)
+        if cls.model:
+            name = re.sub('^' + cls.model.__name__, '', name)
+        return re.sub("([a-z])([A-Z])","\g<1> \g<2>", name)
 
     def get_urlpattern(cls):
         return path(cls.urlpath, cls.as_view(), name=cls.urlname)
