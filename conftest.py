@@ -1,6 +1,5 @@
 import pytest
 
-from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.backends.base import SessionBase
 from django.test.client import RequestFactory as drf
 
@@ -19,4 +18,5 @@ class RequestFactory(drf):
 
 @pytest.fixture
 def srf():
+    from django.contrib.auth.models import AnonymousUser
     return RequestFactory(AnonymousUser())

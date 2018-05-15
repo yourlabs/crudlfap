@@ -5,9 +5,3 @@
 {% block breadcrumb %}{% include 'crudlfap/_breadcrumb_object.html' %}{% endblock %}
 
 {% block before_form %}<h1>{{ view.title }}<h1>{% endblock %}
-
-{% block after_container %}
-{% with menu=view.menu_views %}
-{% include 'crudlfap/_fixed_actions.html' %}
-{% endwith %}
-{% endblock %}

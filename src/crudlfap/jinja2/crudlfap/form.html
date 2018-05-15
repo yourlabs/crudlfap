@@ -19,7 +19,21 @@
 {% endblock %}
 
 {% block content %}
-  {{ render_form(form) }}
+  {% if view.object_list|default([])|length %}
+  <ul class="collection">
+    {% for object in view.object_list %}
+    <li class="collection-item">{{ object }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if view.invalid_pks|default(0) %}
+  <div class="card-panel orange">
+      <span class="">{{ _('Objects ignored because of missing authorization') }}: {{ view.invalid_pks }}</span>
+  </div>
+  {% endif %}
+
+  {{ render_form(view.form) }}
 {% endblock %}
 
 {% block buttons %}
@@ -30,8 +44,10 @@
 {% endblock %}
 
 {% block form_close %}
-    <input type="hidden" name="_next" value="{{ request.GET.get('_next', request.POST.get('_next', request.META.get('HTTP_REFERER', ''))) }}" />
-    {% csrf_token %}
+  {% if view.next_url %}
+    <input type="hidden" name="_next" value="{{ view.next_url }}" />
+  {% endif %}
+  {% csrf_token %}
 </form>
 {% if not request.META.get('HTTP_X_MODAL') %}
 </div>

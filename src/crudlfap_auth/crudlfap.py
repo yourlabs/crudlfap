@@ -17,6 +17,7 @@ def superuser(view):
 crudlfap.Router(
     User,
     views=[
+        crudlfap.DeleteObjectsView,
         crudlfap.DeleteView,
         crudlfap.UpdateView.clone(
             body_class='modal-fixed-footer',
@@ -60,7 +61,7 @@ crudlfap.Router(
             ],
         ),
     ],
-    allow=lambda view: view.request.user.is_superuser,
+    allowed=lambda view: view.request.user.is_superuser,
     urlfield='username',
     material_icon='person',
 ).register()
