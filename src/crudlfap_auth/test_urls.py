@@ -41,6 +41,10 @@ def test_user_create_reverse():
     assert reverse('crudlfap:user:create') == '/user/create'
 
 
+def test_user_deleteobjects_reverse():
+    assert reverse('crudlfap:user:deleteobjects') == '/user/deleteobjects'
+
+
 def test_user_detail_reverse():
     assert reverse('crudlfap:user:detail', args=['a']) == '/user/a'
 
@@ -99,6 +103,12 @@ def test_user_update_resolve(user):
 def test_user_delete_resolve(user):
     result = resolve('/user/foo/delete')
     assert result.func.view_class.urlname == 'delete'
+
+
+@pytest.mark.django_db
+def test_user_deleteobjects_resolve(user):
+    result = resolve('/user/deleteobjects')
+    assert result.func.view_class.urlname == 'deleteobjects'
 
 
 @pytest.mark.django_db
@@ -177,6 +187,14 @@ def test_user_list_get(admin_client):
 
 def test_user_create_get(admin_client):
     result = admin_client.get('/user/create')
+    assert result.status_code == 200
+
+
+@pytest.mark.django_db
+def test_user_deleteobjects_get(admin_client):
+    for i in range(100, 103):
+        User.objects.get_or_create(pk=i, username='user{}'.format(i))
+    result = admin_client.get('/user/deleteobjects?pks=101&pks=102')
     assert result.status_code == 200
 
 
@@ -308,19 +326,19 @@ def test_user_logout_get(admin_client):
 
 
 def test_become_user(admin_client, admin_user, suuser, user):
-    if admin_client.session.get('become_user') is None:
-        assert True
+    assert admin_client.session.get('become_user') is None
+
     result = admin_client.get('/user/admin/su', follow=True)
     assert result.status_code == 200
     assert admin_client.session.get('become_user') == admin_user.id
+
     result = admin_client.get('/user/suuser/su', follow=True)
     assert result.status_code == 200
     assert admin_client.session.get('become_user') == admin_user.id
+
     result = admin_client.get('/su', follow=True)
     assert result.status_code == 200
-    if admin_client.session.get('become_user') is None:
-        assert True
-    result = admin_client.get('/su', follow=True)
-    assert result.status_code == 404
+    assert admin_client.session.get('become_user') is None
+
     result = admin_client.get('/user/foo/su', follow=True)
-    assert result.status_code == 403
+    assert result.status_code == 200

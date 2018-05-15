@@ -1,3 +1,5 @@
+@import 'materialize-css/sass/materialize.scss'
+
 div small.error
   font-size: 110%
   color: #F44336
@@ -29,6 +31,9 @@ body #toast-container
   position: fixed
   z-index: 1001
 
+h4.col
+  padding-left: 8px
+
 #modal > h4
   padding-left: 24px
 
@@ -37,3 +42,36 @@ body #toast-container
   height: 95% !important
   max-width: 95% !important
   width: 95% !important
+
+@keyframes slidein
+  from
+    bottom: -64px
+
+  to
+    bottom: 16px
+
+.bottom
+  position: fixed
+  z-index: 10000
+  animation-duration: 1s
+  animation-name: slidein
+  bottom: 16px
+  right: 64px
+  left: 50%
+  transform: translateX(-50%)
+
+.bottom.bar
+  @extend .z-depth-3
+  bottom: 0
+  padding: 8px
+  left: 64px
+  right: 64px
+  border: 1px solid #e0e0e0
+  border-bottom: none
+  background-color: white
+
+.bottom.btn
+  bottom: 16px
+  right: 64px
+  left: 50%
+  transform: translateX(-50%)

@@ -1,33 +1,23 @@
+# flake8: noqa: N805
 """
-All black magic for views are defined in the crudlfap.route module.
+Most black magic for views are defined in the crudlfap.route module.
 
 CRUDLFA+ introduces a new design pattern for views that came out during
 refactoring sessions from a corporate project, and re-written for Django 2.0
 from scratch. L
 """
-import inspect
+import re
 
 from django import http
 from django.urls import path, reverse, reverse_lazy
 from django.utils.module_loading import import_string
 
-from .factory import Factory
+from .factory import Factory, FactoryMetaclass
 from .utils import guess_urlfield
 
 
-class RouteMetaclass(type):
+class RouteMetaclass(FactoryMetaclass):
     router = None
-
-    def __getattr__(cls, attr):
-        if attr.startswith('get_'):
-            raise AttributeError('{} or {}'.format(attr[4:], attr))
-
-        getter = getattr(cls, 'get_' + attr)
-
-        if inspect.ismethod(getter):
-            return getter()
-        else:
-            return getter(cls)
 
     def get_app_name(cls):
         return cls.model._meta.app_label if cls.model else None
@@ -54,6 +44,12 @@ class RouteMetaclass(type):
             urlname = cls.model._meta.model_name
 
         return urlname or None
+
+    def get_label(cls):
+        name = re.sub('(View|Route)$', '', cls.__name__)
+        if cls.model:
+            name = re.sub('^' + cls.model.__name__, '', name)
+        return re.sub("([a-z])([A-Z])","\g<1> \g<2>", name)
 
     def get_urlpattern(cls):
         return path(cls.urlpath, cls.as_view(), name=cls.urlname)
@@ -106,17 +102,18 @@ class Route(Factory, metaclass=RouteMetaclass):
         """
         return self.reverse(*self.urlargs)
 
-    def __getattr__(self, attr):
-        if attr.startswith('get_'):
-            raise AttributeError('{} or {}()'.format(attr[4:], attr))
-
-        if hasattr(self, 'get_' + attr):
-            return getattr(self, 'get_' + attr)()
-
-        return getattr(type(self), attr)
-
     def get_required_permissions(self):
-        return None
+        return [self.full_permission_code]
+
+    def get_short_permission_code(self):
+        return self.urlname
+
+    def get_full_permission_code(self):
+        return '{}.{}_{}'.format(
+            self.app_name,
+            self.short_permission_code,
+            self.model._meta.model_name
+        )
 
     def get_allowed(self):
         """
@@ -148,7 +145,7 @@ class Route(Factory, metaclass=RouteMetaclass):
         returns True for staff users by default.  If the view has no router
         then it returns True if the request user is_staff.
 
-        Override with a lambda in a factory if you want to open to all::
+        Override allowed if you want to open to all::
 
             YourView.factory(allowed=True)
 
