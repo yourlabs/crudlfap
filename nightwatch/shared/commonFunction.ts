@@ -56,7 +56,7 @@ export module CommonFunction {
             })
     }
 
-    export function deleteByArtistId(browser, contentId) {
+    export function deleteByArtistId(browser, contentId, contentName) {
         browser
             .click('a[data-target="row-actions-' + contentId + '"]', () => {
                 // open menu
@@ -77,11 +77,77 @@ export module CommonFunction {
                         browser
                             .pause(CONSTANTS.PAUSE_TIMEOUT)
                             // verified delete
-                            .getText('#render-table > div > div > div > table > tbody > tr > td.id', (tdContentNew) => {
-                                browser.assert.notEqual(tdContentNew.value, contentId, 'Group has been deleted');
-                            })
+                            .url(CONSTANTS.ARTIST.BASE_URL + "?q=" + contentName)
+                            .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+                            .pause(CONSTANTS.PAUSE_TIMEOUT)
+                            .element('css selector', '#render-table > div > div > div > table > tbody > tr', function (result) {
+                                if (result.status === -1) {
+                                    //Element does not exist, do something else
+                                    browser.assert.equal(0, 0, 'Artist has been deleted');
+                                }
+                            });
                     })
             })
+    }
+
+    export function deleteBySongId(browser, contentId, contentName) {
+        browser
+            .click('a[data-target="row-actions-' + contentId + '"]', () => {
+                // open menu
+                browser.expect.element('#row-actions-' + contentId).to.have.css('display').which.equal('block')
+            })
+
+            // click on edit
+            .assert.visible('#row-actions-' + contentId + ' > li:nth-child(1) > a')
+
+            .click('#row-actions-' + contentId + ' > li:nth-child(1) > a', () => {
+                // popup opened
+                browser
+                    .pause(CONSTANTS.PAUSE_TIMEOUT)
+                    .expect.element('#modal').to.have.css('display').which.equal('block');
+                // click on delete
+                browser
+                    .click('#main-form > div.modal-footer > button[type="submit"]', () => {
+                        browser
+                            .pause(CONSTANTS.PAUSE_TIMEOUT)
+                            // verified delete
+                            .url(CONSTANTS.SONGS.BASE_URL + "?q=" + contentName)
+                            .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+                            .pause(CONSTANTS.PAUSE_TIMEOUT)
+                            .element('css selector', '#render-table > div > div > div > table > tbody > tr', function (result) {
+                                if (result.status === -1) {
+                                    //Element does not exist, do something else
+                                    browser.assert.equal(0, 0, 'Song has been deleted');
+                                }
+                            });
+                    })
+            })
+    }
+
+    export function createdSampleData(modal, browser) {
+        let sampleName;
+        switch (modal) {
+            case 'artist':
+                sampleName = Math.random() + CONSTANTS.ARTIST.INPUT + Math.random();
+
+                browser
+                    // after login go to artist create page direct
+                    .url(CONSTANTS.ARTIST.CREATE)
+                    .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+                    .assert.containsText('#modal-title-ajax', 'Artist: create', "Testing if heading is Artist: create")
+                    // name input
+                    .assert.visible('input[id=id_name]')
+                    .setValue('input[id=id_name]', sampleName)
+
+                    // submit button
+                    .assert.visible('#form-object-artist > div.modal-footer > button[type=submit]')
+                    .click('#form-object-artist > div.modal-footer > button[type=submit]')
+
+                break;
+            case 'song':
+                break;
+        }
+        return sampleName;
     }
 
     // export class bar { }
