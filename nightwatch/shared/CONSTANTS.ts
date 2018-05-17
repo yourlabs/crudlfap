@@ -14,6 +14,14 @@ export const CONSTANTS = {
         INPUT2: 'Test artist for sample with permission',
         EDIT_INPUT: 'Updated artist',
     },
+    SONGS: {
+        BASE_URL: 'http://localhost:8000/song',
+        CREATE: 'http://localhost:8000/song/create',
+        INPUT: 'Test song for sample',
+        INPUT2: 'Test song for sample 2',
+        INPUT_DURATION: 180,
+        EDIT_INPUT: 'Updated Song',
+    },
     WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT: 3000,
     PAUSE_TIMEOUT: 3000,
     USER_CREDENTIALS: {

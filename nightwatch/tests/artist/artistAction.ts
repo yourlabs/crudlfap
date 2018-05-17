@@ -5,7 +5,7 @@ import { CommonFunction } from '../../shared/commonFunction';
 module.exports = {
     'Artist : create artist': async (browser: NightwatchBrowser) => {
         await CommonFunction.loginByDev(browser);
-        const artistName = Math.random() + CONSTANTS.ARTIST.INPUT + Math.random();;
+        const artistName = Math.random() + CONSTANTS.ARTIST.INPUT + Math.random();
 
         browser
             // after login go to artist create page direct
@@ -33,7 +33,7 @@ module.exports = {
                 const groupId = tdContentId.value;
                 browser
                     .getText('#render-table > div > div > div > table > tbody > tr > td.name', async (tdContentName) => {
-                        await CommonFunction.deleteByArtistId(browser, tdContentId.value);
+                        await CommonFunction.deleteByArtistId(browser, tdContentId.value, tdContentName.value);
                     })
             })
             .end();
@@ -144,13 +144,11 @@ module.exports = {
                             .pause(CONSTANTS.PAUSE_TIMEOUT)
                             // click on update
                             .click('#form-object-artist > div.modal-footer > button[type="submit"]', () => {
-                                console.log("update button clicked");
                                 browser
+                                    .url(CONSTANTS.ARTIST.BASE_URL + "?q=" + artistName)
+                                    .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
                                     .pause(CONSTANTS.PAUSE_TIMEOUT)
-                                    // verified update
-                                    .getText('#render-table > div > div > div > table > tbody > tr > td.name > a', (tdContentName) => {
-                                        browser.assert.equal(tdContentName.value, artistName, 'Artist name has been updated');
-                                    })
+                                    .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td.name a', artistName, "Testing if artist list contains edit artist")
                             })
                     })
             })
@@ -168,7 +166,10 @@ module.exports = {
 
             .getText('#render-table > div > div > div > table > tbody > tr > td.id', async (tdContentID) => {
                 contentId = tdContentID.value;
-                await CommonFunction.deleteByArtistId(browser, contentId);
+                browser
+                    .getText('#render-table > div > div > div > table > tbody > tr > td.name', async (tdContentName) => {
+                        await CommonFunction.deleteByArtistId(browser, contentId, tdContentName.value);
+                    })
             })
             .pause(CONSTANTS.PAUSE_TIMEOUT)
             .end();
