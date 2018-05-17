@@ -6,7 +6,7 @@ module.exports = {
     'Song : create songs validation': async (browser: NightwatchBrowser) => {
         await CommonFunction.loginByDev(browser);
         browser
-            // after login go to group create page direct
+            // after login go to song create page direct
             .url(CONSTANTS.GROUP.CREATE)
             .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             // name input
