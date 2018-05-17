@@ -145,6 +145,50 @@ export module CommonFunction {
 
                 break;
             case 'song':
+                sampleName = Math.random() + CONSTANTS.SONGS.INPUT + Math.random();
+                const songName = Math.random() + CONSTANTS.SONGS.INPUT + Math.random();
+                const songDuration = CONSTANTS.SONGS.INPUT_DURATION;
+
+                browser
+                    // after login go to song create page direct
+                    .url(CONSTANTS.SONGS.CREATE)
+                    .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+                    .assert.containsText('#modal-title-ajax', 'Song: create', "Testing if heading is Song: create")
+
+                    // artist selection
+                    .assert.visible('#id_artist_container > div > input')
+                    .click('#id_artist_container > div > input', () => {
+                        browser
+                            .expect.element('#id_artist_container > div > ul').to.have.css('display').which.equal('block')
+                    })
+                    .pause(CONSTANTS.PAUSE_TIMEOUT)
+                    // click on option
+                    .click('#id_artist_container > div > ul > li:nth-child(2)')
+                    .pause(CONSTANTS.PAUSE_TIMEOUT)
+
+                    // name input
+                    .assert.visible('input[id=id_name]')
+                    .click('input[id=id_name]')
+                    .setValue('input[id=id_name]', songName)
+
+                    // duration input 
+                    .assert.visible('input[id=id_duration]')
+
+                    // owner selection
+                    .assert.visible('#id_owner_container > div > input')
+                    .click('#id_owner_container > div > input', () => {
+                        browser
+                            .expect.element('#id_owner_container > div > ul').to.have.css('display').which.equal('block')
+                    })
+                    .pause(CONSTANTS.PAUSE_TIMEOUT)
+                    // click on option
+                    .click('#id_owner_container > div > ul > li:nth-child(2)')
+                    .pause(CONSTANTS.PAUSE_TIMEOUT)
+
+                    // submit button
+                    .assert.visible('#form-object-song > div.modal-footer > button[type=submit]')
+                    .click('#form-object-song > div.modal-footer > button[type=submit]')
+
                 break;
         }
         return sampleName;
