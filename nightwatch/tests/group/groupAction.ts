@@ -25,7 +25,7 @@ module.exports = {
             .url(CONSTANTS.GROUP.BASE_URL + "?q=" + groupName)
             .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
-            .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td.name a', groupName, "Testing if group list contains new added group")
+            .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', groupName, "Testing if group list contains new added group")
 
             .end();
     },
@@ -52,10 +52,10 @@ module.exports = {
 
             .url(CONSTANTS.GROUP.BASE_URL + "?q=" + groupName)
             // get id and delete that one
-            .getText('#render-table > div > div > div > table > tbody > tr > td.id', async (tdContentId) => {
+            .getText('#render-table > div > div > div > table > tbody > tr > td:nth-child(1)', async (tdContentId) => {
                 const groupId = tdContentId.value;
                 browser
-                    .getText('#render-table > div > div > div > table > tbody > tr > td.name', async (tdContentName) => {
+                    .getText('#render-table > div > div > div > table > tbody > tr > td:nth-child(2)', async (tdContentName) => {
                         await CommonFunction.deleteByGrpId(browser, tdContentId.value, tdContentName.value);
                     })
             })
@@ -97,13 +97,13 @@ module.exports = {
             .url(CONSTANTS.GROUP.BASE_URL + "?q=" + groupName)
             .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
-            .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td.name a', groupName, "Testing if group list contains new added group")
+            .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', groupName, "Testing if group list contains new added group")
 
             // get id and delete that one
-            .getText('#render-table > div > div > div > table > tbody > tr > td.id', async (tdContentId) => {
+            .getText('#render-table > div > div > div > table > tbody > tr > td:nth-child(1)', async (tdContentId) => {
                 const groupId = tdContentId.value;
                 browser
-                    .getText('#render-table > div > div > div > table > tbody > tr > td.name', async (tdContentName) => {
+                    .getText('#render-table > div > div > div > table > tbody > tr > td:nth-child(2)', async (tdContentName) => {
                         await CommonFunction.deleteByGrpId(browser, tdContentId.value, tdContentName.value);
                     })
             })
@@ -154,7 +154,7 @@ module.exports = {
                             .url(CONSTANTS.GROUP.BASE_URL + "?q=" + groupName)
                             .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
                             .pause(CONSTANTS.PAUSE_TIMEOUT)
-                            .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td.name a', groupName, "Testing if group list contains new added group")
+                            .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', groupName, "Testing if group list contains new added group")
                     })
             })
             .end();
@@ -167,10 +167,10 @@ module.exports = {
             .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-            .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td.name > a', (tdContentName) => {
+            .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', (tdContentName) => {
                 const contentName = tdContentName.value;
                 browser
-                    .getText('#render-table > div > div > div > table > tbody > tr > td.id', (tdContentID) => {
+                    .getText('#render-table > div > div > div > table > tbody > tr > td:nth-child(1)', (tdContentID) => {
                         const contentId = tdContentID.value;
                         browser
                             .click('a[data-target="row-actions-' + contentId + '"]', () => {
@@ -205,7 +205,7 @@ module.exports = {
             .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-            .getText('#render-table > div > div > div > table > tbody > tr > td.id', (tdContentID) => {
+            .getText('#render-table > div > div > div > table > tbody > tr > td:nth-child(1)', (tdContentID) => {
                 contentId = tdContentID.value;
                 browser
                     .click('a[data-target="row-actions-' + contentId + '"]', () => {
@@ -247,7 +247,7 @@ module.exports = {
                                         browser
                                             .pause(CONSTANTS.PAUSE_TIMEOUT)
                                             // verified update
-                                            .getText('#render-table > div > div > div > table > tbody > tr > td.name > a', (tdContentName) => {
+                                            .getText('#render-table > div > div > div > table > tbody > tr > td:nth-child(2) > a', (tdContentName) => {
                                                 browser.assert.equal(tdContentName.value, groupName, 'Group name has been updated');
                                             })
                                     })
@@ -267,10 +267,10 @@ module.exports = {
             .pause(CONSTANTS.PAUSE_TIMEOUT)
 
             // get id and delete that one
-            .getText('#render-table > div > div > div > table > tbody > tr > td.id', async (tdContentId) => {
+            .getText('#render-table > div > div > div > table > tbody > tr > td:nth-child(1)', async (tdContentId) => {
                 const groupId = tdContentId.value;
                 browser
-                    .getText('#render-table > div > div > div > table > tbody > tr > td.name', async (tdContentName) => {
+                    .getText('#render-table > div > div > div > table > tbody > tr > td:nth-child(2)', async (tdContentName) => {
                         await CommonFunction.deleteByGrpId(browser, tdContentId.value, tdContentName.value);
                     })
             })

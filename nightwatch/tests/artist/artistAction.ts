@@ -24,15 +24,15 @@ module.exports = {
             .url(CONSTANTS.ARTIST.BASE_URL + "?q=" + artistName)
             .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
-            .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td.name a', artistName, "Testing if artist list contains new added artist")
+            .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', artistName, "Testing if artist list contains new added artist 1324")
 
 
             .url(CONSTANTS.ARTIST.BASE_URL + "?q=" + artistName)
             // get id and delete that one
-            .getText('#render-table > div > div > div > table > tbody > tr > td.id', async (tdContentId) => {
+            .getText('#render-table > div > div > div > table > tbody > tr > td:nth-child(1)', async (tdContentId) => {
                 const groupId = tdContentId.value;
                 browser
-                    .getText('#render-table > div > div > div > table > tbody > tr > td.name', async (tdContentName) => {
+                    .getText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', async (tdContentName) => {
                         await CommonFunction.deleteByArtistId(browser, tdContentId.value, tdContentName.value);
                     })
             })
@@ -70,7 +70,7 @@ module.exports = {
                             .url(CONSTANTS.ARTIST.BASE_URL + "?q=" + artistName)
                             .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
                             .pause(CONSTANTS.PAUSE_TIMEOUT)
-                            .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td.name a', artistName, "Testing if artist list contains new added artist")
+                            .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', artistName, "Testing if artist list contains new added artist")
                     })
             })
             .end();
@@ -83,10 +83,10 @@ module.exports = {
             .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-            .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td.name > a', (tdContentName) => {
+            .getText('#render-table > div > div > div > table > tbody > tr > td:nth-child(2) > a', (tdContentName) => {
                 const contentName = tdContentName.value;
                 browser
-                    .getText('#render-table > div > div > div > table > tbody > tr > td.id', (tdContentID) => {
+                    .getText('#render-table > div > div > div > table > tbody > tr > td:nth-child(1)', (tdContentID) => {
                         const contentId = tdContentID.value;
                         browser
                             .click('a[data-target="row-actions-' + contentId + '"]', () => {
@@ -121,14 +121,14 @@ module.exports = {
             .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-            .getText('#render-table > div > div > div > table > tbody > tr > td.id', (tdContentID) => {
+            .getText('#render-table > div > div > div > table > tbody > tr > td:nth-child(1)', (tdContentID) => {
                 contentId = tdContentID.value;
                 browser
                     .click('a[data-target="row-actions-' + contentId + '"]', () => {
                         // open menu
                         browser.expect.element('#row-actions-' + contentId).to.have.css('display').which.equal('block')
                     })
-
+                    .pause(CONSTANTS.PAUSE_TIMEOUT)
                     // click on edit
                     .assert.visible('#row-actions-' + contentId + ' > li:nth-child(2) > a')
 
@@ -148,7 +148,7 @@ module.exports = {
                                     .url(CONSTANTS.ARTIST.BASE_URL + "?q=" + artistName)
                                     .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
                                     .pause(CONSTANTS.PAUSE_TIMEOUT)
-                                    .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td.name a', artistName, "Testing if artist list contains edit artist")
+                                    .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', artistName, "Testing if artist list contains edit artist")
                             })
                     })
             })
@@ -164,15 +164,14 @@ module.exports = {
             .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-            .getText('#render-table > div > div > div > table > tbody > tr > td.id', async (tdContentID) => {
+            .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(1)', async (tdContentID) => {
                 contentId = tdContentID.value;
                 browser
-                    .getText('#render-table > div > div > div > table > tbody > tr > td.name', async (tdContentName) => {
+                    .getText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', async (tdContentName) => {
                         await CommonFunction.deleteByArtistId(browser, contentId, tdContentName.value);
                     })
             })
             .pause(CONSTANTS.PAUSE_TIMEOUT)
             .end();
     }
-
 }
