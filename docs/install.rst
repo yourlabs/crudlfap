@@ -22,8 +22,7 @@ You can install the latest **development** version of crudlfap directly from Git
 
 .. code-block:: bash
 
-   pip install git+git://github.com/yourlabs/crudlfap.git@master
-
+   pip install -e git+git://github.com/yourlabs/crudlfap.git@master
 
 Installing from source
 ----------------------
