@@ -55,11 +55,11 @@ module.exports = {
             .url(CONSTANTS.SONGS.BASE_URL + "?q=" + songName)
             .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
-            .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td.name a', songName, "Testing if songs list contains new added songs")
+            .assert.containsText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(3) a', songName, "Testing if songs list contains new added songs")
 
-            .getText('#render-table > div > div > div > table > tbody > tr > td.id', async (tdContentId) => {
+            .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(1)', async (tdContentId) => {
                 browser
-                    .getText('#render-table > div > div > div > table > tbody > tr > td.name', async (tdContentName) => {
+                    .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(3) a', async (tdContentName) => {
                         await CommonFunction.deleteBySongId(browser, tdContentId.value, tdContentName.value);
                     })
             })
@@ -123,7 +123,7 @@ module.exports = {
                             .url(CONSTANTS.SONGS.BASE_URL + "?q=" + songName)
                             .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
                             .pause(CONSTANTS.PAUSE_TIMEOUT)
-                            .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td.name a', songName, "Testing if song list contains new added song")
+                            .assert.containsText('#render-table > div > div > div > table > tbody > tr > td:nth-child(3) > a', songName, "Testing if song list contains new added song")
                     })
             })
             .end();
@@ -136,10 +136,10 @@ module.exports = {
             .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-            .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td.name > a', (tdContentName) => {
+            .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(3) > a', (tdContentName) => {
                 const contentName = tdContentName.value;
                 browser
-                    .getText('#render-table > div > div > div > table > tbody > tr > td.id', (tdContentID) => {
+                    .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(1)', (tdContentID) => {
                         const contentId = tdContentID.value;
                         browser
                             .click('a[data-target="row-actions-' + contentId + '"]', () => {
@@ -174,7 +174,7 @@ module.exports = {
             .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-            .getText('#render-table > div > div > div > table > tbody > tr > td.id', (tdContentID) => {
+            .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(1)', (tdContentID) => {
                 contentId = tdContentID.value;
                 browser
                     .click('a[data-target="row-actions-' + contentId + '"]', () => {
@@ -230,7 +230,7 @@ module.exports = {
                                     .url(CONSTANTS.SONGS.BASE_URL + "?q=" + songName)
                                     .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
                                     .pause(CONSTANTS.PAUSE_TIMEOUT)
-                                    .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td.name a', songName, "Testing if song list contains updated song")
+                                    .assert.containsText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(3) a', songName, "Testing if song list contains updated song")
                             })
 
                     })
@@ -247,10 +247,10 @@ module.exports = {
             .pause(CONSTANTS.PAUSE_TIMEOUT)
 
             // get id and delete that one
-            .getText('#render-table > div > div > div > table > tbody > tr > td.id', async (tdContentId) => {
+            .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(1)', async (tdContentId) => {
                 const songId = tdContentId.value;
                 browser
-                    .getText('#render-table > div > div > div > table > tbody > tr > td.name', async (tdContentName) => {
+                    .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(3) a', async (tdContentName) => {
                         await CommonFunction.deleteBySongId(browser, tdContentId.value, tdContentName.value);
                     })
             })
@@ -259,10 +259,10 @@ module.exports = {
             .url(CONSTANTS.ARTIST.BASE_URL + "?q=" + artistName)
             .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
-            .getText('#render-table > div > div > div > table > tbody > tr > td.id', async (tdContentID) => {
+            .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(1)', async (tdContentID) => {
                 contentId = tdContentID.value;
                 browser
-                    .getText('#render-table > div > div > div > table > tbody > tr > td.name', async (tdContentName) => {
+                    .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(3) a', async (tdContentName) => {
                         await CommonFunction.deleteByArtistId(browser, contentId, tdContentName.value);
                     })
             })
