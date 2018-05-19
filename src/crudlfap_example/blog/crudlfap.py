@@ -13,7 +13,7 @@ class PostRouter(crudlfap.Router):
         crudlfap.UpdateView,
         crudlfap.CreateView,
         crudlfap.DetailView,
-        crudlfap.FilterTables2ListView.clone(
+        crudlfap.ListView.clone(
             filter_fields=['owner'],
             search_fields=['name'],
         ),

@@ -15,9 +15,12 @@ This plugin for Django makes a rich user interface from Django models.
    :caption: Contents:
 
    install
+   tutorial
    route
    router
+   settings
    views
+   crudlfap_auth/index
 
 Indices and tables
 ==================

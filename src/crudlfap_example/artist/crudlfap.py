@@ -6,6 +6,6 @@ from .models import Artist
 crudlfap.Router(
     Artist,
     fields='__all__',
-    paginate_by=3,
+    # Optionnal hack to allow unauthenticated access:
     allowed=lambda view: True
 ).register()

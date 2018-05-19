@@ -1,15 +1,40 @@
-{% extends 'base.html' %}
+{% extends 'crudlfap/base.html' %}
 
 {% block breadcrumb %}
 {% include 'crudlfap/_breadcrumb_object.html' %}
-{% endblock %}
-
-{% block content %}
-{% include 'crudlfap/_list.html' %}
 {% endblock %}
 
 {% block after_container %}
 {% with menu=view.menu_views %}
 {% include 'crudlfap/_fixed_actions.html' %}
 {% endwith %}
+{% endblock %}
+
+{% block content %}
+<style type="text/css">
+#render-table .table-container .pagination { display: none; }
+#render-table .btn-floating { margin-left: 6px; }
+</style>
+
+<div class="row">
+  {% if view.search_form or view.filterset.form.fields %}
+  <div class="col s12 m3">
+    <div class="card-panel">
+      <form method="get" action="" data-controller="autosubmit" data-target="render-table" data-action="input->autosubmit#input change->autosubmit#input">
+        {{ render_form(view.search_form) }}
+        {{ render_form(view.filterset.form) }}
+      </form>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="table-responsive col s12 {% if view.search_form or view.filterset.form.fields %}m9{% endif %}" id="render-table">
+    <div class="card-panel">
+      <div class="table-container">
+        {{ render_table(request, view.table, object_list) }}
+      </div>
+      {% include 'crudlfap/_pagination.html' %}
+    </div>
+  </div>
+</div>
 {% endblock %}

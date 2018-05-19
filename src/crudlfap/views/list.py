@@ -1,18 +1,18 @@
 import collections
 
 from betterforms.changelist import SearchForm
-from crudlfap.views.generic import ListView
 
 from django import forms
-from django import template
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.views import generic
 
 import django_filters
-from django_filters.filterset import filterset_factory
 
 import django_tables2 as tables
 from django_tables2.config import RequestConfig
+
+from .generic import ModelViewMixin
 
 
 class Table(tables.Table):
@@ -40,15 +40,12 @@ class Table(tables.Table):
     def render_tags(self, record):
         html = []
         for tag in record.tags.all():
-            html.append(unicode(tag))
+            html.append(str(tag))
 
         return ' '.join(html)
 
 
 class FilterMixin(object):
-    def get_filterset_class(self):
-        return filterset_factory(model=self.model, fields=self.filter_fields)
-
     def get_filterset(self):
         """
         Returns an instance of the filterset to be used in this view.
@@ -89,7 +86,7 @@ class FilterMixin(object):
                'extra': lambda f: {
                    'lookup_expr': 'icontains',
                },
-           },
+            },
         }
 
     def get_filter_fields(self):
@@ -244,9 +241,35 @@ class SearchMixin(object):
         )
 
 
-class FilterTables2ListView(SearchMixin, FilterMixin, TableMixin, ListView):
+class BaseListView(ModelViewMixin, generic.ListView):
+    """Model list view."""
+
+    default_template_name = 'crudlfap/list.html'
+    urlpath = ''
+    fa_icon = 'table'
+    material_icon = 'list'
+    menus = ['main', 'model']
+    pluralize = True
+
+    def get(self, *a, **k):
+        '''Enforce sane default paginate_by if not False.'''
+        if getattr(self, 'paginate_by', None) is None:
+            self.paginate_by = self.get_paginate_by()
+        return super().get(*a, **k)
+
+    def get_title_heading(self):
+        return self.model._meta.verbose_name_plural.capitalize()
+
+    def get_paginate_by(self, queryset=None):
+        if self.router and hasattr(self.router, 'paginate_by'):
+            return self.router.paginate_by
+
+        return 10
+
+
+class ListView(SearchMixin, FilterMixin, TableMixin, BaseListView):
     urlre = r'$'
-    default_template_name = 'crudlfap_filtertables2/list.html'
+    default_template_name = 'crudlfap/list.html'
     icon = 'fa fa-fw fa-table'
     urlname = 'list'
     body_class = 'full-width'

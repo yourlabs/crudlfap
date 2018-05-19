@@ -126,19 +126,17 @@ def test_user_login_resolve():
 
 
 def test_user_list_resolve():
-    from crudlfap_filtertables2.views import FilterTables2ListView
     result = resolve('/user').func.view_class
-    assert issubclass(result, FilterTables2ListView)
-    assert result.__name__ == 'UserFilterTables2ListView'
+    assert issubclass(result, crudlfap.ListView)
+    assert result.__name__ == 'UserListView'
     assert result.urlname == 'list'
     assert result.url == '/user'
 
 
 def test_group_list_resolve():
-    from crudlfap_filtertables2.views import FilterTables2ListView
     result = resolve('/group').func.view_class
-    assert issubclass(result, FilterTables2ListView)
-    assert result.__name__ == 'GroupFilterTables2ListView'
+    assert issubclass(result, crudlfap.ListView)
+    assert result.__name__ == 'GroupListView'
     assert result.urlname == 'list'
     assert result.url == '/group'
 

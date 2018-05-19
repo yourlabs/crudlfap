@@ -3,7 +3,6 @@ from crudlfap import crudlfap
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth.models import Group
-from django.urls import path
 
 from . import views
 
@@ -39,7 +38,7 @@ crudlfap.Router(
         views.PasswordView,
         views.BecomeUser,
         crudlfap.DetailView.clone(exclude=['password']),
-        crudlfap.FilterTables2ListView.clone(
+        crudlfap.ListView.clone(
             search_fields=[
                 'username',
                 'email',
