@@ -242,14 +242,26 @@ module.exports = {
                                     .click('input[id=id_name]')
                                     .pause(CONSTANTS.PAUSE_TIMEOUT)
                                     // click on update
+                                    // .click('#form-object-group > div.modal-footer > button[type="submit"]', () => {
+                                    //     console.log("update button clicked");
+                                    //     browser
+                                    //         .pause(CONSTANTS.PAUSE_TIMEOUT)
+                                    //         .url(CONSTANTS.GROUP.BASE_URL + "?q=" + groupName)
+                                    //         .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+                                    //         .pause(CONSTANTS.PAUSE_TIMEOUT)
+                                    //         // verified update
+                                    //         .getText('#render-table > div > div > div > table > tbody > tr > td:nth-child(2) a', (tdContentName) => {
+                                    //             browser.assert.equal(tdContentName.value, groupName, 'Group name has been updated');
+                                    //         })
+                                    // })
                                     .click('#form-object-group > div.modal-footer > button[type="submit"]', () => {
                                         console.log("update button clicked");
                                         browser
                                             .pause(CONSTANTS.PAUSE_TIMEOUT)
-                                            // verified update
-                                            .getText('#render-table > div > div > div > table > tbody > tr > td:nth-child(2) > a', (tdContentName) => {
-                                                browser.assert.equal(tdContentName.value, groupName, 'Group name has been updated');
-                                            })
+                                            .url(CONSTANTS.GROUP.BASE_URL + "?q=" + groupName)
+                                            .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+                                            .pause(CONSTANTS.PAUSE_TIMEOUT)
+                                            .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', groupName, "Testing if group list contains updated group")
                                     })
                             })
                     })

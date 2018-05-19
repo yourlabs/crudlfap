@@ -24,7 +24,7 @@ module.exports = {
             .url(CONSTANTS.ARTIST.BASE_URL + "?q=" + artistName)
             .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
-            .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', artistName, "Testing if artist list contains new added artist 1324")
+            .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', artistName, "Testing if artist list contains new added artist")
 
 
             .url(CONSTANTS.ARTIST.BASE_URL + "?q=" + artistName)
@@ -148,7 +148,7 @@ module.exports = {
                                     .url(CONSTANTS.ARTIST.BASE_URL + "?q=" + artistName)
                                     .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
                                     .pause(CONSTANTS.PAUSE_TIMEOUT)
-                                    .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', artistName, "Testing if artist list contains edit artist")
+                                    .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', artistName, "Testing if artist list contains updated artist")
                             })
                     })
             })
