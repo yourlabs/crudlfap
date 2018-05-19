@@ -88,6 +88,21 @@ TEMPLATE_CONSTANTS = {
     ),
 }
 
+"""
+.. py:data:: CRUDLFAP_TEMPLATE_BACKEND
+
+   Configuration for Jinja2 and environment expected by
+   CRUDLFA+ default templates. Add it to your settings.py
+   as such::
+
+       from crudlfap.settings import CRUDLFAP_TEMPLATE_BACKEND
+       TEMPLATES = [
+           # your django backend here, if you intend to use
+           # django templates in other apps
+           CRUDLFAP_TEMPLATE_BACKEND,
+       ]
+
+"""
 CRUDLFAP_TEMPLATE_BACKEND = {
     "BACKEND": "django_jinja.backend.Jinja2",
     "APP_DIRS": True,
