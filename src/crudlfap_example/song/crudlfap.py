@@ -13,7 +13,7 @@ class SongRouter(crudlfap.Router):
         crudlfap.UpdateView,
         crudlfap.CreateView,
         crudlfap.DetailView,
-        crudlfap.FilterTables2ListView.clone(
+        crudlfap.ListView.clone(
             filter_fields=['artist'],
             search_fields=['artist__name', 'name'],
         ),

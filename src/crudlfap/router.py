@@ -6,10 +6,12 @@ models.Model and setting their Meta.managed attribute to False. Then, you can
 use CRUDLFA+ views and routers.
 """
 from django.apps import apps
+from django.conf import settings
 from django.urls import path
 from django.utils.module_loading import import_string
 
 from .route import Route
+from .settings import CRUDLFAP_VIEWS
 from .utils import guess_urlfield
 
 
@@ -66,7 +68,9 @@ class Router(object):
 
         Optional model class for this Router and all its views.
     """
-    views = ViewsDescriptor(crudlfap.get_default_model_views)
+    views = ViewsDescriptor(
+        getattr(settings, 'CRUDFLAP_VIEWS', CRUDLFAP_VIEWS)
+    )
 
     def __getattr__(self, attr):
         if attr.startswith('get_'):

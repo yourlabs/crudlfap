@@ -25,18 +25,19 @@ setup(
     keywords='django crud',
     install_requires=[
         'jinja2',
+        'django>=2.0',
         'django-jinja',
         'django-bootstrap3',
         'django-material',
         'django-tables2>=2.0.0a0',
         'django-filter',
         'django-betterforms',
+        'django-collectdir',
         'timeago',
     ],
     tests_require=['tox'],
     extras_require=dict(
         dev=[
-          'django>=2.0',
           'django-reversion',
           'django-debug-toolbar',
           'django-extensions',

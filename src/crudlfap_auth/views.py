@@ -12,11 +12,11 @@ import logging
 
 from crudlfap import crudlfap
 
+from django import http
 from django.contrib import auth
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 from django.utils.translation import ugettext_lazy as _
-from django import http
 
 
 logger = logging.getLogger()
@@ -79,9 +79,6 @@ class BecomeUser(crudlfap.ObjectView):
                 request,
                 'Switched to user {}'.format(new_user)
             )
-
-        # FUTURE: #23 redirect to / when request.path permissions are not ok for new_user
-        # return http.HttpResponse('<script type="text/javascript">history.back()</script>')
         return http.HttpResponseRedirect('/' + self.router.registry.urlpath)
 
 
@@ -99,7 +96,8 @@ class Become(crudlfap.View):
     def get(self, request, *a, **k):
         logger.info('Become by {}'.format(self.request.user))
         if 'become_user' not in request.session:
-            logger.debug('No become_user in session {}'.format(self.request.user))
+            logger.debug(
+                'No become_user in session {}'.format(self.request.user))
             return http.HttpResponseNotFound()
 
         if 'become_user' in request.session:
