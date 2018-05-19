@@ -5,7 +5,8 @@ export module CommonFunction {
         browser
             .url(CONSTANTS.BASE_URL)
             .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
-
+            .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+            .pause(CONSTANTS.PAUSE_TIMEOUT)
             .assert.visible('input[id=id_username]')
             .setValue('input[id=id_username]', CONSTANTS.USER_CREDENTIALS.RIGHT.USERNAME)
 
@@ -121,6 +122,7 @@ export module CommonFunction {
                                 }
                             });
                     })
+                    .pause(CONSTANTS.PAUSE_TIMEOUT)
             })
     }
 
