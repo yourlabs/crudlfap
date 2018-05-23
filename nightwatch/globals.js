@@ -7,7 +7,9 @@ module.exports = {
   before: (done) => {
     sauceConnectLauncher({
       username: process.env.SAUCELABS_USERNAME,
-      accessKey: process.env.SAUCELABS_TOKEN
+      accessKey: process.env.SAUCELABS_TOKEN,
+      // Log output from the `sc` process to stdout?
+      verbose: true,
     }, function (err, sauceConnectProcess) {
       if (err) {
         console.error('Sauce Connect Error : ', err.message);

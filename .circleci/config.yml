@@ -35,11 +35,9 @@ workflows:
       - ie:
           requires:
           - docker-build
-          - chrome
       - firefox:
           requires:
           - docker-build
-          - ie
       - js-lint-nightwatch
 
 jobs:
