@@ -32,12 +32,12 @@ setup(
         'django-tables2>=2.0.0a0',
         'django-filter',
         'django-betterforms',
-        'django-collectdir',
         'timeago',
     ],
     tests_require=['tox'],
     extras_require=dict(
         dev=[
+          'django-collectdir',
           'django-reversion',
           'django-debug-toolbar',
           'django-extensions',

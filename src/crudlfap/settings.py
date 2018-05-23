@@ -153,7 +153,6 @@ CRUDLFAP_VIEWS = [
 
 CRUDLFAP_APPS = [
     'crudlfap',
-    'collectdir',
     'betterforms',
     'bootstrap3',
     'material',
@@ -177,6 +176,7 @@ INSTALLED_APPS = DJANGO_APPS + CRUDLFAP_APPS
 OPTIONAL_APPS = [
     # {'debug_toolbar': {'after': 'django.contrib.staticfiles'}},
     {'django_extensions': {'before': 'crudlfap'}},
+    {'collectdir': {'before': 'crudlfap'}},
 ]
 
 MIDDLEWARE = [
