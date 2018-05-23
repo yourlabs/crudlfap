@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% import 'crudlfap.html' as crudlfap %}
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -57,7 +58,13 @@
     <div id="modal" class="modal modal-fixed-footer"></div>
 
     {% block after_container %}
-    {# i wish you put some super elegant hack here #}
+    <div class="fixed-actions">
+      {{ crudlfap.dropdown(
+        view.menu_views,
+        'fixed-actions',
+        class='btn btn-floating red'
+      ) }}
+    </div>
     {% endblock %}
   </body>
 </html>

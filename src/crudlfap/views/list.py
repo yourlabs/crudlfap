@@ -14,59 +14,37 @@ import django_filters
 import django_tables2 as tables
 from django_tables2.config import RequestConfig
 
+from ..site import site
 from .generic import ModelViewMixin
 
 
 class JinjaColumn(tables.Column):
+    empty_values = ()
+
     def __init__(self, template_code, **kwargs):
-        import ipdb; ipdb.set_trace()
         self.template_code = template_code
+        kwargs.setdefault('default', True)
         super().__init__(**kwargs)
 
     def render(self, record, table, value, **kwargs):
-        import ipdb; ipdb.set_trace()
         context = dict(
             object=record,
-            request=table.context['request'],
+            request=table.request,
+            views=site[type(record)].get_menu(
+                'object',
+                table.request,
+                object=record
+            )
         )
-        t = template.engines['backend'].from_code(self.template_code)
-        import ipdb; ipdb.set_trace()
-        r = t.render()
+        b = template.engines['backend']
+        t = b.from_string(self.template_code)
+        r = t.render(context)
         return mark_safe(r)
-
-    def value(self, **kwargs):
-        import ipdb; ipdb.set_trace()
 
 
 class Table(tables.Table):
-    pass
-'''
-    def render(self, *a, **k):
-        import ipdb; ipdb.set_trace()
-        return super().render(*a, **k)
-
-'
-    def render_crudlfap(self, record):
-        import ipdb; ipdb.set_trace()
-        from django.template import loader
-        from crudlfap import crudlfap
-        context = dict(
-            object=record,
-            menu=crudlfap.site[type(record)].get_menu(
-                'object',
-                self.context['request'],
-                object=record,
-            ),
-            extra_class='btn-small secondary-content'
-        )
-        template = loader.select_template([
-            '{}/_{}_actions.html'.format(
-                type(record)._meta.app_label,
-                type(record)._meta.model_name,
-                ),
-            'crudlfap/_actions.html',
-            ])
-        return template.render(context)
+    def before_render(self, request):
+        self.request = request
 
     def render_tags(self, record):
         html = []
@@ -74,7 +52,6 @@ class Table(tables.Table):
             html.append(str(tag))
 
         return ' '.join(html)
-'''
 
 
 class FilterMixin(object):
@@ -183,12 +160,9 @@ class TableMixin(object):
                 template_code='''
                 {% import 'crudlfap.html' as crudlfap %}
                 {{ crudlfap.dropdown(
-                    crudlfap.site[type(record)].get_menu(
-                        'object',
-                        request,
-                        object=record,
-                    )
-                    'row-actions-' + str(object.pk)
+                    views,
+                    'row-actions-' + str(object.pk),
+                    class='btn-floating red',
                 ) }}
                 ''',
                 verbose_name=_('Actions'),
@@ -246,8 +220,9 @@ class TableMixin(object):
         if self.listactions:
             if 'sequence' in attrs:
                 attrs['sequence'].insert(0, 'crudlfap_checkbox')
+                attrs['sequence'].append('crudlfap')
             else:
-                attrs['sequence'] = ['crudlfap_checkbox', '...']
+                attrs['sequence'] = ['crudlfap_checkbox', '...', 'crudlfap']
 
         return attrs
 

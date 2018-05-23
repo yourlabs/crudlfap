@@ -7,13 +7,16 @@
 {% endblock %}
 
 {% block after_container %}
-{% if view.menu_views|length %}
-<div class="fixed-actions">
-  {{ crudlfap.dropdown(views, 'fixed-actions') }}
+{{ super() }}
+<div style="display: none" class="bottom center-align" id="listaction">
+  {{ crudlfap.dropdown(
+    view.listactions,
+    'listaction-dropdown',
+    class='btn waves-effect waves-light',
+    text='select',
+    iclass='left',
+  ) }}
 </div>
-{% endif %}
-
-{% include 'crudlfap/_listaction.html' %}
 {% endblock %}
 
 {% block content %}
@@ -37,7 +40,7 @@
   <div class="table-responsive col s12 {% if view.search_form or view.filterset.form.fields %}m9{% endif %}" id="render-table">
     <div class="card-panel">
       <div class="table-container">
-        {{ render_table(request, view.table, object_list) }}
+        {{ view.table.as_html(request) }}
       </div>
       {% include 'crudlfap/_pagination.html' %}
     </div>

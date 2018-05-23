@@ -240,7 +240,6 @@ CRUDLFAP_TEMPLATE_BACKEND = {
             "int": int,
             "isinstance": isinstance,
             "type": type,
-            "render_table": "crudlfap.jinja2.render_table",
             "render_form": "crudlfap.jinja2.render_form",
             "render_button": "bootstrap3.forms.render_button",
             "json": "crudlfap.jinja2.json",

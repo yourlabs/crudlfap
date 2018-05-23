@@ -29,16 +29,3 @@ def render_form(form):
     return template.Template(
         '{% load material_form %}{% form form=form %}{% endform %}'
     ).render(template.Context(dict(form=form)))
-
-
-def render_table(request, table, object_list):
-    """Poor man's binding to Django render_table template tag."""
-    context = RequestContext(request, dict(
-        table=table,
-        object_list=object_list
-    ))
-    t = template.Template('''
-    {% load django_tables2 %}{% render_table table %}
-    ''')
-    html = t.render(context)
-    return html
