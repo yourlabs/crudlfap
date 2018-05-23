@@ -3,6 +3,7 @@ import collections
 from betterforms.changelist import SearchForm
 
 from django import forms
+from django import template
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
@@ -16,8 +17,37 @@ from django_tables2.config import RequestConfig
 from .generic import ModelViewMixin
 
 
+class JinjaColumn(tables.Column):
+    def __init__(self, template_code, **kwargs):
+        import ipdb; ipdb.set_trace()
+        self.template_code = template_code
+        super().__init__(**kwargs)
+
+    def render(self, record, table, value, **kwargs):
+        import ipdb; ipdb.set_trace()
+        context = dict(
+            object=record,
+            request=table.context['request'],
+        )
+        t = template.engines['backend'].from_code(self.template_code)
+        import ipdb; ipdb.set_trace()
+        r = t.render()
+        return mark_safe(r)
+
+    def value(self, **kwargs):
+        import ipdb; ipdb.set_trace()
+
+
 class Table(tables.Table):
+    pass
+'''
+    def render(self, *a, **k):
+        import ipdb; ipdb.set_trace()
+        return super().render(*a, **k)
+
+'
     def render_crudlfap(self, record):
+        import ipdb; ipdb.set_trace()
         from django.template import loader
         from crudlfap import crudlfap
         context = dict(
@@ -44,6 +74,7 @@ class Table(tables.Table):
             html.append(str(tag))
 
         return ' '.join(html)
+'''
 
 
 class FilterMixin(object):
@@ -148,10 +179,19 @@ class TableMixin(object):
 
     def get_table_meta_action_columns(self):
         return dict(
-            crudlfap=tables.TemplateColumn(
-                template_name='crudlfap/_actions.html',
+            crudlfap=JinjaColumn(
+                template_code='''
+                {% import 'crudlfap.html' as crudlfap %}
+                {{ crudlfap.dropdown(
+                    crudlfap.site[type(record)].get_menu(
+                        'object',
+                        request,
+                        object=record,
+                    )
+                    'row-actions-' + str(object.pk)
+                ) }}
+                ''',
                 verbose_name=_('Actions'),
-                extra_context=dict(extra_class='btn-small'),
                 orderable=False,
             )
         )
@@ -289,8 +329,8 @@ class BaseListView(ModelViewMixin, generic.ListView):
 
     default_template_name = 'crudlfap/list.html'
     urlpath = ''
-    fa_icon = 'table'
     material_icon = 'list'
+    urlname = 'list'
     menus = ['main', 'model']
     pluralize = True
 
@@ -311,12 +351,8 @@ class BaseListView(ModelViewMixin, generic.ListView):
 
 
 class ListView(SearchMixin, FilterMixin, TableMixin, BaseListView):
-    urlre = r'$'
     default_template_name = 'crudlfap/list.html'
-    icon = 'fa fa-fw fa-table'
-    urlname = 'list'
     body_class = 'full-width'
-    label = 'list'
 
     def get(self, request, *args, **kwargs):
         if self.filterset:

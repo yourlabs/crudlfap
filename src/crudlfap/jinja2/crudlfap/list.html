@@ -1,13 +1,19 @@
 {% extends 'crudlfap/base.html' %}
 
+{% import 'crudlfap.html' as crudlfap %}
+
 {% block breadcrumb %}
 {% include 'crudlfap/_breadcrumb_object.html' %}
 {% endblock %}
 
 {% block after_container %}
-{% with menu=view.menu_views %}
-{% include 'crudlfap/_fixed_actions.html' %}
-{% endwith %}
+{% if view.menu_views|length %}
+<div class="fixed-actions">
+  {{ crudlfap.dropdown(views, 'fixed-actions') }}
+</div>
+{% endif %}
+
+{% include 'crudlfap/_listaction.html' %}
 {% endblock %}
 
 {% block content %}

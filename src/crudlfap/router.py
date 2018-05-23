@@ -1,9 +1,51 @@
 """
-CRUDLFA+ router for Django 2.0.
+The CRUDLFA+ Router is able to generate menus checking perms, generate urls ...
 
-Note that you can also use non-database backed models, by inheriting from
-models.Model and setting their Meta.managed attribute to False. Then, you can
-use CRUDLFA+ views and routers.
+.. note:: Note that you can also use non-database backed models, by inheriting
+          from models.Model and setting their Meta.managed attribute to False.
+          Then, you can use CRUDLFA+ views and routers.
+
+Menus
+-----
+
+A menu is referenced by a short name, and CRUDLFA+ generic views already define
+a bunch of them, but you can add your own too:
+
+- ``object``: means the view is for a model instance,
+- ``object_detail``: means the view should only be visible from detail view,
+- ``model``: means the view applies to a model class, such as list view,
+- ``main``: means the view should be in the main menu.
+
+To get the views of a router, for a menu, kwargs such as the object, and with
+permissions on request.user use :py:class:`Router.get_menu()`. In Jinja2
+templates you can call them with:
+
+.. code-block:: django
+
+    {% set views=view.router.get_menu(
+        'object',
+        view.request,
+        object=view.object
+    ) %}
+
+Now that Django can generate a menu after serious the refactoring that brought
+us to discover this pattern with Etienne Vidal @ DevNix, we rely on Jinja2 to
+refactor the HTML to render those menus.
+
+The menu macro takes a list of views as argument, and also a
+unique HTML id it can use to generate the dropdown.
+
+.. code-block:: django
+
+    {% import 'crudlfap.html' as crudlfap %}
+    {{ crudlfap.dropdown(views, 'row-actions-' + str(object.pk)) }}
+    {# also works, different style: #}
+    {{ crudlfap.dropdownbutton(views, 'row-actions-' + str(object.pk)) }}
+
+The above code will generate a Material design dropdown menu with an icon and
+the other one as a button with all nice icons, titles, permissions checked, and
+so on.  This is used everywhere you see a part of the page that can spawn to a
+dropdown. If there is only one matching view, it will display only the button.
 """
 from django.apps import apps
 from django.conf import settings
