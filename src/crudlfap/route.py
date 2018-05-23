@@ -1,3 +1,10 @@
+"""
+All black magic for views are defined in the crudlfap.route module.
+
+CRUDLFA+ introduces a new design pattern for views that came out during
+refactoring sessions from a corporate project, and re-written for Django 2.0
+from scratch. L
+"""
 import inspect
 
 from django import http

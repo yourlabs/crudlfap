@@ -10,6 +10,10 @@ __all__ = (
 )
 
 
+if 'ModuleNotFoundError' not in globals():
+    ModuleNotFoundError = ImportError
+
+
 def module_installed(module: str) -> bool:
     """
     Determines if a given module string can be resolved

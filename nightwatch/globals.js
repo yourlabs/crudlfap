@@ -10,6 +10,10 @@ module.exports = {
       accessKey: process.env.SAUCELABS_TOKEN,
       // Log output from the `sc` process to stdout?
       verbose: true,
+      // Enable verbose debugging (optional)
+      verboseDebugging: true,
+      // Together with verbose debugging will output HTTP headers as well (optional)
+      vv: true,
     }, function (err, sauceConnectProcess) {
       if (err) {
         console.error('Sauce Connect Error : ', err.message);

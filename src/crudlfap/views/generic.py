@@ -447,32 +447,6 @@ class DetailView(ObjectViewMixin, generic.DetailView):
             self.app_name, self.model._meta.model_name)]
 
 
-class ListView(ModelViewMixin, generic.ListView):
-    """Model list view."""
-
-    default_template_name = 'crudlfap/list.html'
-    urlpath = ''
-    fa_icon = 'table'
-    material_icon = 'list'
-    menus = ['main', 'model']
-    pluralize = True
-
-    def get(self, *a, **k):
-        '''Enforce sane default paginate_by if not False.'''
-        if getattr(self, 'paginate_by', None) is None:
-            self.paginate_by = self.get_paginate_by()
-        return super().get(*a, **k)
-
-    def get_title_heading(self):
-        return self.model._meta.verbose_name_plural.capitalize()
-
-    def get_paginate_by(self, queryset=None):
-        if self.router and hasattr(self.router, 'paginate_by'):
-            return self.router.paginate_by
-
-        return 10
-
-
 class UpdateView(ObjectFormViewMixin, generic.UpdateView):
     """Model update view."""
 

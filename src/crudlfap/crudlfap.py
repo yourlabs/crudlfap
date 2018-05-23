@@ -15,7 +15,6 @@ from .views.generic import (
     DetailView,
     FormView,
     HistoryView,
-    ListView,
     ModelViewMixin,
     ObjectFormView,
     ObjectView,
@@ -25,7 +24,11 @@ from .views.generic import (
     View,
     ViewMixin,
 )
+from .views.list import (
+    BaseListView,
+    FilterMixin,
+    ListView,
+    SearchMixin,
+    TableMixin,
+)
 from .views.lock import LockViewMixin
-
-if _installed('crudlfap_filtertables2'):
-    from crudlfap_filtertables2.views import FilterTables2ListView

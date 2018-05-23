@@ -1,12 +1,119 @@
 """
-Hacked and meant to be imported in your project.
+A settings file to import boilerplate from.
 
-::
+.. py:data:: CRUDLFAP_VIEWS
+
+    List of default views to provide to Routers that were not spawned with any
+    view.
+
+.. py:data:: INSTALLED_APPS
+
+    That list contains both :py:data:`CRUDLFAP_APPS` and :py:data:`DJANGO_APPS`
+    and you can use them as such on a new project:
+
+    .. code-block:: python
+
+        from crudlfap.settings import INSTALLED_APPS
+
+        INSTALLED_APPS = ['yourapp'] + INSTALLED_APPS
+
+.. py:data:: CRUDLFAP_APPS
+
+    List of apps CRUDLFA+ depends on, you can use it as such:
+
+    .. code-block:: python
+
+        from crudlfap.settings import CRUDLFAP_APPS
+
+        INSTALLED_APPS = [
+            'yourapp',
+            'django.contrib.staticfiles',
+            # etc
+        ] + CRUDLFAP_APPS
+
+.. py:data:: DJANGO_APPS
+
+    This list contains all contrib apps from the Django project that CRUDLFA+
+    should depend on. You can use it as such:
+
+    .. code-block:: python
+
+        from crudlfap.settings import CRUDLFAP_APPS, DJANGO_APPS
+
+        INSTALLED_APPS = ['yourapp'] + CRUDLFAP_APPS + DJANGO_APPS
+
+.. py:data:: TEMPLATES
+
+    This list contains both :py:data:`DEFAULT_TEMPLATE_BACKEND` and
+    :py:data:`CRUDLFAP_TEMPLATE_BACKEND` and works out of the box on an empty
+    project. You can add it to your settings file by just importing it:
+
+    .. code-block:: python
+
+        from crudlfap.settings import TEMPLATES
+
+.. py:data:: CRUDLFAP_TEMPLATE_BACKEND
+
+   Configuration for Jinja2 and environment expected by
+   CRUDLFA+ default templates. Add it to your own TEMPLATES setting using
+   import:
+
+    .. code-block:: python
+
+       from crudlfap.settings import CRUDLFAP_TEMPLATE_BACKEND
+
+       TEMPLATES = [
+           # YOUR_BACKEND
+           CRUDLFAP_TEMPLATE_BACKEND,
+       ]
+
+.. py:data:: DEFAULT_TEMPLATE_BACKEND
+
+    Configuration for Django template backend with all builtin context
+    processors. You can use it to define only your third backend as such:
+
+    .. code-block:: python
+
+        from crudlfap.settings import (
+            CRUDLFAP_TEMPLATE_BACKEND,
+            DEFAULT_TEMPLATE_BACKEND,
+        )
+
+        TEMPLATES = [
+           # YOUR_BACKEND
+           CRUDLFAP_TEMPLATE_BACKEND,
+           DEFAULT_TEMPLATE_BACKEND,
+        ]
+
+.. py:data:: DEBUG
+
+    Evaluate ``DEBUG`` env var as boolean, False by default.
+
+.. py:data:: SECRET_KEY
+
+    Get ``SECRET_KEY`` env var, or be ``'notsecret'`` by default.
+
+    .. danger:: Raises an Exception if it finds both SECRET_KEY=notsecret and
+                DEBUG=False.
+
+.. py:data:: ALLOWED_HOSTS
+
+    Split ``ALLOWED_HOSTS`` env var with commas, or be ``['*']`` by default.
+
+    .. danger:: Raises an Exception if it finds both ALLOWED_HOSTS to be
+                ``'*'`` and DEBUG=False.
+
+.. py:data:: MIDDLEWARE
+
+    A default MIDDLEWARE configuration you can import.
+
+.. py:data:: OPTIONAL_APPS
 
     from crudlfap.settings import *
     # [...] your settings
     install_optional(OPTIONAL_APPS, INSTALLED_APPS)
     install_optional(OPTIONAL_MIDDLEWARE, MIDDLEWARE)
+
 """
 
 
@@ -36,31 +143,40 @@ if DEBUG and 'ALLOWED_HOSTS' not in os.environ:
 else:
     ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
 
-# Application definition
+CRUDLFAP_VIEWS = [
+    'crudlfap.crudlfap.CreateView',
+    'crudlfap.crudlfap.DeleteView',
+    'crudlfap.crudlfap.UpdateView',
+    'crudlfap.crudlfap.DetailView',
+    'crudlfap.crudlfap.ListView',
+]
+
 CRUDLFAP_APPS = [
     'crudlfap',
     'betterforms',
     'bootstrap3',
     'material',
-    'crudlfap_filtertables2',
     'crudlfap_auth',
     'django_filters',
     'django_tables2',
-    'django.contrib.admin',
 ]
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-] + CRUDLFAP_APPS
+]
+
+INSTALLED_APPS = DJANGO_APPS + CRUDLFAP_APPS
 
 # CRUDLFA+ optional dependencies
 OPTIONAL_APPS = [
     # {'debug_toolbar': {'after': 'django.contrib.staticfiles'}},
     {'django_extensions': {'before': 'crudlfap'}},
+    {'collectdir': {'before': 'crudlfap'}},
 ]
 
 MIDDLEWARE = [
@@ -76,6 +192,7 @@ MIDDLEWARE = [
 OPTIONAL_MIDDLEWARE = [
     # {'debug_toolbar.middleware.DebugToolbarMiddleware': None}
 ]
+
 INTERNAL_IPS = ('127.0.0.1',)
 
 ROOT_URLCONF = 'crudlfap_example.urls'
@@ -123,7 +240,7 @@ CRUDLFAP_TEMPLATE_BACKEND = {
             "int": int,
             "isinstance": isinstance,
             "type": type,
-            "render_table": "crudlfap_filtertables2.jinja2.render_table",
+            "render_table": "crudlfap.jinja2.render_table",
             "render_form": "crudlfap.jinja2.render_form",
             "render_button": "bootstrap3.forms.render_button",
             "json": "crudlfap.jinja2.json",
