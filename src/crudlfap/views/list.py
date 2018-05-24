@@ -303,9 +303,7 @@ class BaseListView(ModelViewMixin, generic.ListView):
     """Model list view."""
 
     default_template_name = 'crudlfap/list.html'
-    urlpath = ''
     material_icon = 'list'
-    urlname = 'list'
     menus = ['main', 'model']
     pluralize = True
 
@@ -314,9 +312,6 @@ class BaseListView(ModelViewMixin, generic.ListView):
         if getattr(self, 'paginate_by', None) is None:
             self.paginate_by = self.get_paginate_by()
         return super().get(*a, **k)
-
-    def get_title_heading(self):
-        return self.model._meta.verbose_name_plural.capitalize()
 
     def get_paginate_by(self, queryset=None):
         if self.router and hasattr(self.router, 'paginate_by'):
@@ -328,6 +323,10 @@ class BaseListView(ModelViewMixin, generic.ListView):
 class ListView(SearchMixin, FilterMixin, TableMixin, BaseListView):
     default_template_name = 'crudlfap/list.html'
     body_class = 'full-width'
+    urlpath = ''
+
+    def get_title_heading(self):
+        return self.model._meta.verbose_name_plural.capitalize()
 
     def get(self, request, *args, **kwargs):
         if self.filterset:

@@ -5,30 +5,18 @@ CRUDLFA+ introduces a new design pattern for views that came out during
 refactoring sessions from a corporate project, and re-written for Django 2.0
 from scratch. L
 """
-import inspect
 import re
 
 from django import http
 from django.urls import path, reverse, reverse_lazy
 from django.utils.module_loading import import_string
 
-from .factory import Factory
+from .factory import Factory, FactoryMetaclass
 from .utils import guess_urlfield
 
 
-class RouteMetaclass(type):
+class RouteMetaclass(FactoryMetaclass):
     router = None
-
-    def __getattr__(cls, attr):
-        if attr.startswith('get_'):
-            raise AttributeError('{} or {}'.format(attr[4:], attr))
-
-        getter = getattr(cls, 'get_' + attr)
-
-        if inspect.ismethod(getter):
-            return getter()
-        else:
-            return getter(cls)
 
     def get_app_name(cls):
         return cls.model._meta.app_label if cls.model else None
@@ -112,15 +100,6 @@ class Route(Factory, metaclass=RouteMetaclass):
             url = YourView(object=your_object).url
         """
         return self.reverse(*self.urlargs)
-
-    def __getattr__(self, attr):
-        if attr.startswith('get_'):
-            raise AttributeError('{} or {}()'.format(attr[4:], attr))
-
-        if hasattr(self, 'get_' + attr):
-            return getattr(self, 'get_' + attr)()
-
-        return getattr(type(self), attr)
 
     def get_required_permissions(self):
         return None

@@ -19,6 +19,14 @@
 {% endblock %}
 
 {% block content %}
+  {% if view.object_list|default([])|length %}
+  <ul class="collection">
+    {% for object in view.object_list %}
+    <li class="collection-item">{{ object }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
   {{ render_form(form) }}
 {% endblock %}
 

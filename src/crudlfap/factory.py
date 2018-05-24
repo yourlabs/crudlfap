@@ -1,4 +1,31 @@
-class Factory(object):
+import inspect
+
+
+class FactoryMetaclass(type):
+    def __getattr__(cls, attr):
+        if attr.startswith('get_'):
+            raise AttributeError('{} or {}'.format(attr[4:], attr))
+
+        getter = getattr(cls, 'get_' + attr)
+
+        if inspect.ismethod(getter):
+            return getter()
+        else:
+            return getter(cls)
+
+    def get_cls(cls):
+        return cls
+
+class Factory(metaclass=FactoryMetaclass):
+    def __getattr__(self, attr):
+        if attr.startswith('get_'):
+            raise AttributeError('{} or {}()'.format(attr[4:], attr))
+
+        if hasattr(self, 'get_' + attr):
+            return getattr(self, 'get_' + attr)()
+
+        return getattr(type(self), attr)
+
     @classmethod
     def clone(cls, **attributes):
         """Return a subclass with the given attributes.

@@ -2,6 +2,7 @@
 
 from django.utils.module_loading import import_string
 
+from .actions import DeleteAction
 from .apps import _installed
 from .factory import Factory
 from .registry import Registry
@@ -11,8 +12,6 @@ from .site import site
 from .views.debug import UrlsView
 from .views.generic import (
     CreateView,
-    DeleteView,
-    ListDeleteView,
     DetailView,
     FormView,
     HistoryView,
@@ -34,3 +33,7 @@ from .views.list import (
     TableMixin,
 )
 from .views.lock import LockViewMixin
+
+
+# backward compatibility
+DeleteView = DeleteAction().object_view()

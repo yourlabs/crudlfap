@@ -1,10 +1,12 @@
 import M from 'materialize-css'
+import queryString from 'query-string'
 import { Controller } from 'stimulus'
 
 export default class extends Controller {
   connect() {
     if (document.body.classList.contains('listaction-ready')) return
     this.actionbarDisplay()
+    this.urlUpdate()
     document.body.classList.add('listaction-ready')
   }
   get checkboxes() {
@@ -21,6 +23,23 @@ export default class extends Controller {
       this.leader.checked = false
     }
     this.actionbarDisplay()
+    this.urlUpdate()
+  }
+  urlUpdate() {
+    var pks = []
+    for (var c of this.checkboxes) {
+      if (c.checked) {
+        pks.push(c.getAttribute('data-pk'))
+      }
+    }
+    var links = document.querySelectorAll('[data-listaction=urlupdate]')
+    for (var link of links) {
+      if (! link.hasAttribute('data-listaction-origurl')) {
+        link.setAttribute('data-listaction-origurl', link.getAttribute('href'))
+      }
+
+      link.setAttribute('href', link.getAttribute('data-listaction-origurl') + '?' + queryString.stringify({pks: pks}))
+    }
   }
   actionbarDisplay() {
     if (this.checkboxes.filter(a => a.checked).length)

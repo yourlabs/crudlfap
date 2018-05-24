@@ -16,8 +16,10 @@ def superuser(view):
 
 crudlfap.Router(
     User,
+    actions=[
+        crudlfap.DeleteAction,
+    ],
     views=[
-        crudlfap.DeleteView,
         crudlfap.UpdateView.clone(
             body_class='modal-fixed-footer',
             fields=[
@@ -38,7 +40,6 @@ crudlfap.Router(
         views.PasswordView,
         views.BecomeUser,
         crudlfap.DetailView.clone(exclude=['password']),
-        crudlfap.ListDeleteView,
         crudlfap.ListView.clone(
             search_fields=[
                 'username',

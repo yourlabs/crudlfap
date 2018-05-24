@@ -11,8 +11,9 @@ from crudlfap.route import Route
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.admin.models import ADDITION, CHANGE, DELETION
+from django.contrib.admin.models import ADDITION, CHANGE
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext as _
 from django.views import generic
 from django.views.generic.detail import SingleObjectMixin
@@ -62,8 +63,15 @@ class DefaultTemplateMixin(object):
 
     def get_template_names(self):
         """Give a chance to default_template_name."""
-        template_names = super().get_template_names()
         default_template_name = getattr(self, 'default_template_name', None)
+
+        try:
+            template_names = super().get_template_names()
+        except ImproperlyConfigured:
+            if not default_template_name:
+                raise
+            template_names = []
+
         if default_template_name:
             template_names.append(default_template_name)
         return template_names
@@ -154,11 +162,16 @@ class ModelViewMixin(ViewMixin):
     def get_queryset(self):
         """Return router.get_queryset() by default, otherwise super()."""
         if self.router:
-            return self.router.get_objects_for_user(
+            qs = self.router.get_objects_for_user(
                 self.request.user,
                 self.required_permissions,
             )
-        return super().get_queryset()
+        else:
+            qs = super().get_queryset()
+
+        if 'pks' in self.request.GET:
+            qs = qs.filter(pk__in=self.request.GET.getlist('pks'))
+        return qs
 
 
 class ObjectMixin(object):
@@ -354,7 +367,7 @@ class ModelFormViewMixin(ModelViewMixin, FormViewMixin):
         return response
 
 
-class ModelFormView(ModelFormViewMixin, View):
+class ModelFormView(ModelFormViewMixin, generic.FormView):
     pass
 
 
@@ -385,41 +398,6 @@ class CreateView(ModelFormViewMixin, generic.CreateView):
         if hasattr(self.router, 'create_fields'):
             return self.router.create_fields
         return super().get_form_fields()
-
-
-class DeleteAction(object):
-    """View to delete a model object."""
-
-    default_template_name = 'crudlfap/delete.html'
-    style = 'danger'
-    fa_icon = 'trash'
-    material_icon = 'delete'
-    success_url_next = True
-    controller = 'modal'
-    action = 'click->modal#open'
-    color = 'red'
-    log_action_flag = DELETION
-
-    def get_success_message(self):
-        return _(
-            '%s %s: {}' % (_(self.view_label), self.model_verbose_name)
-        ).format(self.object).capitalize()
-
-    def get_success_url(self):
-        messages.success(self.request, self.success_message)
-        return self.router['list'].reverse()
-
-    def get_required_permissions(self):
-        return ['{}.delete_{}'.format(
-            self.app_name, self.model._meta.model_name)]
-
-
-class DeleteView(DeleteAction, ObjectFormViewMixin, generic.DeleteView):
-    menus = ['object', 'object_detail']
-
-
-class ListDeleteView(DeleteAction, ModelFormView):
-    menus = ['list_action']
 
 
 class DetailView(ObjectViewMixin, generic.DetailView):

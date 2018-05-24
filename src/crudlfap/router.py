@@ -189,7 +189,12 @@ class Router(object):
                 ListView.factory(paginate_by=12),
             ])
         """
+        kwargs = dict(model=self.model, router=self)
         result = []
+        for action in getattr(self, 'actions', []):
+            result.append(action.objects_view.clone(**kwargs))
+            result.append(action.object_view.clone(**kwargs))
+
         for arg in views or self.views:
             view = arg
 
@@ -203,7 +208,7 @@ class Router(object):
                 print('Got an error with view:', view)
                 raise e
 
-            view = view.clone(model=self.model, router=self)
+            view = view.clone(**kwargs)
 
             result.append(view)
         return result
