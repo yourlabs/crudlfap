@@ -62,3 +62,4 @@ Move on to the :doc:`tutorial`.
 .. _git: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 .. _pip: https://pip.pypa.io/en/stable/installing/
 .. _PyPi: https://pypi.python.org/pypi
+.. _virtualenv: https://virtualenv.pypa.io/
