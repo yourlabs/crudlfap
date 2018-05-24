@@ -15,7 +15,7 @@ import django_tables2 as tables
 from django_tables2.config import RequestConfig
 
 from ..site import site
-from .generic import ModelViewMixin
+from .generic import ObjectFormViewMixin, ModelViewMixin
 
 
 class JinjaColumn(tables.Column):
@@ -318,6 +318,25 @@ class BaseListView(ModelViewMixin, generic.ListView):
             return self.router.paginate_by
 
         return 10
+
+
+class ObjectsFormViewMixin(ObjectFormViewMixin):
+    pluralize = True
+
+    def get_queryset(self):
+        return super().get_queryset().filter(
+            pk__in=self.request.GET.getlist('pks')
+        )
+
+    def form_valid(self, form):
+        for obj in self.object_list:
+            self.object = obj
+            response = super().form_valid(form)
+        return response
+
+
+class ObjectsFormView(ObjectFormViewMixin, BaseListView):
+    pass
 
 
 class ListView(SearchMixin, FilterMixin, TableMixin, BaseListView):

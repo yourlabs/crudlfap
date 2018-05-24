@@ -41,6 +41,10 @@ def test_user_create_reverse():
     assert reverse('crudlfap:user:create') == '/user/create'
 
 
+def test_user_deleteselected_reverse():
+    assert reverse('crudlfap:user:deleteselected') == '/user/deleteselected'
+
+
 def test_user_detail_reverse():
     assert reverse('crudlfap:user:detail', args=['a']) == '/user/a'
 

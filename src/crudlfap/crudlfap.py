@@ -29,6 +29,8 @@ from .views.list import (
     BaseListView,
     FilterMixin,
     ListView,
+    ObjectsFormView,
+    ObjectsFormViewMixin,
     SearchMixin,
     TableMixin,
 )
@@ -36,4 +38,4 @@ from .views.lock import LockViewMixin
 
 
 # backward compatibility
-DeleteView = DeleteAction().object_view()
+DeleteView = DeleteAction().generate_views()[0]

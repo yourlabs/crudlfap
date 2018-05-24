@@ -131,8 +131,8 @@ class ModelViewMixin(ViewMixin):
     def get_required_permissions(self):
         return [
             '{}.{}_{}'.format(
-                self.urlname,
                 self.app_name,
+                self.urlname,
                 self.model._meta.model_name
             )
         ]
@@ -169,16 +169,12 @@ class ModelViewMixin(ViewMixin):
         else:
             qs = super().get_queryset()
 
-        if 'pks' in self.request.GET:
-            qs = qs.filter(pk__in=self.request.GET.getlist('pks'))
         return qs
 
 
 class ObjectMixin(object):
     """
     Make self.object call and cache self.get_object() automatically.
-
-    WHAT A RELIEF
 
     However, if it has a router with the get_object() method, use it.
     """
@@ -374,6 +370,18 @@ class ModelFormView(ModelFormViewMixin, generic.FormView):
 class ObjectFormViewMixin(ObjectViewMixin, ModelFormViewMixin):
     """Custom form view mixin on an object."""
     log_action_flag = CHANGE
+
+    def get_success_message(self):
+        return _(
+            '%s %s: {}' % (_(self.view_label), self.model_verbose_name)
+        ).format(self.form.instance).capitalize()
+
+    def form_valid(self, form):
+        messages.success(self.request, self.success_message)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.router['list'].reverse()
 
 
 class ObjectFormView(ObjectFormViewMixin, generic.FormView):
