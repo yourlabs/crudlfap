@@ -8,7 +8,7 @@
 <div class="card-panel">
   <table class="table">
     <thead class="thead-inverse">
-      {% for field in fields %}
+      {% for field in view.display_fields %}
       <tr>
           <th>
               {{ field['field'].verbose_name.capitalize() }}

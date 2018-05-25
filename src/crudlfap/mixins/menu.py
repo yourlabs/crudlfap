@@ -2,6 +2,10 @@
 
 
 class MenuMixin(object):
+    def get_title_menu(self):
+        """Return title for menu links to this view."""
+        return _(self.view_label).capitalize()
+
     def get_menu(self):
         return None
 

@@ -1,4 +1,6 @@
+from django.db import models
 
+import django_filters
 
 
 class FilterMixin(object):

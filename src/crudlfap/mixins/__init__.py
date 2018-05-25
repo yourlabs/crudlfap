@@ -1,3 +1,11 @@
+from .crud import (
+    CreateMixin,
+    DeleteMixin,
+    DetailMixin,
+    HistoryMixin,
+    ListMixin,
+    UpdateMixin,
+)
 from .filter import FilterMixin
 from .form import FormMixin
 from .lock import LockMixin

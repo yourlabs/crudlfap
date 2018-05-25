@@ -16,10 +16,8 @@ def superuser(view):
 
 crudlfap.Router(
     User,
-    actions=[
-        crudlfap.DeleteAction,
-    ],
     views=[
+        crudlfap.DeleteView,
         crudlfap.UpdateView.clone(
             body_class='modal-fixed-footer',
             fields=[

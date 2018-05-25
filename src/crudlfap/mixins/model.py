@@ -1,4 +1,5 @@
-
+from django.core.exceptions import ImproperlyConfigured
+from django.utils.translation import ugettext as _
 
 
 class ModelMixin(object):

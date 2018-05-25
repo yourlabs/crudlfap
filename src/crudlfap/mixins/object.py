@@ -1,3 +1,6 @@
+from django import http
+from django.utils.translation import ugettext_lazy as _
+
 from .model import ModelMixin
 
 
@@ -63,8 +66,11 @@ class ObjectMixin(ModelMixin):
             # Get the single item from the filtered queryset
             obj = queryset.get()
         except queryset.model.DoesNotExist:
-            raise Http404(_("No %(verbose_name)s found matching the query") %
-                          {'verbose_name': queryset.model._meta.verbose_name})
+            raise http.Http404(
+                _("No %(verbose_name)s found matching the query") %
+                {'verbose_name': queryset.model._meta.verbose_name}
+            )
+
         return obj
 
     def object_get(self):

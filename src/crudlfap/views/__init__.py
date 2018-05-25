@@ -1,6 +1,7 @@
 from .debug import UrlsView
 from .generic import (
     CreateView,
+    DeleteView,
     DetailView,
     FormView,
     HistoryView,
@@ -11,4 +12,7 @@ from .generic import (
     ObjectView,
     ObjectsFormView,
     ObjectsView,
+    TemplateView,
+    UpdateView,
+    View,
 )

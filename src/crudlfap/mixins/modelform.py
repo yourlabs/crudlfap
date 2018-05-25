@@ -1,3 +1,5 @@
+from django.utils.translation import ugettext as _
+
 from .form import FormMixin
 from .model import ModelMixin
 

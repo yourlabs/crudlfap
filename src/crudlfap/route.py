@@ -102,7 +102,11 @@ class Route(Factory, metaclass=RouteMetaclass):
         return self.reverse(*self.urlargs)
 
     def get_required_permissions(self):
-        return None
+        return [
+            '{self.app_name}.{self.urlname}_{self.model._meta.model_name}'.format(  # noqa
+                self=self
+            )
+        ]
 
     def get_allowed(self):
         """

@@ -21,9 +21,15 @@ class Factory(metaclass=FactoryMetaclass):
         if attr.startswith('get_'):
             raise AttributeError('{} or {}()'.format(attr[4:], attr))
 
-        if hasattr(self, 'get_' + attr):
-            return getattr(self, 'get_' + attr)()
+        getter = getattr(self, 'get_{}'.format(attr), None)
 
+        if hasattr(self, 'get_' + attr):
+            result = getattr(self, 'get_' + attr)()
+            if getattr(getter, 'autoset', False):
+                setattr(self, attr, result)
+            return result
+
+        # Try class methods
         return getattr(type(self), attr)
 
     @classmethod
