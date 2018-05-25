@@ -106,6 +106,12 @@ def test_user_delete_resolve(user):
 
 
 @pytest.mark.django_db
+def test_user_deleteselected_resolve(user):
+    result = resolve('/user/deleteselected')
+    assert result.func.view_class.urlname == 'deleteselected'
+
+
+@pytest.mark.django_db
 def test_user_create_resolve(user):
     result = resolve('/user/create')
     assert result.func.view_class.urlname == 'create'
@@ -181,6 +187,14 @@ def test_user_list_get(admin_client):
 
 def test_user_create_get(admin_client):
     result = admin_client.get('/user/create')
+    assert result.status_code == 200
+
+
+@pytest.mark.django_db
+def test_user_deleteselected_get(admin_client):
+    for i in range(100, 103):
+        User.objects.get_or_create(pk=i, username='user{}'.format(i))
+    result = admin_client.get('/user/deleteselected?pks=101&pks=102')
     assert result.status_code == 200
 
 

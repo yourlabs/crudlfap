@@ -114,3 +114,6 @@ class DeleteAction(Action):
     success_url_next = True
     color = 'red'
     log_action_flag = DELETION
+
+    def get_success_url(self):
+        return self.router['list'].reverse()
