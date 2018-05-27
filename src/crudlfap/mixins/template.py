@@ -1,6 +1,10 @@
+import logging
+
 from django.core.exceptions import ImproperlyConfigured
 from django.template.response import TemplateResponse
 from django.utils.translation import ugettext as _
+
+logger = logging.getLogger()
 
 
 class TemplateMixin:
@@ -76,4 +80,5 @@ class TemplateMixin:
 
         if default_template_name:
             template_names.append(default_template_name)
+        logger.debug('TEMPLATE_NAMES', template_names)
         return template_names

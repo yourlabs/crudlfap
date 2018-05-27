@@ -1,5 +1,9 @@
 from betterforms.changelist import SearchForm
 
+from django import forms
+from django.db import models
+from django.utils.translation import ugettext as _
+
 
 class SearchMixin(object):
     def get_search_fields(self):
@@ -25,11 +29,13 @@ class SearchMixin(object):
             )
         )
 
-    def get_search_form(self, queryset=None):
+    def get_search_form(self):
         if self.search_fields:
-            form = self.search_form_class(
+            self.search_form = self.search_form_class(
                 self.request.GET,
-                queryset=queryset or self.object_list
+                queryset=self.object_list
             )
-            form.full_clean()
-            return form
+            self.search_form.full_clean()
+        else:
+            self.search_form = None
+        return self.search_form

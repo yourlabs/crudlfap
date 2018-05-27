@@ -23,10 +23,13 @@ class Factory(metaclass=FactoryMetaclass):
 
         getter = getattr(self, 'get_{}'.format(attr), None)
 
-        if hasattr(self, 'get_' + attr):
-            result = getattr(self, 'get_' + attr)()
-            if getattr(getter, 'autoset', False):
-                setattr(self, attr, result)
+        if getter:
+            methresult = getter()
+            dictresult = self.__dict__.get(attr, None)
+            if methresult is None and dictresult is not None:
+                result = dictresult
+            else:
+                result = methresult
             return result
 
         # Try class methods

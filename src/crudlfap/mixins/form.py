@@ -1,4 +1,5 @@
 from django import http
+from django.contrib import messages
 
 
 class FormMixin:
@@ -6,14 +7,15 @@ class FormMixin:
 
     success_url_next = True
     initial = {}
-    success_url = None
 
-    def form_valid(self, form):
+    def form_valid(self):
         """If the form is valid, redirect to the supplied URL."""
-        return http.HttpResponseRedirect(self.get_success_url())
+        self.message_success()
+        return http.HttpResponseRedirect(self.success_url)
 
-    def form_invalid(self, form):
+    def form_invalid(self):
         """If the form is invalid, render the invalid form."""
+        self.message_error()
         return self.render_to_response()
 
     def get_title_submit(self):
@@ -44,23 +46,22 @@ class FormMixin:
 
     def get_form(self):
         """Return an instance of the form to be used in this view."""
-        import ipdb; ipdb.set_trace()
-        return self.form_class(**self.get_form_kwargs())
-    get_form.autoset = True
+        self.form = self.form_class(**self.get_form_kwargs())
+        return self.form
 
     def get_form_kwargs(self):
         """Return the keyword arguments for instantiating the form."""
-        kwargs = {
+        self.form_kwargs = {
             'initial': self.get_initial(),
             'prefix': self.get_prefix(),
         }
 
         if self.request.method in ('POST', 'PUT'):
-            kwargs.update({
+            self.form_kwargs.update({
                 'data': self.request.POST,
                 'files': self.request.FILES,
             })
-        return kwargs
+        return self.form_kwargs
 
     def get_success_url(self):
         if self.success_url_next and '_next' in self.request.POST:
@@ -70,3 +71,15 @@ class FormMixin:
         if self.router['list']:
             return self.router['list'].url
         return super().get_success_url()
+
+    def message_success(self):
+        messages.success(
+            self.request,
+            self.message_html(self.form_valid_message)
+        )
+
+    def message_error(self):
+        messages.error(
+            self.request,
+            self.message_html(self.form_invalid_message)
+        )

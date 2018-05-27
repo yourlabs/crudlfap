@@ -1,5 +1,12 @@
+import collections
+
 import django_tables2 as tables
 from django_tables2.config import RequestConfig
+
+from django import template
+from django.db import models
+from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext_lazy as _
 
 
 class JinjaColumn(tables.Column):
@@ -11,6 +18,7 @@ class JinjaColumn(tables.Column):
         super().__init__(**kwargs)
 
     def render(self, record, table, value, **kwargs):
+        from ..site import site
         context = dict(
             object=record,
             request=table.request,
@@ -41,17 +49,18 @@ class Table(tables.Table):
 class TableMixin(object):
     def get_table_fields(self):
         if self.table_sequence:
-            return [
+            self.table_fields = [
                 f.name
                 for f in self.model._meta.fields
                 if f.name in self.table_sequence
             ]
-
-        return [
-            f.name
-            for f in self.model._meta.fields
-            if f.name not in self.exclude
-        ]
+        else:
+            self.table_fields = [
+                f.name
+                for f in self.model._meta.fields
+                if f.name not in self.exclude
+            ]
+        return self.table_fields
 
     def get_table_link_fields(self):
         if not hasattr(self.model, 'get_absolute_url'):
@@ -185,3 +194,6 @@ class TableMixin(object):
             paginate=self.table_pagination,
         ).configure(self.table)
         return self.table
+
+    def get_paginate_by(self):
+        return 10

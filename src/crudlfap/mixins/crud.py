@@ -14,13 +14,7 @@ class CreateMixin:
     color = 'green'
     object_permission_check = False
     log_action_flag = ADDITION
-
-    def get_form_fields(self):
-        if hasattr(self, 'create_fields'):
-            return self.create_fields
-        if hasattr(self.router, 'create_fields'):
-            return self.router.create_fields
-        return super().get_form_fields()
+    menus = ['main', 'model']
 
 
 class DeleteMixin:
@@ -56,7 +50,7 @@ class DetailMixin:
         return str(self.object)
 
     def get_display_fields(self):
-        return [
+        self.display_fields = [
             {
                 'field': self.model._meta.get_field(field),
                 'value': getattr(self.object, field)
@@ -67,7 +61,7 @@ class DetailMixin:
                 else self.fields
             ) if field not in self.exclude
         ]
-    get_display_fields.autoset = True
+        return self.display_field
 
 
 class HistoryMixin:

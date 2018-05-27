@@ -77,17 +77,16 @@ class HistoryView(mixins.ObjectMixin, generic.DetailView):
     pass
 
 
-class ListView(mixins.SearchMixin, mixins.FilterMixin, mixins.TableMixin,
-               mixins.ObjectsMixin, TemplateView):
+class ListView(mixins.ListMixin, mixins.SearchMixin, mixins.FilterMixin,
+               mixins.TableMixin, mixins.ObjectsMixin, TemplateView):
 
     def get_object_list(self):
         if self.filterset:
-            object_list = self.filterset.qs
+            self.object_list = self.filterset.qs
         else:
-            object_list = self.queryset
+            self.object_list = self.queryset
 
-        if self.search_fields:
-            self.search_form = self.get_search_form()
+        if self.search_form:
             object_list = self.search_form.get_queryset()
         return object_list
 

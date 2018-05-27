@@ -1,3 +1,6 @@
+from django.contrib.admin.models import LogEntry
+from django.contrib.contenttypes.models import ContentType
+from django.forms import models as model_forms
 from django.utils.translation import ugettext as _
 
 from .form import FormMixin
@@ -6,20 +9,29 @@ from .model import ModelMixin
 
 class ModelFormMixin(ModelMixin, FormMixin):
     """ModelForm Mixin using readable"""
-    log_action_flag = False
     menus = ['model']
+
+    def get_form_kwargs(self):
+        self.form_kwargs = super().get_form_kwargs()
+        if hasattr(self, 'object'):
+            self.form_kwargs.update({'instance': self.object})
+        return self.form_kwargs
+
+    def get_form(self):
+        self.form = self.form_class(**self.form_kwargs)
 
     def get_form_fields(self):
         if hasattr(self.router, 'form_fields'):
             return self.router.form_fields
         if hasattr(self.router, 'fields'):
             return self.router.fields
-        return self.get_fields()
+        return self.fields
 
     def get_form_class(self):
-        if self.fields is None and not self.form_class:
-            self.fields = self.form_fields
-        return super().get_form_class()
+        return model_forms.modelform_factory(
+            self.model,
+            fields=self.form_fields
+        )
 
     def get_form_invalid_message(self):
         return '{}: {}: {}'.format(
@@ -51,13 +63,8 @@ class ModelFormMixin(ModelMixin, FormMixin):
             ))
         return message
 
-    def form_invalid(self, form):
-        response = super().form_invalid(form)
-        messages.error(
-            self.request,
-            self.message_html(self.form_invalid_message)
-        )
-        return response
+    def get_log_action_flag(self):
+        return False
 
     def get_log_message(self):
         return _(self.view_label)
@@ -81,11 +88,7 @@ class ModelFormMixin(ModelMixin, FormMixin):
             self.log_message,
         )
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        messages.success(
-            self.request,
-            self.message_html(self.form_valid_message)
-        )
+    def form_valid(self):
+        self.object = self.form.save()
         self.log_insert()
-        return response
+        return super().form_valid()
