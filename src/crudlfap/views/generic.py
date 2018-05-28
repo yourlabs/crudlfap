@@ -10,7 +10,6 @@ Crudlfa+ takes views further than Django and are expected to:
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.views import generic
-from django.views.generic.detail import SingleObjectMixin, BaseDetailView
 
 from ..route import Route
 from .. import mixins
@@ -69,7 +68,7 @@ class DeleteView(mixins.DeleteMixin, mixins.ObjectFormMixin, TemplateView):
     """View to delete an object."""
 
 
-class DetailView(ObjectView, BaseDetailView):
+class DetailView(mixins.DetailMixin, ObjectView):
     """Templated model object detail view which takes a field option."""
 
 
@@ -91,5 +90,5 @@ class ListView(mixins.ListMixin, mixins.SearchMixin, mixins.FilterMixin,
         return object_list
 
 
-class UpdateView(mixins.UpdateMixin, TemplateView):
+class UpdateView(mixins.UpdateMixin, ObjectFormView):
     """Model update view."""

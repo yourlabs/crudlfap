@@ -16,6 +16,7 @@ class FactoryMetaclass(type):
     def get_cls(cls):
         return cls
 
+
 class Factory(metaclass=FactoryMetaclass):
     def __getattr__(self, attr):
         if attr.startswith('get_'):

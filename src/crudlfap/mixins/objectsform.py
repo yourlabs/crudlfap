@@ -9,12 +9,11 @@ class ObjectsFormMixin(ModelFormMixin):
             pk__in=self.request.GET.getlist('pks')
         )
 
-    def form_valid(self, form):
+    def form_valid(self):
         for obj in self.object_list:
             self.object = obj
-            response = super().form_valid(form)
+            response = super().form_valid(self.form)
         return response
 
     def get_success_url(self):
         return self.router['list'].reverse()
-

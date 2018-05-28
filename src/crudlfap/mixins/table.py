@@ -85,6 +85,7 @@ class TableMixin(object):
                     views,
                     'row-actions-' + str(object.pk),
                     class='btn-floating red',
+                    next=request.path_info,
                 ) }}
                 ''',
                 verbose_name=_('Actions'),

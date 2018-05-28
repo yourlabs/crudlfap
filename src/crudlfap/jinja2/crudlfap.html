@@ -1,9 +1,9 @@
 {# Jinja2 Macros for CRUDLFA+ #}
 
-{% macro a(view, class='', iclass=True, text=True) -%}
+{% macro a(view, class='', iclass=True, text=True, next=False) -%}
   <a
     class="{{ class }}"
-    href="{{ view.url }}"
+    href="{{ view.url }}{% if next %}?_next={{ next }}{% endif %}"
     title="{{ view.title }}"
     {% for key, value in (view.link_attributes|default({})).items() %}
       {{ key }}="{{ value }}"
@@ -24,7 +24,7 @@
   </a>
 {%- endmacro %}
 
-{% macro dropdown(views, id, icon='menu', text='', class='', iclass=False) -%}
+{% macro dropdown(views, id, icon='menu', text='', class='', iclass=False, next=False) -%}
   {% if views|length %}
     {% if views|length > 1 %}
       <a
@@ -39,13 +39,13 @@
       <ul class="dropdown-content" id="{{ id }}">
         {% for view in views %}
         <li>
-            {{ a(view) }}
+            {{ a(view, next=next) }}
         </li>
         {% endfor %}
       </ul>
     {% else %}
       {% for view in views %}
-        {{ a(view, ' '.join([class, view.color|default('')]), iclass=iclass) }}
+        {{ a(view, ' '.join([class, view.color|default('')]), iclass=iclass, next=next) }}
       {% endfor %}
     {% endif %}
   {% endif %}

@@ -38,8 +38,10 @@
 {% endblock %}
 
 {% block form_close %}
-    <input type="hidden" name="_next" value="{{ request.GET.get('_next', request.POST.get('_next', request.META.get('HTTP_REFERER', ''))) }}" />
-    {% csrf_token %}
+  {% if view.next_url %}
+    <input type="hidden" name="_next" value="{{ view.next_url }}" />
+  {% endif %}
+  {% csrf_token %}
 </form>
 {% if not request.META.get('HTTP_X_MODAL') %}
 </div>

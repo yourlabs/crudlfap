@@ -62,7 +62,8 @@
       {{ crudlfap.dropdown(
         view.menu_views,
         'fixed-actions',
-        class='btn btn-floating red'
+        class='btn btn-floating red',
+        next=view.request.path_info
       ) }}
     </div>
     {% endblock %}

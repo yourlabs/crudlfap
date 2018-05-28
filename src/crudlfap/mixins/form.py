@@ -63,10 +63,16 @@ class FormMixin:
             })
         return self.form_kwargs
 
+    def get_next_url(self):
+        if '_next' in self.request.POST:
+            self.next_url = self.request.POST.get('_next')
+        if '_next' in self.request.GET:
+            self.next_url = self.request.GET.get('_next')
+
     def get_success_url(self):
-        if self.success_url_next and '_next' in self.request.POST:
-            return self.request.POST['_next']
-        if self.object and hasattr(self.object, 'get_absolute_url'):
+        if self.next_url:
+            return self.next_url
+        if hasattr(self, 'object') and hasattr(self.object, 'get_absolute_url'):
             return self.object.get_absolute_url()
         if self.router['list']:
             return self.router['list'].url

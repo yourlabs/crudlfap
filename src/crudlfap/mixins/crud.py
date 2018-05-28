@@ -16,6 +16,10 @@ class CreateMixin:
     log_action_flag = ADDITION
     menus = ['main', 'model']
 
+    def form_valid(self):
+        self.object = self.form.save()
+        return super().form_valid()
+
 
 class DeleteMixin:
     default_template_name = 'crudlfap/delete.html'
@@ -29,6 +33,10 @@ class DeleteMixin:
     action = 'click->modal#open'
     form_class = forms.Form
     menus = ['object', 'object_detail']
+
+    def form_valid(self):
+        self.object.delete()
+        return super().form_valid()
 
     def get_success_url(self):
         return self.router['list'].reverse()
@@ -107,3 +115,7 @@ class UpdateMixin:
         if hasattr(self.router, 'update_fields'):
             return self.router.update_fields
         return super().get_form_fields()
+
+    def form_valid(self):
+        self.object = self.form.save()
+        return super().form_valid()

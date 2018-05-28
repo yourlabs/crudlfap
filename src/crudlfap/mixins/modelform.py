@@ -13,7 +13,9 @@ class ModelFormMixin(ModelMixin, FormMixin):
 
     def get_form_kwargs(self):
         self.form_kwargs = super().get_form_kwargs()
-        if hasattr(self, 'object'):
+        if (hasattr(self, 'object')
+                and issubclass(self.form_class, model_forms.ModelForm)):
+
             self.form_kwargs.update({'instance': self.object})
         return self.form_kwargs
 
@@ -48,9 +50,9 @@ class ModelFormMixin(ModelMixin, FormMixin):
 
     def message_html(self, message):
         """Add the detail url for form.instance, if possible."""
-        if self.form.instance:
+        if self.object:
             try:
-                url = self.form.instance.get_absolute_url()
+                url = self.object.get_absolute_url()
             except:
                 return message
 
@@ -89,6 +91,5 @@ class ModelFormMixin(ModelMixin, FormMixin):
         )
 
     def form_valid(self):
-        self.object = self.form.save()
         self.log_insert()
         return super().form_valid()
