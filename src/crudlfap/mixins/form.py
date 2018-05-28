@@ -7,6 +7,7 @@ class FormMixin:
 
     success_url_next = True
     initial = {}
+    default_template_name = 'crudlfap/form.html'
 
     def form_valid(self):
         """If the form is valid, redirect to the supplied URL."""

@@ -5,7 +5,6 @@ from django.utils.translation import ugettext as _
 class ModelMixin(object):
     """Mixin for views using a Model class but no instance."""
     model = None
-    queryset = None
 
     menus = ['model']
     menus_display = ['model']
@@ -14,15 +13,6 @@ class ModelMixin(object):
 
     def get_exclude(self):
         return []
-
-    def get_required_permissions(self):
-        return [
-            '{}.{}_{}'.format(
-                self.app_name,
-                self.urlname,
-                self.model._meta.model_name
-            )
-        ]
 
     def get_fields(self):
         return [
@@ -55,7 +45,7 @@ class ModelMixin(object):
             )
         else:
             if self.model:
-                return self.model._default_manager.all()
+                qs = self.model._default_manager.all()
             else:
                 raise ImproperlyConfigured(
                     "%(cls)s is missing a QuerySet. Define "

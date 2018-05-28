@@ -60,12 +60,16 @@ class ModelFormView(mixins.ModelFormMixin, FormView):
     pass
 
 
-class CreateView(mixins.CreateMixin, mixins.ModelFormMixin, TemplateView):
+class CreateView(mixins.CreateMixin, ModelFormView):
     """View to create a model object."""
 
 
-class DeleteView(mixins.DeleteMixin, mixins.ObjectFormMixin, TemplateView):
+class DeleteView(mixins.DeleteMixin, ObjectFormView):
     """View to delete an object."""
+
+
+class DeleteObjectsView(mixins.DeleteMixin, ObjectsFormView):
+    """Delete selected objects."""
 
 
 class DetailView(mixins.DetailMixin, ObjectView):
@@ -86,8 +90,13 @@ class ListView(mixins.ListMixin, mixins.SearchMixin, mixins.FilterMixin,
             self.object_list = self.queryset
 
         if self.search_form:
-            object_list = self.search_form.get_queryset()
-        return object_list
+            self.object_list = self.search_form.get_queryset()
+        return self.object_list
+
+
+    def get_listactions(self):
+        import ipdb; ipdb.set_trace()
+        return self.router.get_menu('list_action', self.request)
 
 
 class UpdateView(mixins.UpdateMixin, ObjectFormView):

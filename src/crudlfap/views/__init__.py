@@ -2,6 +2,7 @@ from .debug import UrlsView
 from .generic import (
     CreateView,
     DeleteView,
+    DeleteObjectsView,
     DetailView,
     FormView,
     HistoryView,

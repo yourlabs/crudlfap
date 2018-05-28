@@ -3,18 +3,42 @@ from crudlfap import crudlfap
 from .models import Post
 
 
+class PostMixin:
+    def get_exclude(self):
+        if not self.request.user.is_staff:
+            return ['owner']
+        return super().get_exclude()
+
+
+class PostCreateView(PostMixin, crudlfap.CreateView):
+    def form_valid(self):
+        self.form.instance.owner = self.request.user
+        return super().form_valid()
+
+
+class PostUpdateView(PostMixin, crudlfap.UpdateView):
+    pass
+
+
+class PostListView(PostMixin, crudlfap.ListView):
+    def get_filter_fields(self):
+        if self.request.user.is_staff:
+            return ['owner']
+        return []
+
+
 class PostRouter(crudlfap.Router):
     fields = '__all__'
     icon = 'music'
     model = Post
 
     views = [
+        crudlfap.DeleteObjectsView,
         crudlfap.DeleteView,
-        crudlfap.UpdateView,
-        crudlfap.CreateView,
+        PostUpdateView,
+        PostCreateView,
         crudlfap.DetailView,
-        crudlfap.ListView.clone(
-            filter_fields=['owner'],
+        PostListView.clone(
             search_fields=['name'],
         ),
     ]
@@ -34,6 +58,9 @@ class PostRouter(crudlfap.Router):
     def get_objects_for_user(self, user, perms):
         if perms in [['blog.change_post'], ['blog.delete_post']]:
             return self.model.objects.get_queryset().editable(user)
-        return self.model.objects.get_queryset().readable(user)
+        elif perms in [['blog.list_post'], ['blog.detail_post']]:
+            return self.model.objects.get_queryset().readable(user)
+        else:
+            return self.model.objects.get_queryset().none()
 
 PostRouter().register()

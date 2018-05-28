@@ -1,4 +1,6 @@
 """CRUD :eMixins that can be used in Actions or Views."""
+import copy
+
 from django import forms
 from django import http
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
@@ -22,7 +24,6 @@ class CreateMixin:
 
 
 class DeleteMixin:
-    default_template_name = 'crudlfap/delete.html'
     style = 'danger'
     fa_icon = 'trash'
     material_icon = 'delete'
@@ -32,10 +33,13 @@ class DeleteMixin:
     controller = 'modal'
     action = 'click->modal#open'
     form_class = forms.Form
-    menus = ['object', 'object_detail']
+    short_permission_code = 'delete'
 
     def form_valid(self):
-        self.object.delete()
+        if hasattr(self, 'object_list'):
+            self.result = copy.copy(self.object_list).delete()
+        else:
+            self.result = self.object.delete()
         return super().form_valid()
 
     def get_success_url(self):
@@ -69,7 +73,6 @@ class DetailMixin:
                 else self.fields
             ) if field not in self.exclude
         ]
-        return self.display_field
 
 
 class HistoryMixin:
@@ -108,6 +111,7 @@ class UpdateMixin:
     color = 'orange'
     locks = True
     log_action_flag = CHANGE
+    short_permission_code = 'change'
 
     def get_form_fields(self):
         if hasattr(self, 'update_fields'):

@@ -69,6 +69,3 @@ class FilterMixin(object):
             (django_filters.FilterSet,),
             self.filterset_class_attributes
         )
-
-    def get_listactions(self):
-        return self.router.get_menu('list_action', self.request)

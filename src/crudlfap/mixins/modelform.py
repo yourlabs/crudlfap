@@ -23,10 +23,6 @@ class ModelFormMixin(ModelMixin, FormMixin):
         self.form = self.form_class(**self.form_kwargs)
 
     def get_form_fields(self):
-        if hasattr(self.router, 'form_fields'):
-            return self.router.form_fields
-        if hasattr(self.router, 'fields'):
-            return self.router.fields
         return self.fields
 
     def get_form_class(self):
@@ -50,7 +46,7 @@ class ModelFormMixin(ModelMixin, FormMixin):
 
     def message_html(self, message):
         """Add the detail url for form.instance, if possible."""
-        if self.object:
+        if getattr(self, 'object', None):
             try:
                 url = self.object.get_absolute_url()
             except:
@@ -81,15 +77,22 @@ class ModelFormMixin(ModelMixin, FormMixin):
         if not self.log_action_flag:
             return
 
-        LogEntry.objects.log_action(
-            self.request.user.pk,
-            ContentType.objects.get_for_model(self.model).pk,
-            self.object.pk,
-            str(self.object),
-            self.log_action_flag,
-            self.log_message,
-        )
+        if hasattr(self, 'object_list'):
+            objects = self.object_list
+        else:
+            objects = [self.object]
+
+        for obj in objects:
+            LogEntry.objects.log_action(
+                self.request.user.pk,
+                ContentType.objects.get_for_model(self.model).pk,
+                obj.pk,
+                str(obj),
+                self.log_action_flag,
+                self.log_message,
+            )
 
     def form_valid(self):
+        response = super().form_valid()
         self.log_insert()
-        return super().form_valid()
+        return response

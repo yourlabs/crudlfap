@@ -102,11 +102,17 @@ class Route(Factory, metaclass=RouteMetaclass):
         return self.reverse(*self.urlargs)
 
     def get_required_permissions(self):
-        return [
-            '{self.app_name}.{self.urlname}_{self.model._meta.model_name}'.format(  # noqa
-                self=self
-            )
-        ]
+        return [self.full_permission_code]
+
+    def get_short_permission_code(self):
+        return self.urlname
+
+    def get_full_permission_code(self):
+        return '{}.{}_{}'.format(
+            self.app_name,
+            self.short_permission_code,
+            self.model._meta.model_name
+        )
 
     def get_allowed(self):
         """
@@ -138,7 +144,7 @@ class Route(Factory, metaclass=RouteMetaclass):
         returns True for staff users by default.  If the view has no router
         then it returns True if the request user is_staff.
 
-        Override with a lambda in a factory if you want to open to all::
+        Override allowed if you want to open to all::
 
             YourView.factory(allowed=True)
 
