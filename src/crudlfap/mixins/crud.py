@@ -16,6 +16,7 @@ class CreateMixin:
     object_permission_check = False
     log_action_flag = ADDITION
     menus = ['main', 'model']
+    short_permission_code = 'add'
 
     def form_valid(self):
         self.object = self.form.save()

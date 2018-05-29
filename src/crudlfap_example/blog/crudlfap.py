@@ -44,6 +44,7 @@ class PostRouter(crudlfap.Router):
     ]
 
     def allowed(self, view):
+        """Example getting out of the django permission system."""
         user = view.request.user
         perms = view.required_permissions
 
@@ -54,7 +55,9 @@ class PostRouter(crudlfap.Router):
         elif perms == ['blog.delete_post']:
             if hasattr(view, 'object'):
                 return view.object.editable(user)
-            return True  # DeleteObjects relies on get_objects_for_user
+
+            # DeleteObjects relies on get_objects_for_user
+            return user.is_authenticated
 
         return True
 
