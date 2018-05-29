@@ -3,7 +3,7 @@ import { CONSTANTS } from './CONSTANTS';
 export module CommonFunction {
     export function loginByDev(browser) {
         browser
-            .url(CONSTANTS.BASE_URL)
+            .url(CONSTANTS.LOGIN_URL)
             .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
@@ -173,7 +173,7 @@ export module CommonFunction {
                     .click('input[id=id_name]')
                     .setValue('input[id=id_name]', songName)
 
-                    // duration input 
+                    // duration input
                     .assert.visible('input[id=id_duration]')
 
                     // owner selection

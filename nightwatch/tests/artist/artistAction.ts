@@ -42,7 +42,6 @@ module.exports = {
     'Artist : create artist by popup': async (browser: NightwatchBrowser) => {
         await CommonFunction.loginByDev(browser);
         const artistName = Math.random() + CONSTANTS.ARTIST.INPUT2 + Math.random();
-
         browser
             // after login go to artist create page direct
             .url(CONSTANTS.ARTIST.BASE_URL)
@@ -100,7 +99,7 @@ module.exports = {
                                 browser
                                     .assert.urlEquals(CONSTANTS.ARTIST.BASE_URL + '/' + contentId, 'Artist Detail url is the correct')
                                     .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
-                                    // check get data Id is correct 
+                                    // check get data Id is correct
                                     .assert.visible('#modal-body-ajax > div.modal-content > div > table > thead > tr:nth-child(1) > td')
                                     .assert.containsText('#modal-body-ajax > div.modal-content > div > table > thead > tr:nth-child(1) > td', contentId, 'Artist Id matched')
                                     .assert.visible('#modal-body-ajax > div.modal-content > div > table > thead > tr:nth-child(2) > td')

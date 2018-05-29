@@ -17,3 +17,4 @@ db.sqlite3
 .pytest_cache
 yarn-error.log
 _build/
+*.pyc
