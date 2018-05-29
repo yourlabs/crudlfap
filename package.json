@@ -1,6 +1,6 @@
 {
   "name": "crudlfap",
-  "version": "0.4.0-rc2",
+  "version": "0.4.0-rc6",
   "description": "CRUDLFA+ framework for Django 2.0",
   "main": "index.js",
   "scripts": {
@@ -29,7 +29,7 @@
   "homepage": "https://github.com/yourlabs/crudlfap#readme",
   "dependencies": {
     "babel-core": "^6.26.0",
-    "babel-jest": "^22.4.1",
+    "babel-jest": "^23.0.1",
     "babel-loader": "^7.1.3",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
@@ -38,11 +38,11 @@
     "debug": "^3.1.0",
     "enhanced-resolve": "^4.0.0",
     "eslint": "^4.18.1",
-    "extract-text-webpack-plugin": "^3.0.2",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^1.1.11",
     "form-serialize": "^0.7.2",
     "formdata-polyfill": "^3.0.10",
-    "jest": "^22.4.2",
+    "jest": "^23.0.1",
     "js-cookie": "^2.2.0",
     "materialize-css": "^1.0.0-rc.1",
     "node-sass": "^4.9.0",
@@ -53,7 +53,8 @@
     "turbolinks": "^5.1.1",
     "url-loader": "^1.0.1",
     "viewerjs": "^1.0.0",
-    "webpack": "3",
+    "webpack": "4",
+    "webpack-cli": "^2.1.4",
     "whatwg-fetch": "^2.0.4"
   },
   "jest": {
@@ -66,5 +67,6 @@
       "*{js,jsx}",
       "webpack.config.js"
     ]
-  }
+  },
+  "devDependencies": {}
 }
