@@ -20,7 +20,7 @@ class PostUpdateView(PostMixin, crudlfap.UpdateView):
     pass
 
 
-class PostListView(PostMixin, crudlfap.ListView):
+class PostListView(crudlfap.ListView):
     def get_filter_fields(self):
         if self.request.user.is_staff:
             return ['owner']
