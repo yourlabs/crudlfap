@@ -1,4 +1,6 @@
 from django import http
+from django.core.exceptions import ImproperlyConfigured
+from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from .model import ModelMixin
@@ -88,8 +90,10 @@ class ObjectMixin(ModelMixin):
 
     def get_template_names(self):
         """
-        Return a list of template names to be used for the request. May not be
-        called if render_to_response() is overridden. Return the following list:
+        Return a list of template names to be used for the request.
+
+        May not be called if render_to_response() is overridden. Return the
+        following list:
 
         * the value of ``template_name`` on the view (if provided)
         * the contents of the ``template_name_field`` field on the
@@ -98,7 +102,7 @@ class ObjectMixin(ModelMixin):
         """
         try:
             names = super().get_template_names()
-        except ImproperlyConfigured:
+        except (ImproperlyConfigured, AttributeError):
             # If template_name isn't specified, it's not a problem --
             # we just start with an empty list.
             names = []
@@ -111,8 +115,9 @@ class ObjectMixin(ModelMixin):
                 if name:
                     names.insert(0, name)
 
-            # The least-specific option is the default <app>/<model>_detail.html;
-            # only use this if the object in question is a model.
+            # The least-specific option is the default
+            # <app>/<model>_detail.html; only use this if the object in
+            # question is a model.
             if isinstance(self.object, models.Model):
                 object_meta = self.object._meta
                 names.append("%s/%s%s.html" % (
@@ -120,7 +125,7 @@ class ObjectMixin(ModelMixin):
                     object_meta.model_name,
                     self.template_name_suffix
                 ))
-            elif getattr(self, 'model', None) is not None and issubclass(self.model, models.Model):
+            elif self.model and issubclass(self.model, models.Model):
                 names.append("%s/%s%s.html" % (
                     self.model._meta.app_label,
                     self.model._meta.model_name,

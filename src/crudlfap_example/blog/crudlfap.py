@@ -49,9 +49,12 @@ class PostRouter(crudlfap.Router):
 
         if perms == ['blog.add_post']:
             return user.is_authenticated
-
-        if perms in [['blog.change_post'], ['blog.delete_post']]:
+        elif perms == ['blog.change_post']:
             return view.object.editable(user)
+        elif perms == ['blog.delete_post']:
+            if hasattr(view, 'object'):
+                return view.object.editable(user)
+            return True  # DeleteObjects relies on get_objects_for_user
 
         return True
 

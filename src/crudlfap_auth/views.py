@@ -86,8 +86,6 @@ class BecomeUser(crudlfap.ObjectView):
         return http.HttpResponseRedirect('/' + self.router.registry.urlpath)
 
 
-
-
 class Become(crudlfap.View):
     urlname = 'su'
 

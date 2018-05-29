@@ -1,12 +1,12 @@
 import collections
 
-import django_tables2 as tables
-from django_tables2.config import RequestConfig
-
 from django import template
 from django.db import models
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
+
+import django_tables2 as tables
+from django_tables2.config import RequestConfig
 
 
 class JinjaColumn(tables.Column):

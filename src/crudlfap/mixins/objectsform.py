@@ -18,6 +18,9 @@ class ObjectsFormMixin(ModelFormMixin):
     }
     menus = ['list_action']
 
+    def get_invalid_pks(self):
+        return len(self.request.GET.getlist('pks')) - len(self.object_list)
+
     def get_object_list(self):
         self.object_list = self.queryset.filter(
             pk__in=self.request.GET.getlist('pks')

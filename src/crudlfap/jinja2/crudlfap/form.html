@@ -27,6 +27,12 @@
   </ul>
   {% endif %}
 
+  {% if view.invalid_pks|default(0) %}
+  <div class="card-panel orange">
+      <span class="">{{ _('Objects ignored because of missing authorization') }}: {{ view.invalid_pks }}</span>
+  </div>
+  {% endif %}
+
   {{ render_form(view.form) }}
 {% endblock %}
 

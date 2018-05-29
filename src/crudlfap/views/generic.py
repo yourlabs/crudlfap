@@ -8,11 +8,10 @@ Crudlfa+ takes views further than Django and are expected to:
 - declare the names of the navigation menus they belong to.
 """
 from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
 from django.views import generic
 
-from ..route import Route
 from .. import mixins
+from ..route import Route
 
 
 if 'django.contrib.admin' in settings.INSTALLED_APPS:
@@ -93,9 +92,7 @@ class ListView(mixins.ListMixin, mixins.SearchMixin, mixins.FilterMixin,
             self.object_list = self.search_form.get_queryset()
         return self.object_list
 
-
     def get_listactions(self):
-        import ipdb; ipdb.set_trace()
         return self.router.get_menu('list_action', self.request)
 
 

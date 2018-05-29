@@ -89,7 +89,7 @@ class DetailView(Route, generic.DetailView):
 
     # Not setting this would require
     # request.user.has_perm('artist.detail_artist', obj) to pass
-    allowed = lambda view: True
+    allowed = True
 
     # This is done by crudlfap generic ObjectView, but here tests django
     # generic views

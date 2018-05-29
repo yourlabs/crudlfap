@@ -39,7 +39,7 @@ class TemplateMixin:
     def get_response_class(self):
         return TemplateResponse
 
-    def get_response_kwargs(eslf):
+    def get_response_kwargs(self):
         return dict(content_type='text/html')
 
     def get_context(self):

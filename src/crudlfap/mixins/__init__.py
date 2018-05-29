@@ -1,3 +1,5 @@
+# flake8: noqa: F401
+
 from .crud import (
     CreateMixin,
     DeleteMixin,

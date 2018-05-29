@@ -73,10 +73,14 @@ class FormMixin:
     def get_success_url(self):
         if self.next_url:
             return self.next_url
-        if hasattr(self, 'object') and hasattr(self.object, 'get_absolute_url'):
+
+        if (hasattr(self, 'object')
+                and hasattr(self.object, 'get_absolute_url')):
             return self.object.get_absolute_url()
+
         if self.router['list']:
             return self.router['list'].url
+
         return super().get_success_url()
 
     def message_success(self):
