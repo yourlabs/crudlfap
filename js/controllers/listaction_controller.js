@@ -1,4 +1,3 @@
-import M from 'materialize-css'
 import queryString from 'query-string'
 import { Controller } from 'stimulus'
 
