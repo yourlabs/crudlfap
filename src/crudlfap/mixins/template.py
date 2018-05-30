@@ -64,6 +64,9 @@ class TemplateMixin:
         """Return text for page heading."""
         return self.title
 
+    def get_template_name_suffix(self):
+        return self.urlname
+
     def get_template_names(self):
         """Give a chance to default_template_name."""
         template_names = []
@@ -71,14 +74,14 @@ class TemplateMixin:
         if template_name:
             template_names.append(template_name)
 
-        default_template_name = getattr(self, 'default_template_name', None)
-        if hasattr(super(), 'get_template_names'):
-            try:
-                template_names = super().get_template_names()
-            except ImproperlyConfigured:
-                if not default_template_name:
-                    raise
+        if getattr(self, 'model', None):
+            template_names.append('%s/%s%s.html' % (
+                self.model._meta.app_label,
+                self.model._meta.model_name,
+                self.template_name_suffix
+            ))
 
+        default_template_name = getattr(self, 'default_template_name', None)
         if default_template_name:
             template_names.append(default_template_name)
         logger.debug('TEMPLATE_NAMES', template_names)
