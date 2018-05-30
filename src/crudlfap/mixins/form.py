@@ -9,6 +9,10 @@ class FormMixin:
     initial = {}
     default_template_name = 'crudlfap/form.html'
 
+    def get_context(self, **context):
+        context['form'] = self.form
+        return super().get_context(**context)
+
     def form_valid(self):
         """If the form is valid, redirect to the supplied URL."""
         self.message_success()

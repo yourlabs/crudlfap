@@ -14,6 +14,10 @@ class ObjectMixin(ModelMixin):
     object_permission_check = True
     template_name_field = None
 
+    def get_context(self, **context):
+        context['object'] = self.object
+        return super().get_context(**context)
+
     def get_template_name_suffix(self):
         return '_{}'.format(self.urlname)
 

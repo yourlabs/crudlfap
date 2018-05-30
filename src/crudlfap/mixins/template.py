@@ -42,8 +42,9 @@ class TemplateMixin:
     def get_response_kwargs(self):
         return dict(content_type='text/html')
 
-    def get_context(self):
-        return dict(view=self)
+    def get_context(self, **context):
+        context['view'] = self
+        self.context = context
 
     def get_view_label(self):
         return self.label
