@@ -3,14 +3,6 @@ from django.utils.translation import ugettext as _
 from .modelform import ModelFormMixin
 
 
-def multiobject(func):
-    def newfunc(self):
-        for obj in self.object_list:
-            self.object = obj
-            func(self)
-    return newfunc
-
-
 class ObjectsFormMixin(ModelFormMixin):
     pluralize = True
     link_attributes = {
