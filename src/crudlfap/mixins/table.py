@@ -142,6 +142,7 @@ class TableMixin(object):
 
         if self.listactions:
             if 'sequence' in attrs:
+                attrs['sequence'] = list(attrs['sequence'])
                 attrs['sequence'].insert(0, 'crudlfap_checkbox')
                 attrs['sequence'].append('crudlfap')
             else:
