@@ -93,34 +93,42 @@ class TableMixin(object):
             )
         )
 
+    def get_table_meta_checkbox_column_template(self):
+        return '''
+            <label>
+                <input
+                    type="checkbox"
+                    data-controller="listaction"
+                    data-action="change->listaction#checkboxChange"
+                    data-pk="{{ record.pk }}"
+                />
+                <span></span>
+            </label>
+        '''
+
+    def get_table_meta_checkbox_column_verbose_name(self):
+        return '''
+            <label>
+                <input
+                    type="checkbox"
+                    data-controller="listaction"
+                    data-action="change->listaction#selectAllChange"
+                    data-master="1"
+                />
+                <span></span>
+            </label>
+        '''
+
     def get_table_meta_checkbox_column(self):
         if not self.listactions:
             return dict()
 
         return dict(
             crudlfap_checkbox=tables.TemplateColumn(
-                '''
-                <label>
-                    <input
-                        type="checkbox"
-                        data-controller="listaction"
-                        data-action="change->listaction#checkboxChange"
-                        data-pk="{{ record.pk }}"
-                    />
-                    <span></span>
-                </label>
-                ''',
-                verbose_name=mark_safe('''
-                <label>
-                    <input
-                        type="checkbox"
-                        data-controller="listaction"
-                        data-action="change->listaction#selectAllChange"
-                        data-master="1"
-                    />
-                    <span></span>
-                </label>
-                '''),
+                self.table_meta_checkbox_column_template,
+                verbose_name=mark_safe(
+                    self.table_meta_checkbox_column_verbose_name
+                ),
                 orderable=False,
             )
         )
