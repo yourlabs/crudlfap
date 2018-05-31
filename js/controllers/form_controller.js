@@ -63,7 +63,6 @@ export default class extends Controller {
         target.innerHTML = source.innerHTML
 
         init(target)
-        this.focus()
 
         if (url && url != window.location.href) {
           window.history.pushState({}, title, url)
