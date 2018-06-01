@@ -27,8 +27,8 @@ module.exports = {
 
             .assert.visible('span[class="sidenav-trigger"]')
             .click('span[class="sidenav-trigger"]')
-            .waitForElementVisible('ul#slide-out li.no-padding a[href="/login"]', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
-
+            // .waitForElementVisible('div[class="sidenav-overlay"]', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+            
             .elements('css selector', 'ul#slide-out li.no-padding a[href="/login"]', (result) => {
                 browser.assert.equal(result.value.length, 1)
             })
@@ -37,14 +37,14 @@ module.exports = {
 
     'After Login: Menu should contains the "logout" option': (browser: NightwatchBrowser) => {
         browser
-            .url(CONSTANTS.BASE_URL)
+            .url(CONSTANTS.LOGIN_URL)
             .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
 
-            .elements('css selector', 'ul#slide-out li.no-padding a[href="/login"]', (result) => {
-                browser.assert.equal(result.value.length, 1)
-            })
+            // .elements('css selector', 'ul#slide-out li.no-padding a[href="/login"]', (result) => {
+            //     browser.assert.equal(result.value.length, 1)
+            // })
 
-            .click('ul#slide-out li.no-padding a[href="/login"]')
+            // .click('ul#slide-out li.no-padding a[href="/login"]')
 
             .waitForElementVisible('input[id=id_username]', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .assert.visible('input[id=id_username]')
@@ -65,7 +65,7 @@ module.exports = {
                 browser.assert.equal(result.value.length, 1)
             })
             .click('ul#slide-out li.no-padding a[href="/logout"]')
-            .waitForElementVisible('ul[class="right"] li a[href="/login"]', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+            .waitForElementVisible('body > div.navbar-fixed > nav > div > ul > li > a', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .end();
     },
     'After Logout: Menu should contains "login" option': (browser: NightwatchBrowser) => {
