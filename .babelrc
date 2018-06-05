@@ -1,5 +1,12 @@
 {
-  "presets": ["env", "stage-2"]
+  "presets": [["env", {
+    "useBuiltIns": "entry",
+    "forceAllTransforms": true,
+    "ignoreBrowserslistConfig": false,
+    "modules": false,
+    "debug": false,
+    "targets": {
+      "browsers": ["> 1%", "IE 11"],
+    }
+  }], "stage-2"],
 }
-
-
