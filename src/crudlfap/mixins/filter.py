@@ -60,8 +60,13 @@ class FilterMixin(object):
     def get_filterset_meta_class(self):
         return type('Meta', (object,), self.filterset_meta_attributes)
 
+    def get_filterset_extra_class_attributes(self):
+        return dict()
+
     def get_filterset_class_attributes(self):
-        return dict(Meta=self.filterset_meta_class)
+        res = dict(Meta=self.filterset_meta_class)
+        res.update(self.filterset_extra_class_attributes)
+        return res
 
     def get_filterset_class(self):
         return type(
