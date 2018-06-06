@@ -64,7 +64,7 @@ class TemplateMixin:
         return self.title
 
     def get_template_name_suffix(self):
-        return self.urlname
+        return '_' + self.urlname
 
     def get_template_names(self):
         """Give a chance to default_template_name."""
