@@ -1,6 +1,5 @@
 import logging
 
-from django.core.exceptions import ImproperlyConfigured
 from django.template.response import TemplateResponse
 from django.utils.translation import ugettext as _
 
