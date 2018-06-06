@@ -27,6 +27,12 @@
                       class="waves-effect"
                       href="{{ v.url }}"
                       title="{% if v.title_link %}{{ v.title_link }}{% endif %}"
+                      {%- for key, value in (view.link_attributes|default({})).items() %}
+                      {{ key }}="{{ value.replace('"', '\\"') }}"
+                      {%- endfor %}
+                      {%- if not view.turbolinks|default(True) %}
+                      data-turbolinks="false"
+                      {%- endif %}
                     >{% if v.material_icon %}<i class="material-icons">{{ v.material_icon }}</i>{% endif %}{{ v.title_menu.capitalize() }}</a>
                   </li>
                 {% endfor %}
