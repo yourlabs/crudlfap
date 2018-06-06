@@ -4,7 +4,7 @@ import { CONSTANTS } from '../shared/CONSTANTS';
 module.exports = {
   'Login : submit with wrong credentials': (browser: NightwatchBrowser) => {
     browser
-      .url(CONSTANTS.BASE_URL)
+      .url(CONSTANTS.LOGIN_URL)
       .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
 
       .assert.visible('input[id=id_username]')
@@ -24,7 +24,7 @@ module.exports = {
 
   'Login : submit with correct credentials': (browser: NightwatchBrowser) => {
     browser
-      .url(CONSTANTS.BASE_URL)
+      .url(CONSTANTS.LOGIN_URL)
       .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
 
       .assert.visible('input[id=id_username]')

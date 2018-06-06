@@ -4,8 +4,8 @@
   "description": "CRUDLFA+ framework for Django 2.0",
   "main": "index.js",
   "scripts": {
-    "start": "webpack --watch",
-    "prepare": "webpack",
+    "start": "webpack-cli --watch",
+    "prepare": "webpack-cli",
     "test": "jest",
     "lint": "eslint js",
     "chrome-browser-test": "cd nightwatch && yarn test",
