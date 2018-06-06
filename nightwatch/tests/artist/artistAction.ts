@@ -47,8 +47,8 @@ module.exports = {
             .url(CONSTANTS.ARTIST.BASE_URL)
             .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
 
-            .assert.visible('body > div.fixed-actions > a[href="/artist/create"]')
-            .click('body > div.fixed-actions > a[href="/artist/create"]', () => {
+            .assert.visible('body > div.fixed-actions > a[href="/artist/create?_next=/artist"]')
+            .click('body > div.fixed-actions > a[href="/artist/create?_next=/artist"]', () => {
                 browser
                     .waitForElementVisible('#modal', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
                     .pause(CONSTANTS.PAUSE_TIMEOUT)
@@ -97,7 +97,7 @@ module.exports = {
                             .assert.visible('#row-actions-' + contentId + ' > li:nth-child(3) > a')
                             .click('#row-actions-' + contentId + ' > li:nth-child(3) > a', () => {
                                 browser
-                                    .assert.urlEquals(CONSTANTS.ARTIST.BASE_URL + '/' + contentId, 'Artist Detail url is the correct')
+                                    .assert.urlEquals(CONSTANTS.ARTIST.BASE_URL + '/' + contentId + '?_next=/artist', 'Artist Detail url is the correct')
                                     .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
                                     // check get data Id is correct
                                     .assert.visible('#modal-body-ajax > div.modal-content > div > table > thead > tr:nth-child(1) > td')
