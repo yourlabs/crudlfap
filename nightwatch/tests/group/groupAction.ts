@@ -75,18 +75,18 @@ module.exports = {
             .setValue('input[id=id_name]', groupName)
 
             // permission input
-            .assert.visible('#id_permissions_container > div > input')
-            .click('#id_permissions_container > div > input', () => {
-                browser
-                    .expect.element('#id_permissions_container > div > ul').to.have.css('display').which.equal('block')
-            })
-            .pause(CONSTANTS.PAUSE_TIMEOUT)
-            // click on option
-            .click('#id_permissions_container > div > ul > li:nth-child(4)')
-            .pause(CONSTANTS.PAUSE_TIMEOUT)
-            .click('#id_permissions_container > div > ul > li:nth-child(6)')
-            .pause(CONSTANTS.PAUSE_TIMEOUT)
-            .click('input[id=id_name]')
+            // .assert.visible('#id_permissions_container > div > input')
+            // .click('#id_permissions_container > div > input', () => {
+            //     browser
+            //         .expect.element('#id_permissions_container > div > ul').to.have.css('display').which.equal('block')
+            // })
+            // .pause(CONSTANTS.PAUSE_TIMEOUT)
+            // // click on option
+            // .click('#id_permissions_container > div > ul > li:nth-child(4)')
+            // .pause(CONSTANTS.PAUSE_TIMEOUT)
+            // .click('#id_permissions_container > div > ul > li:nth-child(6)')
+            // .pause(CONSTANTS.PAUSE_TIMEOUT)
+            // .click('input[id=id_name]')
             .pause(CONSTANTS.PAUSE_TIMEOUT)
 
             // submit button
@@ -119,8 +119,8 @@ module.exports = {
             .url(CONSTANTS.GROUP.BASE_URL)
             .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
 
-            .assert.visible('body > div.fixed-actions > a[href="/group/create"]')
-            .click('body > div.fixed-actions > a[href="/group/create"]', () => {
+            .assert.visible('body > div.fixed-actions > a[href="/group/create?_next=/group"]')
+            .click('body > div.fixed-actions > a[href="/group/create?_next=/group"]', () => {
                 browser
                     .waitForElementVisible('#modal', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
                     .pause(CONSTANTS.PAUSE_TIMEOUT)
@@ -130,19 +130,19 @@ module.exports = {
                     // name input
                     .assert.visible('input[id=id_name]')
                     .setValue('input[id=id_name]', groupName)
-                    // permission input
-                    .assert.visible('#id_permissions_container > div > input')
-                    .click('#id_permissions_container > div > input', () => {
-                        browser
-                            .expect.element('#id_permissions_container > div > ul').to.have.css('display').which.equal('block')
-                    })
-                    .pause(CONSTANTS.PAUSE_TIMEOUT)
-                    // click on option
-                    .click('#id_permissions_container > div > ul > li:nth-child(4)')
-                    .pause(CONSTANTS.PAUSE_TIMEOUT)
-                    .click('#id_permissions_container > div > ul > li:nth-child(6)')
-                    .pause(CONSTANTS.PAUSE_TIMEOUT)
-                    .click('input[id=id_name]')
+                    // // permission input
+                    // .assert.visible('#id_permissions_container > div > input')
+                    // .click('#id_permissions_container > div > input', () => {
+                    //     browser
+                    //         .expect.element('#id_permissions_container > div > ul').to.have.css('display').which.equal('block')
+                    // })
+                    // .pause(CONSTANTS.PAUSE_TIMEOUT)
+                    // // click on option
+                    // .click('#id_permissions_container > div > ul > li:nth-child(4)')
+                    // .pause(CONSTANTS.PAUSE_TIMEOUT)
+                    // .click('#id_permissions_container > div > ul > li:nth-child(6)')
+                    // .pause(CONSTANTS.PAUSE_TIMEOUT)
+                    // .click('input[id=id_name]')
 
                     .pause(CONSTANTS.PAUSE_TIMEOUT)
 
@@ -225,7 +225,7 @@ module.exports = {
                             .clearValue('input[id=id_name]')
                             .setValue('input[id=id_name]', groupName)
                             // permission input
-                            .assert.visible('#id_permissions_container > div > input')
+                            // .assert.visible('#id_permissions_container > div > input')
                             // .click('#id_permissions_container > div > input', () => {
                             //     browser
                             //         .expect.element('#id_permissions_container > div > ul').to.have.css('display').which.equal('block');

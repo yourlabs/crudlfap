@@ -6,7 +6,7 @@ module.exports = {
         // console.log("Before working!");
         // login user with correct crednetials
         browser
-            .url(CONSTANTS.BASE_URL)
+            .url(CONSTANTS.LOGIN_URL)
             .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
 
             .assert.visible('input[id=id_username]')
