@@ -87,6 +87,9 @@ class FormMixin:
 
         return super().get_success_url()
 
+    def message_html(self, message):
+        return message
+
     def message_success(self):
         messages.success(
             self.request,
