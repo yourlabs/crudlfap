@@ -12,7 +12,7 @@ def read(fname):
 
 setup(
     name='crudlfap',
-    version='0.3.44',
+    version='0.4.2',
     description='Rich frontend for generic views with Django',
     author='James Pic',
     author_email='jamespic@gmail.com',
