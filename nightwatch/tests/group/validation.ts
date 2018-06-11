@@ -12,15 +12,6 @@ module.exports = {
             // name input
             .assert.containsText('#id_name_container > label', 'Name')
             .assert.visible('input[id=id_name]')
-            // permission input //select-dropdown dropdown-trigger
-            // .assert.containsText('#id_permissions_container > label', 'Permissions')
-            // .elements('css selector', 'div#id_permissions_container ul.multiple-select-dropdown', (result) => {
-            //     browser.assert.equal(result.value.length, 1, "Testing if element multiple select box is visible")
-            // })
-            // .elements('css selector', 'div#id_permissions_container ul.multiple-select-dropdown li', (result) => {
-            //     browser.assert.notEqual(result.value.length, 0, "Testing if element multiple select box have option is visible") // have 31 option
-            // })
-
             // submit button
             .assert.visible('#form-object-group .modal-footer button[type=submit]')
             .click('#form-object-group .modal-footer button[type=submit]')
