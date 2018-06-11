@@ -1,6 +1,7 @@
 export const CONSTANTS = {
     BASE_URL: 'http://localhost:8000',
     LOGIN_URL: 'http://localhost:8000/login',
+    LOGOUT_URL: 'http://localhost:8000/logout',
     GROUP: {
         BASE_URL: 'http://localhost:8000/group',
         CREATE: 'http://localhost:8000/group/create',

@@ -28,11 +28,7 @@ module.exports = {
             // on logout page
             .waitForElementVisible('ul[class="right"] li a[href="/login"]', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
 
-            // .assert.visible('div[id="modal-body-ajax"] h2')
-            // .assert.containsText('div[id="modal-body-ajax"] h2', 'You have been logged-out !')
-
-            // .assert.visible('div[id="modal-body-ajax"] p')
-            // .assert.containsText('div[id="modal-body-ajax"] p', 'Thanks for the time you spent with us today')
+            .assert.urlEquals(CONSTANTS.LOGOUT_URL, 'Logout url is the correct')
 
             .end();
     }
