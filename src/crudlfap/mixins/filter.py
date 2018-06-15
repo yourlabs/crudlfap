@@ -1,3 +1,4 @@
+from django import forms
 from django.db import models
 
 import django_filters
@@ -27,12 +28,18 @@ class FilterMixin(object):
 
         return fs
 
+    def get_filterset_data_default(self):
+        return None
+
+    def get_filterset_data(self):
+        return self.request.GET.copy() or self.get_filterset_data_default()
+
     def get_filterset_kwargs(self):
         """
         Returns the keyword arguments for instanciating the filterset.
         """
         return {
-            'data': self.request.GET or None,
+            'data': self.filterset_data,
             'request': self.request,
             'queryset': self.queryset,
         }
@@ -50,11 +57,25 @@ class FilterMixin(object):
     def get_filter_fields(self):
         return []
 
+    def get_filterset_form_class(self):
+        return type(
+            'FiltersetForm',
+            (forms.Form,),
+            {
+                '_layout': self.filterset_form_layout,
+            }
+        )
+
+    def get_filterset_form_layout(self):
+        return None
+
     def get_filterset_meta_attributes(self):
         return dict(
             model=self.model,
             fields=self.filter_fields,
-            filter_overrides=self.filterset_meta_filter_overrides
+            filter_overrides=self.filterset_meta_filter_overrides,
+            form=self.filterset_form_class,
+            strict=django_filters.STRICTNESS.IGNORE,
         )
 
     def get_filterset_meta_class(self):
