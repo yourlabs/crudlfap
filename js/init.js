@@ -8,4 +8,10 @@ export default function(el) {
     constrainWidth: false,
     coverTrigger: false,
   })
+  for (let element of document.querySelectorAll('.crudlfap-datepicker')) {
+    M.Datepicker.init(element, {
+      showClearBtn: element.getAttribute('data-clearable'),
+      format: element.getAttribute('data-format'),
+    })
+  }
 }
