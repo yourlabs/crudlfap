@@ -5,14 +5,15 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-cli --watch",
-    "prepare": "webpack-cli",
+    "prepare": "npm run snyk-protect; webpack-cli",
     "test": "jest",
     "lint": "eslint js",
     "chrome-browser-test": "cd nightwatch && yarn test",
     "ie-browser-test": "cd nightwatch && yarn test -e internet_explorer",
     "firefox-browser-test": "cd nightwatch && yarn test -e firefox",
     "eslint-nightwatch": "cd nightwatch && yarn run lint",
-    "browser-test": "cd nightwatch && yarn run test --config nightwatch-driver.json"
+    "browser-test": "cd nightwatch && yarn run test --config nightwatch-driver.json",
+    "snyk-protect": "snyk protect"
   },
   "repository": {
     "type": "git",
@@ -57,7 +58,8 @@
     "webpack": "4.11.0",
     "webpack-cli": "^3.0.2",
     "whatwg-fetch": "^2.0.4",
-    "yarn": "^1.7.0"
+    "yarn": "^1.7.0",
+    "snyk": "^1.83.0"
   },
   "jest": {
     "verbose": true,
@@ -69,5 +71,6 @@
       "*{js,jsx}",
       "webpack.config.js"
     ]
-  }
+  },
+  "snyk": true
 }
