@@ -64,8 +64,6 @@ module.exports = {
             .elements('css selector', '#slide-out > li:nth-child(4) > a[href="/logout"]', (result) => {
                 browser.assert.equal(result.value.length, 1)
             })
-            .click('ul#slide-out li.no-padding a[href="/logout"]')
-            .waitForElementVisible('ul[class="right"] li a[href="/login"]', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .end();
     },
     'After Logout: Menu should contains "login" option': (browser: NightwatchBrowser) => {
