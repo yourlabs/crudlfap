@@ -1,7 +1,7 @@
 <nav>
   <div class="nav-wrapper">
     <div class="col s12">
-      <a style="padding-left: 1em" href="{{ crudlfap_site.views['home'].url }}">{{ _('Home') }}</a>
+      <a class="breadcrumb" style="padding-left: 1em" href="{{ crudlfap_site.views['home'].url }}">{{ _('Home') }}</a>
       {% if view.model %}
         {% set v = crudlfap_site[view.model]['list'](request=request) %}
         {% if v.allowed %}
