@@ -3,13 +3,49 @@ import { Controller } from 'stimulus'
 import M from 'materialize-css'
 import init from '../init.js'
 
+var loader = `<div class="preloader-wrapper small active">
+  <div class="spinner-layer spinner-red-only">
+    <div class="circle-clipper left">
+      <div class="circle"></div>
+    </div><div class="gap-patch">
+      <div class="circle"></div>
+    </div><div class="circle-clipper right">
+      <div class="circle"></div>
+    </div>
+  </div>
+</div>`
+
+
 export default class extends Controller {
+  get buttons() {
+    return this.element.querySelectorAll('[type=submit]')
+  }
+
+  enable() {
+    for (let e of this.buttons) {
+      e.removeAttribute('disabled', '')
+      e.innerHTML = e.getAttribute('data-initial')
+    }
+  }
+
+  disable() {
+    for (let e of this.buttons) {
+      e.setAttribute('disabled', true)
+      if (!e.hasAttribute('data-initial')) {
+        e.setAttribute('data-initial', e.innerHTML)
+      }
+      e.innerHTML = loader
+    }
+  }
+
   submit(e) {
     if (this.element.id === undefined) {
       // console.warn('Skipping ajax because form tag has no id attr')
       return
     }
+    this.disable()
     e.preventDefault()
+
     var url = this.element.getAttribute('action')
     var formData = new FormData(this.element)
 
@@ -77,6 +113,8 @@ export default class extends Controller {
         if (url && url != window.location.href) {
           window.history.pushState({}, title, url)
         }
+
+        this.context.controller.enable()
       })
     })
   }
