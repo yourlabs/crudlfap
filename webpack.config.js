@@ -10,6 +10,7 @@ var production = process.env.NODE_ENV == 'production'
 
 var cfg = {
   context: __dirname,
+  mode: production ? 'production' : 'development',
 
   entry: {
     main: [
