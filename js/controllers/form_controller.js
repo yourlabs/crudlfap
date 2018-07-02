@@ -23,6 +23,16 @@ export default class extends Controller {
         'Cache-Control': 'no-cache',
       }
     }).then(res => {
+      if (!res.ok) {
+        M.toast({
+          html: res.status + ' : ' + res.statusText,
+          classes: 'red white-text',
+          displayLength: 15000,
+        })
+        this.context.controller.enable()
+        return
+      }
+
       res.text().then(text => {
         var parser = new DOMParser()
         var doc = parser.parseFromString(text, 'text/html')
