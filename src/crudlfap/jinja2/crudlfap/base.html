@@ -39,7 +39,7 @@
       {% block form_open %}{% endblock %}
         <div class="modal-content">
         {% block title_heading %}
-          {% if view.title_heading %}
+          {% if view.title_heading and request.META.get('HTTP_X_MODAL') %}
           <h4
             class="text-{{ view.style|default('default') }} {% block title_heading_class %}{% endblock %}"
             id="modal-title-ajax"
