@@ -34,6 +34,8 @@ export const CONSTANTS = {
     USER: {
         BASE_URL: 'http://localhost:8000/user',
         CREATE: 'http://localhost:8000/user/create',
+        INVALID_USER: 'test @123',
+        EXISTING_USER: 'dev',
         INPUT_USER: 'test@123',
         INPUT_EMAIL: 'test@123.com'
     },
@@ -41,7 +43,8 @@ export const CONSTANTS = {
         BASE_URL: 'http://localhost:8000/post',
         CREATE: 'http://localhost:8000/post/create',
         INPUT_TITLE: 'Test Post',
-        INPUT_EMAIL: '2018-05-17 13:41:00'
+        INPUT_TITLE2: 'Test Post 2',
+        EDIT_INPUT: 'Update post'
     },
     WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT: 3000,
     PAUSE_TIMEOUT: 3000,
