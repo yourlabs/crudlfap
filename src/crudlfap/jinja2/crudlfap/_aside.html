@@ -1,0 +1,51 @@
+<aside class="mdc-drawer mdc-drawer--persistent">
+  <nav class="mdc-drawer__drawer">
+    {% include 'crudlfap/_aside_header.html' %}
+    <nav class="mdc-drawer__content mdc-list-group">
+      {% for app, routers in crudlfap_site.get_app_menus('main', request).items() %}
+        {% for router in routers %}
+          <h3 class="drawer-heading">
+            {% if router.material_icon %}
+            <i
+              class="material-icons mdc-list-item__graphic"
+              aria-hidden="true"
+            >{{ router.material_icon }}</i>
+            {% endif %}
+            {{ router.model._meta.verbose_name_plural.capitalize() }}
+          </h3>
+          <ul class="drawer-list">
+          {% for v in router.get_menu('model', request) %}
+            <li class="drawer-list__item">
+              <a
+                class="mdc-list-item {% if view == v %}mdc-list-item--selected{% endif %}"
+                tabindex="-1"
+                data-mdc-tabindex="-1"
+                data-mdc-tabindex-handled="true"
+                href="{{ v.url }}"
+                {% if v.title_link %}title="{{ v.title_link }}"{% endif %}
+                {%- for key, value in (v.link_attributes|default({})).items() %}
+                {{ key }}="{{ value.replace('"', '\\"') }}"
+                {%- endfor %}
+                {%- if not v.turbolinks|default(True) %}
+                data-turbolinks="false"
+                {%- endif %}
+              >
+                <i
+                  class="material-icons mdc-list-item__graphic"
+                  aria-hidden="true"
+                >{{ v.material_icon }}</i>
+                {% if loop.length > 1 %}
+                  {{ v.title_menu.capitalize() }}
+                {% else %}
+                  {{ router.model._meta.verbose_name_plural.capitalize() }}
+                  {{ v.title_menu.capitalize() }}
+                {% endif %}
+              </a>
+            </li>
+          {% endfor %}
+          </ul>
+        {% endfor %}
+      {% endfor %}
+    </nav>
+  </nav>
+</aside>

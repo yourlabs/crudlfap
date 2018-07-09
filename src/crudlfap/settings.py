@@ -174,7 +174,7 @@ INSTALLED_APPS = DJANGO_APPS + CRUDLFAP_APPS
 
 # CRUDLFA+ optional dependencies
 OPTIONAL_APPS = [
-    # {'debug_toolbar': {'after': 'django.contrib.staticfiles'}},
+    {'debug_toolbar': {'after': 'django.contrib.staticfiles'}},
     {'django_extensions': {'before': 'crudlfap'}},
     {'collectdir': {'before': 'crudlfap'}},
 ]
@@ -190,7 +190,7 @@ MIDDLEWARE = [
 ]
 
 OPTIONAL_MIDDLEWARE = [
-    # {'debug_toolbar.middleware.DebugToolbarMiddleware': None}
+    {'debug_toolbar.middleware.DebugToolbarMiddleware': None}
 ]
 
 INTERNAL_IPS = ('127.0.0.1',)
@@ -329,7 +329,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/

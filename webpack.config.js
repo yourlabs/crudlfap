@@ -1,6 +1,7 @@
 var path = require('path')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const autoprefixer = require('autoprefixer');
 
 const extractSass = new ExtractTextPlugin({
   filename: 'crudlfap.css',
@@ -62,9 +63,17 @@ var cfg = {
               }
             },
             {
+              loader: 'postcss-loader',
+              options: {
+                sourceMap: true,
+                plugins: () => [autoprefixer()]
+              }
+            },
+            {
               loader: 'sass-loader',
               options: {
-                sourceMap: true
+                sourceMap: true,
+                includePaths: ['./node_modules']
               }
             }
           ]

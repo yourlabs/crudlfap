@@ -30,42 +30,17 @@
     {% block extra_style %}{% endblock %}
   </head>
 
-  <body class="{% block body_class %}{{ view.body_class|default('') }}{% endblock %}">
-    {% include 'crudlfap/_menu_main.html' %}
-    {% block breadcrumb %}{% endblock %}
-    {% include 'crudlfap/_messages.html' %}
-    {% block before_container %}{% endblock %}
-    {% block content_open %}<div class="{% if view.body_class|default('') != 'full-width' %}container{% endif %}" id="modal-body-ajax">{% endblock %}
-      {% block form_open %}{% endblock %}
-        <div class="modal-content">
-        {% block title_heading %}
-          {% if view.title_heading and request.META.get('HTTP_X_MODAL') %}
-          <h4
-            class="text-{{ view.style|default('default') }} {% block title_heading_class %}{% endblock %}"
-            id="modal-title-ajax"
-          >{{ view.title_heading }}</h4>
-          {% endif %}
-        {% endblock %}
-          {% block content %}{% block form %}{% endblock %}{% endblock %}
-        </div>
-        <div class="modal-footer">
-          {% block buttons %}{% endblock %}
-        </div>
-      {% block form_close %}{% endblock %}
-
-    {% block content_close %}</div>{% endblock %}
-
-    <div id="modal" class="modal modal-fixed-footer"></div>
-
-    {% block after_container %}
-    <div class="fixed-actions">
-      {{ crudlfap.dropdown(
-        view.menu_views,
-        'fixed-actions',
-        class='btn btn-floating red',
-        next=view.request.path_info
-      ) }}
+  <body class="mdc-typography {% block body_class %}{{ view.body_class|default('') }}{% endblock %}">
+    <div id="root">
+	  <div class="top-app-bar__frame">
+	    <div class="drawer-container-flex">
+          {% include 'crudlfap/_aside.html' %}
+          {% include 'crudlfap/_header.html' %}
+	      <div class="mdc-top-app-bar--fixed-adjust">
+			{% block content %}{% endblock %}
+	      </div>
+	    </div>
+	  </div>
     </div>
-    {% endblock %}
   </body>
 </html>
