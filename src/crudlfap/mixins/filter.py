@@ -75,7 +75,6 @@ class FilterMixin(object):
             fields=self.filter_fields,
             filter_overrides=self.filterset_meta_filter_overrides,
             form=self.filterset_form_class,
-            strict=django_filters.STRICTNESS.IGNORE,
         )
 
     def get_filterset_meta_class(self):
