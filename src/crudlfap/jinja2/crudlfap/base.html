@@ -32,6 +32,7 @@
   </head>
 
   <body class="{% block body_class %}{{ view.body_class|default('') }}{% endblock %}">
+    {% include 'crudlfap/_loader.html' %}
     {% include 'crudlfap/_menu_main.html' %}
     {% block breadcrumb %}{% endblock %}
     {% include 'crudlfap/_messages.html' %}
