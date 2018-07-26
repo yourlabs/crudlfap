@@ -51,6 +51,7 @@ class BecomeUser(crudlfap.ObjectView):
     menus = ['object']
     material_icon = 'attach_money'
     color = 'pink darken-4'
+    link_attributes = {'data-noprefetch': 'true'}
 
     def get_allowed(self):
         return self.request.user.is_superuser
