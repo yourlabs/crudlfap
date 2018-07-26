@@ -342,4 +342,6 @@ class Router(object):
 
     def get_fields_for_user(self, user, perms, obj=None):
         """Return the list of fields for a user."""
-        return [f.name for f in self.model._meta.fields]
+        fields = list(self.model._meta.fields)
+        fields += list(self.model._meta.local_many_to_many)
+        return [f.name for f in fields]
