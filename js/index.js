@@ -100,10 +100,16 @@ document.addEventListener('mouseover', event => {
 })
 
 document.addEventListener('turbolinks:click', () => {
-  document.getElementById('main-loader').style.display = 'flex'
+  var e = document.getElementById('main-loader')
+  if (e !== undefined) {
+    e.style.display = 'flex'
+  }
 })
 document.addEventListener('turbolinks:render', () => {
-  document.getElementById('main-loader').style.display = 'none'
+  var e = document.getElementById('main-loader')
+  if (e !== undefined) {
+    e.style.display = 'none'
+  }
 })
 
 export default application
