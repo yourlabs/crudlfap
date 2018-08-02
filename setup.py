@@ -12,7 +12,7 @@ def read(fname):
 
 setup(
     name='crudlfap',
-    version='0.4.2',
+    version='0.4.12',
     description='Rich frontend for generic views with Django',
     author='James Pic',
     author_email='jamespic@gmail.com',
@@ -29,7 +29,7 @@ setup(
         'django-jinja',
         'django-bootstrap3',
         'django-material',
-        'django-tables2>=2.0.0a0',
+        'django-tables2==2.0.0a3',
         'django-filter',
         'django-betterforms',
         'timeago',

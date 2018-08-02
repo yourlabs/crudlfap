@@ -8,6 +8,7 @@ import './style.sass'
   if (window.Turbolinks === undefined) {
     var Turbolinks = require('turbolinks')
     Turbolinks.start()
+    Turbolinks.setProgressBarDelay(250)
   }
 
   // support to IE
@@ -61,6 +62,53 @@ document.addEventListener('click', function(e) {
     if (instance && instance.isOpen && ! dropdown.parentElement.contains(e.target)) {
       instance.close()
     }
+  }
+})
+
+const fetchers = {}
+
+function prefetchCleanup(event) {
+  clearTimeout(fetchers[event.target.href])
+  event.target.removeEventListener('mouseleave', prefetchCleanup)
+}
+
+// link preload on hover poc by @hopsoft
+// https://github.com/turbolinks/turbolinks/issues/313#issuecomment-407108379
+document.addEventListener('mouseover', event => {
+  let url = event.target.href
+  if (!event.target.href) return
+  clearTimeout(fetchers[url])
+  if (window.Turbolinks.controller.cache.has(url)) return
+  if (event.target.dataset.noprefetch) return
+
+
+  event.target.addEventListener('mouseleave', prefetchCleanup)
+
+  fetchers[url] = setTimeout(() => {
+    const iframe = document.createElement('iframe')
+    iframe.setAttribute('style', 'display:none')
+    iframe.setAttribute('src', url)
+    iframe.addEventListener('load', () => {
+      window.Turbolinks.controller.cache.put(
+        url,
+        window.Turbolinks.Snapshot.fromElement(iframe.contentDocument.documentElement)
+      )
+      iframe.parentElement.removeChild(iframe)
+    })
+    document.body.appendChild(iframe)
+  }, 250)
+})
+
+document.addEventListener('turbolinks:click', () => {
+  var e = document.getElementById('main-loader')
+  if (e !== undefined) {
+    e.style.display = 'flex'
+  }
+})
+document.addEventListener('turbolinks:render', () => {
+  var e = document.getElementById('main-loader')
+  if (e !== undefined) {
+    e.style.display = 'none'
   }
 })
 

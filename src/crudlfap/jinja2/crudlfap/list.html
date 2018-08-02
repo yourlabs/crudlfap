@@ -1,4 +1,4 @@
-{% extends 'crudlfap/base.html' %}
+{% extends 'base.html' %}
 
 {% import 'crudlfap.html' as crudlfap %}
 
@@ -25,22 +25,30 @@
 </style>
 
 <div class="row">
-  {% if view.search_form or view.filterset.form.fields %}
+  {% if view.search_form or view.filterset %}
   <div class="col s12 m3">
     <div class="card-panel">
       <form method="get" action="" data-controller="autosubmit" data-target="render-table" data-action="input->autosubmit#input change->autosubmit#input">
+        {% if view.search_form %}
         {{ render_form(view.search_form) }}
+        {% endif %}
+        {% if view.filterset %}
         {{ render_form(view.filterset.form) }}
+        {% endif %}
       </form>
     </div>
   </div>
   {% endif %}
 
-  <div class="table-responsive col s12 {% if view.search_form or view.filterset.form.fields %}m9{% endif %}" id="render-table">
+  <div class="table-responsive col s12 {% if view.search_form or view.filterset %}m9{% endif %}" id="render-table">
     <div class="card-panel">
+      {% if view.table %}
       <div class="table-container">
         {{ view.table.as_html(request) }}
       </div>
+      {% else %}
+        {{ _('That page contains no results') }}
+      {% endif %}
       {% include 'crudlfap/_pagination.html' %}
     </div>
   </div>

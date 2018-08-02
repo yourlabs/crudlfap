@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <meta name="turbolinks-cache-control" content="no-cache">
     <link rel="canonical" href="{{ view.url }}" />
     <link rel="icon" href="{{ static('favicon.ico') }}">
 
@@ -15,6 +14,8 @@
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://fengyuanchen.github.io/viewerjs/css/viewer.css" />
+
+    <meta name="turbolinks-root" content="{{ crudlfap_site.views['home'].url }}">
 
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
     {% block bundles %}
@@ -31,6 +32,7 @@
   </head>
 
   <body class="{% block body_class %}{{ view.body_class|default('') }}{% endblock %}">
+    {% include 'crudlfap/_loader.html' %}
     {% include 'crudlfap/_menu_main.html' %}
     {% block breadcrumb %}{% endblock %}
     {% include 'crudlfap/_messages.html' %}
@@ -39,7 +41,7 @@
       {% block form_open %}{% endblock %}
         <div class="modal-content">
         {% block title_heading %}
-          {% if view.title_heading %}
+          {% if view.title_heading and request.META.get('HTTP_X_MODAL') %}
           <h4
             class="text-{{ view.style|default('default') }} {% block title_heading_class %}{% endblock %}"
             id="modal-title-ajax"
