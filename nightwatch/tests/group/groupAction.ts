@@ -23,7 +23,7 @@ module.exports = {
 
             // verify it created or not
             .url(CONSTANTS.GROUP.BASE_URL + "?q=" + groupName)
-            .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+            .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
             .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', groupName, "Testing if group list contains new added group")
 
@@ -82,7 +82,7 @@ module.exports = {
 
             // verify it created or not
             .url(CONSTANTS.GROUP.BASE_URL + "?q=" + groupName)
-            .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+            .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
             .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', groupName, "Testing if group list contains new added group")
 
@@ -113,7 +113,7 @@ module.exports = {
                     .pause(CONSTANTS.PAUSE_TIMEOUT)
                     .expect.element('#modal').to.have.css('display').which.equal('block');
                 browser
-                    .assert.containsText('#modal #modal-title-ajax', 'Group: create', "Testing if heading is Group: create")
+                    .assert.containsText('#modal', 'Group: create', "Testing if heading is Group: create")
                     // name input
                     .assert.visible('input[id=id_name]')
                     .setValue('input[id=id_name]', groupName)
@@ -126,7 +126,7 @@ module.exports = {
                         // verify it created or not
                         browser
                             .url(CONSTANTS.GROUP.BASE_URL + "?q=" + groupName)
-                            .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+                            .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
                             .pause(CONSTANTS.PAUSE_TIMEOUT)
                             .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', groupName, "Testing if group list contains new added group")
                     })
@@ -138,7 +138,7 @@ module.exports = {
         await CommonFunction.loginByDev(browser);
         browser
             .url(CONSTANTS.GROUP.BASE_URL)
-            .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+            .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
 
             .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', (tdContentName) => {
@@ -176,7 +176,7 @@ module.exports = {
         let contentId;
         browser
             .url(CONSTANTS.GROUP.BASE_URL)
-            .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+            .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
 
             .getText('#render-table > div > div > div > table > tbody > tr > td:nth-child(1)', (tdContentID) => {
@@ -204,7 +204,7 @@ module.exports = {
                                 browser
                                     .pause(CONSTANTS.PAUSE_TIMEOUT)
                                     .url(CONSTANTS.GROUP.BASE_URL + "?q=" + groupName)
-                                    .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+                                    .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
                                     .pause(CONSTANTS.PAUSE_TIMEOUT)
                                     .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', groupName, "Testing if group list contains updated group")
                             })
@@ -219,7 +219,7 @@ module.exports = {
         let contentId;
         browser
             .url(CONSTANTS.GROUP.BASE_URL)
-            .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+            .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
 
             // get id and delete that one

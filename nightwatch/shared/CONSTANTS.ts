@@ -37,7 +37,11 @@ export const CONSTANTS = {
         INVALID_USER: 'test @123',
         EXISTING_USER: 'dev',
         INPUT_USER: 'test@123',
-        INPUT_EMAIL: 'test@123.com'
+        INPUT_EMAIL: 'test@123.com',
+        INPUT2: 'Test User for sample with groups',
+        EDIT_INPUT: 'Updated@123',
+        EDIT_EMAIL: 'updated@123.com',
+        
     },
     POST: {
         BASE_URL: 'http://localhost:8000/post',

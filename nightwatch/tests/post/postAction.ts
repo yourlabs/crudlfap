@@ -11,7 +11,7 @@ module.exports = {
       // after login go to post create page direct
       .url(CONSTANTS.POST.CREATE)
       .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
-      .assert.containsText('#modal-title-ajax', 'Post: create', "Testing if heading is Post: create")
+      // .assert.containsText('#modal-body-ajax', 'Post: create', "Testing if heading is Post: create")
       // name input
       .assert.visible('input[id=id_name]')
       .setValue('input[id=id_name]', postTitle)
@@ -31,10 +31,11 @@ module.exports = {
       // submit button
       .assert.visible('#form-object-post > div.modal-footer > button[type=submit]')
       .click('#form-object-post > div.modal-footer > button[type=submit]')
+      .pause(CONSTANTS.PAUSE_TIMEOUT)
 
       // verify it created or not
       .url(CONSTANTS.POST.BASE_URL + "?q=" + postTitle)
-      .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+      .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
       .pause(CONSTANTS.PAUSE_TIMEOUT)
       .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(3) > a', postTitle, "Testing if post list contains new added post")
 
@@ -66,7 +67,7 @@ module.exports = {
           .pause(CONSTANTS.PAUSE_TIMEOUT)
           .expect.element('#modal').to.have.css('display').which.equal('block');
         browser
-          .assert.containsText('#modal #modal-title-ajax', 'Post: create', "Testing if heading is Post: create")
+          // .assert.containsText('#modal #modal-title-ajax', 'Post: create', "Testing if heading is Post: create")
           // name input
           .assert.visible('input[id=id_name]')
           .setValue('input[id=id_name]', postTitle)
@@ -82,6 +83,11 @@ module.exports = {
               .pause(CONSTANTS.PAUSE_TIMEOUT)
               .click('#form-object-post > div.modal-content > div:nth-child(4) > div#id_owner_container > div > ul >li:nth-child(2)')
           })
+          .pause(CONSTANTS.PAUSE_TIMEOUT)
+
+           
+          .click('input[id=id_name]')
+
           // submit button
           .assert.visible('#form-object-post > div.modal-footer > button')
           .click('#form-object-post > div.modal-footer > button', () => {
@@ -89,7 +95,7 @@ module.exports = {
             browser
               .pause(CONSTANTS.PAUSE_TIMEOUT)
               .url(CONSTANTS.POST.BASE_URL + "?q=" + postTitle)
-              .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+              .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
               .pause(CONSTANTS.PAUSE_TIMEOUT)
               .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(3) > a', postTitle, "Testing if post list contains new added post")
           })
@@ -101,7 +107,7 @@ module.exports = {
     await CommonFunction.loginByDev(browser);
     browser
       .url(CONSTANTS.POST.BASE_URL)
-      .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+      .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
       .getText('#render-table > div > div > div > table > tbody > tr > td:nth-child(3) > a', (tdContentName) => {
@@ -139,7 +145,7 @@ module.exports = {
     let contentId;
     browser
       .url(CONSTANTS.POST.BASE_URL)
-      .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+      .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
       .getText('#render-table > div > div > div > table > tbody > tr > td:nth-child(2)', (tdContentID) => {
@@ -167,7 +173,7 @@ module.exports = {
               .click('#form-object-post > div.modal-footer > button[type="submit"]', () => {
                 browser
                   .url(CONSTANTS.POST.BASE_URL + "?q=" + postTitle)
-                  .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+                  .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
                   .pause(CONSTANTS.PAUSE_TIMEOUT)
                   .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(3) > a', postTitle, "Testing if post list contains updated post")
               })
@@ -182,7 +188,7 @@ module.exports = {
     let contentId;
     browser
       .url(CONSTANTS.POST.BASE_URL)
-      .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+      .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
       .pause(CONSTANTS.PAUSE_TIMEOUT)
       .getText('#render-table > div > div > div > table > tbody > tr > td:nth-child(2)', async (tdContentID) => {
         contentId = tdContentID.value;

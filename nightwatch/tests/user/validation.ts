@@ -38,20 +38,20 @@ module.exports = {
 
       .assert.visible('#id_username_container > div.errors > small')
       .assert.containsText('#id_username_container > div.errors > small', 'This field is required.')
+      .pause(CONSTANTS.PAUSE_TIMEOUT)
 
       // invalid validation
       .pause(CONSTANTS.PAUSE_TIMEOUT)
       .assert.visible('input[id=id_username]')
       .setValue('input[id=id_username]', CONSTANTS.USER.INVALID_USER)
 
-      .pause(CONSTANTS.PAUSE_TIMEOUT)
       // submit button
       .assert.visible('#form-object-user > div.modal-footer > button[type=submit]')
       .click('#form-object-user > div.modal-footer > button[type=submit]')
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
       .pause(CONSTANTS.PAUSE_TIMEOUT)
-      .assert.visible('#id_username_container > div.errors > small')
+      .assert.visible('#id_username_container> div.errors > small')
       .assert.containsText('#id_username_container > div.errors > small', 'Enter a valid username. This value may contain only letters, numbers, and @/./+/-/_ characters.')
 
       // duplicate validation    
