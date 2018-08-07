@@ -21,11 +21,6 @@ module.exports = {
       .assert.visible('input[id=id_username]')
       .setValue('input[id=id_username]', userName)
 
-      // group
-      // .assert.visible('#id_groups_container')
-      // .click('#id_owner_container > div > ul > li:nth-child(2)')
-      // .pause(CONSTANTS.PAUSE_TIMEOUT)
-
       // submit button
       .assert.visible('#form-object-user > div.modal-footer > button[type=submit]')
       .click('#form-object-user > div.modal-footer > button[type=submit]')
@@ -43,9 +38,8 @@ module.exports = {
       .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-      .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', async(tdContentName) => {
+      .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', async (tdContentName) => {
         await CommonFunction.deleteByUserName(browser, tdContentName.value);
-       
       })
 
       .end();
@@ -60,7 +54,6 @@ module.exports = {
       // after login go to user create page direct
       .url(CONSTANTS.USER.CREATE)
       .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
-      //   .assert.containsText('#modal-title-ajax', 'User: create', "Testing if heading is User: create")
 
       .pause(CONSTANTS.PAUSE_TIMEOUT)
       // name input
@@ -88,11 +81,9 @@ module.exports = {
       .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-      .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', async(tdContentName) => {
+      .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', async (tdContentName) => {
         await CommonFunction.deleteByUserName(browser, tdContentName.value);
-       
       })
-
       .end();
   },
 
@@ -100,7 +91,6 @@ module.exports = {
 
     await CommonFunction.loginByDev(browser);
     const userName = Math.random() + CONSTANTS.USER.INPUT_USER + Math.random();
-    // const groupsContent =  Math.random() + CONSTANTS.USER.INPUT2 + Math.random();
 
     browser
       // after login go to group create page direct
@@ -143,12 +133,10 @@ module.exports = {
       .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-      .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', async(tdContentName) => {
+      .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', async (tdContentName) => {
         await CommonFunction.deleteByUserName(browser, tdContentName.value);
-       
       })
-
-    .end();
+      .end();
   },
 
   'User : create user : with staff status': async (browser: NightwatchBrowser) => {
@@ -184,17 +172,15 @@ module.exports = {
       .pause(CONSTANTS.PAUSE_TIMEOUT)
       .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', userName, "Testing if user list contains new added user")
       .pause(CONSTANTS.PAUSE_TIMEOUT)
-      
+
       .url(CONSTANTS.USER.BASE_URL + "?q=" + userName)
       // get username and delete by username
       .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-      .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', async(tdContentName) => {
+      .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', async (tdContentName) => {
         await CommonFunction.deleteByUserName(browser, tdContentName.value);
-       
       })
-
       .end();
   },
 
@@ -231,20 +217,17 @@ module.exports = {
       .pause(CONSTANTS.PAUSE_TIMEOUT)
       .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', userName, "Testing if user list contains new added user")
       .pause(CONSTANTS.PAUSE_TIMEOUT)
-      
+
       .url(CONSTANTS.USER.BASE_URL + "?q=" + userName)
       // get username and delete by username
       .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-      .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', async(tdContentName) => {
+      .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', async (tdContentName) => {
         await CommonFunction.deleteByUserName(browser, tdContentName.value);
-       
       })
-
-    .end();
+      .end();
   },
-
 
   'User : create user : with email, groups, staff and superuser status': async (browser: NightwatchBrowser) => {
     await CommonFunction.loginByDev(browser);
@@ -263,7 +246,6 @@ module.exports = {
       .setValue('input[id=id_username]', userName)
       .pause(CONSTANTS.PAUSE_TIMEOUT)
       .pause(CONSTANTS.PAUSE_TIMEOUT)
-
 
       // email input
       .assert.visible('input[id=id_email]')
@@ -286,13 +268,11 @@ module.exports = {
 
       // staff status selection
       .assert.visible('#id_is_staff_container > label > span[for="id_is_staff"]')
-      // .click('#id_is_staff>')
       .click('#id_is_staff_container > label > span[for="id_is_staff"]')
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
       // superuser status selection
       .assert.visible('#id_is_superuser_container > label > span[for="id_is_superuser"]')
-      // .click('#id_is_superuser>')
       .click('#id_is_superuser_container > label > span[for="id_is_superuser"]')
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
@@ -307,19 +287,17 @@ module.exports = {
       .pause(CONSTANTS.PAUSE_TIMEOUT)
       .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', userName, "Testing if user list contains new added user")
       .pause(CONSTANTS.PAUSE_TIMEOUT)
- 
+
       .url(CONSTANTS.USER.BASE_URL + "?q=" + userName)
       // get username and delete by username
       .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-      .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', async(tdContentName) => {
+      .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', async (tdContentName) => {
         await CommonFunction.deleteByUserName(browser, tdContentName.value);
-       
       })
-
-    .pause(CONSTANTS.PAUSE_TIMEOUT)
-    .end();
+      .pause(CONSTANTS.PAUSE_TIMEOUT)
+      .end();
   },
 
 
@@ -331,36 +309,32 @@ module.exports = {
       // after login go to user create page direct
       .url(CONSTANTS.USER.BASE_URL)
       .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
-      //   .assert.containsText('#modal-title-ajax', 'User: create', "Testing if heading is User: create")
 
       .assert.visible('body > div.fixed-actions > a[href="/user/create?_next=/user"]')
       .click('body > div.fixed-actions > a[href="/user/create?_next=/user"]', () => {
-          browser
-              .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
-              .pause(CONSTANTS.PAUSE_TIMEOUT)
-              // .expect.element('#modal').to.have.css('display').which.equal('block');
-          browser
-              // .assert.containsText('#modal', 'User: create', "Testing if heading is User: create")
+        browser
+          .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+          .pause(CONSTANTS.PAUSE_TIMEOUT)
+        // .expect.element('#modal').to.have.css('display').which.equal('block');
+        browser
+          .pause(CONSTANTS.PAUSE_TIMEOUT)
+          // name input
+          .assert.visible('input[id=id_username]')
+          .setValue('input[id=id_username]', userName)
+          .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-      .pause(CONSTANTS.PAUSE_TIMEOUT)
-      // name input
-      .assert.visible('input[id=id_username]')
-      .setValue('input[id=id_username]', userName)
-      .pause(CONSTANTS.PAUSE_TIMEOUT)
+          // submit button
+          .assert.visible('#form-object-user > div.modal-footer > button[type=submit]')
+          .click('#form-object-user > div.modal-footer > button[type=submit]')
+          .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-      // submit button
-      .assert.visible('#form-object-user > div.modal-footer > button[type=submit]')
-      .click('#form-object-user > div.modal-footer > button[type=submit]')
-      .pause(CONSTANTS.PAUSE_TIMEOUT)
-
-      //verify it created or not
-      .url(CONSTANTS.USER.BASE_URL + "?q=" + userName)
-      .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
-      .pause(CONSTANTS.PAUSE_TIMEOUT)
-      .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', userName, "Testing if user list contains new added user")
-    })
+          //verify it created or not
+          .url(CONSTANTS.USER.BASE_URL + "?q=" + userName)
+          .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+          .pause(CONSTANTS.PAUSE_TIMEOUT)
+          .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', userName, "Testing if user list contains new added user")
+      })
       .end();
-      
   },
 
   'User : Detail user': async (browser: NightwatchBrowser) => {
@@ -373,29 +347,10 @@ module.exports = {
       .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', (tdContentName) => {
         const contentName = tdContentName.value;
         browser
-
-          // .getText('#render-table > div > div > div > table > tbody > tr > td:nth-child(1) > label > input ', (tdContentId) => {
-          //   const contentId = tdContentId.value
-
-          // click menu
-          .assert.visible('#render-table > div > div > div > table > tbody > tr > td:nth-child(8) > a > i')
-          .click('#render-table > div > div > div > table > tbody > tr > td:nth-child(8) > a > i')
-          .pause(CONSTANTS.PAUSE_TIMEOUT)
-
-          // click detail
-          .assert.visible('#render-table > div > div > div > table > tbody > tr > td:nth-child(8) > ul > li:nth-child(5) > a')
-          .click('#render-table > div > div > div > table > tbody > tr > td:nth-child(8) > ul > li:nth-child(5) > a', () => {
-            // browser
-            //   .assert.urlEquals(CONSTANTS.USER.BASE_URL + '/' + contentId+  '?_next=/user', 'User Detail url is the correct')
-            //   .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
-            //   //check get data Id is correct 
-            //   .assert.visible('#modal-body-ajax > div.modal-content > div > table > thead > tr:nth-child(1) > td')
-            //   .assert.containsText('#modal-body-ajax > div.modal-content > div > table > thead > tr:nth-child(1) > td', contentId, 'User Id matched')
-            //   .assert.visible('#modal-body-ajax > div.modal-content > div > table > thead > tr:nth-child(2) > td')
-            //   .assert.containsText('#modal-body-ajax > div.modal-content > div > table > thead > tr:nth-child(2) > td', contentName, 'User Name matched')
-
-          })
-        // })
+          .url(CONSTANTS.USER.BASE_URL + '/' + contentName + '?_next=/user')
+          .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+          .assert.visible('#modal-body-ajax > div.modal-content > div > table > thead > tr:nth-child(4) > td')
+          .assert.containsText('#modal-body-ajax > div.modal-content > div > table > thead > tr:nth-child(4) > td', contentName, 'User Name matched')
       })
 
       .pause(CONSTANTS.PAUSE_TIMEOUT)
@@ -420,6 +375,7 @@ module.exports = {
 
       // click edit
       .assert.visible('#render-table > div > div > div > table > tbody > tr > td:nth-child(8) > ul > li:nth-child(2) > a')
+      .pause(CONSTANTS.PAUSE_TIMEOUT)
       .click('#render-table > div > div > div > table > tbody > tr > td:nth-child(8) > ul > li:nth-child(2) > a', () => {
         //popup opened
         browser
@@ -451,11 +407,10 @@ module.exports = {
               .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
               .pause(CONSTANTS.PAUSE_TIMEOUT)
               .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', userName, "Testing if user list contains updated user")
-
           })
       })
       .pause(CONSTANTS.PAUSE_TIMEOUT)
-    .end();
+      .end();
   },
 
   'User : Delete user': async (browser: NightwatchBrowser) => {
@@ -465,14 +420,12 @@ module.exports = {
       .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-      .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', async(tdContentName) => {
+      .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', async (tdContentName) => {
         await CommonFunction.deleteByUserName(browser, tdContentName.value);
-       
       })
-
       .pause(CONSTANTS.PAUSE_TIMEOUT)
-    .end();
-  },
+      .end();
+  }
 
 }
 

@@ -32,7 +32,7 @@ export module CommonFunction {
                 browser.expect.element('#row-actions-' + contentId).to.have.css('display').which.equal('block')
             })
 
-            // click on edit
+            // click on delete
             .assert.visible('#row-actions-' + contentId + ' > li:nth-child(1) > a')
 
             .click('#row-actions-' + contentId + ' > li:nth-child(1) > a', () => {
@@ -165,13 +165,14 @@ export module CommonFunction {
     export function deleteByUserName(browser,contentName) {
         browser
         // click menu
-        .assert.visible('#render-table > div > div > div > table > tbody > tr > td:nth-child(8) > a > i')
-        .click('#render-table > div > div > div > table > tbody > tr > td:nth-child(8) > a > i')
+        .assert.visible('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(8) > a > i')
+        .click('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(8) > a > i')
         .pause(CONSTANTS.PAUSE_TIMEOUT)
 
         // click delete
-        .assert.visible('#render-table > div > div > div > table > tbody > tr > td:nth-child(8) > ul > li:nth-child(1) > a')
-        .click('#render-table > div > div > div > table > tbody > tr > td:nth-child(8) > ul > li:nth-child(1) > a', () => {
+        .assert.visible('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(8) > ul > li:nth-child(1) > a')
+        .pause(CONSTANTS.PAUSE_TIMEOUT)
+        .click('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(8) > ul > li:nth-child(1) > a', () => {
           //popup opened
           browser
             .pause(CONSTANTS.PAUSE_TIMEOUT)
