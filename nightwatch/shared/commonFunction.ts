@@ -162,17 +162,55 @@ export module CommonFunction {
             })
     }
 
+    export function deleteByUserId(browser, contentId, contentName) {
+        browser
+            .click('a[data-target="row-actions-' + contentId + '"]', () => {
+                // open menu
+                browser.expect.element('#row-actions-' + contentId).to.have.css('display').which.equal('block')
+            })
+
+            // click on edit
+            .assert.visible('#row-actions-' + contentId + ' > li:nth-child(1) > a')
+
+            .click('#row-actions-' + contentId + ' > li:nth-child(1) > a', () => {
+                // popup opened
+                browser
+                    .pause(CONSTANTS.PAUSE_TIMEOUT)
+                    .expect.element('#modal').to.have.css('display').which.equal('block');
+                // click on delete
+                browser
+                    .click('#main-form > div.modal-footer > button[type="submit"]', () => {
+                        browser
+                            .pause(CONSTANTS.PAUSE_TIMEOUT)
+                            // verified delete
+                            .url(CONSTANTS.USER.BASE_URL + "?q=" + contentName)
+                            .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+                            .pause(CONSTANTS.PAUSE_TIMEOUT)
+                            .element('css selector', '#render-table > div > div > div > table > tbody > tr', function (result) {
+                                if (result.status === -1) {
+                                    //Element does not exist, do something else
+                                    browser.assert.equal(0, 0, 'User has been deleted');
+                                }
+                            });
+                    })
+                    .pause(CONSTANTS.PAUSE_TIMEOUT)
+            })
+    }
+
+
     export function deleteByUserName(browser,contentName) {
         browser
+
+
         // click menu
-        .assert.visible('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(8) > a > i')
-        .click('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(8) > a > i')
+        .assert.visible('#render-table > div > div > div > table > tbody > tr > td:nth-child(8) > a > i')
+        .click('#render-table > div > div > div > table > tbody > tr > td:nth-child(8) > a > i')
         .pause(CONSTANTS.PAUSE_TIMEOUT)
 
         // click delete
-        .assert.visible('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(8) > ul > li:nth-child(1) > a')
+        .assert.visible('#render-table > div > div > div > table > tbody > tr > td:nth-child(8) > ul > li:nth-child(1) > a')
         .pause(CONSTANTS.PAUSE_TIMEOUT)
-        .click('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(8) > ul > li:nth-child(1) > a', () => {
+        .click('#render-table > div > div > div > table > tbody > tr > td:nth-child(8) > ul > li:nth-child(1) > a', () => {
           //popup opened
           browser
             .pause(CONSTANTS.PAUSE_TIMEOUT)
@@ -185,10 +223,9 @@ export module CommonFunction {
               browser
                 .pause(CONSTANTS.PAUSE_TIMEOUT)
                 .url(CONSTANTS.USER.BASE_URL + "?q=" + contentName)
-                .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+                .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
                 .pause(CONSTANTS.PAUSE_TIMEOUT)
-                // .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', userName, "Testing if user list contains updated user")
-
+                
                 .element('css selector', '#render-table > div > div > div > table > tbody > tr', function (result) {
                   if (result.status === -1) {
                     //Element does not exist, do something else

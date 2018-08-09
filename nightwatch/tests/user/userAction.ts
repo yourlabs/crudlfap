@@ -4,10 +4,14 @@ import { CommonFunction } from '../../shared/commonFunction';
 import { AsyncResource } from 'async_hooks';
 import { endianness } from 'os';
 
+const userName1 = Math.random() + CONSTANTS.USER.INPUT_USER + Math.random();
+const userName2 = Math.random() + CONSTANTS.USER.EDIT_INPUT + Math.random();
+
 module.exports = {
 
   'User : create user': async (browser: NightwatchBrowser) => {
     await CommonFunction.loginByDev(browser);
+    let contentId;
     const userName = Math.random() + CONSTANTS.USER.INPUT_USER + Math.random();
 
     browser
@@ -34,14 +38,17 @@ module.exports = {
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
       .url(CONSTANTS.USER.BASE_URL + "?q=" + userName)
-      // get username and delete by username
+      // get id and delete by id
       .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-      .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', async (tdContentName) => {
+      .getText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', async (tdContentName) => {
+        browser
+          .url(CONSTANTS.USER.BASE_URL + "?q=" + userName)
+          .pause(CONSTANTS.PAUSE_TIMEOUT)
         await CommonFunction.deleteByUserName(browser, tdContentName.value);
       })
-
+      .pause(CONSTANTS.PAUSE_TIMEOUT)
       .end();
   },
 
@@ -49,7 +56,7 @@ module.exports = {
     await CommonFunction.loginByDev(browser);
     const userName = Math.random() + CONSTANTS.USER.INPUT_USER + Math.random();
     const userEmail = Math.random() + CONSTANTS.USER.INPUT_EMAIL;
-
+    let contentId;
     browser
       // after login go to user create page direct
       .url(CONSTANTS.USER.CREATE)
@@ -77,13 +84,17 @@ module.exports = {
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
       .url(CONSTANTS.USER.BASE_URL + "?q=" + userName)
-      // get username and delete by username
+      // get id and delete by id
       .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-      .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', async (tdContentName) => {
+      .getText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', async (tdContentName) => {
+        browser
+          .url(CONSTANTS.USER.BASE_URL + "?q=" + userName)
+          .pause(CONSTANTS.PAUSE_TIMEOUT)
         await CommonFunction.deleteByUserName(browser, tdContentName.value);
       })
+      .pause(CONSTANTS.PAUSE_TIMEOUT)
       .end();
   },
 
@@ -91,6 +102,7 @@ module.exports = {
 
     await CommonFunction.loginByDev(browser);
     const userName = Math.random() + CONSTANTS.USER.INPUT_USER + Math.random();
+    let contentId;
 
     browser
       // after login go to group create page direct
@@ -129,19 +141,24 @@ module.exports = {
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
       .url(CONSTANTS.USER.BASE_URL + "?q=" + userName)
-      // get username and delete by username
+      // get id and delete by id
       .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-      .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', async (tdContentName) => {
+      .getText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', async (tdContentName) => {
+        browser
+          .url(CONSTANTS.USER.BASE_URL + "?q=" + userName)
+          .pause(CONSTANTS.PAUSE_TIMEOUT)
         await CommonFunction.deleteByUserName(browser, tdContentName.value);
       })
+      .pause(CONSTANTS.PAUSE_TIMEOUT)
       .end();
   },
 
   'User : create user : with staff status': async (browser: NightwatchBrowser) => {
     await CommonFunction.loginByDev(browser);
     const userName = Math.random() + CONSTANTS.USER.INPUT_USER + Math.random();
+    let contentId;
 
     browser
       // after login go to user create page direct
@@ -174,20 +191,24 @@ module.exports = {
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
       .url(CONSTANTS.USER.BASE_URL + "?q=" + userName)
-      // get username and delete by username
+      // get id and delete by id
       .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-      .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', async (tdContentName) => {
+      .getText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', async (tdContentName) => {
+        browser
+          .url(CONSTANTS.USER.BASE_URL + "?q=" + userName)
+          .pause(CONSTANTS.PAUSE_TIMEOUT)
         await CommonFunction.deleteByUserName(browser, tdContentName.value);
       })
+      .pause(CONSTANTS.PAUSE_TIMEOUT)
       .end();
   },
 
   'User : create user : with superuser status': async (browser: NightwatchBrowser) => {
     await CommonFunction.loginByDev(browser);
     const userName = Math.random() + CONSTANTS.USER.INPUT_USER + Math.random();
-
+    let contentId;
     browser
       // after login go to user create page direct
       .url(CONSTANTS.USER.CREATE)
@@ -219,13 +240,17 @@ module.exports = {
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
       .url(CONSTANTS.USER.BASE_URL + "?q=" + userName)
-      // get username and delete by username
+      // get id and delete by id
       .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-      .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', async (tdContentName) => {
+      .getText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', async (tdContentName) => {
+        browser
+          .url(CONSTANTS.USER.BASE_URL + "?q=" + userName)
+          .pause(CONSTANTS.PAUSE_TIMEOUT)
         await CommonFunction.deleteByUserName(browser, tdContentName.value);
       })
+      .pause(CONSTANTS.PAUSE_TIMEOUT)
       .end();
   },
 
@@ -233,6 +258,7 @@ module.exports = {
     await CommonFunction.loginByDev(browser);
     const userName = Math.random() + CONSTANTS.USER.INPUT_USER + Math.random();
     const userEmail = Math.random() + CONSTANTS.USER.INPUT_EMAIL;
+    let contentId;
 
     browser
       // after login go to user create page direct
@@ -289,21 +315,22 @@ module.exports = {
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
       .url(CONSTANTS.USER.BASE_URL + "?q=" + userName)
-      // get username and delete by username
+      // get id and delete by id
       .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-      .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', async (tdContentName) => {
+      .getText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', async (tdContentName) => {
+        browser
+          .url(CONSTANTS.USER.BASE_URL + "?q=" + userName)
+          .pause(CONSTANTS.PAUSE_TIMEOUT)
         await CommonFunction.deleteByUserName(browser, tdContentName.value);
       })
       .pause(CONSTANTS.PAUSE_TIMEOUT)
       .end();
   },
 
-
   'User : create user by popup': async (browser: NightwatchBrowser) => {
     await CommonFunction.loginByDev(browser);
-    const userName = Math.random() + CONSTANTS.USER.INPUT_USER + Math.random();
 
     browser
       // after login go to user create page direct
@@ -320,7 +347,7 @@ module.exports = {
           .pause(CONSTANTS.PAUSE_TIMEOUT)
           // name input
           .assert.visible('input[id=id_username]')
-          .setValue('input[id=id_username]', userName)
+          .setValue('input[id=id_username]', userName1)
           .pause(CONSTANTS.PAUSE_TIMEOUT)
 
           // submit button
@@ -329,11 +356,12 @@ module.exports = {
           .pause(CONSTANTS.PAUSE_TIMEOUT)
 
           //verify it created or not
-          .url(CONSTANTS.USER.BASE_URL + "?q=" + userName)
+          .url(CONSTANTS.USER.BASE_URL + "?q=" + userName1)
           .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
           .pause(CONSTANTS.PAUSE_TIMEOUT)
-          .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', userName, "Testing if user list contains new added user")
+          .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', userName1, "Testing if user list contains new added user")
       })
+      .pause(CONSTANTS.PAUSE_TIMEOUT)
       .end();
   },
 
@@ -352,20 +380,22 @@ module.exports = {
           .assert.visible('#modal-body-ajax > div.modal-content > div > table > thead > tr:nth-child(4) > td')
           .assert.containsText('#modal-body-ajax > div.modal-content > div > table > thead > tr:nth-child(4) > td', contentName, 'User Name matched')
       })
-
       .pause(CONSTANTS.PAUSE_TIMEOUT)
       .end()
   },
 
   'User : Edit user': async (browser: NightwatchBrowser) => {
     await CommonFunction.loginByDev(browser);
-    const userName = Math.random() + CONSTANTS.USER.EDIT_INPUT + Math.random();
     const firstName = 'test';
     const lastName = 'test123';
     let contentId;
+    let contentName;
     browser
       .url(CONSTANTS.USER.BASE_URL)
-      .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+      .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+      .pause(CONSTANTS.PAUSE_TIMEOUT)
+
+      .url(CONSTANTS.USER.BASE_URL + "?q=" + userName1)
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
       // click menu
@@ -374,7 +404,7 @@ module.exports = {
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
       // click edit
-      .assert.visible('#render-table > div > div > div > table > tbody > tr > td:nth-child(8) > ul > li:nth-child(2) > a')
+      .assert.visible('#render-table > div > div > div > table > tbody > tr> td:nth-child(8) > ul > li:nth-child(2) > a')
       .pause(CONSTANTS.PAUSE_TIMEOUT)
       .click('#render-table > div > div > div > table > tbody > tr > td:nth-child(8) > ul > li:nth-child(2) > a', () => {
         //popup opened
@@ -383,7 +413,7 @@ module.exports = {
           // username input
           .assert.visible('input[id=id_username]')
           .clearValue('input[id=id_username]')
-          .setValue('input[id=id_username]', userName)
+          .setValue('input[id=id_username]', userName2)
           .pause(CONSTANTS.PAUSE_TIMEOUT)
 
           // firstName input
@@ -403,30 +433,39 @@ module.exports = {
             console.log("update button clicked");
             browser
               .pause(CONSTANTS.PAUSE_TIMEOUT)
-              .url(CONSTANTS.USER.BASE_URL + "?q=" + userName)
+              .url(CONSTANTS.USER.BASE_URL + "?q=" + userName2)
               .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
               .pause(CONSTANTS.PAUSE_TIMEOUT)
-              .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', userName, "Testing if user list contains updated user")
+              .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', userName2, "Testing if user list contains updated user")
           })
       })
       .pause(CONSTANTS.PAUSE_TIMEOUT)
-      .end();
+    .end();
   },
 
   'User : Delete user': async (browser: NightwatchBrowser) => {
     await CommonFunction.loginByDev(browser);
+    let contentId;
+
     browser
       .url(CONSTANTS.USER.BASE_URL)
       .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
       .pause(CONSTANTS.PAUSE_TIMEOUT)
 
-      .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(2) > a', async (tdContentName) => {
-        await CommonFunction.deleteByUserName(browser, tdContentName.value);
+      .getAttribute('#render-table > div > div > div > table > tbody > tr > td:first-child > label > input', 'data-pk', (tdContentID) => {
+        contentId = tdContentID.value;
+        browser
+          .getText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', async (tdContentName) => {
+
+            browser
+              .url(CONSTANTS.USER.BASE_URL + "?q=" + userName2)
+              .pause(CONSTANTS.PAUSE_TIMEOUT)
+            await CommonFunction.deleteByUserName(browser, tdContentName.value);
+          })
       })
       .pause(CONSTANTS.PAUSE_TIMEOUT)
       .end();
   }
-
 }
 
 
