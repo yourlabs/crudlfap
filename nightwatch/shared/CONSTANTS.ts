@@ -50,8 +50,8 @@ export const CONSTANTS = {
         INPUT_TITLE2: 'Test Post 2',
         EDIT_INPUT: 'Update post'
     },
-    WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT: 30000,
-    PAUSE_TIMEOUT: 30000,
+    WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT: 15000,
+    PAUSE_TIMEOUT: 10000,
     USER_CREDENTIALS: {
         RIGHT: {
             USERNAME: 'dev',
