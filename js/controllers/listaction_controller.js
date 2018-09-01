@@ -41,6 +41,9 @@ export default class extends Controller {
     }
   }
   actionbarDisplay() {
+    // some race condition in opera ? Sentry betagouv/mrs issue #269
+    if (!this.actionbar) return
+
     if (this.checkboxes.filter(a => a.checked).length)
       this.actionbar.style.display = 'inline-block'
     else
