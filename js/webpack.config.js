@@ -16,11 +16,11 @@ var cfg = {
       'babel-polyfill',
       'whatwg-fetch',
       './node_modules/formdata-polyfill/formdata.min.js',
-      './js/index.js',
+      './index.js',
     ],
   },
   output: {
-    path: path.resolve('src/crudlfap/static/'),
+    path: path.resolve('../src/crudlfap/static/'),
     filename: 'crudlfap.js'
   },
   devtool: 'source-map',
