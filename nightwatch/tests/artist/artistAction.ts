@@ -1,3 +1,4 @@
+
 import { NightwatchBrowser } from 'nightwatch';
 import { CONSTANTS } from '../../shared/CONSTANTS';
 import { CommonFunction } from '../../shared/commonFunction';
@@ -11,7 +12,7 @@ module.exports = {
             // after login go to artist create page direct
             .url(CONSTANTS.ARTIST.CREATE)
             .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
-            .assert.containsText('#modal-title-ajax', 'Artist: create', "Testing if heading is Artist: create")
+            // .assert.containsText('#modal-title-ajax', 'Artist: create', "Testing if heading is Artist: create")
             // name input
             .assert.visible('input[id=id_name]')
             .setValue('input[id=id_name]', artistName)
@@ -22,7 +23,7 @@ module.exports = {
 
             // verify it created or not
             .url(CONSTANTS.ARTIST.BASE_URL + "?q=" + artistName)
-            .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+            .waitForElementVisible('#id_q', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
             .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', artistName, "Testing if artist list contains new added artist")
 
@@ -67,7 +68,7 @@ module.exports = {
                         // verify it created or not
                         browser
                             .url(CONSTANTS.ARTIST.BASE_URL + "?q=" + artistName)
-                            .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+                            .waitForElementVisible('#id_q', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
                             .pause(CONSTANTS.PAUSE_TIMEOUT)
                             .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', artistName, "Testing if artist list contains new added artist")
                     })
@@ -79,7 +80,7 @@ module.exports = {
         await CommonFunction.loginByDev(browser);
         browser
             .url(CONSTANTS.ARTIST.BASE_URL)
-            .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+            .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
 
             .getText('#render-table > div > div > div > table > tbody > tr > td:nth-child(2) > a', (tdContentName) => {
@@ -117,7 +118,7 @@ module.exports = {
         let contentId;
         browser
             .url(CONSTANTS.ARTIST.BASE_URL)
-            .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+            .waitForElementVisible('body', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
 
             .getText('#render-table > div > div > div > table > tbody > tr > td:nth-child(1)', (tdContentID) => {
@@ -145,7 +146,7 @@ module.exports = {
                             .click('#form-object-artist > div.modal-footer > button[type="submit"]', () => {
                                 browser
                                     .url(CONSTANTS.ARTIST.BASE_URL + "?q=" + artistName)
-                                    .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+                                    .waitForElementVisible('#id_q', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
                                     .pause(CONSTANTS.PAUSE_TIMEOUT)
                                     .assert.containsText('#render-table > div > div > div > table > tbody > tr:last-child > td:nth-child(2) > a', artistName, "Testing if artist list contains updated artist")
                             })
@@ -160,7 +161,7 @@ module.exports = {
         let contentId;
         browser
             .url(CONSTANTS.ARTIST.BASE_URL)
-            .waitForElementVisible('#modal-title-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
+            .waitForElementVisible('#modal-body-ajax', CONSTANTS.WAIT_FOR_ELEMENT_VISIBLE_TIMEOUT)
             .pause(CONSTANTS.PAUSE_TIMEOUT)
 
             .getText('#render-table > div > div > div > table > tbody > tr:nth-child(1) > td:nth-child(1)', async (tdContentID) => {
