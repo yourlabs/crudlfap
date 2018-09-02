@@ -6,7 +6,7 @@ version: 2
   - image: circleci/node:9
   - image: yourlabs/crudlfap:$CIRCLE_SHA1
     environment:
-      DEBUG: 1 
+      DEBUG: 1
   working_directory: ~/repo
   steps:
   - checkout
@@ -29,18 +29,19 @@ workflows:
       - py36-dj20
       - js-qa
       - docker-build
-      - chrome:
-          requires:
-          - docker-build
-      - ie:
-          requires:
-          - docker-build
-          - chrome
-      - firefox:
-          requires:
-          - docker-build
-          - ie
-      - js-lint-nightwatch
+# pending refactor
+#      - chrome:
+#          requires:
+#          - docker-build
+#      - ie:
+#          requires:
+#          - docker-build
+#          - chrome
+#      - firefox:
+#          requires:
+#          - docker-build
+#          - ie
+#      - js-lint-nightwatch
 
 jobs:
   docs:
@@ -109,15 +110,11 @@ jobs:
   js-qa:
     docker:
     - image: circleci/node:9
-    working_directory: ~/repo
     steps:
     - checkout
     - run:
         name: RUN yarn install
-        command: yarn install
-    - run:
-        name: RUN yarn run lint
-        command: yarn run lint
+        command: cd js && yarn install && yarn run lint
 
   js-test:
     docker:
@@ -152,24 +149,25 @@ jobs:
           docker tag yourlabs/crudlfap:$CIRCLE_SHA1 yourlabs/crudlfap:$CIRCLE_BRANCH
           docker push yourlabs/crudlfap:$CIRCLE_BRANCH
 
-  ie:
-    <<: *browser_template
-
-  chrome: 
-    <<: *browser_template
-
-  firefox:
-    <<: *browser_template
-
-  js-lint-nightwatch:
-    docker:
-    - image: circleci/node:9
-    working_directory: ~/repo
-    steps:
-    - checkout
-    - run:
-        name: RUN yarn install
-        command: yarn install
-    - run:
-        name: RUN yarn run eslint-nightwatch
-        command: yarn run eslint-nightwatch
+#  Epending refactor
+#   ie:
+#     <<: *browser_template
+#
+#   chrome:
+#     <<: *browser_template
+#
+#   firefox:
+#     <<: *browser_template
+#
+#   js-lint-nightwatch:
+#     docker:
+#     - image: circleci/node:9
+#     working_directory: ~/repo
+#     steps:
+#     - checkout
+#     - run:
+#         name: RUN yarn install
+#         command: yarn install
+#     - run:
+#         name: RUN yarn run eslint-nightwatch
+#         command: yarn run eslint-nightwatch

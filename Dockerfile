@@ -10,14 +10,13 @@ RUN adduser -h /code -D code
 WORKDIR /code
 EXPOSE 8000
 
-COPY webpack.config.js yarn.lock .babelrc package.json /code/
 ADD js /code/js
-RUN yarn install --frozen-lockfile
+RUN cd /code/js && yarn install --frozen-lockfile
 
 RUN pip3 install --upgrade pip
 COPY setup.py README.rst /code/
 ADD src /code/src
-RUN pip3 install --editable /code[dev]
+RUN cd /code && pip3 install --editable /code[dev]
 
 ARG GIT_COMMIT
 ENV GIT_COMMIT ${GIT_COMMIT}
