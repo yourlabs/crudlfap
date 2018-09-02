@@ -91,7 +91,7 @@ document.addEventListener('mouseover', event => {
     iframe.addEventListener('load', () => {
       window.Turbolinks.controller.cache.put(
         url,
-        window.Turbolinks.Snapshot.fromElement(iframe.contentDocument.documentElement)
+        window.Turbolinks.Snapshot.fromHTMLElement(iframe.contentDocument.documentElement)
       )
       iframe.parentElement.removeChild(iframe)
     })
