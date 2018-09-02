@@ -3,10 +3,11 @@ import { Controller } from 'stimulus'
 
 export default class extends Controller {
   connect() {
-    if (document.body.classList.contains('listaction-ready')) return
+    var cls = document.body.getAttribute('class')
+    if (cls.indexOf('listaction-ready') > -1) return
     this.actionbarDisplay()
     this.urlUpdate()
-    document.body.classList.add('listaction-ready')
+    document.body.setAttribute('class', cls + ' listaction-ready')
   }
   get checkboxes() {
     return Array.prototype.slice.call(document.querySelectorAll('table input[type=checkbox][data-pk]'))
