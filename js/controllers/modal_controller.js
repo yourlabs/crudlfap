@@ -33,12 +33,21 @@ export default class extends Controller {
           this.modal.classList.remove('modal-fixed-footer')
         }
         this.modal.innerHTML = newbody.innerHTML
-        init(this.modal)
-
-        var instance = M.Modal.init(document.getElementById('modal'), {
-          endingTop: '5%',
-        })
-        instance.open()
+        this.initmodal()
       })
+  }
+
+  childmodal() {
+    var childmodal = this.element.querySelector('.childmodal')
+    this.modal.innerHTML = childmodal.innerHTML
+    this.initmodal()
+  }
+
+  initmodal() {
+    init(this.modal)
+    var instance = M.Modal.init(document.getElementById('modal'), {
+      endingTop: '5%',
+    })
+    instance.open()
   }
 }
