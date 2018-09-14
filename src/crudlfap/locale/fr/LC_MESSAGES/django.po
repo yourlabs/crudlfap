@@ -24,6 +24,9 @@ msgstr "effacer"
 msgid "update"
 msgstr "modifier"
 
+msgid "Update"
+msgstr "Modifier"
+
 msgid "list"
 msgstr "liste"
 
