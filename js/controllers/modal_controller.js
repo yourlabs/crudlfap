@@ -40,6 +40,11 @@ export default class extends Controller {
   childmodal() {
     var childmodal = this.element.querySelector('.childmodal')
     this.modal.innerHTML = childmodal.innerHTML
+    if (childmodal.classList.contains('modal-fixed-footer')) {
+      this.modal.classList.add('modal-fixed-footer')
+    } else {
+      this.modal.classList.remove('modal-fixed-footer')
+    }
     this.initmodal()
   }
 
