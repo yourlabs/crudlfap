@@ -25,9 +25,13 @@ class ModelFormMixin(ModelMixin, FormMixin):
     def get_form_fields(self):
         return self.fields
 
+    def get_form_base(self):
+        return None
+
     def get_form_class(self):
         return model_forms.modelform_factory(
             self.model,
+            form=self.form_base,
             fields=self.form_fields
         )
 
