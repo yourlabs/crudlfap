@@ -29,6 +29,12 @@ workflows:
       - py36-dj20
       - js-qa
       - docker-build
+      - release:
+          requires: [docker-build, py-qa, docs, py36-dj20, js-qa, docker-build]
+          filters:
+            branches:
+              only: [master]
+
 # pending refactor
 #      - chrome:
 #          requires:
@@ -148,6 +154,30 @@ jobs:
           docker push yourlabs/crudlfap:$CIRCLE_SHA1
           docker tag yourlabs/crudlfap:$CIRCLE_SHA1 yourlabs/crudlfap:$CIRCLE_BRANCH
           docker push yourlabs/crudlfap:$CIRCLE_BRANCH
+
+  release:
+    docker:
+    - image:
+    steps:
+    - checkout
+    - run:
+        name: verify git tag vs. version
+        command: python setup.py verify
+    - run:
+        name: compile messages
+        command: crudlfap compilemessages -f
+    - run:
+        name: create packages
+        command: python setup.py sdist
+    - run:
+        name: init .pypirc
+        command: |
+          echo -e "[pypi]" >> ~/.pypirc
+          echo -e "username = yourlabs" >> ~/.pypirc
+          echo -e "password = $PYPI_PASSWORD" >> ~/.pypirc
+    - run:
+        name: upload to pypi
+        command: pip install twine && twine upload dist *
 
 #  Epending refactor
 #   ie:
