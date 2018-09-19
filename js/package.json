@@ -8,6 +8,7 @@
     "prepare": "webpack-cli",
     "test": "jest",
     "lint": "eslint js",
+    "python-test" : "cd ../src/crudlfap_example && python manage.py test artist",
     "chrome-browser-test": "cd nightwatch && yarn test",
     "ie-browser-test": "cd nightwatch && yarn test -e internet_explorer",
     "firefox-browser-test": "cd nightwatch && yarn test -e firefox",
