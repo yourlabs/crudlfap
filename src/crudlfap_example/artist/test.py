@@ -1,10 +1,9 @@
 """Test Cases."""
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import time
+
 from login_test_case import LoginTestCase
-import os
+
+from selenium.webdriver.common.keys import Keys
 
 
 class SignInTestCase(LoginTestCase):
@@ -69,7 +68,7 @@ class SearchArtistCase(LoginTestCase):
             print("artist searched")
 
 
-class UpdateArtistListCase(DesiredCapabilities):
+class UpdateArtistListCase(LoginTestCase):
     """This class manage update artist test case."""
 
     def test_update_artist_list(self):

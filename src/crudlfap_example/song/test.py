@@ -1,20 +1,18 @@
 """Test cases for song applcation."""
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import time
+
 from login_test_case import LoginTestCase
-import os
+
+from selenium.webdriver.common.keys import Keys
 
 
 class CreateSongs(LoginTestCase):
     """This class manage create song test case."""
-    
-    
+
     def test_create_song(self):
         """This method manage the proccess of create song step by step"""
         self.setUp(name="Create Song")
-        
+
         login = self.test_login()
         """This method will check user logged in or not."""
         print("login :", login)
@@ -86,19 +84,25 @@ class DeleteSongCase(LoginTestCase):
         """This method will check user logged in or not."""
         if login:
             time.sleep(1)
-            driver.find_element_by_class_name('sidenav-trigger').click()
+            self.driver.find_element_by_class_name('sidenav-trigger').click()
             time.sleep(1)
-            driver.find_element_by_xpath('//*[@id="slide-out"]/li[2]/ul/li[4]/a').click()
+            self.driver.find_element_by_xpath(
+                '//*[@id="slide-out"]/li[2]/ul/li[4]/a').click()
             time.sleep(1)
-            driver.find_element_by_xpath('//*[@id="slide-out"]/li[2]/ul/li[4]/div/ul/li[2]/a').click()
+            self.driver.find_element_by_xpath(
+                '//*[@id="slide-out"]/li[2]/ul/li[4]/div/ul/li[2]/a').click()
             time.sleep(1)
-            driver.find_element_by_class_name('even').find_element_by_class_name('dropdown-trigger').click()
+            self.driver.find_element_by_class_name(
+                'even').find_element_by_class_name('dropdown-trigger').click()
             time.sleep(1)
 
-            driver.find_element_by_class_name('even').find_element_by_tag_name('li').click()
+            self.driver.find_element_by_class_name(
+                'even').find_element_by_tag_name('li').click()
             time.sleep(1)
-            delete = driver.find_element_by_id('modal').find_element_by_id('main-form').find_element_by_class_name('modal-footer').find_element_by_tag_name('button').click()
+            self.driver.find_element_by_id(
+                'modal').find_element_by_id(
+                'main-form').find_element_by_class_name(
+                'modal-footer').find_element_by_tag_name('button').click()
 
-            #check the returned result
-            # assert '' in driver.page_source
+            # check the returned result
             print("song deleted")

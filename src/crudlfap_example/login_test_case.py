@@ -1,14 +1,13 @@
 """Selenium test cases for artist application."""
+import time
+
 from django.test import LiveServerTestCase
+
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from django.contrib.auth.models import User
-from selenium.webdriver.chrome.options import Options
-from settings import USERNAME, KEY
-import unittest
-import wd.parallel
-import time
-import copy
+
+
+from settings import KEY, USERNAME
 
 
 class LoginTestCase(LiveServerTestCase):
@@ -22,10 +21,11 @@ class LoginTestCase(LiveServerTestCase):
             'version': "latest",
         }
 
+        driver_url = "http://{0}:{1}@ondemand.saucelabs.com:80/wd/hub".format(
+            USERNAME, KEY)
         self.driver = webdriver.Remote(
             desired_capabilities=self.desired_cap,
-            # command_executor="http://{0}:{1}@localhost:4445/wd/hub".format(USERNAME, KEY)
-            command_executor="http://{0}:{1}@ondemand.saucelabs.com:80/wd/hub".format(USERNAME, KEY)
+            command_executor=driver_url
         )
         super(LoginTestCase, self).setUp()
 
