@@ -1,5 +1,7 @@
 from setuptools import setup, find_packages
+from setuptools.command.install import install
 import os
+import sys
 
 
 # Utility function to read the README file.
@@ -10,9 +12,27 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
+VERSION = '0.4.23'
+
+
+class VerifyVersionCommand(install):
+    """Custom command to verify that the git tag matches our version"""
+    description = 'verify that the git tag matches our version'
+
+    def run(self):
+        tag = os.getenv('GIT_TAG')
+
+        if tag != VERSION:
+            info = 'Git tag: {} does not match the version of app: {}'.format(
+                tag,
+                VERSION
+            )
+            sys.exit(info)
+
+
 setup(
     name='crudlfap',
-    version='0.4.21',
+    version=VERSION,
     description='Rich frontend for generic views with Django',
     author='James Pic',
     author_email='jamespic@gmail.com',
@@ -63,4 +83,8 @@ setup(
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
+    python_requires='>=3',
+    cmdclass={
+        'verify': VerifyVersionCommand,
+    }
 )

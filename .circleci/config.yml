@@ -24,11 +24,25 @@ workflows:
   version: 2
   pipeline:
     jobs:
+      - docker
       - py-qa
       - docs
       - py36-dj20
       - js-qa
-      - docker-build
+  tagged-build:
+    jobs:
+      - docker-wait
+      - pypi:
+          requires: [docker-wait]
+          filters:
+            tags:
+              only: /[0-9]+(\.[0-9]+)*/
+      - npm:
+          requires: [docker-wait]
+          filters:
+            tags:
+              only: /[0-9]+(\.[0-9]+)*/
+
 # pending refactor
 #      - chrome:
 #          requires:
@@ -129,7 +143,7 @@ jobs:
         name: RUN yarn test & coverage upload
         command: yarn test && codecov
 
-  docker-build:
+  docker:
     docker:
     - image: docker:latest
     steps:
@@ -139,15 +153,66 @@ jobs:
     - run:
         name: DOCKER build
         command: |
-          docker pull yourlabs/crudlfap:$CIRCLE_BRANCH || true
-          docker build -t yourlabs/crudlfap:$CIRCLE_SHA1 --build-arg GIT_COMMIT=$CIRCLE_SHA1 .
+          apk add git
+          echo 'CIRCLE_TAG="$(git tag -l --points-at HEAD)"' >> $BASH_ENV && . $BASH_ENV
+          docker build -t yourlabs/crudlfap:$CIRCLE_SHA1 --build-arg GIT_COMMIT=$CIRCLE_SHA1 --build-arg GIT_TAG=$CIRCLE_TAG .
     - deploy:
         name: DOCKER image push yourlabs/crudlfap:{{ .Branch }} & yourlabs/crudlfap:{{ .Environment.CIRCLE_SHA1 }} tags
         command: |
+          set -eux
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
           docker push yourlabs/crudlfap:$CIRCLE_SHA1
           docker tag yourlabs/crudlfap:$CIRCLE_SHA1 yourlabs/crudlfap:$CIRCLE_BRANCH
           docker push yourlabs/crudlfap:$CIRCLE_BRANCH
+          apk add git
+          echo 'CIRCLE_TAG="$(git tag -l --points-at HEAD)"' >> $BASH_ENV && . $BASH_ENV
+          if test -n "$CIRCLE_TAG"; then
+            docker tag yourlabs/crudlfap:$CIRCLE_SHA1 yourlabs/crudlfap:$CIRCLE_TAG
+            docker push yourlabs/crudlfap:$CIRCLE_TAG
+          fi
+
+  docker-wait:
+    docker:
+    - image: docker:latest
+    steps:
+    - run:
+        name: WAIT until docker job in the main pipeline finishes
+        command: |
+          set -eux
+          apk add curl
+          until curl --fail https://registry.hub.docker.com/v1/repositories/yourlabs/crudlfap/tags/$CIRCLE_SHA1; do
+            sleep 10
+          done
+
+  npm:
+    docker:
+    - image: yourlabs/crudlfap:$CIRCLE_SHA1
+    steps:
+    - run:
+        name: NPM publish
+        command: |
+          set -eux
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+          cd /code/js
+          NODE_ENV=production yarn publish --new-version $GIT_TAG
+
+  pypi:
+    docker:
+    - image: yourlabs/crudlfap:$CIRCLE_SHA1
+    steps:
+    - run:
+        name: PYPI publish
+        command: |
+          set -eux
+          cd /code
+          python3 setup.py verify
+          crudlfap compilemessages -f
+          python3 setup.py sdist
+          echo -e "[pypi]" >> ~/.pypirc
+          echo -e "username = yourlabs" >> ~/.pypirc
+          echo -e "password = $PYPI_PASSWORD" >> ~/.pypirc
+          pip3 install --user twine
+          ~/.local/bin/twine upload dist/*
 
 #  Epending refactor
 #   ie:
