@@ -14,7 +14,7 @@ ADD js /code/js
 RUN cd /code/js && yarn install --frozen-lockfile
 
 RUN pip3 install --upgrade pip
-COPY setup.py README.rst /code/
+COPY setup.py README.rst MANIFEST.in /code/
 ADD src /code/src
 RUN cd /code && pip3 install --editable /code[dev]
 
