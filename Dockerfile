@@ -1,3 +1,6 @@
+ARG GIT_COMMIT
+ARG GIT_TAG
+
 FROM node:10-alpine
 
 ENV DJANGO_SETTINGS_MODULE=crudlfap_example.settings
@@ -27,6 +30,8 @@ COPY --chown=app:app src /app/src
 RUN cd /app && pip3 install --user --editable /app[dev]
 
 RUN DEBUG=1 django-admin collectstatic --noinput --link
+
+ENV GIT_COMMIT="${GIT_COMMIT}" GIT_TAG="${GIT_TAG}"
 
 CMD /usr/bin/dumb-init uwsgi \
   --spooler=${UWSGI_SPOOLER_MOUNT}/mail \
