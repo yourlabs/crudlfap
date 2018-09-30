@@ -336,3 +336,11 @@ USE_TZ = True
 
 STATIC_URL = os.getenv('STATIC_URL', '/static/')
 STATIC_ROOT = os.getenv('STATIC_ROOT', 'static')
+
+UWSGI_SPOOLER_MOUNT = os.getenv('UWSGI_SPOOLER_MOUNT')
+UWSGI_SPOOLER_NAMES = os.getenv('UWSGI_SPOOLER_NAMES', '').split(',')
+if UWSGI_SPOOLER_MOUNT and UWSGI_SPOOLER_NAMES:
+    for name in UWSGI_SPOOLER_NAMES:
+        path = os.path.join(UWSGI_SPOOLER_MOUNT, name)
+        if not os.path.exists(path):
+            os.makedirs(path)
