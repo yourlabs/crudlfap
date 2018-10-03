@@ -18,6 +18,9 @@ msgstr "accueil"
 msgid "create"
 msgstr "ajouter"
 
+msgid "Create"
+msgstr "Création"
+
 msgid "delete"
 msgstr "effacer"
 
@@ -29,6 +32,9 @@ msgstr "Modifier"
 
 msgid "list"
 msgstr "liste"
+
+msgid "List"
+msgstr "Liste"
 
 msgid "Search"
 msgstr "Rechercher"
