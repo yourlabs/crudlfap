@@ -11,14 +11,6 @@ CRUDLFA+ stands for Create Read Update Delete List Form Autocomplete and more.
 
 ---
 
-## Agenda
-
-- 
-- 
-- 
-
----
-
 ## pip
 -	#### @css[byline](@color[#DC143C](pip) is a package manager for Python packages, or modules if you like.)
 ---
