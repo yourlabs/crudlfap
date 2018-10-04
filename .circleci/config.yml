@@ -128,7 +128,7 @@ jobs:
     - checkout
     - run:
         name: RUN yarn install
-        command: yarn install --cwd js && yarn run lint
+        command: cd js && yarn install && yarn run lint
 
   js-test:
     docker:
