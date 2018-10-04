@@ -135,9 +135,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'notsecret')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get('DEBUG', False))
 
-if SECRET_KEY == 'notsecret' and not DEBUG:
-    raise Exception('SECRET_KEY may not equal "notsecret" if not DEBUG')
-
 if DEBUG and 'ALLOWED_HOSTS' not in os.environ:
     ALLOWED_HOSTS = ['*']
 else:
