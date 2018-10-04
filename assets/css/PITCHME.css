@@ -1,0 +1,16 @@
+
+.headline {
+  color: blue;
+  text-transform: uppercase;
+}
+
+.byline {
+  color: gray;
+  font-size: 0.9em;
+  text-transform: lowercase;
+  letter-spacing: 2px;
+}
+.crudlfa-headline {
+  color: red;
+  text-transform: uppercase;
+}
