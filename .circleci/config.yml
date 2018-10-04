@@ -198,7 +198,7 @@ jobs:
 
   pypi:
     docker:
-    - image: yourlabs/crudlfap:$CIRCLE_SHA1
+    - image: python:3-stretch
     steps:
     - run:
         name: PYPI publish
@@ -207,10 +207,12 @@ jobs:
           cd # ~/project does not match docker best practice docs
           python3 setup.py verify
           pushd src && crudlfap compilemessages -f && popd
+          python3 setup.py sdist
           echo -e "[pypi]" >> ~/.pypirc
           echo -e "username = yourlabs" >> ~/.pypirc
           echo -e "password = $PYPI_PASSWORD" >> ~/.pypirc
-          python3 setup.py sdist upload
+          pip3 install twine
+          upload dist/*
 
 #  Epending refactor
 #   ie:
