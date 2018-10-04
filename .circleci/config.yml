@@ -206,13 +206,11 @@ jobs:
           set -eux
           cd # ~/project does not match docker best practice docs
           python3 setup.py verify
-          crudlfap compilemessages -f
-          python3 setup.py sdist
+          pushd src && crudlfap compilemessages -f && popd
           echo -e "[pypi]" >> ~/.pypirc
           echo -e "username = yourlabs" >> ~/.pypirc
           echo -e "password = $PYPI_PASSWORD" >> ~/.pypirc
-          pip3 install --user twine
-          ~/.local/bin/twine upload dist/*
+          python3 setup.py sdist upload
 
 #  Epending refactor
 #   ie:
