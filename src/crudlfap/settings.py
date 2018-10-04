@@ -278,7 +278,7 @@ DEFAULT_TEMPLATE_BACKEND = {
 TEMPLATES = [CRUDLFAP_TEMPLATE_BACKEND, DEFAULT_TEMPLATE_BACKEND]
 LOGIN_REDIRECT_URL = '/'
 LOCALE_PATHS = (
-    os.path.join(BASE_DIR, "locale"),
+    os.path.join(BASE_DIR, 'locale'),
 )
 
 WSGI_APPLICATION = 'crudlfap_example.wsgi.application'
