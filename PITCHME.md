@@ -117,25 +117,7 @@ CRUDLFA+ stands for Create Read Update Delete List Form Autocomplete and more.
 	  	.....
 	  	'post',
 	   ]
----
-### Using @color[#DC143C](CRUDLFA+)
--  Now, We need to create a Django Model for the post like:
-	  
-	   from django.db import models
-	   from django.contrib.auth.models import User
-	   from django.utils import timezone
-
-	   class Post(models.Model):
-	      """A Post model with name, publish and owner fields."""
-
-	      name = models.CharField(max_length=100, verbose_name='title')
-	      description = models.TextField(verbose_name='Description')
-	      publish = models.DateTimeField(default=timezone.now)
-	      owner = models.ForeignKey(User, on_delete=models.CASCADE)
-
-	      def __str__(self):
-	          """Return string name."""
-	          return self.name
+---?code=sample/models.py&lang=python&title=@color[#DC143C](Models in Djano)
 
 ---
 ### Using @color[#DC143C](CRUDLFA+)
@@ -161,15 +143,10 @@ CRUDLFA+ stands for Create Read Update Delete List Form Autocomplete and more.
 	   from crudlfap import crudlfap
 	   from .models import Post
 
-	   class PostRouter(crudlfap.Router):
-	       fields = '__all__'
-	       icon = 'blog'
-	       model = Post
-
-	   PostRouter().register()
+	   crudlfap.Router(model=Post).register()
 
 ---
-- Now you would be able to see the post application inside your application like following example.
+#### @color[#DC143C](Automatic model menus)
 ![Logo](assets/images/post_menu.png)
 
 ---
