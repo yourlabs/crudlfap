@@ -1,6 +1,3 @@
-ARG GIT_COMMIT
-ARG GIT_TAG
-
 FROM node:10-alpine
 
 ENV DJANGO_SETTINGS_MODULE=crudlfap_example.settings
@@ -31,6 +28,8 @@ RUN cd /app && pip3 install --user --editable /app[dev]
 
 RUN DEBUG=1 django-admin collectstatic --noinput --link
 
+ARG GIT_COMMIT
+ARG GIT_TAG
 ENV GIT_COMMIT="${GIT_COMMIT}" GIT_TAG="${GIT_TAG}"
 
 CMD /usr/bin/dumb-init uwsgi \
