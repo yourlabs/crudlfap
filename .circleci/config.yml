@@ -192,6 +192,7 @@ jobs:
         name: NPM publish
         command: |
           set -eux
+          cd # cancel out cci enforcement of being in ~/project
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
           NODE_ENV=production yarn publish --cwd js --new-version $GIT_TAG
 
@@ -203,6 +204,7 @@ jobs:
         name: PYPI publish
         command: |
           set -eux
+          cd # ~/project does not match docker best practice docs
           python3 setup.py verify
           crudlfap compilemessages -f
           python3 setup.py sdist
