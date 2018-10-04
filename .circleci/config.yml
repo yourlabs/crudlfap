@@ -128,7 +128,7 @@ jobs:
     - checkout
     - run:
         name: RUN yarn install
-        command: cd js && yarn install && yarn run lint
+        command: yarn install --cwd js && yarn run lint
 
   js-test:
     docker:
@@ -193,8 +193,7 @@ jobs:
         command: |
           set -eux
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-          cd /code/js
-          NODE_ENV=production yarn publish --new-version $GIT_TAG
+          NODE_ENV=production yarn publish --cwd js --new-version $GIT_TAG
 
   pypi:
     docker:
@@ -204,7 +203,6 @@ jobs:
         name: PYPI publish
         command: |
           set -eux
-          cd /code
           python3 setup.py verify
           crudlfap compilemessages -f
           python3 setup.py sdist
