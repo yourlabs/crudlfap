@@ -117,7 +117,7 @@ CRUDLFA+ stands for Create Read Update Delete List Form Autocomplete and more.
 	  	.....
 	  	'post',
 	   ]
----?code=sample/models.py&lang=python&title=@color[#DC143C](Models in Djano)
+---?code=assets/sample/models.py&lang=python&title=@color[#DC143C](Models in Djano)
 
 ---
 ### Using @color[#DC143C](CRUDLFA+)
@@ -129,12 +129,12 @@ CRUDLFA+ stands for Create Read Update Delete List Form Autocomplete and more.
 ---
 ### Using @color[#DC143C](CRUDLFA+)
 - Now we need to create a super user by the following command.
-	   python manage.py createsuperuser	
+	   python manage.py createsuperuser
 - This will ask some information like
-	   Username (leave blank to use 'cis'): 
-	   Email address: 
-	   Password: 
-	   Password (again): 
+	   Username (leave blank to use 'cis'):
+	   Email address:
+	   Password:
+	   Password (again):
        Superuser created successfully.
 
 ---
