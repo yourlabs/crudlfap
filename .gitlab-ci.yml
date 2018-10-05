@@ -65,32 +65,31 @@ npm:
   - /^\d+\./
   image: $IMAGE_TAG
   script: |
-    echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-    cd
-    set -eux
-    NODE_ENV=production yarn publish --registry registry.npmjs.org --cwd js --new-version $CI_COMMIT_REF_NAME
+  - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+  - cd
+  - set -eux
+  - NODE_ENV=production yarn publish --registry registry.npmjs.org --cwd js --new-version $CI_COMMIT_REF_NAME
 
 pypi:
   stage: deploy
   only:
   - /^\d+\./
   image: python:3-stretch
-  script: |
-    echo -e "[pypi]" >> ~/.pypirc
-    echo -e "username = $PYPI_USER" >> ~/.pypirc
-    echo -e "password = $PYPI_PASS" >> ~/.pypirc
-
-    set -eux
-    apt update -y
-    apt install -y gettext
-    pip3 install twine -e .
-    pushd src
-    django-admin compilemessages -f
-    popd
-    export GIT_TAG=$CI_COMMIT_REF_NAME
-    python3 setup.py sdist
-    until which twine; do sleep 1; done
-    twine upload dist/*
+  script:
+  - echo -e "[pypi]" >> ~/.pypirc
+  - echo -e "username = $PYPI_USER" >> ~/.pypirc
+  - echo -e "password = $PYPI_PASS" >> ~/.pypirc
+  - set -eux
+  - apt update -y
+  - apt install -y gettext
+  - pip3 install twine -e .
+  - pushd src
+  - django-admin compilemessages -f
+  - popd
+  - export GIT_TAG=$CI_COMMIT_REF_NAME
+  - python3 setup.py sdist
+  - until which twine; do sleep 1; done
+  - twine upload dist/*
 
 docker-release:
   stage: deploy
