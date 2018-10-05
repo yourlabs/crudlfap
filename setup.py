@@ -12,22 +12,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-VERSION = '0.4.29'
-
-
-class VerifyVersionCommand(install):
-    """Custom command to verify that the git tag matches our version"""
-    description = 'verify that the git tag matches our version'
-
-    def run(self):
-        tag = os.getenv('GIT_TAG')
-
-        if tag != VERSION:
-            info = 'Git tag: {} does not match the version of app: {}'.format(
-                tag,
-                VERSION
-            )
-            sys.exit(info)
+VERSION = os.getenv('GIT_TAG', 'dev')
 
 
 setup(
@@ -84,7 +69,4 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     python_requires='>=3',
-    cmdclass={
-        'verify': VerifyVersionCommand,
-    }
 )
