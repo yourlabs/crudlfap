@@ -66,8 +66,10 @@ npm:
   image: $IMAGE_TAG
   script:
   - cd /app/js
-  - yarn config set _authToken "${NPM_TOKEN}"
-  - yarn publish --cwd js --new-version $CI_COMMIT_REF_NAME
+  - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' &> ~/.npmrc
+  - sed -i "s/^.*\"version\":.*,$/  \"version\": \"0.4.33\"/'," package.json
+  - npm publish
+
 
 pypi:
   stage: deploy
