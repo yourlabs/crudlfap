@@ -81,6 +81,8 @@ pypi:
     echo -e "password = $PYPI_PASS" >> ~/.pypirc
 
     set -eux
+    apt update -y
+    apt install -y gettext
     pip3 install twine -e .
     pushd src
     django-admin compilemessages -f
