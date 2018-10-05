@@ -67,7 +67,7 @@ npm:
   script:
   - cd /app/js
   - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ~/.npmrc
-  - sed -i "s/.*version.:.*/  \\\"version\\\": \\\"$GIT_TAG\\\",/" package.json
+  - bash -c "sed -i 's/.*\"version\":.*/  \\\"version\\\": \\\"$GIT_TAG\\\",/" package.json
   - NODE_ENV=production npm publish
 
 pypi:
