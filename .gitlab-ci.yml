@@ -78,6 +78,8 @@ pypi:
   script: |
     set -eux
     pip3 install twine &
+    pwd
+    ls
     pushd src && crudlfap compilemessages -f && popd
     export GIT_TAG=$CI_COMMIT_REF_NAME
     python3 setup.py sdist
