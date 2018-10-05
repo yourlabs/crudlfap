@@ -67,9 +67,8 @@ npm:
   script:
   - cd /app/js
   - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' &> ~/.npmrc
-  - sed -i "s/^.*\"version\":.*,$/  \"version\": \"0.4.33\"/'," package.json
+  - sed -i "s/^.*\"version\":.*,$/  \"version\": \"$GIT_TAG\",/" package.json
   - npm publish
-
 
 pypi:
   stage: deploy
