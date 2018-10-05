@@ -67,7 +67,7 @@ npm:
   script:
   - cd /app/js
   - yarn config set _authToken "${NPM_TOKEN}"
-  - npm publish --registry registry.npmjs.org --cwd js --new-version $CI_COMMIT_REF_NAME
+  - yarn publish --registry registry.npmjs.org --cwd js --new-version $CI_COMMIT_REF_NAME
 
 pypi:
   stage: deploy
