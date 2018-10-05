@@ -76,16 +76,15 @@ pypi:
   - /^\d+\./
   image: python:3-stretch
   script: |
-    set -eux
-    pip3 install twine &
-    pwd
-    ls
-    pushd src && crudlfap compilemessages -f && popd
-    export GIT_TAG=$CI_COMMIT_REF_NAME
-    python3 setup.py sdist
     echo -e "[pypi]" >> ~/.pypirc
     echo -e "username = $PYPI_USER" >> ~/.pypirc
     echo -e "password = $PYPI_PASS" >> ~/.pypirc
+
+    set -eux
+    pip3 install twine -e .
+    pushd src && ~/.local/bin/django-admin compilemessages -f && popd
+    export GIT_TAG=$CI_COMMIT_REF_NAME
+    python3 setup.py sdist
     until which twine; do sleep 1; done
     twine upload dist/*
 
