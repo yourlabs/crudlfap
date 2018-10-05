@@ -65,8 +65,8 @@ npm:
   - /^\d+\./
   image: $IMAGE_TAG
   script: |
-    cd
     echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+    cd
     set -eux
     NODE_ENV=production yarn publish --cwd js --new-version $CI_COMMIT_REF_NAME
 
