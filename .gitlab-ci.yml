@@ -64,7 +64,7 @@ npm:
   only:
   - /^\d+\./
   image: $IMAGE_TAG
-  script: |
+  script:
   - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
   - cd
   - set -eux
