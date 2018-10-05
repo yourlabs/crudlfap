@@ -78,7 +78,6 @@ pypi:
   script: |
     set -eux
     pip3 install twine &
-    cd # ~/project does not match docker best practice docs
     pushd src && crudlfap compilemessages -f && popd
     export GIT_TAG=$CI_COMMIT_REF_NAME
     python3 setup.py sdist
