@@ -66,8 +66,7 @@ npm:
   image: $IMAGE_TAG
   script:
   - cd /app/js
-  - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' &> ~/.npmrc
-  - sed -i "s/^.*\"version\":.*,$/  \"version\": \"$GIT_TAG\",/" package.json
+  - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ~/.npmrc
   - npm publish
 
 pypi:
