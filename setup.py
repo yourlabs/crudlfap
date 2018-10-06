@@ -12,12 +12,9 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-VERSION = os.getenv('GIT_TAG', 'dev')
-
-
 setup(
     name='crudlfap',
-    version=VERSION,
+    version=os.getenv('CI_COMMIT_REF_NAME', '999'),
     description='Rich frontend for generic views with Django',
     author='James Pic',
     author_email='jamespic@gmail.com',
