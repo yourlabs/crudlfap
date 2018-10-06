@@ -16,17 +16,17 @@ RUN apk update && apk --no-cache upgrade && apk --no-cache add gettext shadow py
 RUN mkdir -p /app && usermod -d /app -l app node && groupmod -n app node && chown -R app:app /app
 WORKDIR /app
 
-USER app
-RUN mkdir -p ${STATIC_ROOT} && mkdir -p ${UWSGI_SPOOLER_MOUNT}
-
-COPY --chown=app:app js /app/js
+COPY js /app/js
 RUN cd /app/js && yarn install --frozen-lockfile
 
-COPY --chown=app:app setup.py README.rst MANIFEST.in /app/
-COPY --chown=app:app src /app/src
-RUN cd /app && pip3 install --user --editable /app[dev]
+COPY setup.py README.rst MANIFEST.in /app/
+COPY src /app/src
+RUN pip3 install --editable /app[dev]
 
-RUN DEBUG=1 django-admin collectstatic --noinput --link
+RUN DEBUG=1 django-admin collectstatic --noinput
+
+USER app
+RUN mkdir -p ${STATIC_ROOT} && mkdir -p ${UWSGI_SPOOLER_MOUNT}
 
 ARG GIT_COMMIT
 ARG GIT_TAG
