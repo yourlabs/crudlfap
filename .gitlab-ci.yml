@@ -77,15 +77,7 @@ pypi:
   - /^\d+\./
   image: yourlabs/python
   script:
-  - echo -e "[pypi]" >> ~/.pypirc
-  - echo -e "username = $PYPI_USER" >> ~/.pypirc
-  - echo -e "password = $PYPI_PASS" >> ~/.pypirc
-  - pip install -e .
-  - pushd src
-  - django-admin compilemessages -f
-  - popd
-  - python3 setup.py sdist
-  - twine upload dist/*
+  - release
 
 docker-release:
   stage: deploy
