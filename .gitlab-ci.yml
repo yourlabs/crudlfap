@@ -67,7 +67,7 @@ npm:
   script:
   - cd /app/js
   - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ~/.npmrc
-  - sed -i "s/GIT_TAG/${CI_COMMIT_REF_NAME}/" package.json
+  - sed "s/GIT_TAG/${CI_COMMIT_REF_NAME}/" package.json > package.json
   - grep version package.json
   - NODE_ENV=production npm publish
 
