@@ -75,21 +75,16 @@ pypi:
   stage: deploy
   only:
   - /^\d+\./
-  image: python:3-stretch
+  image: yourlabs/python
   script:
   - echo -e "[pypi]" >> ~/.pypirc
   - echo -e "username = $PYPI_USER" >> ~/.pypirc
   - echo -e "password = $PYPI_PASS" >> ~/.pypirc
-  - set -eux
-  - apt update -y
-  - apt install -y gettext
-  - pip3 install twine -e .
+  - pip install -e .
   - pushd src
   - django-admin compilemessages -f
   - popd
-  - export GIT_TAG=$CI_COMMIT_REF_NAME
   - python3 setup.py sdist
-  - until which twine; do sleep 1; done
   - twine upload dist/*
 
 docker-release:
