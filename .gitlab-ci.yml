@@ -63,13 +63,14 @@ npm:
   stage: deploy
   only:
   - /^\d+\./
-  image: $IMAGE_TAG
+  image: node:10-alpine
+  variables:
+    NODE_ENV: production
   script:
-  - sed -i "s/GIT_TAG/${CI_COMMIT_REF_NAME}/" /app/js/package.json
-  - cd /app/js
   - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ~/.npmrc
+  - sed -i "s/GIT_TAG/${CI_COMMIT_REF_NAME}/" js/package.json
   - grep version package.json
-  - NODE_ENV=production npm publish
+  - npm publish
 
 pypi:
   stage: deploy
