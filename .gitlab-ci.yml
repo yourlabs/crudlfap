@@ -69,8 +69,8 @@ npm:
   script:
   - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ~/.npmrc
   - sed -i "s/GIT_TAG/${CI_COMMIT_REF_NAME}/" js/package.json
-  - grep version package.json
-  - npm publish
+  - grep version js/package.json
+  - cd js; npm publish
 
 pypi:
   stage: deploy
@@ -78,7 +78,7 @@ pypi:
   - /^\d+\./
   image: yourlabs/python
   script:
-  - release
+  - VERSION=$CI_COMMIT_REF_NAME release
 
 docker-release:
   stage: deploy
