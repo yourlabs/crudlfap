@@ -47,6 +47,12 @@ document.addEventListener('turbolinks:before-render', function() {
   })
 })
 
+document.addEventListener('turbolinks:before-cache', function(e) {
+  for (var select of e.target.querySelectorAll('select')) {
+    M.FormSelect.getInstance(select).destroy()
+  }
+})
+
 document.addEventListener('turbolinks:load', function(e) {
   init(e.target.body)
 })
