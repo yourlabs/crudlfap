@@ -70,7 +70,7 @@ npm:
   - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ~/.npmrc
   - sed -i "s/GIT_TAG/${CI_COMMIT_REF_NAME}/" js/package.json
   - grep version js/package.json
-  - npm publish
+  - cd js && npm publish
 
 pypi:
   stage: deploy
