@@ -68,13 +68,13 @@ Note:
 	- If you are not in a virtualenv, the above will fail if not executed as root, in this case use |
 		  pip install --user crudlfap
 
----?code=sample/settings.py&lang=python&title=@css[crudlfa-headline](Integration of CRUDLFA+)
+---?code=assets/sample/settings.py&lang=python&title=@css[crudlfa-headline](Integration of CRUDLFA+)
 @[14-15](import @color[#DC143C](CRUDLFAP_APPS) and @color[#DC143C](CRUDLFAP_TEMPLATE_BACKEND) from @color[#DC143C](crudlfap))
 @[34-42](Add @color[#DC143C](CRUDLFAP_APPS) with installed app)
 @[57-69](Add the  @color[#DC143C](CRUDLFAP_TEMPLATE_BACKEND) line inside TEMPLATES.)
 
 
----?code=sample/urls.py&lang=python&title=@css[crudlfa-headline](piece of code we need to add in @color[#DC143C](urls.py) file)
+---?code=assets/sample/urls.py&lang=python&title=@css[crudlfa-headline](piece of code we need to add in @color[#DC143C](urls.py) file)
 @[18](import @color[#DC143C](crudlfap) from @color[#DC143C](crudlfap))
 @[20-23](add @color[#DC143C](crudlfap) urls in urlpatterns)
 
@@ -91,7 +91,7 @@ Note:
 - Now we will register the post application that we created inside settings module.
 - We just need to mention this app name inside INSTALLED_APPS list.
 
----?code=sample/models.py&lang=python&title=@color[#DC143C](Models in Djano)
+---?code=assets/sample/models.py&lang=python&title=@color[#DC143C](Models in Djano)
 
 ---
 ### Using @color[#DC143C](CRUDLFA+)
