@@ -14,7 +14,7 @@ CRUDLFA+ stands for Create Read Update Delete List Form Autocomplete and more.
 ### @css[crudlfa-headline](prerequisite)
 
 - pip |
-	- pip is a package manager for Python packages, or modules if you like.) |
+	- pip is a package manager for Python packages, or modules if you like. |
 - Virtualenv |
 	- virtualenv is a tool to create isolated Python environments. |
 		  
