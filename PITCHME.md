@@ -20,7 +20,7 @@ CRUDLFA+ stands for Create Read Update Delete List Form Autocomplete and more.
 		  
 ---
 ### @color[#DC143C](Django)
--	@css[byline](Django is a free and open source web application framework written in Python. A framework is nothing more than a collection of modules that make development easier.)
+  Django is a free and open source web application framework written in Python. A framework is nothing more than a collection of modules that make development easier.
 
 ---
 
@@ -49,7 +49,7 @@ Note:
 
 
 ---
-### @color[#DC143C](default website)
+### @color[#DC143C](default View)
 - Run Server |
 	  python manage.py runserver
 - You can access your application using the following URL. |
@@ -160,6 +160,21 @@ Note:
 ---
 #### @color[#DC143C](Delete View)
 ![Logo](assets/images/7.png)
+
+---?code=assets/sample/crudlfap.py&lang=python&title=@css[crudlfa-headline](Extending CRUDLFAP features)
+@[7-10](Extending @color[#DC143C](Router))
+@[31-33](Change material icon)
+@[35-39](Extending List View)
+@[33-41](Extending Create View)
+@[13-18](Override ModelMixin Class)
+@[21-26](Override PostCreateView)
+
+Note:
+- We can extend crudlfap feature, like we can change icon, namespace, we can override views etc.
+- We can change the icon by overriding "material_icon" inside router.
+- We can override views like ListView we can set filters, search fields etc.
+- We can override CreateView to assign specific user or current user while creating post.
+
 
 ---?image=assets/images/gitpitch-audience.jpg
 # @color[#DC143C](Thank-You)
