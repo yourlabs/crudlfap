@@ -29,6 +29,7 @@ class PostCreateView(PostMixin, crudlfap.CreateView):
 crudlfap.Router(
     Post,
     material_icon='forum',
+    # https://material.io/tools/icons/?style=baseline
     namespace='posts',
     views=[
         crudlfap.ListView.clone(
