@@ -95,6 +95,7 @@ class ListMixin:
     material_icon = 'list'
     body_class = 'full-width'
     menus = ['main', 'model']
+    title_heading = None
 
     def get_urlpath(self):
         return ''

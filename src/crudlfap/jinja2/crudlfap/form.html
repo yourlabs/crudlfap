@@ -1,9 +1,6 @@
 {% extends 'base.html' %}
 
 {% block form_open %}
-{% if not request.META.get('HTTP_X_MODAL') %}
-<div class="card-panel">
-{% endif %}
 <form
   id="{% block form_id %}main-form{% endblock %}"
   action="{{ request.get_full_path() }}"
@@ -11,7 +8,6 @@
   enctype="multipart/form-data"
   data-controller="form"
   data-action="submit->form#submit"
-  {% block form_ajax %}data-ajax=""{% endblock %}
   {% if form is defined %}
   class="{% if request.method == 'POST' and form.errors or form.non_field_errors %}form-invalid{% endif %}"
   {% endif %}
@@ -28,7 +24,7 @@
   {% endif %}
 
   {% if view.invalid_pks|default(0) %}
-  <div class="card-panel orange">
+  <div class="orange">
       <span class="">{{ _('Objects ignored because of missing authorization') }}: {{ view.invalid_pks }}</span>
   </div>
   {% endif %}
@@ -49,7 +45,4 @@
   {% endif %}
   {% csrf_token %}
 </form>
-{% if not request.META.get('HTTP_X_MODAL') %}
-</div>
-{% endif %}
 {% endblock %}

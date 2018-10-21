@@ -18,6 +18,7 @@ export default class extends Controller {
   }
 
   get sidenav() {
+    if (this.element === undefined) return undefined
     return document.getElementById(this.element.getAttribute('data-target'))
   }
 

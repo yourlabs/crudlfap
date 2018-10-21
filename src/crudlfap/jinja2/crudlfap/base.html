@@ -34,28 +34,42 @@
   <body class="{% block body_class %}{{ view.body_class|default('') }}{% endblock %}">
     {% include 'crudlfap/_loader.html' %}
     {% include 'crudlfap/_menu_main.html' %}
-    {% block breadcrumb %}{% endblock %}
-    {% include 'crudlfap/_messages.html' %}
-    {% block before_container %}{% endblock %}
-    {% block content_open %}<div class="{% if view.body_class|default('') != 'full-width' %}container{% endif %}" id="modal-body-ajax">{% endblock %}
-      {% block form_open %}{% endblock %}
-        <div class="modal-content">
-        {% block title_heading %}
-          {% if view.title_heading and request.META.get('HTTP_X_MODAL') %}
-          <h4
-            class="text-{{ view.style|default('default') }} {% block title_heading_class %}{% endblock %}"
-            id="modal-title-ajax"
-          >{{ view.title_heading }}</h4>
-          {% endif %}
-        {% endblock %}
-          {% block content %}{% block form %}{% endblock %}{% endblock %}
-        </div>
-        <div class="modal-footer">
-          {% block buttons %}{% endblock %}
-        </div>
-      {% block form_close %}{% endblock %}
+    <header>
+      <div class="navbar-fixed">
+        <nav>
+          <div class="nav-wrapper {{ crudlfap_site.navbar_color }}">
+            <span href="#" data-action="click->sidenav#click" data-controller="sidenav" data-target="slide-out" class="sidenav-trigger"><i class="waves-effect material-icons">menu</i></span>
+            {% block breadcrumb %}
+            <a class="brand-logo" href="{{ crudlfap_site.views['home'].url }}" class="waves-effect brand-logo">{{ crudlfap_site.title }}</a>
+            {% endblock %}
+          </div>
+        </nav>
+      </div>
+    </header>
 
-    {% block content_close %}</div>{% endblock %}
+    <main>
+      {% include 'crudlfap/_messages.html' %}
+      {% block before_container %}{% endblock %}
+      {% block content_open %}<div class="{% if view.body_class|default('') != 'full-width' %}container{% endif %}" id="modal-body-ajax">{% endblock %}
+        {% block form_open %}{% endblock %}
+          <div class="modal-content">
+          {% block title_heading %}
+            {% if view.title_heading %}
+            <h4
+              class="text-{{ view.style|default('default') }} {% block title_heading_class %}{% endblock %}"
+              id="modal-title-ajax"
+            >{{ view.title_heading }}</h4>
+            {% endif %}
+          {% endblock %}
+            {% block content %}{% block form %}{% endblock %}{% endblock %}
+          </div>
+          <div class="modal-footer">
+            {% block buttons %}{% endblock %}
+          </div>
+        {% block form_close %}{% endblock %}
+
+      {% block content_close %}</div>{% endblock %}
+    </main>
 
     <div id="modal" class="modal modal-fixed-footer"></div>
 

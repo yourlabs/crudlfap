@@ -26,8 +26,8 @@
 
 <div class="row">
   {% if view.search_form or view.filterset %}
-  <div class="col s12 m3">
-    <div class="card-panel">
+  <div class="col s12 m3 l2">
+    <div>
       <form method="get" action="" data-controller="autosubmit" data-target="render-table" data-action="input->autosubmit#input change->autosubmit#input">
         {% if view.search_form %}
         {{ render_form(view.search_form) }}
@@ -40,8 +40,8 @@
   </div>
   {% endif %}
 
-  <div class="table-responsive col s12 {% if view.search_form or view.filterset %}m9{% endif %}" id="render-table">
-    <div class="card-panel">
+  <div class="table-responsive col s12 {% if view.search_form or view.filterset %}m9 l10{% endif %}" id="render-table">
+    <div>
       {% if view.table %}
       <div class="table-container">
         {{ view.table.as_html(request) }}

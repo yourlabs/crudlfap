@@ -82,4 +82,4 @@ class Registry(collections.OrderedDict):
         return 'CRUDLFA+'
 
     def get_navbar_color(self):
-        return 'teal darken-3'
+        return ''

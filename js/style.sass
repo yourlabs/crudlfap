@@ -1,5 +1,47 @@
 @import 'materialize-css/sass/materialize.scss'
 
+main
+  padding-left: 14px
+  padding-top: 14px
+
+body.no-nav
+  nav, .sidenav
+    display: none
+  header, main, footer
+    padding-left: 0
+
+header, main, footer
+  padding-left: 300px
+
+.sidenav-trigger
+  display: none
+
+@media only screen and (max-width : 992px)
+  header, main, footer
+    padding-left: 0
+  .sidenav-trigger
+    display: block
+  .nav-wrapper nav
+    padding-left: 56px
+
+.row:last
+  margin-bottom: 0
+
+.nav-wrapper
+  .sidenav-trigger
+    margin: 0 0 0 18px
+
+body .navbar-fixed nav
+  color: black
+  background-color: white
+  height: auto
+
+header .navbar-fixed .breadcrumb
+  color: black
+
+.breadcrumb::before
+  color: teal !important
+
 #main-loader
   top: 0px
   left: 0px

@@ -1,23 +1,16 @@
-<nav>
-  <div class="nav-wrapper">
-    <div class="col s12">
-      <a style="padding-left: 1em" class="breadcrumb" href="{{ crudlfap_site.views['home'].url }}">{{ _('Home') }}</a>
-      {% if view.model %}
-        {% set v = crudlfap_site[view.model]['list'](request=request) %}
-        {% if v.allowed %}
-          <a
-            class="breadcrumb"
-            data-ajax="{{ v.ajax }}"
-            href="{{ v.reverse() }}"
-          >{{ v.model._meta.verbose_name_plural.capitalize() }}</a>
-        {% endif %}
-      {% endif %}
-      {% if object and getattr(object, 'get_absolute_url', None) %}
-        <a class="breadcrumb" href="{{ object.get_absolute_url() }}">{{ object }}</a>
-      {% endif %}
-      {% if view.urlname %}
-        <a class="breadcrumb active">{{ _(view.urlname).capitalize() }}</a>
-      {% endif %}
-    </div>
-  </div>
-</nav>
+<a style="padding-left: 1em" class="breadcrumb" href="{{ crudlfap_site.views['home'].url }}">{{ _('Home') }}</a>
+{% if view.model %}
+  {% set v = crudlfap_site[view.model]['list'](request=request) %}
+  {% if v.allowed %}
+    <a
+      class="breadcrumb"
+      href="{{ v.reverse() }}"
+    >{{ v.model._meta.verbose_name_plural.capitalize() }}</a>
+  {% endif %}
+{% endif %}
+{% if object and getattr(object, 'get_absolute_url', None) %}
+  <a class="breadcrumb" href="{{ object.get_absolute_url() }}">{{ object }}</a>
+{% endif %}
+{% if view.urlname %}
+  <a class="breadcrumb active">{{ _(view.urlname).capitalize() }}</a>
+{% endif %}
