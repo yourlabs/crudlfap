@@ -48,6 +48,10 @@ document.addEventListener('turbolinks:before-render', function() {
 })
 
 document.addEventListener('turbolinks:before-cache', function(e) {
+  // perform cleanups here
+  for (var tooltip of e.target.querySelectorAll('[data-tooltip]')) {
+    M.Tooltip.getInstance(tooltip).destroy()
+  }
   for (var select of e.target.querySelectorAll('select')) {
     M.FormSelect.getInstance(select).destroy()
   }
