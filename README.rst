@@ -1,12 +1,12 @@
-.. image:: https://img.shields.io/readthedocs/crudlfap.svg?style=for-the-badge
+.. image:: https://img.shields.io/readthedocs/crudlfap.svg
    :target: https://crudlfap.readthedocs.io
-.. image:: https://img.shields.io/circleci/project/github/yourlabs/crudlfap/master.svg?style=for-the-badge
+.. image:: https://yourlabs.io/oss/crudlfap/badges/master/build.svg
    :target: https://circleci.com/gh/yourlabs/crudlfap
-.. image:: https://img.shields.io/codecov/c/github/yourlabs/crudlfap/master.svg?style=for-the-badge
+.. image:: https://img.shields.io/codecov/c/github/yourlabs/crudlfap/master.svg
    :target: https://codecov.io/gh/yourlabs/crudlfap
-.. image:: https://img.shields.io/npm/v/crudlfap.svg?style=for-the-badge
+.. image:: https://img.shields.io/npm/v/crudlfap.svg
    :target: https://www.npmjs.com/package/crudlfap
-.. image:: https://img.shields.io/pypi/v/crudlfap.svg?style=for-the-badge
+.. image:: https://img.shields.io/pypi/v/crudlfap.svg
    :target: https://pypi.python.org/pypi/crudlfap
 
 Welcome to CRUDLFA+ for Django 2.0: because Django is FUN !
