@@ -43,6 +43,10 @@ Resources
 - `Presentation graciously served by
   <https://gitpitch.com/yourlabs/crudlfap/master>`_ by `GitPitch
   <https://gitpitch.com>`_
+- `ChatRoom graciously hosted by
+  <https://www.yourlabs.chat>`_ by `YourLabs Business Service
+  <https://www.yourlabs.biz>`_ on `Mattermost
+  <https://mattermost.com/>`_
 - `**Documentation** graciously hosted
   <http://crudlfap.readthedocs.io>`_ by `RTFD
   <http://rtfd.org>`_
@@ -51,8 +55,9 @@ Resources
   <http://groups.google.com>`_
 - For **Security** issues, please contact yourlabs-security@googlegroups.com
 - `Git graciously hosted
-  <https://github.com/yourlabs/crudlfap/>`_ by `GitHub
-  <http://github.com>`_,
+  <https://yourlabs.io/oss/crudlfap/>`_ by `YourLabs Business Service
+  <https://www.yourlabs.biz>`_ with `GitLab
+  <https://www.gitlab.org>`_
 - `Package graciously hosted
   <http://pypi.python.org/pypi/crudlfap/>`_ by `PyPi
   <http://pypi.python.org/pypi>`_,
