@@ -40,6 +40,9 @@ Features
 Resources
 =========
 
+- `Presentation graciously served by
+  <https://gitpitch.com/yourlabs/crudlfap/master>`_ by `GitPitch
+  <https://gitpitch.com>`_
 - `**Documentation** graciously hosted
   <http://crudlfap.readthedocs.io>`_ by `RTFD
   <http://rtfd.org>`_
@@ -54,8 +57,8 @@ Resources
   <http://pypi.python.org/pypi/crudlfap/>`_ by `PyPi
   <http://pypi.python.org/pypi>`_,
 - `Continuous integration graciously hosted
-  <http://circleci.com/gh/yourlabs/crudlfap>`_ by `CircleCI
-  <http://circleci.com>`_
+  <https://yourlabs.io/oss/crudlfap/pipelines>`_ by `YourLabs Business Service
+  <https://wwww.yourlabs.biz>`_
 - Browser test graciously hosted by `SauceLabs
   <https://saucelabs.com>`_
 - `**Online paid support** provided via HackHands
