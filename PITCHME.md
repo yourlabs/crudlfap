@@ -131,41 +131,33 @@ Note:
 
 ---
 ### @css[crudlfa-headline](Automatic model menus)
-![Logo](assets/images/0.png)
-
----
-#### @color[#DC143C](Create Post with CRUDLFA+)
 ![Logo](assets/images/1.png)
 
 ---
-#### @color[#DC143C](Create Post pop-up with CRUDLFA+)
+#### @color[#DC143C](Create Post with CRUDLFA+)
 ![Logo](assets/images/2.png)
 
 ---
-#### @color[#DC143C](List Posts with Automatic Object Level Menus)
+#### @color[#DC143C](Create Post pop-up with CRUDLFA+)
 ![Logo](assets/images/3.png)
 
 ---
-#### @color[#DC143C](Detail View of Post with CRUDLFA+)
+#### @color[#DC143C](List Posts with Automatic Object Level Menus)
 ![Logo](assets/images/4.png)
 
 ---
-#### @color[#DC143C](Detail View with Automatic Options)
+#### @color[#DC143C](Update View)
 ![Logo](assets/images/5.png)
 
 ---
-#### @color[#DC143C](Update View)
-![Logo](assets/images/6.png)
-
----
 #### @color[#DC143C](Delete View)
-![Logo](assets/images/7.png)
+![Logo](assets/images/6.png)
 
 ---
 ### @color[#DC143C](Extend Object Icon)
  @css[byline](Change material icon )
 
-![Logo](assets/images/8.png)
+![Logo](assets/images/7.png)
 
 https://material.io/tools/icons/?style=baseline
 Note:
