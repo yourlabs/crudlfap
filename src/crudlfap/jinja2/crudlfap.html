@@ -1,0 +1,58 @@
+{# Jinja2 Macros for CRUDLFA+ #}
+
+{% macro a(view, class='', iclass=True, text=True, next=False) -%}
+  <a
+    class="{{ class }}"
+    href="{{ view.url }}{% if next %}?_next={{ next }}{% endif %}"
+    title="{{ view.title }}"
+    {% for key, value in (view.link_attributes|default({})).items() %}
+      {{ key }}="{{ value }}"
+    {% endfor %}
+    {% if view.controller %}
+    data-controller="{{ view.controller }}"
+    {% endif %}
+    {% if view.action %}
+    data-action="{{ view.action }}"
+    {% endif %}
+    {%- for key, value in (view.link_attributes|default({})).items() %}
+    {{ key }}="{{ value.replace('"', '\\"') }}"
+    {%- endfor %}
+    {%- if not view.turbolinks|default(True) %}
+    data-turbolinks="false"
+    {%- endif %}
+    >
+    <i class="{% if iclass == True %}{% for color in (view.color|default('')).split(' ') %}{{ color }}-text {% endfor %}{% elif iclass %}{{ iclass }}{% endif %} material-icons">{{ view.material_icon }}</i>
+    {% if text == True %}
+    {{ view.title_menu }}
+    {% elif text %}
+    {{ text }}
+    {% endif %}
+  </a>
+{%- endmacro %}
+
+{% macro dropdown(views, id, icon='menu', text='', class='', iclass=False, next=False) -%}
+  {% if views|length %}
+    {% if views|length > 1 %}
+      <a
+        class="dropdown-trigger no-autoinit {{ class }}"
+        title="{{ _('actions').capitalize() }}"
+        data-target="{{ id }}"
+        >
+        {% if icon %}<i class="material-icons">{{ icon }}</i>{% endif %}
+        {{ text }}
+      </a>
+
+      <ul class="dropdown-content" id="{{ id }}">
+        {% for view in views %}
+        <li>
+            {{ a(view, next=next) }}
+        </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      {% for view in views %}
+        {{ a(view, ' '.join([class, view.color|default('')]), iclass=iclass, next=next) }}
+      {% endfor %}
+    {% endif %}
+  {% endif %}
+{%- endmacro %}

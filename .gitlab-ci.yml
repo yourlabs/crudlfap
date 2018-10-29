@@ -1,0 +1,99 @@
+variables:
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+  RELEASE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+  PUBLIC_RELEASE_TAG: yourlabs/crudlfap:$CI_COMMIT_REF_NAME
+  PUBLIC_IMAGE_TAG: yourlabs/crudlfap:$CI_COMMIT_SHA
+  ANSIBLE_FORCE_COLOR: 'true'
+
+build:
+  stage: build
+  image: docker:stable
+  services: ['docker:dind']
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+  before_script:
+  - echo $CI_JOB_TOKEN | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+  script:
+  - docker pull $CI_REGISTRY_IMAGE:master || true
+  - docker build --cache-from $CI_REGISTRY_IMAGE:master -t $IMAGE_TAG .
+  - docker push $IMAGE_TAG
+  after_script:
+  - docker logout
+
+docs-qa:
+  stage: build
+  image: yourlabs/python
+  script:
+  - tox -e docs
+
+py-qa:
+  stage: build
+  image: yourlabs/python
+  script:
+  - tox -e qa
+
+py-test:
+  stage: build
+  image: yourlabs/python
+  script:
+  - tox -e py36-dj21
+  - codecov -e $TOXENV
+
+js-qa:
+  image: node:10-alpine
+  stage: build
+  script:
+  - cd js
+  - yarn install
+  - yarn run lint
+
+# lets first have tests then enable this one
+#js-test:
+#  image: node:10-alpine
+#  stage: build
+#  script:
+#  - npm install -g codecov
+#  - cd js
+#  - yarn install
+#  - yarn test
+#  - codecov
+
+npm:
+  stage: deploy
+  only:
+  - /^\d+\./
+  image: node:10-alpine
+  variables:
+    NODE_ENV: production
+  script:
+  - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ~/.npmrc
+  - sed -i "s/GIT_TAG/${CI_COMMIT_REF_NAME}/" js/package.json
+  - grep version js/package.json
+  - cd js; npm publish
+
+pypi:
+  stage: deploy
+  only:
+  - /^\d+\./
+  image: yourlabs/python
+  script:
+  - VERSION=$CI_COMMIT_REF_NAME release
+
+docker-release:
+  stage: deploy
+  image: docker:stable
+  services: ['docker:dind']
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+  script:
+  - echo $CI_JOB_TOKEN | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+  - docker pull $IMAGE_TAG
+  - docker tag $IMAGE_TAG $RELEASE_TAG
+  - docker push $RELEASE_TAG
+  - docker logout
+  - echo "$DOCKER_PASS" | docker login -u $DOCKER_USER --password-stdin
+  - docker tag $IMAGE_TAG $PUBLIC_RELEASE_TAG
+  - docker push $PUBLIC_RELEASE_TAG
+  - docker logout

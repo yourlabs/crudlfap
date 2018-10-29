@@ -1,0 +1,22 @@
+<tr>
+    <td colspan="2">
+        <code>
+            <a href="{{ repr }}">{{ repr }}</a>
+        </code>
+        {% if url.name %}
+        <br />
+        {{ url.name }}
+        {% endif %}
+    </td>
+    <td>
+        {% if url.callback.view_class %}
+            {{ url.callback.view_class }}
+        {% else %}
+            {{ url.callback }}
+        {% endif %}
+        <br />
+        {% if url.callback.__code__ %}
+            {{ url.callback.__code__ }}
+        {% endif %}
+    </td>
+</tr>

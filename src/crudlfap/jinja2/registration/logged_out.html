@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block body_class %}push-down{% endblock %}
+
+{% block content %}
+<p>{{ _('Thanks for spending some quality time with the Web site today.') }}</p>
+
+<p><a href="{{ crudlfap_site.views['login'].url }}">{{ _('Log in again') }}</a></p>
+{% endblock %}

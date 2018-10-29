@@ -1,0 +1,13 @@
+{% if object is defined %}
+  {% for view in view.router.get_menu('object', request, object=object) %}
+    {% include 'crudlfap/_action.html' %}
+  {% endfor %}
+{% else %}
+  {% for menu_view in view.router.get_menu('model', request) %}
+    {% if type(view) != type(menu_view) %}
+      {% with view=menu_view %}
+      {% include 'crudlfap/_action.html' %}
+      {% endwith %}
+    {% endif %}
+  {% endfor %}
+{% endif %}

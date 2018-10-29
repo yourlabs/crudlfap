@@ -1,0 +1,5 @@
+<ul style="display: none" data-controller="messages">
+  {% for message in messages %}
+  <li class="fix560 {% if message.level == 25 %}teal{% endif %}{% if message.level == 30 %}orange darken-4{% endif %}">{{ message|safe }}</li>
+  {% endfor %}
+</ul>

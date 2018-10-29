@@ -1,0 +1,7 @@
+{% extends 'crudlfap/form.html' %}
+
+{% block form_id %}form-object-{{ view.model._meta.model_name }}{% endblock %}
+
+{% block breadcrumb %}{% include 'crudlfap/_breadcrumb_object.html' %}{% endblock %}
+
+{% block before_form %}<h1>{{ view.title }}<h1>{% endblock %}

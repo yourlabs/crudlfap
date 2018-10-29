@@ -1,0 +1,12 @@
+<a
+  class="{{ view.color|default('') }} {{ extra_class|default('') }} waves-effect waves-light btn-floating"
+  href="{{ view.url }}"
+  title="{{ view.title }}"
+  {% if view.controller %}
+  data-controller="{{ view.controller }}"
+  {% endif %}
+  {% if view.action %}
+  data-action="{{ view.action }}"
+  {% endif %}
+  ><i class="material-icons">{{ view.material_icon }}</i>
+</a>

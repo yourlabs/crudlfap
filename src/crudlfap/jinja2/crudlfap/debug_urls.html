@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<table>
+{% for repr, url in view.urlpatterns.items() %}
+    {% include 'crudlfap/_debug_url.html' %}
+{% endfor %}
+</table>
+{% endblock %}
