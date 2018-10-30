@@ -8,6 +8,16 @@ class FactoryMetaclass(type):
     """``__getattr__`` that ensures a first argument to getters."""
 
     def __getattr__(cls, attr):
+        """Makes the getter work both from class and instance
+
+        Thanks to this, your `get_*()` methods will /maybe/ work in both
+        cases::
+
+            YourClass.foo   # calls get_foo(YourClass)
+            YourClass().foo # calls get_foo(self)
+
+        Don't code drunk.
+        """
         if attr.startswith('get_'):
             raise AttributeError('{} or {}'.format(attr[4:], attr))
 
@@ -19,7 +29,11 @@ class FactoryMetaclass(type):
             return getter(cls)
 
     def get_cls(cls):
-        return cls  # did it go to far at this point ?
+        """Return the cls.
+
+        did it go to far at this point ?
+        """
+        return cls
 
 
 class Factory(metaclass=FactoryMetaclass):
