@@ -207,7 +207,7 @@ CRUDLFAP_TEMPLATE_BACKEND = {
     "APP_DIRS": True,
     "OPTIONS": {
         "app_dirname": "jinja2",
-        "match_extension": ".html",
+        "match_extension": None,
         "context_processors": [
             "django.template.context_processors.debug",
             "django.template.context_processors.request",
