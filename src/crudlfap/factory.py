@@ -5,19 +5,20 @@ import inspect
 
 
 class FactoryMetaclass(type):
-    """``__getattr__`` that ensures a first argument to getters."""
+    """``__getattr__`` that ensures a first argument to getters.
+
+    Makes the getter work both from class and instance
+
+    Thanks to this, your `get_*()` methods will /maybe/ work in both
+    cases::
+
+        YourClass.foo   # calls get_foo(YourClass)
+        YourClass().foo # calls get_foo(self)
+
+    Don't code drunk.
+    """
 
     def __getattr__(cls, attr):
-        """Makes the getter work both from class and instance
-
-        Thanks to this, your `get_*()` methods will /maybe/ work in both
-        cases::
-
-            YourClass.foo   # calls get_foo(YourClass)
-            YourClass().foo # calls get_foo(self)
-
-        Don't code drunk.
-        """
         if attr.startswith('get_'):
             raise AttributeError('{} or {}'.format(attr[4:], attr))
 
