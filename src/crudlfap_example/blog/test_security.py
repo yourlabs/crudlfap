@@ -6,7 +6,7 @@ don't trust myself either :)
 """
 from datetime import timedelta
 
-from crudlfap import crudlfap
+from crudlfap import shortcuts as crudlfap
 
 from crudlfap_auth.crudlfap import User
 

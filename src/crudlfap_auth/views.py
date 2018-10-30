@@ -10,7 +10,7 @@ Crudlfa+ takes views further than Django and are expected to:
 
 import logging
 
-from crudlfap import crudlfap
+from crudlfap import shortcuts as crudlfap
 
 from django import http
 from django.contrib import auth

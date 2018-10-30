@@ -141,11 +141,11 @@ else:
     ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
 
 CRUDLFAP_VIEWS = [
-    'crudlfap.crudlfap.CreateView',
-    'crudlfap.crudlfap.DeleteView',
-    'crudlfap.crudlfap.UpdateView',
-    'crudlfap.crudlfap.DetailView',
-    'crudlfap.crudlfap.ListView',
+    'crudlfap.views.generic.CreateView',
+    'crudlfap.views.generic.DeleteView',
+    'crudlfap.views.generic.UpdateView',
+    'crudlfap.views.generic.DetailView',
+    'crudlfap.views.generic.ListView',
 ]
 
 CRUDLFAP_APPS = [
@@ -231,7 +231,7 @@ CRUDLFAP_TEMPLATE_BACKEND = {
         "constants": TEMPLATE_CONSTANTS,
         "globals": {
             "pagination_filter_params": "crudlfap.jinja2.pagination_filter_params",  # noqa
-            "crudlfap_site": "crudlfap.crudlfap.site",
+            "crudlfap_site": "crudlfap.site.site",
             "getattr": getattr,
             "str": str,
             "int": int,
@@ -344,3 +344,38 @@ if UWSGI_SPOOLER_MOUNT and UWSGI_SPOOLER_NAMES:
         path = os.path.join(UWSGI_SPOOLER_MOUNT, name)
         if not os.path.exists(path):
             os.makedirs(path)
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+    },
+    'formatters': {
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'loggers': {
+        'django.template': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'django.db': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        '*': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}

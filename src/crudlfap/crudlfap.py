@@ -1,11 +1,83 @@
-# flake8: noqa: F401
-"""Import everything we expose in crudlfap namespace."""
+from crudlfap.models import Controller, URL
+from crudlfap.router import Router
+from crudlfap.views import generic
 
-from .apps import _installed
-from .factory import Factory
-from .mixins import *  # noqa
-from .registry import Registry
-from .route import Route
-from .router import Router, Views, ViewsDescriptor
-from .site import site
-from .views import *  # noqa
+from django import forms
+from django.contrib.auth.models import Group, Permission
+
+
+class ControllerRouter(Router):
+    model = Controller
+
+    views = [
+        generic.DetailView,
+        generic.ListView.clone(
+            search_fields=(
+                'app',
+                'model',
+            ),
+            table_fields=(
+                'app',
+                'model',
+            ),
+        ),
+    ]
+
+
+# useless ?
+# ControllerRouter().register()
+
+
+class AuthorizeView(generic.ObjectFormView):
+    material_icon = 'lock'
+
+    class form_class(forms.Form):
+        groups = forms.ModelMultipleChoiceField(
+            queryset=Group.objects.all(),
+            required=False,
+            widget=forms.CheckboxSelectMultiple,
+        )
+
+    def get_initial(self):
+        perm = Permission.objects.filter(
+            content_type=self.object.content_type,
+            codename=self.object.codename,
+        ).first()
+
+        if not perm:
+            return dict()
+
+        return dict(
+            groups=perm.group_set.all(),
+        )
+
+    def form_valid(self):
+        for perm in self.object.get_or_create_permissions():
+            for group in self.form.cleaned_data['groups']:
+                group.permissions.add(perm)
+        return super().form_valid()
+
+
+class URLRouter(Router):
+    model = URL
+    material_icon = 'link'
+
+    views = [
+        generic.DetailView,
+        AuthorizeView,
+        generic.ListView.clone(
+            search_fields=(
+                'name',
+                'controller__app',
+                'controller__model',
+            ),
+            table_fields=(
+                'controller',
+                'id',
+                'fullurlpath',
+            ),
+        ),
+    ]
+
+
+URLRouter().register()

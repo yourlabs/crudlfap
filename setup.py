@@ -47,6 +47,7 @@ setup(
           'django-extensions',
           'devpy',
           'dj-static',
+          'lookupy-unmanaged',
         ],
     ),
     entry_points={

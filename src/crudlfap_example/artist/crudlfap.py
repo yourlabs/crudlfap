@@ -1,4 +1,4 @@
-from crudlfap import crudlfap
+from crudlfap import shortcuts as crudlfap
 
 from .models import Artist
 

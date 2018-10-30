@@ -3,23 +3,15 @@ import collections
 from django.apps import apps
 from django.urls import path
 
+from .factory import Factory
 from .router import ViewsDescriptor
 
 
 crudlfap = apps.get_app_config('crudlfap')  # pylint: disable=invalid-name
 
 
-class Registry(collections.OrderedDict):
+class Registry(Factory, collections.OrderedDict):
     views = ViewsDescriptor()
-
-    def __getattr__(self, attr):
-        if attr.startswith('get_'):
-            raise AttributeError('{} or {}()'.format(attr[4:], attr))
-
-        if hasattr(self, 'get_' + attr):
-            return getattr(self, 'get_' + attr)()
-
-        raise AttributeError('{} or get_{}()'.format(attr, attr))
 
     def get_app_menus(self, name, request, **kwargs):
         """Sort Router instances by app name."""

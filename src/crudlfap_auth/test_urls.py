@@ -1,4 +1,4 @@
-from crudlfap import crudlfap
+from crudlfap import shortcuts as crudlfap
 
 from django.contrib.auth.models import Group, Permission
 from django.urls import resolve, reverse
@@ -90,7 +90,7 @@ def test_logout_reverse():
 
 
 def test_url_reverse():
-    assert reverse('crudlfap:urls') == '/urls'
+    assert reverse('crudlfap:url:list') == '/url'
 
 
 @pytest.mark.django_db

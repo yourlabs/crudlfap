@@ -157,7 +157,7 @@ class Router(object):
         return self.model._meta.app_label
 
     def get_registry(self):
-        from crudlfap.crudlfap import site
+        from crudlfap.site import site
         return site
 
     def __getitem__(self, urlname):
@@ -266,7 +266,7 @@ class Router(object):
 
         if not hasattr(self.model, 'get_absolute_url'):
             def get_absolute_url(self):
-                from crudlfap import crudlfap
+                from crudlfap import shortcuts as crudlfap
                 return crudlfap.site[type(self)]['detail'].clone(
                     object=self).url
             self.model.get_absolute_url = get_absolute_url
@@ -296,9 +296,9 @@ class Router(object):
 
         For each view class in self.views which have ``name`` in their
         ``menus`` attribute, instanciate the view class with ``request`` and
-        kwargs, call ``allowed()`` on it.
+        kwargs, call ``has_perm()`` on it.
 
-        Return the list of view instances for which ``allowed()`` has passed.
+        Return the list of view instances for which ``has_perm()`` has passed.
         """
         views = []
 
@@ -308,7 +308,7 @@ class Router(object):
 
             view = v.clone(request=request, **kwargs)()
 
-            if view.allowed:
+            if view.has_perm():
                 views.append(view)
 
         return views
@@ -316,31 +316,17 @@ class Router(object):
     def get_model(self):
         return None
 
-    def allowed(self, view):
+    def has_perm(self, view):
         """
-        Return True to allowed a access to a view.
-
-        Called by the default view.allowed() implementation.
-
-        If you override the view.allowed() method, then it's up to you
-        to decide if you want to call this method or not.
-
-        Returns True if user.is_staff by default.
+        View's request.user has_perm call with the view's permission_fullcode.
         """
-        if view.required_permissions:
-            for permission in view.required_permissions:
-                args = [view.object] if view.object_permission_check else []
-                if not view.request.user.has_perm(permission, *args):
-                    return False
-        else:
-            return view.request.user.is_staff
-        return True
+        return view.request.user.has_perm(view.permission_fullcode)
 
-    def get_objects_for_user(self, user, perms):
-        """Return the list of objects for a given set of perms."""
+    def get_queryset(self, view):
+        """Return the queryset for a view, returns all by default."""
         return self.model.objects.all()
 
-    def get_fields_for_user(self, user, perms, obj=None):
+    def get_fields(self, view):
         """Return the list of fields for a user."""
         fields = list(self.model._meta.fields)
         fields += list(self.model._meta.local_many_to_many)

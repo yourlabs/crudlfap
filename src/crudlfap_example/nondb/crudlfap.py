@@ -21,7 +21,7 @@ hahahahahahahahahahah oh I'm sorry where you looking for boring software ? lol
 """
 
 
-from crudlfap import crudlfap
+from crudlfap import shortcuts as crudlfap
 
 from . import models
 
@@ -33,5 +33,6 @@ class SongRatingRouter(crudlfap.Router):
     def get_object(self, view):
         object_list = self.get_queryset(view)
         return object_list[int(view.kwargs['pk']) - 1]
+
 
 SongRatingRouter(models.SongRating).register()

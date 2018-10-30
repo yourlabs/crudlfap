@@ -56,7 +56,7 @@ class ModelFormMixin(ModelMixin, FormMixin):
         if getattr(self, 'object', None):
             try:
                 url = self.object.get_absolute_url()
-            except:
+            except Exception:
                 return message
 
             return ' '.join((

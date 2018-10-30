@@ -1,5 +1,4 @@
-from crudlfap import crudlfap
-from crudlfap.crudlfap import site
+from crudlfap import shortcuts as crudlfap
 
 from crudlfap_example.artist.models import Artist
 
@@ -76,7 +75,7 @@ def test_app_name_with_model():
 
 
 def test_registry_default():
-    assert Router().registry == site
+    assert Router().registry == crudlfap.site
 
 
 def test_registry():
@@ -123,7 +122,7 @@ def test_urlpattern(router):
 def test_get_menu(router, srf):
     a = Artist(name='a')
     from crudlfap_auth.crudlfap import User
-    srf.user = User.objects.create(is_staff=True)
+    srf.user = User.objects.create(is_superuser=True)
     req = srf.get('/')
     result = router.get_menu('object', req, object=a)
     assert len(result) == 1

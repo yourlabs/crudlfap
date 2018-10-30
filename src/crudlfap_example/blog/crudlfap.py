@@ -1,4 +1,4 @@
-from crudlfap import crudlfap
+from crudlfap import shortcuts as crudlfap
 
 from .models import Post
 
@@ -43,30 +43,32 @@ class PostRouter(crudlfap.Router):
         ),
     ]
 
-    def allowed(self, view):
-        """Example getting out of the django permission system."""
+    def has_perm(self, view):
         user = view.request.user
-        perms = view.required_permissions
+        code = view.permission_shortcode
 
-        if perms == ['blog.add_post']:
+        if code in ('list', 'detail'):
+            return True
+        elif code == 'add':
             return user.is_authenticated
-        elif perms == ['blog.change_post']:
+        elif code == 'change':
             return view.object.editable(user)
-        elif perms == ['blog.delete_post']:
+        elif code == 'delete':
             if hasattr(view, 'object'):
                 return view.object.editable(user)
 
-            # DeleteObjects relies on get_objects_for_user
+            # DeleteObjects relies on get_queryset to secure runtime
             return user.is_authenticated
 
-        return True
+        return super().has_perm(view)
 
-    def get_objects_for_user(self, user, perms):
-        if perms in [['blog.change_post'], ['blog.delete_post']]:
-            return self.model.objects.get_queryset().editable(user)
-        elif perms in [['blog.list_post'], ['blog.detail_post']]:
-            return self.model.objects.get_queryset().readable(user)
-        else:
-            return self.model.objects.get_queryset().none()
+    def get_queryset(self, view):
+        qs = self.model.objects.get_queryset()
+        if view.permission_shortcode in ('change', 'delete'):
+            return qs.editable(view.request.user)
+        elif view.permission_shortcode in ('list', 'detail'):
+            return qs.readable(view.request.user)
+        return qs.none()
+
 
 PostRouter().register()

@@ -16,7 +16,7 @@ class FilterMixin(object):
         for name, field in fs.form.fields.items():
             try:
                 mf = self.model._meta.get_field(name)
-            except:
+            except Exception:
                 continue
 
             if not isinstance(mf, models.ForeignKey):

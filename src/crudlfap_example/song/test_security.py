@@ -5,7 +5,7 @@ It's a bit paranoid, but i'll sleep better with this: i don't trust users, i
 don't trust myself either :)
 """
 
-from crudlfap import crudlfap
+from crudlfap import shortcuts as crudlfap
 
 from crudlfap_auth.crudlfap import User
 
@@ -38,6 +38,7 @@ def song0():
     artist = Artist.objects.get_or_create(name='artist0')[0]
     return Song.objects.get_or_create(
         artist=artist, name='song0', owner=user0)[0]
+
 
 cases = [
     (dict(), False),

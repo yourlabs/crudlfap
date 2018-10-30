@@ -1,7 +1,7 @@
 <a style="padding-left: 1em" class="breadcrumb" href="{{ crudlfap_site.views['home'].url }}">{{ _('Home') }}</a>
 {% if view.model %}
   {% set v = crudlfap_site[view.model]['list'](request=request) %}
-  {% if v.allowed %}
+  {% if v.has_perm() %}
     <a
       class="breadcrumb"
       href="{{ v.reverse() }}"

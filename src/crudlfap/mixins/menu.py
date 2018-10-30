@@ -22,7 +22,7 @@ class MenuMixin(object):
                         **self.menu_kwargs,
                     )
 
-                    if not view().allowed:
+                    if not view().has_perm():
                         continue
                     if view.urlname == self.urlname:
                         continue

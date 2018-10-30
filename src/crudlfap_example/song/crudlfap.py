@@ -1,4 +1,4 @@
-from crudlfap import crudlfap
+from crudlfap import shortcuts as crudlfap
 
 from .models import Song
 
@@ -36,7 +36,7 @@ class SongRouter(crudlfap.Router):
         ),
     ]
 
-    def allowed(self, view):
+    def has_perm(self, view):
         # In this example, we let users do everything on their own objects
         # and that's taken care of by get_objects_for_user. So, we short-
         # circuit the Django permission system which takes place by default
@@ -44,7 +44,8 @@ class SongRouter(crudlfap.Router):
         # get_objects_for_user, deal with that
         return view.request.user.is_authenticated
 
-    def get_objects_for_user(self, user, perms):
+    def get_queryset(self, view):
+        user = view.request.user
         if not user.is_authenticated:
             return self.model.objects.none()
 
@@ -52,5 +53,6 @@ class SongRouter(crudlfap.Router):
             return self.model.objects.all()
 
         return self.model.objects.filter(owner=user)
+
 
 SongRouter().register()

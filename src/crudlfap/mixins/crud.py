@@ -16,7 +16,7 @@ class CreateMixin:
     object_permission_check = False
     log_action_flag = ADDITION
     menus = ['main', 'model']
-    short_permission_code = 'add'
+    permission_shortcode = 'add'
 
     def form_valid(self):
         self.object = self.form.save()
@@ -33,7 +33,7 @@ class DeleteMixin:
     controller = 'modal'
     action = 'click->modal#open'
     form_class = forms.Form
-    short_permission_code = 'delete'
+    permission_shortcode = 'delete'
 
     def form_valid(self):
         if hasattr(self, 'object_list'):
@@ -112,7 +112,7 @@ class UpdateMixin:
     color = 'orange'
     locks = True
     log_action_flag = CHANGE
-    short_permission_code = 'change'
+    permission_shortcode = 'change'
 
     def get_form_fields(self):
         if hasattr(self, 'update_fields'):

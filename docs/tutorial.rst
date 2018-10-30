@@ -15,9 +15,8 @@ About module
 
 CRUDLFA+ strives to provide a modern UI for Django generic views out of the
 box, but all defaults should also be overiddable as conveniently as possible.
-It turns out that Django performs extremely well already, but by pushing
-Django's philosophy such as DRY as far as possible, even in the client side
-code world.
+It turns out that Django performs extremely well already, and pushing Django's
+philosophy such as DRY as far as possible works very well for me.
 
 Enable in your project
 ======================
@@ -76,14 +75,12 @@ If you want to specify views in the router::
 Using the :py:meth:`~crudlfap.factory.Factory.clone()` classmethod will
 define a subclass on the fly with the given attributes.
 
-
-
 URLs
 ====
 
 The easiest configuration is to generate patterns from the default registry::
 
-    from crudlfap import crudlfap
+    from crudlfap import shortcuts as crudlfap
 
     urlpatterns = [
         crudlfap.site.urlpattern
@@ -91,7 +88,39 @@ The easiest configuration is to generate patterns from the default registry::
 
 Or, to sit in ``/admin``::
 
+    crudlfap.site.urlpath = 'admin'
+
     urlpatterns = [
-        crudlfap.site.get_urlpattern('admin'),
+        crudlfap.site.urlpattern,
         # your patterns ..
     ]
+
+Changing home page
+==================
+
+CRUDLFA+ so far relies on Jinja2 and provides a configuration
+where it finds templates in app_dir/jinja2.
+
+As such, a way to override the home page template is to create a directory
+"jinja2" in one of your apps - personnaly i add the project itself to
+INSTALLED_APPS, sorry if you have hard feelings about it but i love to do
+that, have a place to put project-specific stuff in general - and in the
+`jinja2` directory create a `crudlfap/home.html` file.
+
+You will also probably want to override `crudlfap/base.html`. But where it
+gets more interresting is when you replace the home view with your own.
+Example, still in urls.py::
+
+    from crudlfap import shortcuts as crudlfap
+    from .views import Dashboard  # your view
+
+    crudlfap.site.title = 'Your Title'  # used by base.html
+    crudlfap.site.urlpath = 'admin'  # example url prefix
+    crudlfap.site.views['home'] = views.Dashboard
+
+    urlpatterns = [
+        crudlfap.site.get_urlpattern(),
+    ]
+
+So, there'd be other ways to acheive this but that's how i like to
+do it.

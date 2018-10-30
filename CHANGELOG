@@ -1,0 +1,39 @@
+0.6.0
+
+NEW FEATURES
+
+- Non-db model support has been greatly improved, using the lookupy module that
+  implements a QuerySet interface for python objects, we just added support for
+  models that have managed=False,
+- You can now browse your list of registered `Routers` and `Routes` in
+  CRUDLFA+, these are auto-generated during runtime into
+  `crudlfap.models.Controller` and `crudlfap.models.URL`,
+- By doing so, you can authorize groups that should have the view permission in
+  each view's detail page, refer to the new documentation about security model
+  for details,
+- As such, the poor urls debug view is gone in favor of the above,
+- Django permission API is now the default way of dealing with permission,
+- BC Breaks listed below
+
+BACKWARD COMPATIBILITY BREAKS
+
+So, basically this will make your 0.5 CRUDLFA+ project start correctly on 0.6::
+
+    find src/ -type f | xargs sed -i 's/from crudlfap import crudlfap/from crudlfap import shortcuts as crudlfap/'
+
+BUT all your views will be invisible to non-superusers. Follow these steps to
+upgrade:
+
+- `from crudlfap import crudlfap` should now be `from crudlfap import shortcuts
+  as crudlfap`,
+- `allowed` is gone, in favor of `has_perm()`, that checks django permission by
+  default, that means views are not open to staff users by default but to
+  superusers
+- as such, to open a view to all, replace `allowed=True` with
+  `authenticate=False`,
+- `Router.get_objects_for_user(user, perms)` is gone in favor of
+  `Router.get_queryset(view)`, which returns all models by default.
+- `Router.get_fields_for_user(user, perms, obj=None)` becomes
+  `Router.get_fields(view)`,
+- `Route.short_permission_code` becomes `Route.permission_shortcode`,
+- `Route.full_permission_code` becomes `Route.permission_fullcode`,
