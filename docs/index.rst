@@ -20,6 +20,7 @@ This plugin for Django makes a rich user interface from Django models.
    router
    settings
    views
+   factory
    crudlfap_auth/index
 
 Indices and tables
