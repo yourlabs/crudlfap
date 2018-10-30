@@ -37,6 +37,7 @@ setup(
         'django-filter',
         'django-betterforms',
         'timeago',
+        'lookupy-unmanaged',
     ],
     tests_require=['tox'],
     extras_require=dict(
@@ -47,7 +48,6 @@ setup(
           'django-extensions',
           'devpy',
           'dj-static',
-          'lookupy-unmanaged',
         ],
     ),
     entry_points={
