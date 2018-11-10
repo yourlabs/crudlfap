@@ -87,25 +87,25 @@ class URL(models.Model):
 
     @property
     def codename(self):
+        if not self.view.model:
+            return self.view.permission_shortcode
         return '_'.join((
             self.view.permission_shortcode,
             self.view.model.__name__.lower(),
         ))
 
-    def get_or_create_permissions(self):
-        return [
-            Permission.objects.update_or_create(
-                content_type=self.content_type,
-                codename=self.codename,
-                defaults=dict(
-                    name=getattr(
-                        self.view,
-                        'title_menu',
-                        self.view.permission_shortcode
-                    ),
-                )
-            )[0]
-        ]
+    def get_or_create_permission(self):
+        return Permission.objects.update_or_create(
+            content_type=self.content_type,
+            codename=self.codename,
+            defaults=dict(
+                name=getattr(
+                    self.view,
+                    'title_menu',
+                    self.view.permission_shortcode
+                ),
+            )
+        )[0]
 
     @classmethod
     def factory(cls, view):

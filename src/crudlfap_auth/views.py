@@ -53,9 +53,6 @@ class BecomeUser(crudlfap.ObjectView):
     color = 'pink darken-4'
     link_attributes = {'data-noprefetch': 'true'}
 
-    def get_allowed(self):
-        return self.request.user.is_superuser
-
     def get_title_menu(self):
         return _('become').capitalize()
 
@@ -90,7 +87,7 @@ class BecomeUser(crudlfap.ObjectView):
 class Become(crudlfap.View):
     urlname = 'su'
 
-    def get_allowed(self):
+    def has_perm(self):
         return 'become_user' in self.request.session
 
     def get_object(self):

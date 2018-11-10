@@ -192,35 +192,33 @@ class Route(Factory, metaclass=RouteMetaclass):
         return self.reverse(*self.urlargs)
 
     def get_permission_shortcode(self):
-        """Return the urlname."""
+        """Return the middle part for the view permission.
+
+        Returns the urlname by default.
+        """
         return self.urlname
+
+    def get_permission_codename(self):
+        """Return the codename attribute for the view Permission."""
+        if not self.model:
+            return self.permission_shortcode
+        return f'{self.permission_shortcode}_{self.model._meta.model_name}'
 
     def get_permission_fullcode(self):
         """
         Return a string with the app name, permission_shortcode and model name.
         """
-        if self.model:
-            return '{}.{}_{}'.format(
-                self.app_name,
-                self.permission_shortcode,
-                self.model._meta.model_name
-            )
-        else:
-            return '{}.{}'.format(
-                self.app_name,
-                self.permission_shortcode,
-            )
+        return f'{self.app_name}.{self.permission_codename}'
 
     def get_authenticate(self):
         return True
 
     def has_perm(self):
-        """Checks for router and user permission."""
+        """Checks for user permission."""
         if not self.authenticate:
             return True
-        if self.router:
-            return self.router.has_perm(self)
-        return self.request.user.has_perm(self.permission_fullcode)
+
+        return self.request.user.has_perm(self.permission_fullcode, self)
 
     def get_registry(self):
         if self.router:
@@ -232,6 +230,11 @@ class Route(Factory, metaclass=RouteMetaclass):
         if self.registry:
             return reverse('{}:login'.format(self.registry.app_name))
         return reverse('login')
+
+    def get_allowed_groups(self):
+        if not self.router:
+            return []
+        return getattr(self.router, 'allowed_groups', [])
 
     def dispatch(self, request, *args, **kwargs):
         """This will run has_perm prior to super().dispatch()."""

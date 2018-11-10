@@ -1,6 +1,12 @@
 """
 A settings file to import boilerplate from.
 
+.. py:data:: AUTHENTICATION_BACKENDS
+
+    Contains the default django.contrib.auth.backends.ModelBackend and
+    also crudlfap_auth.backends.ViewBackend which will introspect the
+    view's authenticate and allowed_groups variables.
+
 .. py:data:: CRUDLFAP_VIEWS
 
     List of default views to provide to Routers that were not spawned with any
@@ -160,8 +166,8 @@ CRUDLFAP_APPS = [
 
 DJANGO_APPS = [
     'django.contrib.admin',
-    'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.auth',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
@@ -282,6 +288,11 @@ LOCALE_PATHS = (
 )
 
 WSGI_APPLICATION = 'crudlfap_example.wsgi.application'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'crudlfap_auth.backends.ViewBackend',
+]
 
 
 # Database

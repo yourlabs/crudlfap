@@ -36,14 +36,6 @@ class SongRouter(crudlfap.Router):
         ),
     ]
 
-    def has_perm(self, view):
-        # In this example, we let users do everything on their own objects
-        # and that's taken care of by get_objects_for_user. So, we short-
-        # circuit the Django permission system which takes place by default
-        # We only have the create view that does not go through
-        # get_objects_for_user, deal with that
-        return view.request.user.is_authenticated
-
     def get_queryset(self, view):
         user = view.request.user
         if not user.is_authenticated:

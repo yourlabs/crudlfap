@@ -320,7 +320,7 @@ class Router(object):
         """
         View's request.user has_perm call with the view's permission_fullcode.
         """
-        return view.request.user.has_perm(view.permission_fullcode)
+        return view.request.user.has_perm(view.permission_fullcode, view)
 
     def get_queryset(self, view):
         """Return the queryset for a view, returns all by default."""
@@ -331,3 +331,6 @@ class Router(object):
         fields = list(self.model._meta.fields)
         fields += list(self.model._meta.local_many_to_many)
         return [f.name for f in fields]
+
+    def get_allowed_groups(self):
+        return []

@@ -14,7 +14,10 @@ site = Registry(
             redirect_authenticated_user=True,
             authenticate=False,
         ),
-        Route.factory(LogoutView),
+        Route.factory(
+            LogoutView,
+            authenticate=False,
+        ),
         TemplateView.clone(
             template_name='crudlfap/home.html',
             title_heading='',

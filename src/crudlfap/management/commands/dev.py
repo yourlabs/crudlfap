@@ -7,6 +7,8 @@ import sys
 import django.dispatch
 from django.apps import apps
 from django.conf import settings
+from django.contrib.auth.models import Group
+from django.core.exceptions import FieldDoesNotExist
 from django.core.management import call_command
 from django.core.management.commands.runserver import Command as BaseCommand
 
@@ -48,7 +50,13 @@ class Command(BaseCommand):
     def createusers(self):
         user_model = apps.get_model(settings.AUTH_USER_MODEL)
 
-        def createuser(username, **defaults):
+        def createuser(username, *groups, **defaults):
+            for key in list(defaults.keys()):
+                try:
+                    user_model._meta.get_field(key)
+                except FieldDoesNotExist:
+                    defaults.pop(key)
+
             user, created = user_model.objects.update_or_create(
                 username=username,
                 defaults=defaults,
@@ -65,3 +73,9 @@ class Command(BaseCommand):
         createuser('dev', is_staff=True, is_superuser=True)
         createuser('staff', is_staff=True)
         createuser('user')
+
+        for group in Group.objects.all():
+            createuser(
+                group.name.lower().replace(' ', ''),
+                group,
+            )

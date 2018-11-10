@@ -189,7 +189,7 @@ class TableMixin(object):
         )
 
     def get_table_kwargs(self):
-        return {}
+        return dict(data=self.object_list)
 
     def get_table_pagination(self):
         if not self.paginate_by:
@@ -198,7 +198,6 @@ class TableMixin(object):
 
     def get_table(self):
         kwargs = self.table_kwargs
-        kwargs.update(data=self.object_list)
         self.table = self.build_table_class()(**kwargs)
         RequestConfig(
             self.request,

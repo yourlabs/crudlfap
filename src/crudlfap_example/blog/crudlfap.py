@@ -64,7 +64,9 @@ class PostRouter(crudlfap.Router):
 
     def get_queryset(self, view):
         qs = self.model.objects.get_queryset()
-        if view.permission_shortcode in ('change', 'delete'):
+        if view.request.user.is_superuser:
+            return qs
+        elif view.permission_shortcode in ('change', 'delete'):
             return qs.editable(view.request.user)
         elif view.permission_shortcode in ('list', 'detail'):
             return qs.readable(view.request.user)

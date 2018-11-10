@@ -39,10 +39,14 @@ class AuthorizeView(generic.ObjectFormView):
         )
 
     def get_initial(self):
-        perm = Permission.objects.filter(
-            content_type=self.object.content_type,
+        kwargs = dict(
             codename=self.object.codename,
-        ).first()
+        )
+
+        if self.object.model:
+            kwargs['content_type'] = self.object.content_type
+
+        perm = Permission.objects.filter(**kwargs).first()
 
         if not perm:
             return dict()
@@ -52,9 +56,9 @@ class AuthorizeView(generic.ObjectFormView):
         )
 
     def form_valid(self):
-        for perm in self.object.get_or_create_permissions():
-            for group in self.form.cleaned_data['groups']:
-                group.permissions.add(perm)
+        perm = self.object.get_or_create_permission()
+        for group in self.form.cleaned_data['groups']:
+            group.permissions.add(perm)
         return super().form_valid()
 
 

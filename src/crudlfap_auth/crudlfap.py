@@ -10,10 +10,6 @@ from . import views
 User = apps.get_model(getattr(settings, 'AUTH_USER_MODEL', 'auth.User'))
 
 
-def superuser(view):
-    return view.request.user.is_superuser
-
-
 crudlfap.Router(
     User,
     views=[
@@ -34,7 +30,13 @@ crudlfap.Router(
         ),
         crudlfap.CreateView.clone(
             body_class='modal-fixed-footer',
-            fields=['username', 'email', 'groups', 'is_staff', 'is_superuser'],
+            fields=[
+                'username',
+                'email',
+                'groups',
+                'is_staff',
+                'is_superuser'
+            ],
         ),
         views.PasswordView,
         views.BecomeUser,
@@ -61,15 +63,32 @@ crudlfap.Router(
             ],
         ),
     ],
-    allowed=lambda view: view.request.user.is_superuser,
     urlfield='username',
     material_icon='person',
 ).register()
+
+
+class GroupUpdateView(crudlfap.UpdateView):
+    def get_form_class(self):
+        cls = super().get_form_class()
+        cls.base_fields['permissions'].queryset = (
+            cls.base_fields['permissions'].queryset.select_related(
+                'content_type'))
+        return cls
+
 
 crudlfap.Router(
     Group,
     fields=['name', 'permissions'],
     material_icon='group',
+    views=[
+        crudlfap.DeleteObjectsView,
+        crudlfap.DeleteView,
+        GroupUpdateView,
+        crudlfap.CreateView,
+        crudlfap.DetailView,
+        crudlfap.ListView,
+    ],
 ).register()
 
 crudlfap.site.views.append(views.Become.clone(model=User))
