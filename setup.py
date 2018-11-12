@@ -4,28 +4,17 @@ import os
 import sys
 
 
-# Utility function to read the README file.
-# Used for the long_description. It's nice, because now 1) we have a top level
-# README file and 2) it's easier to type in the README file than to put a raw
-# string in below ...
-def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
-
-VERSION = '@VERSION'
-
-
 setup(
     name='crudlfap',
-    version=VERSION,
+    setup_requires='setupmeta',
+    versioning='dev',
     description='Rich frontend for generic views with Django',
     author='James Pic',
     author_email='jamespic@gmail.com',
-    url='https://github.com/yourlabs/crudlfap',
+    url='https://yourlabs.io/oss/crudlfap',
     packages=find_packages('src'),
     package_dir={'': 'src'},
     include_package_data=True,
-    long_description=read('README.rst'),
-    license='MIT',
     keywords='django crud',
     install_requires=[
         'jinja2',
