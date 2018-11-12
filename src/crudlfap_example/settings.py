@@ -10,3 +10,7 @@ INSTALLED_APPS += [  # noqa
 
 install_optional(OPTIONAL_APPS, INSTALLED_APPS)  # noqa
 install_optional(OPTIONAL_MIDDLEWARE, MIDDLEWARE)  # noqa
+
+AUTHENTICATION_BACKENDS += [  # noqa
+    'crudlfap_example.blog.crudlfap.AuthBackend',
+]

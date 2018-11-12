@@ -81,7 +81,7 @@ class Factory(metaclass=FactoryMetaclass):
         return getattr(type(self), attr)
 
     @classmethod
-    def clone(cls, **attributes):
+    def clone(cls, *mixins, **attributes):
         """Return a subclass with the given attributes.
 
         If a model is found, it will prefix the class name with the model.
@@ -92,4 +92,4 @@ class Factory(metaclass=FactoryMetaclass):
             model = getattr(cls, 'model', None)
         if model and model.__name__ not in cls.__name__:
             name = '{}{}'.format(model.__name__, cls.__name__)
-        return type(name, (cls,), attributes)
+        return type(name, (cls,) + mixins, attributes)

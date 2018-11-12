@@ -53,7 +53,8 @@ cases = [
 @pytest.mark.parametrize('url', ['detail', 'update', 'delete'])
 @pytest.mark.django_db
 def test_object_views_object_for_user(client, userattrs, expected, url, song0):
-    url = crudlfap.site[Song][url].clone(object=song0).url
+    view = crudlfap.site[Song][url].clone(object=song0)
+    url = view.url
     res = user_client(client, **userattrs).get(url)
     assert res.status_code == 200 if expected else 404
 

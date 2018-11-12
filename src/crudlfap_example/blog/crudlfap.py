@@ -3,6 +3,35 @@ from crudlfap import shortcuts as crudlfap
 from .models import Post
 
 
+class AuthBackend:
+    def authenticate(self, *args):
+        return None  # prevent auth from this backend
+
+    def has_perm(self, user_obj, perm, obj=None):
+        view = obj
+
+        if view.model != Post:
+            return False
+
+        user = user_obj
+        code = view.permission_shortcode
+
+        if code in ('list', 'detail'):
+            return True
+        elif code == 'add':
+            return user.is_authenticated
+        elif code == 'change':
+            return view.object.editable(user)
+        elif code == 'delete':
+            if hasattr(view, 'object'):
+                return view.object.editable(user)
+
+            # DeleteObjects relies on get_queryset to secure runtime
+            return user.is_authenticated
+
+        return super().has_perm(user_obj, perm, obj)
+
+
 class PostMixin:
     def get_exclude(self):
         if not self.request.user.is_staff:
@@ -42,25 +71,6 @@ class PostRouter(crudlfap.Router):
             search_fields=['name'],
         ),
     ]
-
-    def has_perm(self, view):
-        user = view.request.user
-        code = view.permission_shortcode
-
-        if code in ('list', 'detail'):
-            return True
-        elif code == 'add':
-            return user.is_authenticated
-        elif code == 'change':
-            return view.object.editable(user)
-        elif code == 'delete':
-            if hasattr(view, 'object'):
-                return view.object.editable(user)
-
-            # DeleteObjects relies on get_queryset to secure runtime
-            return user.is_authenticated
-
-        return super().has_perm(view)
 
     def get_queryset(self, view):
         qs = self.model.objects.get_queryset()
