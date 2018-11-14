@@ -27,17 +27,13 @@ msgid "become"
 msgstr "devenir"
 
 #: src/crudlfap_auth/views.py:82
-#, fuzzy, python-format
 msgid "Switched to user %s"
 msgstr "Vous usurpez maintenant: %s"
 
 #: src/crudlfap_auth/views.py:110
-#, python-format
 msgid "Switched back to your user %s"
 msgstr "De retour sur votre utilisateur %s"
 
 #: src/crudlfap_auth/views.py:117
-#, fuzzy, python-format
-#| msgid "Your are still superuser %s"
 msgid "You are still superuser %s"
 msgstr "Vous êtes toujours le superutilisateur %s"
