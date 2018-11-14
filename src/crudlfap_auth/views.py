@@ -79,7 +79,7 @@ class BecomeUser(crudlfap.ObjectView):
         request.session['become_user'] = become_user
         messages.info(
             request,
-            'Switched to user {}'.format(request.user)
+            _('Switched to user %s') % request.user
         )
         return http.HttpResponseRedirect('/' + self.router.registry.urlpath)
 
@@ -107,16 +107,14 @@ class Become(crudlfap.View):
             auth.login(request, user)
             messages.info(
                 request,
-                'Switched back to your user {}'.format(
-                    user
-                )
+                _('Switched back to your user %s') % user
             )
             if 'become_user' in request.session.keys():
                 del request.session['become_user']
         else:
             messages.warning(
                 request,
-                'Your are still superuser {}'.format(self.request.user)
+                _('You are still superuser %s') % self.request.user
             )
 
         return http.HttpResponseRedirect('/' + self.registry.urlpath)

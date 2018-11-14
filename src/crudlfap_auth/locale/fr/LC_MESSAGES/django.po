@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-30 12:29+0100\n"
+"POT-Creation-Date: 2018-11-14 12:11+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,6 +18,26 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: views.py:60
+#: src/crudlfap_auth/views.py:33
+msgid "update"
+msgstr ""
+
+#: src/crudlfap_auth/views.py:57
 msgid "become"
 msgstr "devenir"
+
+#: src/crudlfap_auth/views.py:82
+#, fuzzy, python-format
+msgid "Switched to user %s"
+msgstr "Vous usurpez maintenant: %s"
+
+#: src/crudlfap_auth/views.py:110
+#, python-format
+msgid "Switched back to your user %s"
+msgstr "De retour sur votre utilisateur %s"
+
+#: src/crudlfap_auth/views.py:117
+#, fuzzy, python-format
+#| msgid "Your are still superuser %s"
+msgid "You are still superuser %s"
+msgstr "Vous êtes toujours le superutilisateur %s"
