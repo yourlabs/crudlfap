@@ -50,6 +50,7 @@ post1 = pytest.fixture(lambda user0: Post.objects.get_or_create(
 post2 = pytest.fixture(lambda user1: Post.objects.get_or_create(
     owner=user1, name='post2', publish=yesterday)[0])
 
+
 def url(name, obj):
     return crudlfap.site[Post][name].clone(object=obj).url
 
