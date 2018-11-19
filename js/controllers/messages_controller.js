@@ -1,4 +1,4 @@
-import M from 'materialize-css'
+import M from 'mrsmaterialize'
 import { Controller } from 'stimulus'
 
 export default class extends Controller {

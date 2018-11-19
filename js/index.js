@@ -1,7 +1,7 @@
 import { Application } from 'stimulus'
 import { definitionsFromContext } from 'stimulus/webpack-helpers'
 import init from './init.js'
-import M from 'materialize-css'
+import M from 'mrsmaterialize'
 import './style.sass'
 
 (() => {
