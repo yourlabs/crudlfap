@@ -4618,10 +4618,10 @@ move-concurrently@^1.0.1:
     rimraf "^2.5.4"
     run-queue "^1.0.3"
 
-mrsmaterialize@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/mrsmaterialize/-/mrsmaterialize-1.0.2.tgz#9cf1f2f73cda697e2ae0357aa3f1e7159fe713e2"
-  integrity sha512-v1JdB0dPBr7wtCdWjsnhBJgFYUbo7tFPhEc+YjcrIl2t6cS0TYDm6B8oYRbYshGq7RiTlj0CM2ORrrdoiWEyHg==
+mrsmaterialize@1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/mrsmaterialize/-/mrsmaterialize-1.0.5.tgz#41700160117b70bd3cf07c9387329a0d5ad9995a"
+  integrity sha512-6fHevQ99plEZyojuVCMwBbmXwUryRCGs+6dx9qg0lrXAL0akkzdYkHghDXm+QFzsJY9aYaC1JBpGUIHcqldzug==
 
 ms@2.0.0:
   version "2.0.0"

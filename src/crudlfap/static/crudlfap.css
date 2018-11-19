@@ -5198,11 +5198,13 @@ input[type=checkbox]:not(:disabled).tabbed:focus ~ .lever::before {
 
 /* Select Field
    ========================================================================== */
+select {
+  display: none; }
+
 select.browser-default {
-  opacity: 1; }
+  display: block; }
 
 select {
-  opacity: 0;
   background-color: rgba(255, 255, 255, 0.9);
   width: 100%;
   padding: 5px;
@@ -5249,13 +5251,6 @@ select {
     position: absolute;
     top: -26px;
     font-size: 0.8rem; }
-  .select-wrapper .hide-select {
-    width: 0;
-    height: 0;
-    overflow: hidden;
-    position: absolute;
-    top: 0;
-    z-index: -1; }
 
 select:disabled {
   color: rgba(0, 0, 0, 0.42); }
