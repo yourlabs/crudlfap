@@ -50,7 +50,8 @@ post1 = pytest.fixture(lambda user0: Post.objects.get_or_create(
 post2 = pytest.fixture(lambda user1: Post.objects.get_or_create(
     owner=user1, name='post2', publish=yesterday)[0])
 
-url = pytest.fixture(lambda name, obj: router()[name].clone(object=obj).url)
+def url(name, obj):
+    return crudlfap.site[Post][name].clone(object=obj).url
 
 
 @pytest.mark.django_db
