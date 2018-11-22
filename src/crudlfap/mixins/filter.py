@@ -9,11 +9,11 @@ class FilterMixin(object):
         """
         Returns an instance of the filterset to be used in this view.
         """
-        fs = self.filterset_class(**self.filterset_kwargs)
+        self.filterset = self.filterset_class(**self.filterset_kwargs)
 
         # filter out choices which have no result to avoid filter pollution
         # with choices which would empty out results
-        for name, field in fs.form.fields.items():
+        for name, field in self.filterset.form.fields.items():
             try:
                 mf = self.model._meta.get_field(name)
             except Exception:
@@ -26,13 +26,8 @@ class FilterMixin(object):
                 c=models.Count(mf.related_query_name())
             ).filter(c__gt=0)
 
-        return fs
-
-    def get_filterset_data_default(self):
-        return None
-
     def get_filterset_data(self):
-        return self.request.GET.copy() or self.get_filterset_data_default()
+        return self.request.GET.copy()
 
     def get_filterset_kwargs(self):
         """
