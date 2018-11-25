@@ -13,7 +13,7 @@
     <title>{% block title %}{{ view.title_html }}{% endblock %} {% if settings.SITE_TITLE %}- {{ crudlfap_site.title }}{% endif %}</title>
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="https://fengyuanchen.github.io/viewerjs/css/viewer.css" />
+    <link rel="stylesheet" type="text/css" href="{{ static('viewer.css') }}" />
 
     <meta name="turbolinks-root" content="{{ crudlfap_site.views['home'].url }}">
 
