@@ -22,7 +22,7 @@ setup(
         'django-jinja',
         'django-bootstrap3',
         'django-material',
-        'django-tables2==2.0.0a3',
+        'django-tables2==2.0.3',
         'django-filter',
         'django-betterforms',
         'timeago',
