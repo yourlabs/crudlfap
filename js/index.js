@@ -3,6 +3,7 @@ import { definitionsFromContext } from 'stimulus/webpack-helpers'
 import init from './init.js'
 import M from 'mrsmaterialize'
 import './style.sass'
+import loader from './loader.js'
 
 (() => {
   if (window.Turbolinks === undefined) {
@@ -112,17 +113,7 @@ document.addEventListener('mouseover', event => {
   }, 250)
 })
 
-document.addEventListener('turbolinks:click', () => {
-  var e = document.getElementById('main-loader')
-  if (e !== undefined) {
-    e.style.display = 'flex'
-  }
-})
-document.addEventListener('turbolinks:render', () => {
-  var e = document.getElementById('main-loader')
-  if (e !== undefined) {
-    e.style.display = 'none'
-  }
-})
+document.addEventListener('turbolinks:click', loader.show)
+document.addEventListener('turbolinks:render', loader.hide)
 
 export default application

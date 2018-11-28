@@ -32,7 +32,9 @@
   </head>
 
   <body class="{% block body_class %}{{ view.body_class|default('') }}{% endblock %}">
-    {% include 'crudlfap/_loader.html' %}
+    <div id="main-loader" class="loader-container turbolinks-progress-bar">
+      {% include 'crudlfap/_loader.html' %}
+    </div>
     {% include 'crudlfap/_menu_main.html' %}
     <header>
       <div class="navbar-fixed">

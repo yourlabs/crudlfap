@@ -2,6 +2,7 @@ import Cookie from 'js-cookie'
 import { Controller } from 'stimulus'
 import M from 'mrsmaterialize'
 import init from '../init.js'
+import loader from '../loader.js'
 
 export default class extends Controller {
   connect() {
@@ -15,6 +16,7 @@ export default class extends Controller {
   open(e) {
     e.preventDefault()
     var url = this.element.getAttribute('href')
+    loader.show()
     fetch(url, {
       credentials: 'same-origin',
       headers: {

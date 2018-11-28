@@ -2,6 +2,7 @@ import Cookie from 'js-cookie'
 import { Controller } from 'stimulus'
 import M from 'mrsmaterialize'
 import init from '../init.js'
+import loader from '../loader.js'
 
 export default class extends Controller {
   submit(e) {
@@ -9,6 +10,7 @@ export default class extends Controller {
       // console.warn('Skipping ajax because form tag has no id attr')
       return
     }
+    loader.show()
     e.preventDefault()
     var url = this.element.getAttribute('action')
     var formData = new FormData(this.element)
@@ -64,11 +66,13 @@ export default class extends Controller {
       target.innerHTML = source.innerHTML
 
       init(target)
+      loader.hide()
 
       if (url && url != window.location.href) {
         window.history.pushState({}, title, url)
       }
     }).catch(error => {
+      loader.hide()
       M.toast({
         html: error,
         classes: 'orange darken-4',
