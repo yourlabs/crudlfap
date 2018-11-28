@@ -24,19 +24,27 @@ export default class extends Controller {
         'X-Modal': '1',
       }
     })
-      .then(res => res.text())
-      .then(res => {
-        var parser = new DOMParser()
-        var doc = parser.parseFromString(res, 'text/html')
-        var newbody = doc.getElementById('modal-body-ajax')
-        if (doc.querySelector('body.modal-fixed-footer')) {
-          this.modal.classList.add('modal-fixed-footer')
-        } else {
-          this.modal.classList.remove('modal-fixed-footer')
-        }
-        this.modal.innerHTML = newbody.innerHTML
-        this.initmodal()
+    .then(res => res.text())
+    .then(res => {
+      var parser = new DOMParser()
+      var doc = parser.parseFromString(res, 'text/html')
+      var newbody = doc.getElementById('modal-body-ajax')
+      if (doc.querySelector('body.modal-fixed-footer')) {
+        this.modal.classList.add('modal-fixed-footer')
+      } else {
+        this.modal.classList.remove('modal-fixed-footer')
+      }
+      this.modal.innerHTML = newbody.innerHTML
+      loader.hide()
+      this.initmodal()
+    }).catch(error => {
+      loader.hide()
+      M.toast({
+        html: error,
+        classes: 'orange darken-4',
+        displayLength: 15000,
       })
+    })
   }
 
   childmodal() {
