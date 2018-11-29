@@ -6517,6 +6517,16 @@ input[type=range]::-ms-thumb {
     text-align: center;
     margin-top: 1.2rem; } }
 
+.clickable:hover {
+  background-color: rgba(0, 0, 0, 0.07);
+  text-decoration: underline; }
+
+.clickable {
+  cursor: pointer; }
+
+.odd {
+  background-color: rgba(0, 0, 0, 0.03); }
+
 main {
   padding-left: 14px;
   padding-top: 14px; }
