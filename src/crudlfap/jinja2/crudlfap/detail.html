@@ -5,24 +5,28 @@
 {% endblock %}
 
 {% block content %}
-<table class="table">
-  <thead class="thead-inverse">
-    {% for field in fields %}
-    <tr>
+<div class="card-panel">
+  <table class="table">
+    <thead class="thead-inverse">
+      {% for field in view.display_fields %}
+      <tr>
         <th>
-            {{ field['field'].name.capitalize() }}
+          {{ field['field'].verbose_name.capitalize() }}
         </th>
         <td>
-            {{ field['value'] }}
+          {% if getattr(field['value'], 'all', None) %}
+            <ul class="collection">
+              {% for value in field['value'].all() %}
+                <li class="collection-item">{{ value }}</li>
+              {% endfor %}
+            </ul>
+          {% else %}
+              {{ field['value'] }}
+          {% endif %}
         </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% endblock %}
-
-{% block after_container %}
-{% with menu=view.menu_views %}
-{% include 'crudlfap/_fixed_actions.html' %}
-{% endwith %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}

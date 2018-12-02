@@ -2,7 +2,7 @@
   <nav>
     <div class="nav-wrapper {{ crudlfap_site.navbar_color }}">
       <span href="#" data-action="click->sidenav#click" data-controller="sidenav" data-target="slide-out" class="sidenav-trigger"><i class="waves-effect material-icons">menu</i></span>
-      <a class="brand-logo" href="/" class="waves-effect brand-logo">{{ crudlfap_site.title }}</a>
+      <a class="brand-logo" href="{{ crudlfap_site.views['home'].url }}" class="waves-effect brand-logo">{{ crudlfap_site.title }}</a>
       <ul class="right">
         {% include 'crudlfap/_menu_auth.html' %}
       </ul>
@@ -12,7 +12,7 @@
 
 <ul id="slide-out" class="sidenav">
 
-  <li class="no-padding {% if request.path == '/' %}active{% endif %}"><a href="/">Home</a></li>
+  <li class="no-padding {% if request.path == crudlfap_site.views['home'].url %}active{% endif %}"><a href="{{ crudlfap_site.views['home'].url }}">Home</a></li>
   <li class="no-padding">
     <ul class="collapsible collapsible-accordion">
       {% for app, routers in crudlfap_site.get_app_menus('main', request).items() %}
@@ -26,8 +26,14 @@
                     <a
                       class="waves-effect"
                       href="{{ v.url }}"
-                      title="{% if v.title %}{{ v.title }}{% endif %}"
-                    >{% if v.material_icon %}<i class="material-icons">{{ v.material_icon }}</i>{% endif %}{{ _(v.urlname).capitalize() }}</a>
+                      title="{% if v.title_link %}{{ v.title_link }}{% endif %}"
+                      {%- for key, value in (v.link_attributes|default({})).items() %}
+                      {{ key }}="{{ value.replace('"', '\\"') }}"
+                      {%- endfor %}
+                      {%- if not v.turbolinks|default(True) %}
+                      data-turbolinks="false"
+                      {%- endif %}
+                    >{% if v.material_icon %}<i class="material-icons">{{ v.material_icon }}</i>{% endif %}{{ v.title_menu.capitalize() }}</a>
                   </li>
                 {% endfor %}
               </ul>

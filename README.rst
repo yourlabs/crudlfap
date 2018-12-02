@@ -19,7 +19,7 @@ This plugin for Django makes a rich user interface from Django models.
 Try
 ===
 
-This should start the example project in ``src/crudlfap_example`` where each
+This should start the example project from ``src/crudlfap_example`` where each
 documented example lives, without virtualenv::
 
     # This installs the repo in ./src/crudlfap and in your python user packages, i run this from ~
@@ -29,7 +29,7 @@ documented example lives, without virtualenv::
     crudlfap dev
 
     # Start webpack watcher
-    yarn start
+    yarn --cwd js start
 
 Features
 ========
@@ -56,5 +56,7 @@ Resources
 - `Continuous integration graciously hosted
   <http://circleci.com/gh/yourlabs/crudlfap>`_ by `CircleCI
   <http://circleci.com>`_
+- Browser test graciously hosted by `SauceLabs
+  <https://saucelabs.com>`_
 - `**Online paid support** provided via HackHands
   <https://hackhands.com/jpic/>`_,

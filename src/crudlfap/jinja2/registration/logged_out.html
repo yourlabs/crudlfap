@@ -3,6 +3,7 @@
 {% block body_class %}push-down{% endblock %}
 
 {% block content %}
-<h2>{{ _('You have been logged-out' ) }} !</h2>
-<p>{{ _('Thanks for the time you spent with us today') }}</p>
+<p>{{ _('Thanks for spending some quality time with the Web site today.') }}</p>
+
+<p><a href="{{ crudlfap_site.views['login'].url }}">{{ _('Log in again') }}</a></p>
 {% endblock %}

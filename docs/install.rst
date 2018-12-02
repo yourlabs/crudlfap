@@ -1,52 +1,65 @@
-Install CRUDLFA+ in your project
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Install CRUDLFA+ module
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Settings
-========
+This section concerns
+This package can be installed from PyPi by running:
 
-The easy way, in settings.py::
+Installing from PyPi
+--------------------
 
-    from crudlfap.settings import CRUDLFAP_APPS, TEMPLATES
-    INSTALLED_APPS += CRUDLFAP_APPS
+If you are just getting started with CRUDLFA+, it is recommended that you
+start by installing the latest version from the Python Package Index (PyPi_).
+To install CRUDLFA+ from PyPi using pip run the following command in your terminal.
 
+.. code-block:: bash
 
-If you already have a TEMPLATES settings, import CRUDLFAP_TEMPLATE_BACKEND
-instead of TEMPLATES::
+   pip install crudlfap
 
-    TEMPLATES = [
-        CRUDLFAP_TEMPLATE_BACKEND,
-        {
-            'BACKEND': 'django.template.backends.django.DjangoTemplates',
-            # etc
-        }
-    ]
+If you are not in a virtualenv_, the above will fail if not executed as root,
+in this case use ``install --user``::
 
-URLs
-====
+    pip install --user crudlfap
 
-The easiest configuration is to generate patterns from the default registry::
+With development packages
+-------------------------
 
-    from crudlfap import crudlfap
+If you intend to run the ``crudlfap dev`` command, then you should have the
+development dependencies by adding ``[dev]``::
 
-    urlpatterns = [
-        crudlfap.site.urlpattern
-    ]
+    pip install (--user) crudlfap[dev]
 
-Or, to sit in ``/admin``::
+Then, you should see the example project running on port 8000 with command::
 
-    urlpatterns = [
-        crudlfap.site.get_urlpattern('admin'),
-        # your patterns ..
-    ]
+    crudlfap dev
 
-crudlfap.py
-===========
+Installing from GitHub
+----------------------
 
-CRUDLFA+ autodiscovers ``crudlfap.py`` in every installed app. Here's a simple
-example to get started::
+You can install the latest current trunk of crudlfap directly from GitHub using pip_.
 
-    from crudlfap import crudlfap
+.. code-block:: bash
 
-    from .models import Artist
+   pip install --user -e git+git://github.com/yourlabs/crudlfap.git@master#egg=crudlfap[dev]
 
-    crudlfap.Router(Artist).register()
+.. warning:: ``[dev]``, ``--user``, ``@master`` are all optionnal above.
+
+Installing from source
+----------------------
+
+1. Download a copy of the code from GitHub. You may need to install git_.
+
+.. code-block:: bash
+
+   git clone https://github.com/yourlabs/crudlfap.git
+
+2. Install the code you have just downloaded using pip, assuming your current
+   working directory has not changed since the previous command it could be::
+
+       pip install -e ./crudlfap[dev]
+
+Move on to the :doc:`tutorial`.
+
+.. _git: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
+.. _pip: https://pip.pypa.io/en/stable/installing/
+.. _PyPi: https://pypi.python.org/pypi
+.. _virtualenv: https://virtualenv.pypa.io/

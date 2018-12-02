@@ -4,15 +4,15 @@
 {% block form_ajax %}{% endblock %}
 
 {% block buttons %}
-{{ render_button(_('Authenticate'), button_type="submit", button_class="btn-primary") }}
+{{ render_button(_('Log in'), button_type="submit", button_class="btn-primary") }}
 {% endblock %}
 
 {% block before_form %}
-<h1>{{ _('Login') }}</h1>
+<h1>{{ _('Log in') }}</h1>
 {% endblock %}
 
 {% block form_close %}
-    <input type="hidden" name="next" value="{{ request.GET.get('next', request.POST.get('next', '/')) }}" />
+    <input type="hidden" name="next" value="{{ request.GET.get('next', request.POST.get('next', crudlfap_site.views['home'].url)) }}" />
     {% csrf_token %}
 </form>
 {% endblock %}

@@ -1,10 +1,11 @@
 import { Controller } from 'stimulus'
+import serialize from 'form-serialize'
+import init from '../init.js'
 
 export default class extends Controller {
   input() {
-    var data = new FormData(this.element)
-    var query = new URLSearchParams(data)
-    var url = window.location.pathname + '?' + query.toString()
+    var data = serialize(this.element)
+    var url = window.location.pathname + '?' + data
 
     if (this.url !== undefined) {
       if (this.url === url) {
@@ -26,8 +27,10 @@ export default class extends Controller {
   onload(e) {
     var parser = new DOMParser()
     var doc = parser.parseFromString(e.target.responseText, 'text/html')
-    document.getElementById(this.targetId).innerHTML = doc.getElementById(this.targetId).innerHTML
-    window.history.pushState({}, doc.querySelector('title').innerHTML, e.target.responseURL)
+    var target = document.getElementById(this.targetId)
+    target.innerHTML = doc.getElementById(this.targetId).innerHTML
+    init(target)
+    window.history.pushState({}, doc.querySelector('title').innerHTML, this.url)
   }
 
   get targetId() {

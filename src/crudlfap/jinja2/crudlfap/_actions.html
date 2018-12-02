@@ -1,3 +1,2 @@
-{% for view in views %}
-{% include 'crudlfap/_action.html' %}
-{% endfor %}
+{% import 'crudlfap.html' as crudlfap %}
+{{ crudlfap.dropdown(menu, 'row-actions-' + str(object.pk)) }}

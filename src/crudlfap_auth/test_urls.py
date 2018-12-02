@@ -21,7 +21,7 @@ def suuser():
 
 @pytest.fixture
 def group():
-    return Group.objects.get_or_create(name='hr')[0]
+    return Group.objects.get_or_create(name='1')[0]
 
 
 @pytest.mark.django_db
@@ -30,7 +30,7 @@ def test_get_menu(srf):
     result = crudlfap.site[User].get_menu('model', srf.get('/'))
     assert result[0].urlargs == []
     assert result[0].url == '/user/create'
-    assert result[0].title == 'Create user'
+    assert result[0].title == 'User: create'
 
 
 def test_user_list_reverse():
@@ -39,6 +39,10 @@ def test_user_list_reverse():
 
 def test_user_create_reverse():
     assert reverse('crudlfap:user:create') == '/user/create'
+
+
+def test_user_deleteobjects_reverse():
+    assert reverse('crudlfap:user:deleteobjects') == '/user/deleteobjects'
 
 
 def test_user_detail_reverse():
@@ -62,15 +66,15 @@ def test_group_create_reverse():
 
 
 def test_group_detail_reverse():
-    assert reverse('crudlfap:group:detail', args=['hr']) == '/group/hr'
+    assert reverse('crudlfap:group:detail', args=['1']) == '/group/1'
 
 
 def test_group_delete_reverse():
-    assert reverse('crudlfap:group:delete', args=['hr']) == '/group/hr/delete'
+    assert reverse('crudlfap:group:delete', args=['1']) == '/group/1/delete'
 
 
 def test_group_update_reverse():
-    assert reverse('crudlfap:group:update', args=['hr']) == '/group/hr/update'
+    assert reverse('crudlfap:group:update', args=['1']) == '/group/1/update'
 
 
 def test_su_user_reverse():
@@ -102,6 +106,12 @@ def test_user_delete_resolve(user):
 
 
 @pytest.mark.django_db
+def test_user_deleteobjects_resolve(user):
+    result = resolve('/user/deleteobjects')
+    assert result.func.view_class.urlname == 'deleteobjects'
+
+
+@pytest.mark.django_db
 def test_user_create_resolve(user):
     result = resolve('/user/create')
     assert result.func.view_class.urlname == 'create'
@@ -126,32 +136,30 @@ def test_user_login_resolve():
 
 
 def test_user_list_resolve():
-    from crudlfap_filtertables2.views import FilterTables2ListView
     result = resolve('/user').func.view_class
-    assert issubclass(result, FilterTables2ListView)
-    assert result.__name__ == 'UserFilterTables2ListView'
+    assert issubclass(result, crudlfap.ListView)
+    assert result.__name__ == 'UserListView'
     assert result.urlname == 'list'
     assert result.url == '/user'
 
 
 def test_group_list_resolve():
-    from crudlfap_filtertables2.views import FilterTables2ListView
     result = resolve('/group').func.view_class
-    assert issubclass(result, FilterTables2ListView)
-    assert result.__name__ == 'GroupFilterTables2ListView'
+    assert issubclass(result, crudlfap.ListView)
+    assert result.__name__ == 'GroupListView'
     assert result.urlname == 'list'
     assert result.url == '/group'
 
 
 @pytest.mark.django_db
 def test_group_update_resolve(group):
-    result = resolve('/group/hr/update')
+    result = resolve('/group/1/update')
     assert result.func.view_class.urlname == 'update'
 
 
 @pytest.mark.django_db
 def test_group_delete_resolve(group):
-    result = resolve('/group/hr/delete')
+    result = resolve('/group/1/delete')
     assert result.func.view_class.urlname == 'delete'
 
 
@@ -163,7 +171,7 @@ def test_group_create_resolve(group):
 
 @pytest.mark.django_db
 def test_group_detail_resolve(group):
-    result = resolve('/group/hr')
+    result = resolve('/group/1')
     assert result.func.view_class.urlname == 'detail'
 
 
@@ -182,6 +190,14 @@ def test_user_create_get(admin_client):
     assert result.status_code == 200
 
 
+@pytest.mark.django_db
+def test_user_deleteobjects_get(admin_client):
+    for i in range(100, 103):
+        User.objects.get_or_create(pk=i, username='user{}'.format(i))
+    result = admin_client.get('/user/deleteobjects?pks=101&pks=102')
+    assert result.status_code == 200
+
+
 def test_group_list_get(admin_client):
     result = admin_client.get('/group')
     assert result.status_code == 200
@@ -195,32 +211,32 @@ def test_group_create_get(admin_client):
 @pytest.mark.django_db
 def test_group_create_post(admin_client):
     result = admin_client.post('/group/create', dict(
-        name='hr',
+        name='1',
     ))
     assert result.status_code == 302
-    assert result['Location'] == '/group/hr'
+    assert result['Location'] == '/group/1'
 
 
 @pytest.mark.django_db
 def test_group_create_post_with_permission(admin_client):
     permission = Permission.objects.filter().first()
     result = admin_client.post('/group/create', dict(
-        name='hr',
+        name='1',
         permissions=permission.id
     ))
     assert result.status_code == 302
-    assert result['Location'] == '/group/hr'
+    assert result['Location'] == '/group/1'
 
 
 @pytest.mark.django_db
 def test_group_update_post(admin_client, group):
     permission = Permission.objects.filter().first()
-    result = admin_client.post('/group/hr/update', dict(
-        name='hr',
+    result = admin_client.post('/group/1/update', dict(
+        name='1',
         permissions=permission.id
     ))
     assert result.status_code == 302
-    assert result['Location'] == '/group/hr'
+    assert result['Location'] == '/group/1'
 
 
 @pytest.mark.django_db
@@ -275,13 +291,13 @@ def test_user_password_get(admin_client, user):
 
 @pytest.mark.django_db
 def test_group_detail_get(admin_client, group):
-    result = admin_client.get('/group/hr')
+    result = admin_client.get('/group/1')
     assert result.status_code == 200
 
 
 @pytest.mark.django_db
 def test_group_delete(admin_client):
-    result = admin_client.get('/group/hr/delete', dict(
+    result = admin_client.get('/group/1/delete', dict(
         _next='/user',
     ))
     assert result.status_code == 404
@@ -310,19 +326,19 @@ def test_user_logout_get(admin_client):
 
 
 def test_become_user(admin_client, admin_user, suuser, user):
-    if admin_client.session.get('become_user') is None:
-        assert True
+    assert admin_client.session.get('become_user') is None
+
     result = admin_client.get('/user/admin/su', follow=True)
     assert result.status_code == 200
     assert admin_client.session.get('become_user') == admin_user.id
+
     result = admin_client.get('/user/suuser/su', follow=True)
     assert result.status_code == 200
     assert admin_client.session.get('become_user') == admin_user.id
+
     result = admin_client.get('/su', follow=True)
     assert result.status_code == 200
-    if admin_client.session.get('become_user') is None:
-        assert True
-    result = admin_client.get('/su', follow=True)
-    assert result.status_code == 404
+    assert admin_client.session.get('become_user') is None
+
     result = admin_client.get('/user/foo/su', follow=True)
-    assert result.status_code == 403
+    assert result.status_code == 200

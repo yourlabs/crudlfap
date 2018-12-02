@@ -1,11 +1,22 @@
+"""
+Crudlfa+ PasswordView, Become and BecomeUser views.
+
+Crudlfa+ takes views further than Django and are expected to:
+
+- generate their URL definitions and reversions,
+- check if a user has permission for an object,
+- declare the names of the navigation menus they belong to.
+"""
+
 import logging
 
 from crudlfap import crudlfap
 
+from django import http
 from django.contrib import auth
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
-from django import http
+from django.utils.translation import ugettext_lazy as _
 
 
 logger = logging.getLogger()
@@ -18,6 +29,9 @@ class PasswordView(crudlfap.UpdateView):
     controller = 'modal'
     action = 'click->modal#open'
 
+    def get_title_submit(self):
+        return _('update').capitalize()
+
     def get_form_class(self):
         if self.object == self.request.user:
             cls = PasswordChangeForm
@@ -28,7 +42,7 @@ class PasswordView(crudlfap.UpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['user'] = kwargs.pop('instance')
+        kwargs['user'] = self.object
         return kwargs
 
 
@@ -37,6 +51,13 @@ class BecomeUser(crudlfap.ObjectView):
     menus = ['object']
     material_icon = 'attach_money'
     color = 'pink darken-4'
+    link_attributes = {'data-noprefetch': 'true'}
+
+    def get_allowed(self):
+        return self.request.user.is_superuser
+
+    def get_title_menu(self):
+        return _('become').capitalize()
 
     def get_object(self, queryset=None):
         user = super().get_object()
@@ -52,26 +73,24 @@ class BecomeUser(crudlfap.ObjectView):
         return user
 
     def get(self, request, *a, **k):
+        if not request.user.is_superuser:
+            return http.HttpResponseForbidden()
+
         logger.info('BecomeUser by {}'.format(self.request.user))
         become_user = request.session.get('become_user', request.user.pk)
-        new_user = self.get_object()
-        if new_user:
-            auth.login(request, new_user)
-            request.session['become_user'] = become_user
-            messages.info(
-                request,
-                'Switched to user {}'.format(new_user)
-            )
-
-        # FUTURE: #23 redirect to / when request.path permissions are not ok for new_user
-        # return http.HttpResponse('<script type="text/javascript">history.back()</script>')
+        auth.login(request, self.object)
+        request.session['become_user'] = become_user
+        messages.info(
+            request,
+            'Switched to user {}'.format(request.user)
+        )
         return http.HttpResponseRedirect('/' + self.router.registry.urlpath)
 
 
 class Become(crudlfap.View):
     urlname = 'su'
 
-    def allow(self):
+    def get_allowed(self):
         return 'become_user' in self.request.session
 
     def get_object(self):
@@ -82,7 +101,8 @@ class Become(crudlfap.View):
     def get(self, request, *a, **k):
         logger.info('Become by {}'.format(self.request.user))
         if 'become_user' not in request.session:
-            logger.debug('No become_user in session {}'.format(self.request.user))
+            logger.debug(
+                'No become_user in session {}'.format(self.request.user))
             return http.HttpResponseNotFound()
 
         if 'become_user' in request.session:

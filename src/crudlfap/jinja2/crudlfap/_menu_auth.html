@@ -3,15 +3,15 @@
     <a
         href="{{ url('crudlfap:login') }}"
         data-ajax="_modal"
-        >{{ _('Login') }}</a>
+        >{{ _('Log in') }}</a>
   </li>
 {% else %}
   <li class="{{ liclass|default('') }}">
-    <a class="waves-effect" href="{{ url('crudlfap:logout') }}">{{ _('Logout') }}</a>
+    <a data-noprefetch="true" class="waves-effect" href="{{ url('crudlfap:logout') }}">{{ _('Log out') }} ({{ request.user }})</a>
   </li>
   {% if request.session.become_user %}
   <li class="{{ liclass|default('') }}">
-    <a href="{{ url('crudlfap:su') }}">{{ _('Back to your account') }}</a>
+    <a data-noprefetch="true" href="{{ url('crudlfap:su') }}">{{ _('Back to your account') }}</a>
   </li>
   {% endif %}
 {% endif %}

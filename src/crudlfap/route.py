@@ -1,80 +1,83 @@
-import inspect
+# flake8: noqa: N805
+"""
+Most black magic for views are defined in the crudlfap.route module.
+
+CRUDLFA+ introduces a new design pattern for views that came out during
+refactoring sessions from a corporate project, and re-written for Django 2.0
+from scratch. L
+"""
+import re
 
 from django import http
 from django.urls import path, reverse, reverse_lazy
 from django.utils.module_loading import import_string
 
-from .factory import Factory
+from .factory import Factory, FactoryMetaclass
 from .utils import guess_urlfield
 
 
-class RouteMetaclass(type):
+class RouteMetaclass(FactoryMetaclass):
     router = None
 
-    def __getattr__(self, attr):
-        if attr.startswith('get_'):
-            raise AttributeError('{} or {}'.format(attr[4:], attr))
+    def get_app_name(cls):
+        return cls.model._meta.app_label if cls.model else None
 
-        getter = getattr(self, 'get_' + attr)
+    def get_model(cls):
+        return cls.router.model if cls.router else None
 
-        if inspect.ismethod(getter):
-            return getter()
-        else:
-            return getter(self)
+    def get_urlpath(cls):
+        return cls.urlname
 
-    def get_app_name(self):
-        return self.model._meta.app_label if self.model else None
-
-    def get_model(self):
-        return self.router.model if self.router else None
-
-    def get_urlpath(self):
-        return self.urlname
-
-    def get_urlname(self):
-        urlname = self.__name__.lower()
+    def get_urlname(cls):
+        urlname = cls.__name__.lower()
         if urlname.endswith('view'):
             urlname = urlname[:-4]
         elif urlname.endswith('route'):
             urlname = urlname[:-5]
 
-        if self.model:
-            model_name = self.model._meta.model_name.lower()
+        if cls.model:
+            model_name = cls.model._meta.model_name.lower()
             if urlname.startswith(model_name):
                 urlname = urlname[len(model_name):]
 
-        if not urlname and self.model:
-            urlname = self.model._meta.model_name
+        if not urlname and cls.model:
+            urlname = cls.model._meta.model_name
 
         return urlname or None
 
-    def get_urlpattern(self):
-        return path(self.urlpath, self.as_view(), name=self.urlname)
+    def get_label(cls):
+        name = re.sub('(View|Route)$', '', cls.__name__)
+        if cls.model:
+            name = re.sub('^' + cls.model.__name__, '', name)
+        return re.sub("([a-z])([A-Z])","\g<1> \g<2>", name)
 
-    def get_urlfullname(self):
-        if self.router and self.registry:
+    def get_urlpattern(cls):
+        return path(cls.urlpath, cls.as_view(), name=cls.urlname)
+
+    def get_urlfullname(cls):
+        if cls.router and cls.registry:
             return '{}:{}:{}'.format(
-                self.router.registry.app_name,
-                self.router.namespace,
-                self.urlname
+                cls.router.registry.app_name,
+                cls.router.namespace,
+                cls.urlname
             )
-        elif self.registry:
+        elif cls.registry:
             return '{}:{}'.format(
-                self.registry.app_name,
-                self.urlname
+                cls.registry.app_name,
+                cls.urlname
             )
-        elif self.router:
+        elif cls.router:
             return '{}:{}'.format(
-                self.router.namespace,
-                self.urlname
+                cls.router.namespace,
+                cls.urlname
             )
         else:
-            return self.urlname
+            return cls.urlname
 
-    def get_urlfield(self):
-        if self.router and self.router.urlfield:
-            return self.router.urlfield
-        return guess_urlfield(self.model)
+    def get_urlfield(cls):
+        if cls.router and cls.router.urlfield:
+            return cls.router.urlfield
+        return guess_urlfield(cls.model)
 
 
 class Route(Factory, metaclass=RouteMetaclass):
@@ -99,17 +102,18 @@ class Route(Factory, metaclass=RouteMetaclass):
         """
         return self.reverse(*self.urlargs)
 
-    def __getattr__(self, attr):
-        if attr.startswith('get_'):
-            raise AttributeError('{} or {}()'.format(attr[4:], attr))
-
-        if hasattr(self, 'get_' + attr):
-            return getattr(self, 'get_' + attr)()
-
-        return getattr(type(self), attr)
-
     def get_required_permissions(self):
-        return None
+        return [self.full_permission_code]
+
+    def get_short_permission_code(self):
+        return self.urlname
+
+    def get_full_permission_code(self):
+        return '{}.{}_{}'.format(
+            self.app_name,
+            self.short_permission_code,
+            self.model._meta.model_name
+        )
 
     def get_allowed(self):
         """
@@ -141,7 +145,7 @@ class Route(Factory, metaclass=RouteMetaclass):
         returns True for staff users by default.  If the view has no router
         then it returns True if the request user is_staff.
 
-        Override with a lambda in a factory if you want to open to all::
+        Override allowed if you want to open to all::
 
             YourView.factory(allowed=True)
 

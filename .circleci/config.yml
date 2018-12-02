@@ -1,24 +1,61 @@
 version: 2
 
+# https://docs.gitlab.com/ee/ci/yaml/#anchors
+.browser_template: &browser_template
+  docker:
+  - image: circleci/node:9
+  - image: yourlabs/crudlfap:$CIRCLE_SHA1
+    environment:
+      DEBUG: 1
+  working_directory: ~/repo
+  steps:
+  - checkout
+  - run:
+      name: WAIT runserver
+      command: until curl localhost:8000 &> /dev/null; do sleep 1; done
+  - run:
+      name: add sauce-connect-launcher
+      command: npm install sauce-connect-launcher
+  - run:
+      name: RUN yarn run ${CIRCLE_STAGE}-browser-test
+      command: yarn run ${CIRCLE_STAGE}-browser-test
+
 workflows:
   version: 2
   pipeline:
     jobs:
+      - docker
       - py-qa
       - docs
       - py36-dj20
       - js-qa
-      - docker-build
-      - chrome-browser:
-          requires:
-          - docker-build
-      - ie-browser:
-          requires:
-          - docker-build
-      - firefox-browser:
-          requires:
-          - docker-build
-      - js-lint-nightwatch
+  tagged-build:
+    jobs:
+      - docker-wait
+      - pypi:
+          requires: [docker-wait]
+          filters:
+            tags:
+              only: /[0-9]+(\.[0-9]+)*/
+      - npm:
+          requires: [docker-wait]
+          filters:
+            tags:
+              only: /[0-9]+(\.[0-9]+)*/
+
+# pending refactor
+#      - chrome:
+#          requires:
+#          - docker-build
+#      - ie:
+#          requires:
+#          - docker-build
+#          - chrome
+#      - firefox:
+#          requires:
+#          - docker-build
+#          - ie
+#      - js-lint-nightwatch
 
 jobs:
   docs:
@@ -86,31 +123,27 @@ jobs:
 
   js-qa:
     docker:
-    - image: circleci/node:8
-    working_directory: ~/repo
+    - image: circleci/node:9
     steps:
     - checkout
     - run:
         name: RUN yarn install
-        command: yarn install
-    - run:
-        name: RUN yarn run lint
-        command: yarn run lint
+        command: cd js && yarn install && yarn run lint
 
   js-test:
     docker:
-    - image: circleci/node:8
+    - image: circleci/node:9
     working_directory: ~/repo/src/crudlfap
     steps:
     - checkout
     - run:
         name: RUN yarn install
-        command: yarn install
+        command: sudo npm install -g codecov; yarn install
     - run:
         name: RUN yarn test & coverage upload
-        command: yarn test && ./node_modules/.bin/codecov
+        command: yarn test && codecov
 
-  docker-build:
+  docker:
     docker:
     - image: docker:latest
     steps:
@@ -120,76 +153,86 @@ jobs:
     - run:
         name: DOCKER build
         command: |
-          docker pull yourlabs/crudlfap:$CIRCLE_BRANCH || true
-          docker build -t yourlabs/crudlfap:$CIRCLE_SHA1 --build-arg GIT_COMMIT=$CIRCLE_SHA1 .
+          apk add git
+          echo 'CIRCLE_TAG="$(git tag -l --points-at HEAD)"' >> $BASH_ENV && . $BASH_ENV
+          docker build -t yourlabs/crudlfap:$CIRCLE_SHA1 --build-arg GIT_COMMIT=$CIRCLE_SHA1 --build-arg GIT_TAG=$CIRCLE_TAG .
     - deploy:
         name: DOCKER image push yourlabs/crudlfap:{{ .Branch }} & yourlabs/crudlfap:{{ .Environment.CIRCLE_SHA1 }} tags
         command: |
+          set -eux
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
           docker push yourlabs/crudlfap:$CIRCLE_SHA1
           docker tag yourlabs/crudlfap:$CIRCLE_SHA1 yourlabs/crudlfap:$CIRCLE_BRANCH
           docker push yourlabs/crudlfap:$CIRCLE_BRANCH
+          apk add git
+          echo 'CIRCLE_TAG="$(git tag -l --points-at HEAD)"' >> $BASH_ENV && . $BASH_ENV
+          if test -n "$CIRCLE_TAG"; then
+            docker tag yourlabs/crudlfap:$CIRCLE_SHA1 yourlabs/crudlfap:$CIRCLE_TAG
+            docker push yourlabs/crudlfap:$CIRCLE_TAG
+          fi
 
-  chrome-browser:
+  docker-wait:
     docker:
-    - image: circleci/node:9
-    - image: yourlabs/crudlfap:$CIRCLE_SHA1
-    working_directory: ~/repo
+    - image: docker:latest
     steps:
-    - checkout
     - run:
-        name: WAIT runserver
-        command: until curl localhost:8000 &> /dev/null; do sleep 1; done
-    - run:
-        name: add sauce-connect-launcher
-        command: npm install sauce-connect-launcher
-    - run:
-        name: RUN yarn run chrome-browser-test
-        command: yarn run chrome-browser-test
+        name: WAIT until docker job in the main pipeline finishes
+        command: |
+          set -eux
+          apk add curl
+          until curl --fail https://registry.hub.docker.com/v1/repositories/yourlabs/crudlfap/tags/$CIRCLE_SHA1; do
+            sleep 10
+          done
 
-  ie-browser:
+  npm:
     docker:
-    - image: circleci/node:9
     - image: yourlabs/crudlfap:$CIRCLE_SHA1
-    working_directory: ~/repo
     steps:
-    - checkout
     - run:
-        name: WAIT runserver
-        command: until curl localhost:8000 &> /dev/null; do sleep 1; done
-    - run:
-        name: add sauce-connect-launcher
-        command: npm install sauce-connect-launcher
-    - run:
-        name: RUN yarn run ie-browser-test
-        command: yarn run ie-browser-test
+        name: NPM publish
+        command: |
+          set -eux
+          cd # cancel out cci enforcement of being in ~/project
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+          NODE_ENV=production yarn publish --cwd js --new-version $GIT_TAG
 
-  firefox-browser:
+  pypi:
     docker:
-    - image: circleci/node:9
-    - image: yourlabs/crudlfap:$CIRCLE_SHA1
-    working_directory: ~/repo
+    - image: python:3-stretch
     steps:
-    - checkout
     - run:
-        name: WAIT runserver
-        command: until curl localhost:8000 &> /dev/null; do sleep 1; done
-    - run:
-        name: add sauce-connect-launcher
-        command: npm install sauce-connect-launcher
-    - run:
-        name: RUN yarn run firefox-browser-test
-        command: yarn run firefox-browser-test
-  
-  js-lint-nightwatch:
-    docker:
-    - image: circleci/node:8
-    working_directory: ~/repo
-    steps:
-    - checkout
-    - run:
-        name: RUN yarn install
-        command: yarn install
-    - run:
-        name: RUN yarn run eslint-nightwatch
-        command: yarn run eslint-nightwatch
+        name: PYPI publish
+        command: |
+          set -eux
+          cd # ~/project does not match docker best practice docs
+          python3 setup.py verify
+          pushd src && crudlfap compilemessages -f && popd
+          python3 setup.py sdist
+          echo -e "[pypi]" >> ~/.pypirc
+          echo -e "username = yourlabs" >> ~/.pypirc
+          echo -e "password = $PYPI_PASSWORD" >> ~/.pypirc
+          pip3 install twine
+          upload dist/*
+
+#  Epending refactor
+#   ie:
+#     <<: *browser_template
+#
+#   chrome:
+#     <<: *browser_template
+#
+#   firefox:
+#     <<: *browser_template
+#
+#   js-lint-nightwatch:
+#     docker:
+#     - image: circleci/node:9
+#     working_directory: ~/repo
+#     steps:
+#     - checkout
+#     - run:
+#         name: RUN yarn install
+#         command: yarn install
+#     - run:
+#         name: RUN yarn run eslint-nightwatch
+#         command: yarn run eslint-nightwatch

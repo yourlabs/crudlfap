@@ -1,17 +1,56 @@
 {% extends 'base.html' %}
 
-{% block content_open %}<div style="padding: 0 24px" id="modal-body-ajax">{% endblock %}
+{% import 'crudlfap.html' as crudlfap %}
 
 {% block breadcrumb %}
 {% include 'crudlfap/_breadcrumb_object.html' %}
 {% endblock %}
 
-{% block content %}
-{% include 'crudlfap/_list.html' %}
+{% block after_container %}
+{{ super() }}
+<div style="display: none" class="bottom center-align" id="listaction">
+  {{ crudlfap.dropdown(
+    view.listactions,
+    'listaction-dropdown',
+    class='btn waves-effect waves-light',
+    text='select',
+    iclass='left',
+  ) }}
+</div>
 {% endblock %}
 
-{% block after_container %}
-{% with menu=view.menu_views %}
-{% include 'crudlfap/_fixed_actions.html' %}
-{% endwith %}
+{% block content %}
+<style type="text/css">
+#render-table .btn-floating { margin-left: 6px; }
+</style>
+
+<div class="row">
+  {% if view.search_form or view.filterset %}
+  <div class="col s12 m3">
+    <div class="card-panel">
+      <form method="get" action="" data-controller="autosubmit" data-target="render-table" data-action="input->autosubmit#input change->autosubmit#input">
+        {% if view.search_form %}
+        {{ render_form(view.search_form) }}
+        {% endif %}
+        {% if view.filterset %}
+        {{ render_form(view.filterset.form) }}
+        {% endif %}
+      </form>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="table-responsive col s12 {% if view.search_form or view.filterset %}m9{% endif %}" id="render-table">
+    <div class="card-panel">
+      {% if view.table %}
+      <div class="table-container">
+        {{ view.table.as_html(request) }}
+      </div>
+      {% else %}
+        {{ _('That page contains no results') }}
+      {% endif %}
+      {% include 'crudlfap/_pagination.html' %}
+    </div>
+  </div>
+</div>
 {% endblock %}

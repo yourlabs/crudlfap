@@ -11,20 +11,16 @@ def pagination_filter_params(data):
     return urllib.parse.urlencode(data)
 
 
-def link(url_name, html, attributes=None):
-    pass
-
-
-def get_view(url_name):
-    pass
-
-
-def json(arg):
-    import json
-    return json.dumps(arg)
-
-
 def render_form(form):
+    tpl = ['{% load material_form %}{% form form=form ']
+    context = dict(form=form)
+
+    if getattr(form, '_layout', None):
+        tpl.append('layout=layout')
+        context['layout'] = form._layout
+
+    tpl.append('%}{% endform %}')
+
     return template.Template(
-        '{% load material_form %}{% form form=form %}{% endform %}'
-    ).render(template.Context(dict(form=form)))
+        ' '.join(tpl)
+    ).render(template.Context(context))

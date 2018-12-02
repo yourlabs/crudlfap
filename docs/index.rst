@@ -6,13 +6,21 @@
 Welcome to CRUDLFA+'s documentation!
 ====================================
 
+CRUDLFA+ stands for Create Read Update Delete List Form Autocomplete and more.
+
+This plugin for Django makes a rich user interface from Django models.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   routable
-   routers
+   install
+   tutorial
+   route
+   router
+   settings
    views
+   crudlfap_auth/index
 
 Indices and tables
 ==================

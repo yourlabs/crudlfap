@@ -3,6 +3,23 @@ from crudlfap import crudlfap
 from .models import Song
 
 
+class SongMixin:
+    def get_exclude(self):
+        if not self.request.user.is_staff:
+            return ['owner']
+        return super().get_exclude()
+
+
+class SongCreateView(SongMixin, crudlfap.CreateView):
+    def form_valid(self):
+        self.form.instance.owner = self.request.user
+        return super().form_valid()
+
+
+class SongUpdateView(SongMixin, crudlfap.UpdateView):
+    pass
+
+
 class SongRouter(crudlfap.Router):
     fields = '__all__'
     icon = 'music'
@@ -10,10 +27,10 @@ class SongRouter(crudlfap.Router):
 
     views = [
         crudlfap.DeleteView,
-        crudlfap.UpdateView,
-        crudlfap.CreateView,
+        SongUpdateView,
+        SongCreateView,
         crudlfap.DetailView,
-        crudlfap.FilterTables2ListView.clone(
+        crudlfap.ListView.clone(
             filter_fields=['artist'],
             search_fields=['artist__name', 'name'],
         ),

@@ -1,0 +1,107 @@
+variables:
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+  RELEASE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+  PUBLIC_RELEASE_TAG: yourlabs/crudlfap:$CI_COMMIT_REF_NAME
+  PUBLIC_IMAGE_TAG: yourlabs/crudlfap:$CI_COMMIT_SHA
+  ANSIBLE_FORCE_COLOR: 'true'
+
+build:
+  stage: build
+  image: docker:stable
+  services: ['docker:dind']
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+  before_script:
+  - echo $CI_JOB_TOKEN | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+  script:
+  - docker pull $CI_REGISTRY_IMAGE:master || true
+  - docker build --cache-from $CI_REGISTRY_IMAGE:master -t $IMAGE_TAG .
+  - docker push $IMAGE_TAG
+  after_script:
+  - docker logout
+
+docs-qa:
+  stage: build
+  image: yourlabs/python
+  script:
+  - tox -e docs
+
+py-qa:
+  stage: build
+  image: yourlabs/python
+  script:
+  - tox -e qa
+
+py-test:
+  stage: build
+  image: yourlabs/python
+  script:
+  - tox -e py36-dj21
+  - codecov -e $TOXENV
+
+js-qa:
+  image: node:10-alpine
+  stage: build
+  script:
+  - cd js
+  - yarn install
+  - yarn run lint
+
+# lets first have tests then enable this one
+#js-test:
+#  image: node:10-alpine
+#  stage: build
+#  script:
+#  - npm install -g codecov
+#  - cd js
+#  - yarn install
+#  - yarn test
+#  - codecov
+
+npm:
+  stage: deploy
+  only:
+  - /^\d+\./
+  image: $IMAGE_TAG
+  script: |
+    echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+    cd
+    set -eux
+    NODE_ENV=production yarn publish --cwd js --new-version $CI_COMMIT_REF_NAME
+
+pypi:
+  stage: deploy
+  only:
+  - /^\d+\./
+  image: python:3-stretch
+  script: |
+    echo -e "[pypi]" >> ~/.pypirc
+    echo -e "username = $PYPI_USER" >> ~/.pypirc
+    echo -e "password = $PYPI_PASS" >> ~/.pypirc
+
+    set -eux
+    pip3 install twine -e .
+    pushd src && ~/.local/bin/django-admin compilemessages -f && popd
+    export GIT_TAG=$CI_COMMIT_REF_NAME
+    python3 setup.py sdist
+    until which twine; do sleep 1; done
+    twine upload dist/*
+
+docker-release:
+  stage: deploy
+  image: docker:stable
+  services: ['docker:dind']
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+  script:
+  - echo $CI_JOB_TOKEN | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+  - docker pull $IMAGE_TAG
+  - docker tag $IMAGE_TAG $RELEASE_TAG
+  - docker push $RELEASE_TAG
+  - docker logout
+  - echo "$DOCKER_PASS" | docker login -u $DOCKER_USER --password-stdin
+  - docker tag $IMAGE_TAG $PUBLIC_RELEASE_TAG
+  - docker push $PUBLIC_RELEASE_TAG
+  - docker logout

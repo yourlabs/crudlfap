@@ -6,8 +6,8 @@
   "scripts": {
     "build": "./node_modules/.bin/tsc",
     "pretest": "yarn install && yarn run build",
-    "test": "./node_modules/.bin/nightwatch",
-    "lint": "eslint -c ./eslintrc.json ."
+    "lint": "eslint -c ./eslintrc.json .",
+    "test": "./node_modules/.bin/nightwatch"
   },
   "repository": {
     "type": "git",
@@ -21,11 +21,10 @@
   "homepage": "https://github.com/anjmao/nightwatch-typescript-starter#readme",
   "devDependencies": {
     "@types/nightwatch": "^0.9.8",
-    "@types/node": "^8.10.8",
-    "nightwatch": "^0.9.20",
-    "typescript": "^2.8.1"
-  },
-  "dependencies": {
+    "@types/node": "^8.10.10",
+    "chromedriver": "^2.33.2",
+    "nightwatch": "^0.9.21",
+    "typescript": "^2.8.3",
     "eslint": "^4.19.1",
     "sauce-connect-launcher": "^1.2.4"
   }

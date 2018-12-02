@@ -1,5 +1,7 @@
 from setuptools import setup, find_packages
+from setuptools.command.install import install
 import os
+import sys
 
 
 # Utility function to read the README file.
@@ -10,9 +12,12 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
+VERSION = os.getenv('GIT_TAG', 'dev')
+
+
 setup(
     name='crudlfap',
-    version='0.3.15',
+    version=VERSION,
     description='Rich frontend for generic views with Django',
     author='James Pic',
     author_email='jamespic@gmail.com',
@@ -25,10 +30,11 @@ setup(
     keywords='django crud',
     install_requires=[
         'jinja2',
+        'django>=2.0',
         'django-jinja',
         'django-bootstrap3',
         'django-material',
-        'django-tables2',
+        'django-tables2==2.0.0a3',
         'django-filter',
         'django-betterforms',
         'timeago',
@@ -36,7 +42,7 @@ setup(
     tests_require=['tox'],
     extras_require=dict(
         dev=[
-          'django>=2.0',
+          'django-collectdir',
           'django-reversion',
           'django-debug-toolbar',
           'django-extensions',
@@ -62,4 +68,5 @@ setup(
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
+    python_requires='>=3',
 )

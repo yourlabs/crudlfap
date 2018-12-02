@@ -3,7 +3,6 @@ from crudlfap import crudlfap
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth.models import Group
-from django.urls import path
 
 from . import views
 
@@ -18,8 +17,10 @@ def superuser(view):
 crudlfap.Router(
     User,
     views=[
+        crudlfap.DeleteObjectsView,
         crudlfap.DeleteView,
         crudlfap.UpdateView.clone(
+            body_class='modal-fixed-footer',
             fields=[
                 'username',
                 'email',
@@ -32,12 +33,13 @@ crudlfap.Router(
             ]
         ),
         crudlfap.CreateView.clone(
-            fields=['username', 'email', 'groups', 'is_staff', 'is_superuser']
+            body_class='modal-fixed-footer',
+            fields=['username', 'email', 'groups', 'is_staff', 'is_superuser'],
         ),
         views.PasswordView,
         views.BecomeUser,
         crudlfap.DetailView.clone(exclude=['password']),
-        crudlfap.FilterTables2ListView.clone(
+        crudlfap.ListView.clone(
             search_fields=[
                 'username',
                 'email',
@@ -59,7 +61,7 @@ crudlfap.Router(
             ],
         ),
     ],
-    allow=lambda view: view.request.user.is_superuser,
+    allowed=lambda view: view.request.user.is_superuser,
     urlfield='username',
     material_icon='person',
 ).register()
@@ -67,7 +69,6 @@ crudlfap.Router(
 crudlfap.Router(
     Group,
     fields=['name', 'permissions'],
-    urlfield='name',
     material_icon='group',
 ).register()
 
