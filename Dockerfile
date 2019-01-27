@@ -32,7 +32,7 @@ ARG GIT_COMMIT
 ARG GIT_TAG
 ENV GIT_COMMIT="${GIT_COMMIT}" GIT_TAG="${GIT_TAG}"
 
-CMD /usr/bin/dumb-init uwsgi \
+CMD /usr/bin/dumb-init bash -c "crudlfap migrate --noinput && uwsgi \
   --spooler=${UWSGI_SPOOLER_MOUNT}/mail \
   --spooler=${UWSGI_SPOOLER_MOUNT}/stat \
   --spooler-processes 8 \
@@ -55,4 +55,4 @@ CMD /usr/bin/dumb-init uwsgi \
   --ignore-sigpipe \
   --ignore-write-errors \
   --disable-write-exception \
-  --static-map ${STATIC_ROOT}=${STATIC_URL}
+  --static-map ${STATIC_ROOT}=${STATIC_URL}"
