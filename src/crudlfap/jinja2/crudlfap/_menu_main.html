@@ -1,31 +1,49 @@
 <ul id="slide-out" class="sidenav sidenav-fixed">
-  <li class="no-padding {% if request.path == crudlfap_site.views['home'].url %}active{% endif %}"><a href="{{ crudlfap_site.views['home'].url }}">{{ _('Home') }}</a></li>
+  <li class="no-padding {% if request.path == crudlfap_site.views['home'].url %}active{% endif %}"><a href="{{ crudlfap_site.views['home'].url }}">{% if crudlfap_site.views['home'].material_icon %}<i class="material-icons">{{ crudlfap_site.views['home'].material_icon }}</i>{% endif %}{{ _('Home') }}</a></li>
   <li class="no-padding">
     <ul class="collapsible collapsible-accordion">
       {% for app, routers in crudlfap_site.get_app_menus('main', request).items() %}
         {% for router in routers %}
-          <li class="{% if router == view.router %}active{% endif %}">
-            <a class="collapsible-header waves-effect waves-teal">{% if router.material_icon %}<i class="material-icons">{{ router.material_icon }}</i>{% endif %} {{ router.model._meta.verbose_name_plural.capitalize() }}</a>
-            <div class="collapsible-body">
-              <ul>
-                {% for v in router.get_menu('model', request) %}
-                  <li>
-                    <a
-                      class="waves-effect"
-                      href="{{ v.url }}"
-                      title="{% if v.title_link %}{{ v.title_link }}{% endif %}"
-                      {%- for key, value in (v.link_attributes|default({})).items() %}
-                      {{ key }}="{{ value.replace('"', '\\"') }}"
-                      {%- endfor %}
-                      {%- if not v.turbolinks|default(True) %}
-                      data-turbolinks="false"
-                      {%- endif %}
-                    >{% if v.material_icon %}<i class="material-icons">{{ v.material_icon }}</i>{% endif %}{{ v.title_menu.capitalize() }}</a>
-                  </li>
-                {% endfor %}
-              </ul>
-            </div>
-          </li>
+          {% set views = router.get_menu('model', request) %}
+          {% if views|length == 1 %}
+            {% set v = views[0] %}
+            <li class="{% if router == view.router %}active{% endif %}">
+              <a
+                class="waves-effect"
+                href="{{ v.url }}"
+                title="{% if v.title_link %}{{ v.title_link }}{% endif %}"
+                {%- for key, value in (v.link_attributes|default({})).items() %}
+                {{ key }}="{{ value.replace('"', '\\"') }}"
+                {%- endfor %}
+                {%- if not v.turbolinks|default(True) %}
+                data-turbolinks="false"
+                {%- endif %}
+              >{% if router.material_icon %}<i class="material-icons">{{ router.material_icon }}</i>{% endif %}{{ router.model._meta.verbose_name_plural.capitalize() }}</a>
+            </li>
+          {% else %}
+            <li class="{% if router == view.router %}active{% endif %}">
+              <a class="collapsible-header waves-effect waves-teal">{% if router.material_icon %}<i class="material-icons">{{ router.material_icon }}</i>{% endif %} {{ router.model._meta.verbose_name_plural.capitalize() }}</a>
+              <div class="collapsible-body">
+                <ul>
+                  {% for v in router.get_menu('model', request) %}
+                    <li>
+                      <a
+                        class="waves-effect"
+                        href="{{ v.url }}"
+                        title="{% if v.title_link %}{{ v.title_link }}{% endif %}"
+                        {%- for key, value in (v.link_attributes|default({})).items() %}
+                        {{ key }}="{{ value.replace('"', '\\"') }}"
+                        {%- endfor %}
+                        {%- if not v.turbolinks|default(True) %}
+                        data-turbolinks="false"
+                        {%- endif %}
+                      >{% if v.material_icon %}<i class="material-icons">{{ v.material_icon }}</i>{% endif %}{{ v.title_menu.capitalize() }}</a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </li>
+          {% endif %}
         {% endfor %}
       {% endfor %}
     </ul>
