@@ -20,6 +20,10 @@
                 <li class="collection-item">{{ value }}</li>
               {% endfor %}
             </ul>
+          {% elif getattr(field['value'], 'get_absolute_url', None) %}
+            <a
+                href="{{ field['value'].get_absolute_url() }}"
+            >{{ field['value'] }}</a>
           {% else %}
               {{ field['value'] }}
           {% endif %}
