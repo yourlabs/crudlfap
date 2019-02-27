@@ -4,6 +4,8 @@ import copy
 from django import forms
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
 from django.contrib.contenttypes.models import ContentType
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 
 
 class CreateMixin:
@@ -65,7 +67,7 @@ class DetailMixin:
         self.display_fields = [
             {
                 'field': self.model._meta.get_field(field),
-                'value': getattr(self.object, field)
+                'value': self.get_field_display(field),
             }
             for field in (
                 [f.name for f in self.model._meta.fields]
@@ -73,6 +75,19 @@ class DetailMixin:
                 else self.fields
             ) if field not in self.exclude
         ]
+
+    def get_field_display(self, name):
+        value_getter = '_'.join(['get', name, 'display'])
+        if hasattr(self.object, value_getter):
+            return getattr(self.object, value_getter)()
+        value = getattr(self.object, name)
+        if hasattr(value, 'get_absolute_url'):
+            return format_html(
+                '<a href="{}">{}</a>',
+                mark_safe(value.get_absolute_url()),
+                value
+            )
+        return value
 
 
 class HistoryMixin:
