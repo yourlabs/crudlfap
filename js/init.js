@@ -6,7 +6,7 @@ export default function(el) {
   M.Dropdown.init(elems, {
     alignment: 'right',
     constrainWidth: false,
-    coverTrigger: false,
+    coverTrigger: true,
   })
   for (let element of el.querySelectorAll('.crudlfap-datepicker')) {
     M.Datepicker.init(element, {
