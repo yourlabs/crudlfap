@@ -15,6 +15,14 @@ export default function(el) {
     })
   }
 
+  for (let element of el.querySelectorAll('textarea')) {
+    M.textareaAutoResize(element)
+  }
+
+  for (let element of el.querySelectorAll('input')) {
+    M.updateTextFields()
+  }
+
   // compensate for https://github.com/Dogfalo/materialize/issues/6049
   for (let select of el.querySelectorAll('select.invalid')) {
     try {
