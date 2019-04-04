@@ -30,7 +30,7 @@ export default class extends Controller {
     var target = document.getElementById(this.targetId)
     target.innerHTML = doc.getElementById(this.targetId).innerHTML
     init(target)
-    window.history.pushState({}, doc.querySelector('title').innerHTML, this.url)
+    window.history.pushState({turbolinks: {}}, doc.querySelector('title').innerHTML, this.url)
   }
 
   get targetId() {
