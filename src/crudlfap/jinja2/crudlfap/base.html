@@ -52,7 +52,7 @@
     <main>
       {% include 'crudlfap/_messages.html' %}
       {% block before_container %}{% endblock %}
-      {% block content_open %}<div class="{% if view.body_class|default('') != 'full-width' %}container{% endif %}" id="modal-body-ajax">{% endblock %}
+      {% block content_open %}<div class="{{ view.body_class|default('') }}" id="modal-body-ajax">{% endblock %}
         {% block form_open %}{% endblock %}
           <div class="modal-content">
           {% block title_heading %}
@@ -63,7 +63,7 @@
             >{{ view.title_heading }}</h4>
             {% endif %}
           {% endblock %}
-            {% block content %}{% block form %}{% endblock %}{% endblock %}
+          {% block content %}{% block form %}{% endblock %}{% endblock %}
           </div>
           <div class="modal-footer">
             {% block buttons %}{% endblock %}

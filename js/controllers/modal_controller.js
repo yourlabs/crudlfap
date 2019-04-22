@@ -29,14 +29,12 @@ export default class extends Controller {
       var parser = new DOMParser()
       var doc = parser.parseFromString(res, 'text/html')
       var newbody = doc.getElementById('modal-body-ajax')
-      if (doc.querySelector('body.modal-fixed-footer')) {
-        this.modal.classList.add('modal-fixed-footer')
-      } else {
-        this.modal.classList.remove('modal-fixed-footer')
-      }
+      var modalClass = this.element.getAttribute('data-modal-class')
+      var modalInit = this.element.getAttribute('data-modal-init')
+      this.modal.className = modalClass === null ? 'modal fade' : modalClass
       this.modal.innerHTML = newbody.innerHTML
       loader.hide()
-      this.initmodal()
+      modalInit === null ? this.initmodal() : this[modalInit]()
     }).catch(error => {
       loader.hide()
       M.toast({
@@ -47,22 +45,21 @@ export default class extends Controller {
     })
   }
 
-  childmodal() {
-    var childmodal = this.element.querySelector('.childmodal')
-    this.modal.innerHTML = childmodal.innerHTML
-    if (childmodal.classList.contains('modal-fixed-footer')) {
-      this.modal.classList.add('modal-fixed-footer')
-    } else {
-      this.modal.classList.remove('modal-fixed-footer')
-    }
-    this.initmodal()
-  }
-
   initmodal() {
     init(this.modal)
     var instance = M.Modal.init(document.getElementById('modal'), {
       endingTop: '5%',
     })
     instance.open()
+  }
+
+  show() {
+    init(this.modal)
+    this.modal.style.display = 'block'
+    this.modal.style.opacity = 1
+    this.modal.style.top = null
+    this.modal.style.transform = null
+    this.modal.style.position = 'relative'
+    window.scrollTo(0, document.body.scrollHeight)
   }
 }

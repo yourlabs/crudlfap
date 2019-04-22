@@ -173,6 +173,14 @@ class Router(object):
             )
         )
 
+    def get(self, urlname, *args):
+        try:
+            return self[urlname]
+        except KeyError:
+            if args:
+                return args[0]
+            raise
+
     def generate_views(self, *views):
         """
         Generate views for this router, core of the automation in CRUDLFA+.

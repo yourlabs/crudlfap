@@ -1,5 +1,5 @@
 <a style="padding-left: 1em" class="breadcrumb" href="{{ crudlfap_site.views['home'].url }}">{{ _('Home') }}</a>
-{% if view.model %}
+{% if view.model and view.model in crudlfap_site and crudlfap_site[view.model].get('list', None) %}
   {% set v = crudlfap_site[view.model]['list'](request=request) %}
   {% if v.has_perm() %}
     <a
