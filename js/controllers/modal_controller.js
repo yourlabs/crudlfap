@@ -60,6 +60,12 @@ export default class extends Controller {
     this.modal.style.top = null
     this.modal.style.transform = null
     this.modal.style.position = 'relative'
+    for (var i of this.modal.querySelectorAll('.modal-close')) {
+      i.addEventListener(
+        'click',
+        () => document.getElementById('modal').style.display = 'none'
+      )
+    }
     window.scrollTo(0, document.body.scrollHeight)
   }
 }
