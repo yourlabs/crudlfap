@@ -2,9 +2,6 @@ from crudlfap.models import Controller, URL
 from crudlfap.router import Router
 from crudlfap.views import generic
 
-from django import forms
-from django.contrib.auth.models import Group, Permission
-
 
 class ControllerRouter(Router):
     model = Controller

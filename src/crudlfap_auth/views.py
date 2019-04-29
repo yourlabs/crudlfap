@@ -74,7 +74,10 @@ class BecomeUser(crudlfap.ObjectView):
         become_user_realname = str(self.request.user)
         become_user = request.session.get('become_user', request.user.pk)
         auth.login(request, self.object)
-        request.session.setdefault('become_user_realname', become_user_realname)
+        request.session.setdefault(
+            'become_user_realname',
+            become_user_realname
+        )
         request.session['become_user'] = become_user
         messages.info(
             request,
