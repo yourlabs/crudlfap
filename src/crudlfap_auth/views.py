@@ -70,9 +70,6 @@ class BecomeUser(crudlfap.ObjectView):
         return user
 
     def get(self, request, *a, **k):
-        if not request.user.is_superuser:
-            return http.HttpResponseForbidden()
-
         logger.info('BecomeUser by {}'.format(self.request.user))
         become_user = request.session.get('become_user', request.user.pk)
         auth.login(request, self.object)
