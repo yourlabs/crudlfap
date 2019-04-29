@@ -6543,6 +6543,9 @@ header, main, footer {
 .sidenav-trigger {
   display: none; }
 
+ul.sidenav .collapsible-body ul li a {
+  padding-left: 3rem !important; }
+
 @media only screen and (max-width: 992px) {
   header, main, footer {
     padding-left: 0; }
@@ -6623,6 +6626,10 @@ h4.col {
   height: 95% !important;
   max-width: 95% !important;
   width: 95% !important; }
+
+.modal-bottom {
+  background-color: white;
+  z-index: 999; }
 
 @keyframes slidein {
   from {
