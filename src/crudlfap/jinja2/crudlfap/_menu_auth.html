@@ -10,7 +10,7 @@
   </li>
   {% if request.session.become_user %}
   <li class="{{ liclass|default('') }}">
-    <a data-noprefetch="true" href="{{ url('crudlfap:su') }}">{{ _('Back to your account') }}</a>
+    <a data-noprefetch="true" href="{{ url('crudlfap:su') }}">{{ _('Back to your account') }} ({{ request.session.become_user_realname }})</a>
   </li>
   {% endif %}
 {% endif %}
