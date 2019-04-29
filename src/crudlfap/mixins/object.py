@@ -11,7 +11,6 @@ class ObjectMixin(ModelMixin):
 
     menus = ['object', 'object_detail']
     menus_display = ['object', 'object_detail']
-    object_permission_check = True
     template_name_field = None
 
     def get_context(self, **context):

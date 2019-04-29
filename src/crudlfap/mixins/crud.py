@@ -15,7 +15,6 @@ class CreateMixin:
     controller = 'modal'
     action = 'click->modal#open'
     color = 'green'
-    object_permission_check = False
     log_action_flag = ADDITION
     menus = ['main', 'model']
     permission_shortcode = 'add'

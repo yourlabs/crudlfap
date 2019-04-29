@@ -9,7 +9,6 @@ class ModelMixin(object):
     menus = ['model']
     menus_display = ['model']
     pluralize = False
-    object_permission_check = False
 
     def get_exclude(self):
         return []
