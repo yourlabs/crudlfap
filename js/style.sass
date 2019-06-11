@@ -102,27 +102,36 @@ body #toast-container
 h4.col
   padding-left: 8px
 
-#modal > h4
-  padding-left: 24px
+#modal
+  width: 80%
+  left: 10%
+  right: 10%
+  max-height: 90% !important /* goes with the top: 0 from Materialize */
 
-#modal.modal-fixed-footer
-  max-height: 95% !important
-  height: 95% !important
-  max-width: 95% !important
-  width: 95% !important
+  .input-field.col label
+    left: 0
+
+  h4
+    margin: 0 0 1.5rem 0
+
+  .modal-content
+    padding: 1.5rem 1.5rem 0 1.5rem
+
+  .modal-footer
+    padding: 0 1.5rem 1.5rem 1.5rem
+
+    /* cancel out materialize */
+    text-align: left !important;
+    .btn
+      margin: 0
+
+  .row .col
+    padding: 0
 
 .modal-bottom
   @extend .z-depth-3
   background-color: white
   z-index: 999
-  margin: 0 4rem
-  padding: 1rem 0
-
-.modal-footer
-  padding: 0 0.75rem
-
-.modal
-  max-height: 90% !important
 
 @keyframes slidein
   from
