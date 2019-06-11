@@ -16,7 +16,6 @@ crudlfap.Router(
         crudlfap.DeleteObjectsView,
         crudlfap.DeleteView,
         crudlfap.UpdateView.clone(
-            body_class='modal-fixed-footer',
             fields=[
                 'username',
                 'email',
@@ -29,7 +28,6 @@ crudlfap.Router(
             ]
         ),
         crudlfap.CreateView.clone(
-            body_class='modal-fixed-footer',
             fields=[
                 'username',
                 'email',
