@@ -259,7 +259,7 @@ class Router(object):
         Router with the ``detail`` slug.
 
         Set get_absolute_url in your model class to disable this feature. Until
-        then, welcome in 2018.
+        then, you got it for free.
 
         Also, register this router as default router for its model class in the
         RouterRegistry.
