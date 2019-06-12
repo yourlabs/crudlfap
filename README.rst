@@ -62,8 +62,7 @@ Resources
   <http://pypi.python.org/pypi/crudlfap/>`_ by `PyPi
   <http://pypi.python.org/pypi>`_,
 - `Continuous integration graciously hosted
-  <https://yourlabs.io/oss/crudlfap/pipelines>`_ by `YourLabs Business Service
-  <https://wwww.yourlabs.biz>`_
+  <https://yourlabs.io/oss/crudlfap/pipelines>`_ by YourLabs Business Service
 - Browser test graciously hosted by `SauceLabs
   <https://saucelabs.com>`_
 - `**Online paid support** provided via HackHands
