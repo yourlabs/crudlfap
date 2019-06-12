@@ -35,7 +35,7 @@
 {% block buttons %}
     {{ render_button(view.title_submit, button_type="submit", button_class="btn-primary") }}
     {% if request.META.get('HTTP_X_MODAL') %}
-    <a style="position: absolute; right: 0" class="modal-close waves-effect waves-green btn-flat">{{ _('cancel') }}</a>
+    <a style="position: absolute; right: 1.5rem" class="modal-close waves-effect waves-green btn red">{{ _('cancel') }}</a>
     {% endif %}
 {% endblock %}
 
