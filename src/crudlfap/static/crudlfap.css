@@ -2037,7 +2037,7 @@ a {
   box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3); }
 
 /* 12dp elevation modified*/
-.z-depth-3, .bottom.bar {
+.z-depth-3, .modal-bottom, .bottom.bar {
   box-shadow: 0 8px 17px 2px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.2); }
 
 /* 16dp elevation */
@@ -6618,14 +6618,25 @@ body #toast-container {
 h4.col {
   padding-left: 8px; }
 
-#modal > h4 {
-  padding-left: 24px; }
-
-#modal.modal-fixed-footer {
-  max-height: 95% !important;
-  height: 95% !important;
-  max-width: 95% !important;
-  width: 95% !important; }
+#modal {
+  width: 80%;
+  left: 10%;
+  right: 10%;
+  max-height: 90% !important; }
+  #modal .input-field.col label {
+    left: 0; }
+  #modal h4 {
+    margin: 0 0 1.5rem 0; }
+  #modal .modal-content {
+    padding: 1.5rem 1.5rem 0 1.5rem; }
+  #modal .modal-footer {
+    padding: 0 1.5rem 1.5rem 1.5rem;
+    /* cancel out materialize */
+    text-align: left !important; }
+    #modal .modal-footer .btn, #modal .modal-footer .btn-large, #modal .modal-footer .btn-small {
+      margin: 0; }
+  #modal .row .col {
+    padding: 0; }
 
 .modal-bottom {
   background-color: white;
