@@ -20,7 +20,7 @@
     {%- if not view.turbolinks|default(True) %}
     data-turbolinks="false"
     {%- endif %}
-    >
+  >
     <i class="{% if iclass == True %}{% for color in (view.color|default('')).split(' ') %}{{ color }}-text {% endfor %}{% elif iclass %}{{ iclass }}{% endif %} material-icons">{{ view.material_icon }}</i>
     {% if text == True %}
     {{ view.title_menu }}
