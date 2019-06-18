@@ -45,7 +45,7 @@ class Command(BaseCommand):
             signal.send(sender=self)
         else:
             options['nothreading'] = True
-            call_command('runserver', *args, **options)
+            super().handle(*args, **options)
 
     def createusers(self):
         user_model = apps.get_model(settings.AUTH_USER_MODEL)
