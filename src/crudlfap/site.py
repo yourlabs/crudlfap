@@ -20,6 +20,7 @@ site = Registry(
         ),
         TemplateView.clone(
             template_name='crudlfap/home.html',
+            title=_('Home'),
             title_heading='',
             urlname='home',
             urlpath='',

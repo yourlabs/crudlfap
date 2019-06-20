@@ -35,7 +35,9 @@
     <div id="main-loader" class="loader-container turbolinks-progress-bar">
       {% include 'crudlfap/_loader.html' %}
     </div>
-    {% include 'crudlfap/_menu_main.html' %}
+    <ul id="slide-out" class="sidenav sidenav-fixed">
+      {{ ryzom('crudlfap.components.menu.Menu', request) }}
+    </ul>
     <header>
       <div class="navbar-fixed">
         <nav>
