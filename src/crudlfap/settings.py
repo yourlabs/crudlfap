@@ -247,6 +247,7 @@ CRUDLFAP_TEMPLATE_BACKEND = {
             "render_form": "crudlfap.jinja2.render_form",
             "render_button": "bootstrap3.forms.render_button",
             "url": "django.urls.reverse",
+            "ryzom": "ryzom.components.component_html",
         },
         "newstyle_gettext": True,
         "bytecode_cache": {
