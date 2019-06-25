@@ -26,6 +26,8 @@ setup(
         'django-filter',
         'timeago',
         'lookupy-unmanaged',
+        # FIXME: Remove non-PyPi path before merging
+        'ryzom @ git+https://yourlabs.io/oss/ryzom.git@ssr#egg=ryzom',
     ],
     tests_require=['tox'],
     extras_require=dict(
