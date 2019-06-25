@@ -1,7 +1,9 @@
 from crudlfap import shortcuts as crudlfap
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
-from ryzom.components import Component, A, Div, Ul, Li, Span, Input, Button, Text
+from ryzom.components import (
+    Component, A, Div, Ul, Li, Span, Input, Button, Text
+)
 
 
 class Icon(Component):
@@ -30,6 +32,8 @@ class FutureMixin:
 
 class A2(FutureMixin, A):
     pass
+
+
 A2 = type('A2', (FutureMixin, A), {})  # for reference
 
 
@@ -134,7 +138,8 @@ class MenuRouter(Li2):
 
         sublinks = [
             Ul(
-                [MenuItem(view, request) for view in router.get_menu('model', request)]
+                [MenuItem(view, request) for view in router.get_menu(
+                    'model', request)]
             )
         ]
         router_link_content = []
@@ -157,7 +162,7 @@ class MenuRouter(Li2):
                     {'class': 'collapsible-body'}
                 )
             ], {
-            'class': self.active
+                'class': self.active
             })
         ], {
             'class': 'collapsible collapsible-accordion'
@@ -166,13 +171,13 @@ class MenuRouter(Li2):
         return super().__init__(*content, cls='no-padding')
 
 
-
 class MenuHome(Li):
     def __init__(self, request):
         active = request.path_info == crudlfap.site.views['home'].url
         content = [MenuItem(crudlfap.site.views['home'], request)]
 
-        for app, routers in crudlfap.site.get_app_menus('main', request).items():
+        for app, routers in crudlfap.site.get_app_menus(
+                'main', request).items():
             for router in routers:
                 views = router.get_menu('model', request)
                 if len(views) == 1:
