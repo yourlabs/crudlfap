@@ -58,7 +58,7 @@ class PostListView(crudlfap.ListView):
 
 class PostRouter(crudlfap.Router):
     fields = '__all__'
-    icon = 'music'
+    material_icon = 'book'
     model = Post
 
     views = [

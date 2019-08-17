@@ -27,6 +27,8 @@ from . import models
 
 
 class SongRatingRouter(crudlfap.Router):
+    material_icon='star_rate'
+
     def get_queryset(self, view):
         return self.model.objects.object_list
 
