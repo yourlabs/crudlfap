@@ -87,7 +87,7 @@ class Menu(Ul):
 
 
 class MenuItem(Li):
-    def __init__(self, view, request):
+    def __init__(self, view, request, single_item=False):
         attrs = {
             'class': 'waves-effect',
             'href': view.url,
@@ -100,12 +100,19 @@ class MenuItem(Li):
             attrs['data-turbolinks'] = 'false'
 
         content = []
-        if getattr(view, 'material_icon', ''):
+
+        show_icon = view if not single_item else view.router
+
+        if getattr(show_icon, 'material_icon', ''):
             content.append(
-                Icon(view.material_icon),
+                Icon(show_icon.material_icon),
             )
 
-        if getattr(view, 'router', None) is None:
+        if single_item:
+            content.append(Text(
+                str(view.router.model._meta.verbose_name_plural.capitalize()))
+            )
+        elif getattr(view, 'router', None) is None:
             content.append(Text(str(getattr(view, 'title', str(view)))))
         elif getattr(view.router, 'model', None) is None:
             content.append(Text(str(getattr(view, 'title', str(view)))))
@@ -184,7 +191,7 @@ class MenuHome(Li):
                     view = views[0]
 
                     content.append(
-                        MenuItem(view, request)
+                        MenuItem(view, request, single_item=True)
                     )
                 else:
                     content.append(MenuRouter(router, request))
