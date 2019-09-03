@@ -1,5 +1,3 @@
-import re
-
 from crudlfap import shortcuts as crudlfap
 
 from django.conf import settings
@@ -17,5 +15,5 @@ urlpatterns = [
 if 'debug_toolbar' in settings.INSTALLED_APPS and settings.DEBUG:
     import debug_toolbar
     urlpatterns += [
-        url(r'^__debug__/', include(debug_toolbar.urls)),
+        re_path(r'^__debug__/', include(debug_toolbar.urls)),
     ]
