@@ -24,7 +24,7 @@ setup(
         'django-material',
         'django-tables2',
         'django-filter',
-        'django-betterforms',
+        'yl-django-betterforms',
         'timeago',
         'lookupy-unmanaged',
     ],
