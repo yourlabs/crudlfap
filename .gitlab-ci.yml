@@ -30,7 +30,7 @@ py-test:
   image: yourlabs/python
   script:
   - tox -e py38-dj30
-  - codecov -e $TOXENV
+  - codecov-bash -e TOXENV -f coverage.xml
 
 js-qa:
   image: node:10-alpine
