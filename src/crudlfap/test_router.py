@@ -13,6 +13,7 @@ from .router import Router
 
 
 class TestRouter(Router):
+    __test__ = False
     fields = '__all__'
 
 
