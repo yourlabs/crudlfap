@@ -140,7 +140,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(
 SECRET_KEY = os.environ.get('SECRET_KEY', 'notsecret')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get('DEBUG', False))
+if 'DEBUG' in os.environ:
+    try:
+        DEBUG = bool(int(os.environ['DEBUG']))
+    except ValueError as exc:
+        import warnings
+
+        warnings.warn('invalid DEBUG environment variable ({!r}): {}'.format(
+            os.environ['DEBUG'], exc
+        ))
+        DEBUG = False
+else:
+    DEBUG = False
 
 if DEBUG and 'ALLOWED_HOSTS' not in os.environ:
     ALLOWED_HOSTS = ['*']
@@ -365,6 +376,10 @@ if UWSGI_SPOOLER_MOUNT and UWSGI_SPOOLER_NAMES:
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG' if DEBUG else 'INFO',
+    },
     'handlers': {
         'console': {
             'level': 'DEBUG',
@@ -377,21 +392,32 @@ LOGGING = {
             'format': '%(levelname)s %(message)s'
         },
     },
-    'loggers': {
+}
+
+if DEBUG:
+    import logging
+
+    def configure_logging(config):
+        # Remove "console" logger from "django", which is on the "root" logger
+        # already.
+        django_logger = logging.getLogger('django')
+        django_logger.handlers = [
+            x for x in django_logger.handlers
+            if not isinstance(x, logging.StreamHandler)
+        ]
+        logging.config.dictConfigClass(config).configure()
+
+    LOGGING_CONFIG = 'crudlfap.settings.configure_logging'
+
+    LOGGING['root'] = {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    }
+    LOGGING['loggers'] = {
         'django.template': {
-            'handlers': ['console'],
             'level': 'DEBUG',
-            'propagate': True,
         },
         'django.db': {
-            'handlers': ['console'],
             'level': 'DEBUG',
-            'propagate': True,
         },
-        '*': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-    },
-}
+    }
