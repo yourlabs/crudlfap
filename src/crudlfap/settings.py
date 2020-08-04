@@ -212,6 +212,7 @@ TEMPLATE_CONSTANTS = {
 CRUDLFAP_TEMPLATE_BACKEND = {
     "BACKEND": "django_jinja.backend.Jinja2",
     "APP_DIRS": True,
+    "NAME": "crudlfap",
     "OPTIONS": {
         "app_dirname": "jinja2",
         "match_extension": None,

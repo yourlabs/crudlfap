@@ -28,7 +28,7 @@ class JinjaColumn(tables.Column):
                 object=record
             )
         )
-        b = template.engines['backend']
+        b = template.engines['crudlfap']
         t = b.from_string(self.template_code)
         r = t.render(context)
         return mark_safe(r)

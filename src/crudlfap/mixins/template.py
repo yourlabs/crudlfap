@@ -33,7 +33,7 @@ class TemplateMixin:
         )
 
     def get_template_engine(self):
-        return None
+        return 'crudlfap'
 
     def get_response_class(self):
         return TemplateResponse
