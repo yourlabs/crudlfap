@@ -13,9 +13,10 @@ class ModelFormMixin(ModelMixin, FormMixin):
 
     def get_form_kwargs(self):
         self.form_kwargs = super().get_form_kwargs()
-        if (hasattr(self, 'object')
-                and issubclass(self.form_class, model_forms.ModelForm)):
-
+        if (
+            hasattr(self, 'object')
+            and issubclass(self.form_class, model_forms.ModelForm)
+        ):
             self.form_kwargs.update({'instance': self.object})
         return self.form_kwargs
 
