@@ -7,6 +7,29 @@ from .form import FormMixin
 from .model import ModelMixin
 
 
+def log_insert(user, flag, message, obj=None, dt=None):
+    from django.contrib.admin.models import ADDITION, CHANGE, DELETION
+    flags = dict(
+        create=ADDITION,
+        update=CHANGE,
+        delete=DELETION
+    )
+    flag = flags.get(flag, flag)
+    logentry = LogEntry(
+        user_id=user.pk,
+        action_flag=flag,
+        change_message=message,
+    )
+    if obj:
+        logentry.content_type_id = ContentType.objects.get_for_model(type(obj)).pk
+        logentry.object_id = obj.pk
+        logentry.object_repr = str(obj)[:200]
+    if dt:
+        logentry.action_time = dt
+    logentry.save()
+    return logentry
+
+
 class ModelFormMixin(ModelMixin, FormMixin):
     """ModelForm Mixin using readable"""
     menus = ['model']
@@ -96,13 +119,11 @@ class ModelFormMixin(ModelMixin, FormMixin):
             objects = [self.object]
 
         for obj in objects:
-            LogEntry.objects.log_action(
-                self.request.user.pk,
-                ContentType.objects.get_for_model(type(obj)).pk,
-                obj.pk,
-                str(obj),
+            log_insert(
+                self.request.user,
                 self.log_action_flag,
                 self.log_message,
+                obj,
             )
 
     def form_valid(self):
