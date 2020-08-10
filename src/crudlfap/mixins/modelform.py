@@ -29,14 +29,17 @@ class ModelFormMixin(ModelMixin, FormMixin):
     def get_form_base(self):
         return None
 
-    def get_form_class(self):
+    def get_modelform_kwargs(self):
         kwargs = dict()
         if self.form_base:
             kwargs['form'] = self.form_base
+        kwargs['fields'] = self.form_fields
+        return kwargs
+
+    def get_form_class(self):
         return model_forms.modelform_factory(
             self.model,
-            fields=self.form_fields,
-            **kwargs
+            **self.modelform_kwargs
         )
 
     def get_form_invalid_message(self):
