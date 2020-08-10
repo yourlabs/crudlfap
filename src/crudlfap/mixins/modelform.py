@@ -90,13 +90,15 @@ class ModelFormMixin(ModelMixin, FormMixin):
 
         if hasattr(self, 'object_list'):
             objects = self.object_list
+        elif hasattr(self, 'log_objects'):
+            objects = self.log_objects
         else:
             objects = [self.object]
 
         for obj in objects:
             LogEntry.objects.log_action(
                 self.request.user.pk,
-                ContentType.objects.get_for_model(self.model).pk,
+                ContentType.objects.get_for_model(type(obj)).pk,
                 obj.pk,
                 str(obj),
                 self.log_action_flag,
