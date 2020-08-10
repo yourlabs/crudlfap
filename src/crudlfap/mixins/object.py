@@ -1,4 +1,6 @@
 from django import http
+from django.contrib.admin.models import LogEntry
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -12,6 +14,12 @@ class ObjectMixin(ModelMixin):
     menus = ['object', 'object_detail']
     menus_display = ['object', 'object_detail']
     template_name_field = None
+
+    def logentries(self):
+        return LogEntry.objects.filter(
+            content_type=ContentType.objects.get_for_model(self.model),
+            object_id=self.object.pk,
+        )
 
     def get_context(self, **context):
         context['object'] = self.object
