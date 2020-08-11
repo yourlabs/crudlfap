@@ -21,7 +21,7 @@ def log_insert(user, flag, message, obj=None, dt=None):
         change_message=message,
     )
     if obj:
-        logentry.content_type_id = ContentType.objects.get_for_model(type(obj)).pk
+        logentry.content_type_id = ContentType.objects.get_for_model(obj).pk
         logentry.object_id = obj.pk
         logentry.object_repr = str(obj)[:200]
     if dt:
