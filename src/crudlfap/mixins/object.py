@@ -1,8 +1,10 @@
 from django import http
+from django.conf import settings
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
 from .model import ModelMixin
@@ -16,10 +18,17 @@ class ObjectMixin(ModelMixin):
     template_name_field = None
 
     def logentries(self):
-        return LogEntry.objects.filter(
+        filters = Q(
             content_type=ContentType.objects.get_for_model(self.model),
             object_id=self.object.pk,
         )
+        name = '.'.join([
+            self.object._meta.app_label,
+            self.object._meta.model_name
+        ])
+        if name.lower() == settings.AUTH_USER_MODEL.lower():
+            filters |= Q(user_id=self.object.pk)
+        return LogEntry.objects.filter(filters)
 
     def get_context(self, **context):
         context['object'] = self.object
