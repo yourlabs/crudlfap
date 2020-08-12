@@ -157,7 +157,6 @@ CRUDLFAP_VIEWS = [
 
 CRUDLFAP_APPS = [
     'crudlfap',
-    'betterforms',
     'bootstrap3',
     'material',
     'crudlfap_auth',

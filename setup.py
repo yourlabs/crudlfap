@@ -24,8 +24,6 @@ setup(
         'django-material',
         'django-tables2',
         'django-filter',
-        #'django-betterforms>=1.2.2',
-        'django-betterforms @ https://github.com/jpic/django-betterforms/archive/master.tar.gz',
         'timeago',
         'lookupy-unmanaged',
     ],
