@@ -24,7 +24,6 @@ setup(
         'django-material-1.3-dj32==1.3.3',
         'django-tables2',
         'django-filter',
-        'django-betterforms',
         'timeago',
         'lookupy-unmanaged',
     ],

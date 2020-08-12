@@ -89,7 +89,7 @@ class ListView(mixins.ListMixin, mixins.SearchMixin, mixins.FilterMixin,
             self.object_list = self.queryset
 
         if self.search_form:
-            self.object_list = self.search_form.get_queryset()
+            self.object_list = self.search_filter(self.object_list)
 
         return self.object_list
 
