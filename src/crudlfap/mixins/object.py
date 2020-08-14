@@ -28,7 +28,7 @@ class ObjectMixin(ModelMixin):
         ])
         if name.lower() == settings.AUTH_USER_MODEL.lower():
             filters |= Q(user_id=self.object.pk)
-        return LogEntry.objects.filter(filters)
+        return LogEntry.objects.filter(filters).order_by('-action_time')
 
     def get_context(self, **context):
         context['object'] = self.object

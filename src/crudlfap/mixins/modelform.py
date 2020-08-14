@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
 from django.forms import models as model_forms
@@ -7,7 +9,7 @@ from .form import FormMixin
 from .model import ModelMixin
 
 
-def log_insert(user, flag, message, obj=None, dt=None):
+def log(user, flag, message, obj=None, dt=None):
     from django.contrib.admin.models import ADDITION, CHANGE, DELETION
     flags = dict(
         create=ADDITION,
@@ -15,6 +17,8 @@ def log_insert(user, flag, message, obj=None, dt=None):
         delete=DELETION
     )
     flag = flags.get(flag, flag)
+    if not isinstance(message, str):
+        message = json.dumps(message)
     logentry = LogEntry(
         user_id=user.pk,
         action_flag=flag,
@@ -28,6 +32,9 @@ def log_insert(user, flag, message, obj=None, dt=None):
         logentry.action_time = dt
     logentry.save()
     return logentry
+
+
+log_insert = log  # backward compat
 
 
 class ModelFormMixin(ModelMixin, FormMixin):

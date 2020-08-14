@@ -13,7 +13,7 @@ from .form import FormMixin
 from .lock import LockMixin
 from .menu import MenuMixin
 from .model import ModelMixin
-from .modelform import log_insert, ModelFormMixin
+from .modelform import log, log_insert, ModelFormMixin
 from .object import ObjectMixin
 from .objects import ObjectsMixin
 from .objectform import ObjectFormMixin
