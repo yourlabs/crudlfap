@@ -76,7 +76,17 @@ class FilterMixin(object):
         return type('Meta', (object,), self.filterset_meta_attributes)
 
     def get_filterset_extra_class_attributes(self):
-        return dict()
+        extra = dict()
+        for field_name in self.filter_fields:
+            try:
+                field = self.model._meta.get_field(field_name)
+            except:  # noqa
+                continue
+            choices = getattr(field, 'choices', None)
+            if choices is None:
+                continue
+            extra[field_name] = django_filters.ChoiceFilter(choices=choices)
+        return extra
 
     def get_filterset_class_attributes(self):
         res = dict(Meta=self.filterset_meta_class)
