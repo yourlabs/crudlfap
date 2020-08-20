@@ -214,10 +214,42 @@ class Route(Factory, metaclass=RouteMetaclass):
         return True
 
     def has_perm(self):
-        """Checks for user permission."""
+        """
+        Called to decide if user has the permission to execute this view.
+
+        This is what you should override to code view level permission logic,
+        unless you want to use a Django permission backend.
+
+        If unsure, you probably need to just define Router.has_perm.
+
+        Default behaviour:
+
+        - return True if the view ``authenticate`` attribute has been
+          overridden to False
+        - return self.router.has_perm(self) if the view has a router
+        - return self.has_perm_backend otherwise, to let a Django permission
+          backend decide
+        """
         if not self.authenticate:
             return True
 
+        if self.router:
+            return self.router.has_perm(self)
+
+        return self.has_perm_backend(self)
+
+    def has_perm_backend(self):
+        """
+        Django Authentication backend has_perm() call.
+
+        This is called by Route.has_perm by default, from Router.has_perm is
+        the view has a router object, and useful only if you implement your own
+        permission backend, or add crudlfap_auth.backends.ViewBackend to
+        settings.AUTHENTICATION_BACKENDS, or implement your own View permission
+        backend.
+
+        If unsure, you probably need to just define Router.has_perm.
+        """
         return self.request.user.has_perm(self.permission_fullcode, self)
 
     def get_registry(self):

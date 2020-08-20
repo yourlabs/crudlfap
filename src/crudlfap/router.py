@@ -326,9 +326,17 @@ class Router(object):
 
     def has_perm(self, view):
         """
-        View's request.user has_perm call with the view's permission_fullcode.
+        Override this method if you don't use a Django permission backend.
+
+        This method is called by the default has_perm implementation of the
+        Route.
+        This method returns the result of view.has_perm_backend() by default.
+
+        As such, if you use a Django permission backend such as
+        crudlfap_auth.backends.ViewBackend then might not need to override this
+        method.
         """
-        return view.request.user.has_perm(view.permission_fullcode, view)
+        return view.has_perm_backend()
 
     def get_queryset(self, view):
         """Return the queryset for a view, returns all by default."""
