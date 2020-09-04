@@ -2,7 +2,7 @@ from crudlfap import shortcuts as crudlfap
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
 from ryzom.components import (
-    Component, A, Div, Ul, Li, Span, Input, Button, Text
+    Component, A, Div, Ul, Li, Text
 )
 
 
@@ -34,7 +34,7 @@ class A2(FutureMixin, A):
     pass
 
 
-A2 = type('A2', (FutureMixin, A), {})  # for reference
+# A2 = type('A2', (FutureMixin, A), {})  # for reference
 
 
 class Li2(FutureMixin, Li):
