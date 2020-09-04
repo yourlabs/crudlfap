@@ -26,7 +26,8 @@ setup(
         'django-filter',
         'timeago',
         'lookupy-unmanaged',
-        'ryzom',
+        # FIXME: Update when ryzom is published to PyPi
+        'ryzom @ git+https://yourlabs.io/oss/ryzom.git#egg=ryzom',
     ],
     tests_require=['tox'],
     extras_require=dict(
