@@ -350,13 +350,9 @@ USE_TZ = True
 
 STATIC_URL = os.getenv('STATIC_URL', '/static/')
 STATIC_ROOT = os.getenv(
-<<<<<<< Upstream, based on origin/master
     'STATIC_ROOT',
     Path(os.path.dirname(__file__)) / 'static'
 )
-=======
-    'STATIC_ROOT', Path(os.path.dirname(__file__)) / 'static')
->>>>>>> 8f062b4 Fix QA
 
 UWSGI_SPOOLER_MOUNT = os.getenv('UWSGI_SPOOLER_MOUNT')
 UWSGI_SPOOLER_NAMES = os.getenv('UWSGI_SPOOLER_NAMES', '').split(',')
