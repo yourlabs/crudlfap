@@ -85,7 +85,8 @@ class FilterMixin(object):
             choices = getattr(field, 'choices', None)
             if choices is None:
                 continue
-            extra[field_name] = django_filters.ChoiceFilter(choices=choices)
+            extra[field_name] = django_filters.MultipleChoiceFilter(
+                choices=choices)
         return extra
 
     def get_filterset_class_attributes(self):
