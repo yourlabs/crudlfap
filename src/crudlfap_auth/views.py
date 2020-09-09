@@ -60,7 +60,7 @@ class BecomeUser(crudlfap.ObjectView):
         user = super().get_object()
 
         if user:
-            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            user.backend = self.backend
         else:
             messages.error(
                 self.request,
@@ -71,19 +71,24 @@ class BecomeUser(crudlfap.ObjectView):
 
     def get(self, request, *a, **k):
         logger.info('BecomeUser by {}'.format(self.request.user))
-        become_user_realname = str(self.request.user)
-        become_user = request.session.get('become_user', request.user.pk)
-        auth.login(request, self.object)
-        request.session.setdefault(
-            'become_user_realname',
-            become_user_realname
-        )
-        request.session['become_user'] = become_user
+        request_user = request.user
+        self.request = request
+        result = self.become()
+        if 'become_user' not in request.session:
+            request.session['become_user_realname'] = str(request_user)
+            request.session['become_user'] = str(request_user.pk)
         messages.info(
             request,
             _('Switched to user %s') % request.user
         )
-        return http.HttpResponseRedirect('/' + self.router.registry.urlpath)
+        return result if result else http.HttpResponseRedirect(
+            '/' + self.router.registry.urlpath)
+
+    def become(self):
+        auth.login(self.request, self.object, backend=self.backend)
+
+    def get_backend(self):
+        return 'django.contrib.auth.backends.ModelBackend'
 
 
 class Become(crudlfap.View):
@@ -92,9 +97,12 @@ class Become(crudlfap.View):
     def has_perm(self):
         return 'become_user' in self.request.session
 
+    def get_backend(self):
+        return 'django.contrib.auth.backends.ModelBackend'
+
     def get_object(self):
         user = self.model.objects.get(pk=self.request.session['become_user'])
-        user.backend = 'django.contrib.auth.backends.ModelBackend'
+        user.backend = self.backend
         return user
 
     def get(self, request, *a, **k):
@@ -104,19 +112,10 @@ class Become(crudlfap.View):
                 'No become_user in session {}'.format(self.request.user))
             return http.HttpResponseNotFound()
 
-        if 'become_user' in request.session:
-            user = self.get_object()
-            auth.login(request, user)
-            messages.info(
-                request,
-                _('Switched back to your user %s') % user
-            )
-            if 'become_user' in request.session.keys():
-                del request.session['become_user']
-        else:
-            messages.warning(
-                request,
-                _('You are still superuser %s') % self.request.user
-            )
-
+        user = self.get_object()
+        auth.login(request, user)
+        messages.info(
+            request,
+            _('Switched back to your user %s') % user
+        )
         return http.HttpResponseRedirect('/' + self.registry.urlpath)
