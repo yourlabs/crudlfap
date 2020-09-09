@@ -53,6 +53,12 @@ class BecomeUser(crudlfap.ObjectView):
     color = 'pink darken-4'
     link_attributes = {'data-noprefetch': 'true'}
 
+    def become(self):
+        """
+        Implement this method to override the default become logic.
+        """
+        auth.login(self.request, self.object, backend=self.backend)
+
     def get_title_menu(self):
         return _('become').capitalize()
 
