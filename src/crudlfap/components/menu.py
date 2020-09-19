@@ -8,7 +8,10 @@ from ryzom.components import (
 
 class Icon(Component):
     def __init__(self, icon):
-        return super().__init__('i', [Text(icon)], {'class': 'material-icons'})
+        return super().__init__(Text(icon),
+                                **{'class': 'material-icons'},
+                                tag='i'
+                                )
 
 
 class FutureMixin:
@@ -16,18 +19,7 @@ class FutureMixin:
         if 'cls' in attrs:
             attrs['class'] = attrs.pop('cls')  # support HTML class attr
 
-        content = [
-            c if hasattr(c, 'to_html') else Text(str(c))
-            for c in content
-        ]
-
-        return super().__init__(
-            list(content),
-            attrs,
-            attrs.pop('events', None),
-            attrs.pop('parent', None),
-            attrs.pop('_id', None),
-        )
+        return super().__init__(*content, **attrs)
 
 
 class A2(FutureMixin, A):
@@ -78,11 +70,11 @@ class Menu(Ul):
                 ), cls='no-padding'))
 
         return super().__init__(
-            content,
-            {
+            *content,
+            **{
                 'class': 'sidenav sidenav-fixed',
                 'id': 'slide-out',
-            }
+              }
         )
 
 
@@ -124,15 +116,10 @@ class MenuItem(Li):
             )
 
         super().__init__(
-            [
-                A(
-                    content,
-                    attrs,
-                )
-            ],
-            {
+            A(*content, **attrs),
+            **{
                 'class': 'active' if request.path_info == view.url else ''
-            }
+              }
         )
 
 
@@ -144,36 +131,32 @@ class MenuRouter(Li2):
                 self.active = 'active'
 
         sublinks = [
-            Ul(
-                [MenuItem(view, request) for view in router.get_menu(
+            Ul(*[MenuItem(view, request) for view in router.get_menu(
                     'model', request)]
-            )
+               )
         ]
         router_link_content = []
         if getattr(router, 'material_icon', ''):
             router_link_content.append(Icon(router.material_icon))
         router_link_content.append(
-            Text(
-                str(router.model._meta.verbose_name_plural.capitalize())
-            ),
+            Text(str(router.model._meta.verbose_name_plural.capitalize())),
         )
 
-        content = [Ul([
-            Li([
+        content = [Ul(
+            Li(
                 A(
-                    router_link_content,
-                    {'class': 'collapsible-header waves-effect waves-teal'},
+                    *router_link_content,
+                    **{'class': 'collapsible-header waves-effect waves-teal'},
                 ),
                 Div(
-                    sublinks,
-                    {'class': 'collapsible-body'}
-                )
-            ], {
-                'class': self.active
-            })
-        ], {
-            'class': 'collapsible collapsible-accordion'
-        })]
+                    *sublinks,
+                    **{'class': 'collapsible-body'}
+                ),
+                **{'class': self.active}
+                ),
+            **{'class': 'collapsible collapsible-accordion'}
+            )
+        ]
 
         return super().__init__(*content, cls='no-padding')
 
@@ -197,8 +180,6 @@ class MenuHome(Li):
                     content.append(MenuRouter(router, request))
 
         return super().__init__(
-            content,
-            {
-                'class': 'no-padding' + ' active' if active else '',
-            }
+            *content,
+            **{'class': 'no-padding' + ' active' if active else '', }
         )
