@@ -2,35 +2,8 @@ from crudlfap import shortcuts as crudlfap
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
 from ryzom.components import (
-    Component, A, Div, Ul, Li, Text
+    A, Div, Icon, Li, Text, Ul
 )
-
-
-class Icon(Component):
-    def __init__(self, icon):
-        return super().__init__(Text(icon),
-                                **{'class': 'material-icons'},
-                                tag='i'
-                                )
-
-
-class FutureMixin:
-    def __init__(self, *content, **attrs):
-        if 'cls' in attrs:
-            attrs['class'] = attrs.pop('cls')  # support HTML class attr
-
-        return super().__init__(*content, **attrs)
-
-
-class A2(FutureMixin, A):
-    pass
-
-
-# A2 = type('A2', (FutureMixin, A), {})  # for reference
-
-
-class Li2(FutureMixin, Li):
-    pass
 
 
 class Menu(Ul):
@@ -41,40 +14,46 @@ class Menu(Ul):
 
         if not request.user.is_authenticated:
             content.append(
-                Li2(
-                    A2(_('Log in'), href=reverse('crudlfap:login')),
-                    cls='no-padding',
+                Li(
+                    A(_('Log in'), href=reverse('crudlfap:login')),
+                    **{'class': 'no-padding'},
                 )
             )
         else:
-            content.append(Li2(A2(
-                _('Log out'),
-                **{
-                    'class': 'waves-effect',
-                    'data-noprefetch': 'true',
-                    'href': reverse('crudlfap:logout'),
-                }
-            ), cls='no-padding'))
-
-            if request.session.get('become_user', None):
-                content.append(Li2(A2(
-                    ' '.join([
-                        str(_('Back to your account')),
-                        request.session['become_user_realname'],
-                    ]),
+            content.append(Li(
+                A(
+                    _('Log out'),
                     **{
                         'class': 'waves-effect',
                         'data-noprefetch': 'true',
-                        'href': reverse('crudlfap:su'),
+                        'href': reverse('crudlfap:logout'),
                     }
-                ), cls='no-padding'))
+                ),
+                **{'class': 'no-padding'}
+            ))
 
-        return super().__init__(
+            if request.session.get('become_user', None):
+                content.append(Li(
+                    A(
+                        ' '.join([
+                            str(_('Back to your account')),
+                            request.session['become_user_realname'],
+                        ]),
+                        **{
+                            'class': 'waves-effect',
+                            'data-noprefetch': 'true',
+                            'href': reverse('crudlfap:su'),
+                        }
+                    ),
+                    **{'class': 'no-padding'}
+                ))
+
+        super().__init__(
             *content,
             **{
                 'class': 'sidenav sidenav-fixed',
                 'id': 'slide-out',
-              }
+            }
         )
 
 
@@ -110,31 +89,27 @@ class MenuItem(Li):
             content.append(Text(str(getattr(view, 'title', str(view)))))
         else:
             content.append(
-                Text(
-                    str(view.title_menu.capitalize())
-                )
+                Text(str(view.title_menu.capitalize()))
             )
 
         super().__init__(
             A(*content, **attrs),
-            **{
-                'class': 'active' if request.path_info == view.url else ''
-              }
+            **{'class': 'active' if request.path_info == view.url else ''}
         )
 
 
-class MenuRouter(Li2):
+class MenuRouter(Li):
     def __init__(self, router, request):
         self.active = ''
         for view in router.get_menu('model', request):
             if view.url == request.path_info:
                 self.active = 'active'
 
-        sublinks = [
-            Ul(*[MenuItem(view, request) for view in router.get_menu(
-                    'model', request)]
-               )
-        ]
+        sublinks = [Ul(
+            *[MenuItem(view, request) for view in router.get_menu(
+                'model', request)
+              ]
+        )]
         router_link_content = []
         if getattr(router, 'material_icon', ''):
             router_link_content.append(Icon(router.material_icon))
@@ -155,10 +130,12 @@ class MenuRouter(Li2):
                 **{'class': self.active}
                 ),
             **{'class': 'collapsible collapsible-accordion'}
-            )
-        ]
+        )]
 
-        return super().__init__(*content, cls='no-padding')
+        super().__init__(
+            *content,
+            **{'class': 'no-padding'}
+        )
 
 
 class MenuHome(Li):
@@ -179,7 +156,7 @@ class MenuHome(Li):
                 else:
                     content.append(MenuRouter(router, request))
 
-        return super().__init__(
+        super().__init__(
             *content,
             **{'class': 'no-padding' + ' active' if active else '', }
         )
