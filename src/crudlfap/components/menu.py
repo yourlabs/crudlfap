@@ -6,7 +6,7 @@ from ryzom.components import (
 )
 
 
-class Menu(Ul):
+class NavMenu(Ul):
     def __init__(self, request):
         content = [
             MenuHome(request),
