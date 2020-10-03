@@ -27,8 +27,7 @@ setup(
         'timeago',
         'lookupy-unmanaged',
         # FIXME: Update when ryzom is published to PyPi
-        # 'ryzom @ git+https://yourlabs.io/oss/ryzom.git#egg=ryzom',
-        'ryzom @ git+https://yourlabs.io/oss/ryzom.git@WIP_refactor_components#egg=ryzom',
+        'ryzom @ git+https://yourlabs.io/oss/ryzom.git#egg=ryzom',
     ],
     tests_require=['tox'],
     extras_require=dict(
