@@ -5,9 +5,6 @@ from ryzom.components import (
     A, Div, Icon, Li, Text, Ul
 )
 
-from ryzom.components import mwc
-
-
 from ryzom.components import Component
 
 
