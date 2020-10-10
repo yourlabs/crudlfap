@@ -49,6 +49,10 @@ class FormMixin:
         """Return the prefix to use for forms."""
         return None
 
+    def get_form_class(self):
+        if self.router:
+            return getattr(self.router, 'form_class')
+
     def get_form(self):
         """Return an instance of the form to be used in this view."""
         self.form = self.form_class(**self.get_form_kwargs())
