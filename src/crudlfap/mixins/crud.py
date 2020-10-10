@@ -12,6 +12,7 @@ class CreateMixin:
     style = 'success'
     material_icon = 'add'
     default_template_name = 'crudlfap/create.html'
+    template_name_suffixes = ['create', 'form']
     controller = 'modal'
     action = 'click->modal#open'
     color = 'green'
@@ -121,6 +122,7 @@ class ListMixin:
 class UpdateMixin:
     material_icon = 'edit'
     default_template_name = 'crudlfap/update.html'
+    template_name_suffixes = ['create', 'form']
     controller = 'modal'
     action = 'click->modal#open'
     color = 'orange'
