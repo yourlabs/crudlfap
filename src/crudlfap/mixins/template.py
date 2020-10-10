@@ -64,7 +64,10 @@ class TemplateMixin:
         return self.title
 
     def get_template_name_suffix(self):
-        return '_' + self.urlname
+        return self.urlname
+
+    def get_template_name_suffixes(self):
+        return [self.template_name_suffix]
 
     def get_template_names(self):
         """Give a chance to default_template_name."""
@@ -77,7 +80,7 @@ class TemplateMixin:
             template_names.append('%s/%s%s.html' % (
                 self.model._meta.app_label,
                 self.model._meta.model_name,
-                self.template_name_suffix
+                '_' + self.urlname,
             ))
 
         default_template_name = getattr(self, 'default_template_name', None)
