@@ -1,3 +1,5 @@
+// clean up behind materialize
+
 import M from 'mrsmaterialize'
 
 export default function(el) {

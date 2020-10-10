@@ -21,10 +21,11 @@ site = Registry(
         TemplateView.clone(
             template_name='crudlfap/home.html',
             title=_('Home'),
-            title_heading='',
+            title_menu=_('Dashboard'),
             urlname='home',
             urlpath='',
             authenticate=False,
+            material_icon='home',
         )
     ]
 )

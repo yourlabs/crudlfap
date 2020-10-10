@@ -69,6 +69,7 @@ class PostRouter(crudlfap.Router):
         crudlfap.DetailView,
         PostListView.clone(
             search_fields=['name'],
+            filter_fields=['publish'],
         ),
     ]
 

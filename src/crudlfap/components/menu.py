@@ -8,65 +8,172 @@ from ryzom.components import (
 from ryzom.components import Component
 
 
+class ViewLink(Component):
+    def __init__(self, view, *content, active=False, **attrs):
+        attrs.update({
+            'href': view.url,
+            'title': str(view.title_link),
+            'class': 'ViewLink ' + 'active' if active else '',
+            'tag': 'a',
+        })
+
+        for key, value in getattr(view, 'link_attributes', {}).items():
+            attrs[key] = value.replace('"', '\\"')
+
+        if not getattr(view, 'turbolinks', True):
+            attrs['data-turbolinks'] = 'false'
+
+        super().__init__(*content, **attrs)
+
+
+class ListItem(Component):
+    def __init__(self, *content, icon=None, meta=None, **attrs):
+        attrs.setdefault('tag', 'mwc-list-item')
+        attrs.setdefault('onclick', 'listSubmenuClick(this)')
+
+        content = [
+            Component(*content, tag='span'),
+        ]
+
+        if icon:
+            content.append(
+                Icon(icon, slot='graphic')
+            )
+            attrs.setdefault('graphic', 'icon')
+
+        if meta:
+            content.append(
+                Icon(
+                    meta,
+                    slot='meta',
+                    onclick='metaSubmenuClick(this)',
+                )
+            )
+            attrs.setdefault('hasMeta', 'true')
+
+        super().__init__(*content, **attrs)
+
+
+class RouterMenu(ViewLink):
+    def __init__(self, request, router):
+        self.request = request
+        self.router = router
+        self.menu = router.get_menu('model', request)
+
+        self.index = getattr(router, 'index', self.menu[-1])
+
+        active = ''
+        for view in self.menu:
+            if view.url == request.path_info:
+                active = 'active'
+
+        attrs = {
+            'active': 'active',
+        }
+        super().__init__(
+            self.index,
+            ListItem(
+                Text(router.model._meta.verbose_name_plural.capitalize()),
+                icon=getattr(router, 'material_icon', None),
+                meta='keyboard_arrow_down' if len(self.menu) > 1 else None,
+            ),
+            **attrs,
+        )
+
+    def submenus(self):
+        return [
+            ViewLink(
+                view,
+                ListItem(
+                    Text(view.title_menu.capitalize()),
+                    icon=getattr(view, 'material_icon', None),
+                    graphic='medium',
+                ),
+                hidden='true',
+                visible='false',
+                #active=request.path_info == view.url,
+            )
+            for view in self.menu
+            if view is not self.index
+        ]
+
+
+class ViewListItem(ListItem):
+    def __init__(self, view, graphic=None):
+        #if getattr(view, 'router', None) is None:
+        #    span = (Text(str(getattr(view, 'title', str(view)))))
+        #elif getattr(view.router, 'model', None) is None:
+        #    span = (Text(str(getattr(view, 'title', str(view)))))
+        #else:
+
+        content = [Text(view.title_menu.capitalize())]
+        attrs = dict(
+            tag='mwc-list-item',
+            icon=getattr(view, 'material_icon', None)
+        )
+
+        super().__init__(*content, **attrs)
+
+
 class Icon(Component):
     def __init__(self, name, **attrs):
-        super().__init__(name, tag='mwc-icon', **attrs)
+        attrs['class'] = 'material-icons'
+        super().__init__(name, tag='span', **attrs)
 
 
 class NavMenu(Component):
     def __init__(self, request):
-        active = request.path_info == crudlfap.site.views['home'].url
-        content = [MenuItem(crudlfap.site.views['home'], request)]
+        content = [
+            ViewLink(
+                crudlfap.site.views['home'],
+                ViewListItem(crudlfap.site.views['home']),
+                active=request.path_info == crudlfap.site.views['home'].url,
+            )
+        ]
 
-        content = []
-        for app, routers in crudlfap.site.get_app_menus(
-                'main', request).items():
+        menu = crudlfap.site.get_app_menus('main', request)
+        for app, routers in menu.items():
             for router in routers:
-                views = router.get_menu('model', request)
-                if len(views) == 1:
-                    view = views[0]
-
-                    content.append(
-                        MenuItem(view, request, single_item=True)
-                    )
-                else:
-                    content.append(MenuRouter(router, request))
-                    for view in router.get_menu('model', request):
-                        content.append(MenuItem(view, request, submenu=1))
+                content.append(RouterMenu(request, router))
+                content += content[-1].submenus()
 
         if not request.user.is_authenticated:
             content.append(
-                Component(
-                    A(_('Log in'), href=reverse('crudlfap:login')),
-                    **{'tag': 'mwc-list-item', 'class': ''},
-                )
+                A(
+                    ListItem(
+                        _('Log in'),
+                    ),
+                    href=reverse('crudlfap:login')
+                ),
             )
         else:
-            content.append(Component(
+            content.append(
                 A(
-                    _('Log out'),
+                    ListItem(
+                        _('Log out'),
+                    ),
                     **{
                         'data-noprefetch': 'true',
                         'href': reverse('crudlfap:logout'),
                     }
                 ),
-                **{'tag': 'mwc-list-item', 'class': ''}
-            ))
+            )
 
             if request.session.get('become_user', None):
-                content.append(Li(
+                content.append(
                     A(
-                        ' '.join([
-                            str(_('Back to your account')),
-                            request.session['become_user_realname'],
-                        ]),
+                        ListItem(
+                            ' '.join([
+                                str(_('Back to your account')),
+                                request.session['become_user_realname'],
+                            ]),
+                        ),
                         **{
                             'data-noprefetch': 'true',
                             'href': reverse('crudlfap:su'),
                         }
                     ),
-                    **{'class': ''}
-                ))
+                )
 
         super().__init__(
             *content,
@@ -75,34 +182,6 @@ class NavMenu(Component):
                 'class': 'crudlfap.components.menu.NavMenu',
             }
         )
-
-
-class ListItem(Component):
-    def __init__(self, view, request, single_item=False, graphic=None):
-        if single_item:
-            span = (Text(
-                str(view.router.model._meta.verbose_name_plural.capitalize()))
-            )
-        elif getattr(view, 'router', None) is None:
-            span = (Text(str(getattr(view, 'title', str(view)))))
-        elif getattr(view.router, 'model', None) is None:
-            span = (Text(str(getattr(view, 'title', str(view)))))
-        else:
-            span = (
-                Text(str(view.title_menu.capitalize()))
-            )
-
-        content = [Component(span, tag='span')]
-        attrs = dict(tag='mwc-list-item')
-
-        show_icon = view if not single_item else view.router
-        if getattr(show_icon, 'material_icon', ''):
-            content.append(
-                Icon(show_icon.material_icon, slot='graphic'),
-            )
-            attrs['graphic'] = graphic or 'icon'
-
-        super().__init__(*content, **attrs)
 
 
 class MenuItem(Component):
@@ -127,29 +206,4 @@ class MenuItem(Component):
         return super().__init__(
             ListItem(view, request, single_item=single_item, graphic='medium' if submenu else 'icon'),
             **attrs
-        )
-
-
-class MenuRouter(Component):
-    def __init__(self, router, request):
-        self.active = ''
-        for view in router.get_menu('model', request):
-            if view.url == request.path_info:
-                self.active = 'active'
-
-        content = []
-        content.append(
-            Component(str(router.model._meta.verbose_name_plural.capitalize()), tag='span'),
-        )
-        if getattr(router, 'material_icon', ''):
-            content.append(Icon(router.material_icon, slot='graphic'))
-
-        super().__init__(
-            *content,
-            **{
-                'onclick': 'toggleSubmenu(this)',
-                'class': '',
-                'tag': 'mwc-list-item',
-                'graphic': 'icon',
-            }
         )

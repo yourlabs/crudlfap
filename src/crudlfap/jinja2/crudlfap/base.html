@@ -31,7 +31,6 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet">
 
-
     {% block extra_style %}{% endblock %}
   </head>
 
@@ -39,18 +38,36 @@
     <div id="main-loader" class="loader-container turbolinks-progress-bar">
       {% include 'crudlfap/_loader.html' %}
     </div>
-    <mwc-drawer type="dismissible" id="drawer">
-      <div class="drawer-content">
-        <script>
-        function toggleSubmenu(activator) {
-            var sibling = activator.nextElementSibling
-            if (!sibling.attributes.submenu) return
-            sibling.hidden = !sibling.hidden
-            hiddenShow(sibling)
-        }
-        </script>
+    <mwc-drawer type="dismissible" id="drawer" open>
+      <div class="drawer-content" style="overflow-y: scroll; height: 100%">
         {{ ryzom('crudlfap.components.menu.NavMenu', request) }}
       </div>
+      <script>
+      function toggleSubmenu(subMenu) {
+        showNext(subMenu)
+        meta = subMenu.querySelector('[slot=meta]')
+        meta.innerText = meta.innerText == 'keyboard_arrow_down' ? 'keyboard_arrow_up' : 'keyboard_arrow_down'
+      }
+      function listSubmenuClick(el) {
+        var minX = this.event.target.getBoundingClientRect().width * 0.8
+        // on list item itself, we'll let the normal A link behaviour if
+        // not clicking on the last fifth of the box
+        if (this.event.clientX < minX) return
+        this.event.preventDefault()
+        toggleSubmenu(this.event.target.parentElement)
+      }
+      function metaSubmenuClick(el) {
+          this.event.preventDefault()
+          toggleSubmenu(event.target.parentElement.parentElement)
+      }
+      function showNext(activator) {
+        var sibling = activator.nextElementSibling
+        if (!sibling) return false
+        if (sibling.querySelector('[slot=meta]')) return false
+        sibling.hidden = !sibling.hidden
+        showNext(sibling)
+      }
+      </script>
       <div slot="appContent">
         <mwc-top-app-bar-fixed>
           <mwc-icon-button
