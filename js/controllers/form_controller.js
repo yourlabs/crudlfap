@@ -5,11 +5,27 @@ import loader from '../loader.js'
 
 export default class extends Controller {
   triggerSubmit(e) {
-    if (this.element.previousElementSibling.tagName == 'FORM')
-      var form = this.element.previousElementSibling
+    var form
 
-    if (this.element.parentNode.parentNode.tagName == 'FORM')
-      var form = this.element.parentNode.parentNode.tagName == 'FORM'
+    // try parents
+    var parentNode = e.target.parentNode
+    while (parentNode && parentNode.tagName != 'FORM' && parentNode.parentNode)
+      var parentNode = parentNode.parentNode
+
+    // then try previous siblings
+    if (parentNode.tagName == 'FORM') {
+      form = parentNode
+    } else {
+      var current = e.target.previousElementSibling
+        debugger;
+      while (current && current.tagName != 'FORM' && current.previousElementSibling)
+        current = current.previousElementSibling
+      if (current && current.tagName == 'FORM') {
+        form = current
+      } else {
+        throw 'err'
+      }
+    }
 
     var event = new Event('submit', {
         'bubbles'    : true, // Whether the event will bubble up through the DOM or not
