@@ -2,6 +2,7 @@ import copy
 import urllib
 
 from django import template
+from django.utils.safestring import mark_safe
 
 
 def pagination_filter_params(data):
@@ -12,15 +13,5 @@ def pagination_filter_params(data):
 
 
 def render_form(form):
-    tpl = ['{% load material_form %}{% form form=form ']
-    context = dict(form=form)
-
-    if getattr(form, '_layout', None):
-        tpl.append('layout=layout')
-        context['layout'] = form._layout
-
-    tpl.append('%}{% endform %}')
-
-    return template.Template(
-        ' '.join(tpl)
-    ).render(template.Context(context))
+    from ryzom.components.muicss import Form
+    return mark_safe(Form(form).to_html())

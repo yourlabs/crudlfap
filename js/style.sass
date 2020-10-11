@@ -1,5 +1,3 @@
-@import 'mrsmaterialize/sass/materialize.scss'
-
 .clickable:hover
   background-color: rgba(0, 0, 0, 0.07)
   text-decoration: underline
@@ -10,50 +8,12 @@
 .odd
   background-color: rgba(0, 0, 0, 0.03)
 
-main
-  padding-left: 14px
-  padding-top: 14px
-
-body.no-nav
-  nav, .sidenav
-    display: none
-  header, main, footer
-    padding-left: 0
-
-header, main, footer
-  padding-left: 300px
-
-.sidenav-trigger
-  display: none
-
-ul.sidenav .collapsible-body ul li a
-  padding-left: 3rem !important
-
-@media only screen and (max-width : 992px)
-  header, main, footer
-    padding-left: 0
-  .sidenav-trigger
-    display: block
-  .nav-wrapper nav
-    padding-left: 56px
-
 .row:last
   margin-bottom: 0
 
 .nav-wrapper
   .sidenav-trigger
     margin: 0 0 0 18px
-
-body .navbar-fixed nav
-  color: black
-  background-color: white
-  height: auto
-
-header .navbar-fixed .breadcrumb
-  color: black
-
-.breadcrumb::before
-  color: teal !important
 
 .loader-container
   top: 0px
@@ -71,15 +31,6 @@ header .navbar-fixed .breadcrumb
 div small.error
   font-size: 110%
   color: #F44336
-
-body.full-width div.container
-  margin-bottom: 100px
-  padding-left: 0
-  padding-right: 0
-  width: 100%
-
-body.list div.container
-  margin-bottom: 50px
 
 body #toast-container
   min-width: 100%
@@ -120,7 +71,6 @@ h4.col
   transform: translateX(-50%)
 
 .bottom.bar
-  @extend .z-depth-3
   bottom: 0
   padding: 8px
   left: 64px

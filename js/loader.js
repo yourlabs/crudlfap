@@ -1,4 +1,3 @@
-import M from 'mrsmaterialize'
 
 var loader = {}
 

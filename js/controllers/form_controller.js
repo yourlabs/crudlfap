@@ -1,6 +1,5 @@
 import Cookie from 'js-cookie'
 import { Controller } from 'stimulus'
-import M from 'mrsmaterialize'
 import init from '../init.js'
 import loader from '../loader.js'
 
@@ -84,11 +83,13 @@ export default class extends Controller {
       }
     }).catch(error => {
       loader.hide()
+        /*
       M.toast({
         html: error,
         classes: 'orange darken-4',
         displayLength: 15000,
       })
+      */
     })
   }
 }

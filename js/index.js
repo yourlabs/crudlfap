@@ -1,7 +1,6 @@
 import { Application } from 'stimulus'
 import { definitionsFromContext } from 'stimulus/webpack-helpers'
 import init from './init.js'
-import M from 'mrsmaterialize'
 import './style.sass'
 import loader from './loader.js'
 
@@ -48,35 +47,8 @@ document.addEventListener('turbolinks:before-render', function() {
   })
 })
 
-document.addEventListener('turbolinks:before-cache', function(e) {
-  // perform cleanups here
-  for (var tooltip of e.target.querySelectorAll('[data-tooltip]')) {
-    M.Tooltip.getInstance(tooltip).destroy()
-  }
-  for (var select of e.target.querySelectorAll('select')) {
-    M.FormSelect.getInstance(select).destroy()
-  }
-})
-
 document.addEventListener('turbolinks:load', function(e) {
   init(e.target.body)
-})
-
-document.addEventListener('click', function(e) {
-  // dismiss any toast if clicking outside them
-  var toast = document.getElementById('toast-container')
-  if (toast && ! toast.contains(e.target)) {
-    M.Toast.dismissAll()
-  }
-
-  // fixed-actions doesn't like
-  var dropdowns = document.querySelectorAll('.dropdown-trigger')
-  for (var dropdown of dropdowns) {
-    var instance = M.Dropdown.getInstance(dropdown)
-    if (instance && instance.isOpen && ! dropdown.parentElement.contains(e.target)) {
-      instance.close()
-    }
-  }
 })
 
 const fetchers = {}

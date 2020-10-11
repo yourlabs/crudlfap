@@ -159,7 +159,6 @@ CRUDLFAP_VIEWS = [
 CRUDLFAP_APPS = [
     'crudlfap',
     'bootstrap3',
-    'material',
     'crudlfap_auth',
     'django_filters',
     'django_tables2',
@@ -324,7 +323,30 @@ DEFAULT_TEMPLATE_BACKEND = {
     },
 }
 
+RYZOM_TEMPLATE_BACKEND = {
+    "BACKEND": "ryzom.backends.ryzom.Ryzom",
+    "OPTIONS": {
+        "app_dirname": "components",
+        "components_module": "ryzom.components.muicss",
+        "components_prefix": "Mui",
+        # "components_module": "ryzom.components.django",
+        # "components_prefix": "Django",
+
+        "context_processors": [
+            "django.template.context_processors.debug",
+            "django.template.context_processors.request",
+            "django.contrib.auth.context_processors.auth",
+            "django.contrib.messages.context_processors.messages",
+            "django.template.context_processors.i18n",
+        ],
+        # "autoescape": True,
+        # "auto_reload": DEBUG,
+        # "translation_engine": "django.utils.translation",
+        # "debug": False,
+    }
+}
 TEMPLATES = [CRUDLFAP_TEMPLATE_BACKEND, DEFAULT_TEMPLATE_BACKEND]
+
 LOGIN_REDIRECT_URL = '/'
 LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'locale'),

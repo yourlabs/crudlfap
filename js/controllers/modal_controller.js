@@ -1,6 +1,5 @@
 import Cookie from 'js-cookie'
 import { Controller } from 'stimulus'
-import M from 'mrsmaterialize'
 import init from '../init.js'
 import loader from '../loader.js'
 

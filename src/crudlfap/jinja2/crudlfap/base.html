@@ -15,6 +15,9 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ static('viewer.css') }}" />
 
+    <link href="//cdn.muicss.com/mui-0.10.3/css/mui.min.css" rel="stylesheet" type="text/css" />
+    <script src="//cdn.muicss.com/mui-0.10.3/js/mui.min.js"></script>
+
     <meta name="turbolinks-root" content="{{ crudlfap_site.views['home'].url }}">
 
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
@@ -87,7 +90,7 @@
       </div>
       <span slot="title">{{ request.user }}</span>
       <div slot="appContent">
-          <mwc-top-app-bar-fixed style="--mdc-theme-primary: #fdfdfd;--mdc-theme-on-primary: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.87));">
+          <mwc-top-app-bar-fixed>
           <mwc-icon-button
             slot="navigationIcon"
             icon="menu"
