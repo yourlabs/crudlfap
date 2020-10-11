@@ -85,8 +85,9 @@ class FilterMixin(object):
             choices = getattr(field, 'choices', None)
             if choices is None:
                 continue
-            extra[field_name] = django_filters.MultipleChoiceFilter(
-                choices=choices)
+            # extra[field_name] = django_filters.MultipleChoiceFilter(
+            #     choices=choices, widget=forms.CheckboxSelectMultiple
+            # )
         return extra
 
     def get_filterset_class_attributes(self):
