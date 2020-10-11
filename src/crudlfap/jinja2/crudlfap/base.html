@@ -37,8 +37,80 @@
     {% block extra_style %}{% endblock %}
 
     <style>
-    #main-modal .hide-in-modal {
+    a.ViewLink:hover {
+        text-decoration: none !important;
+    }
+
+    mwc-dialog .hide-in-modal {
         display: none;
+    }
+
+    /* autosubmit: that could only be a search form right ? */
+    form[data-controller=autosubmit] {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    form[data-controller=autosubmit] [data-component="ryzom.components.muicss.VisibleFields"] {
+        display: flex;
+        align-items: end;
+        flex-wrap: wrap;
+    }
+
+    form[data-controller=autosubmit] [data-component="ryzom.components.muicss.Field"] {
+        width: 200px;
+        margin: 3px 0;
+    }
+
+    table {
+        border-radius: 4px;
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgba(0,0,0,.12);
+        box-sizing: border-box;
+        overflow-x: auto;
+        border-collapse: collapse;
+        min-width: 100%;
+    }
+    tbody {
+        font-family: Roboto, sans-serif;
+        font-size: .875rem;
+        line-height: 1.25rem;
+        font-weight: 400;
+        letter-spacing: .0178571429em;
+        text-transform: inherit;
+    }
+    tr {
+        border-top-width: 1px;
+        border-top-style: solid;
+        border-top-color: rgba(0,0,0,.12);
+        height: 52px;
+    }
+    tr:hover {
+        background-color: rgba(0,0,0,.04);
+    }
+    th {
+        font-weight: bold;
+        font-size: .875rem;
+        line-height: 1.375rem;
+        letter-spacing: .0071428571em;
+        text-decoration: inherit;
+        text-transform: inherit;
+        box-sizing: border-box;
+        text-align: left;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+    td {
+        font-size: .875rem;
+        line-height: 1.25rem;
+        font-weight: 400;
+        letter-spacing: .0178571429em;
+        text-decoration: inherit;
+        text-transform: inherit;
+        box-sizing: border-box;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
     </style>
     <script>
@@ -84,6 +156,12 @@
       <mwc-circular-progress-four-color indeterminate></mwc-circular-progress-four-color>
     </div>
 
+    <mwc-snackbar id="main-snack" labelText="An error occured">
+      <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
+    </mwc-snackbar>
+
+    <div id="main-modal"><mwc-dialog></mwc-dialog></div>
+
     <mwc-drawer type="dismissible" id="drawer">
       <div class="drawer-content" style="overflow-y: scroll; height: 100%">
         {{ ryzom('crudlfap.components.menu.NavMenu', request) }}
@@ -128,10 +206,5 @@
         </mwc-top-app-bar-fixed>
       </div>
     </mwc-drawer>
-
-    <mwc-snackbar id="main-snack" labelText="An error occured">
-      <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
-    </mwc-snackbar>
-    <div id="main-modal"><mwc-dialog></mwc-dialog></div>
   </body>
 </html>

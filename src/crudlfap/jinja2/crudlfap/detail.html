@@ -5,15 +5,15 @@
 {% endblock %}
 
 {% block content %}
-<div class="">
+<div class="detail-container" style="max-width: 960px; margin: 30px  auto;">
   <table class="table">
     <thead class="thead-inverse">
       {% for field in view.display_fields %}
       <tr>
-        <th>
+        <th style="padding-left: 12px">
           {{ field['field'].verbose_name.capitalize() }}
         </th>
-        <td>
+        <td style="padding-right: 12px">
           {% if getattr(field['value'], 'all', None) %}
             <ul class="collection">
               {% for value in field['value'].all() %}

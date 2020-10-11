@@ -114,6 +114,7 @@ class TableMixin(object):
                     data-controller="listaction"
                     data-action="change->listaction#checkboxChange"
                     data-pk="{{ record.pk }}"
+                    style="margin: 0 12px"
                 />
                 <span></span>
             </label>
@@ -127,6 +128,7 @@ class TableMixin(object):
                     data-controller="listaction"
                     data-action="change->listaction#selectAllChange"
                     data-master="1"
+                    style="margin: 0 12px"
                 />
                 <span></span>
             </label>

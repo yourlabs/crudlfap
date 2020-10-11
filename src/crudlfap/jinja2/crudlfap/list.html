@@ -24,23 +24,19 @@
 #render-table .btn-floating { margin-left: 6px; }
 </style>
 
-<div class="row">
+<div class="list-container" style="width: 98%; margin: 0 auto; display: flex; flex-direction: column">
   {% if view.search_form or view.filterset %}
-  <div class="col s12 m3 l2">
-    <div>
-      <form method="get" action="" data-controller="autosubmit" data-target="render-table" data-action="input->autosubmit#input change->autosubmit#input">
-        {% if view.search_form %}
-        {{ render_form(view.search_form) }}
-        {% endif %}
-        {% if view.filterset %}
-        {{ render_form(view.filterset.form) }}
-        {% endif %}
-      </form>
-    </div>
-  </div>
+  <form method="get" action="" data-controller="autosubmit" data-target="render-table" data-action="input->autosubmit#input change->autosubmit#input">
+    {% if view.search_form %}
+    {{ render_form(view.search_form) }}
+    {% endif %}
+    {% if view.filterset %}
+    {{ render_form(view.filterset.form) }}
+    {% endif %}
+  </form>
   {% endif %}
 
-  <div class="table-responsive col s12 {% if view.search_form or view.filterset %}m9 l10{% endif %}" id="render-table">
+  <div id="render-table">
     <div>
       {% block before_table %}{% endblock %}
       {% if view.table %}
