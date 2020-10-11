@@ -123,6 +123,7 @@ A settings file to import boilerplate from.
 """
 
 
+import json
 import os
 from pathlib import Path
 
@@ -178,41 +179,41 @@ INSTALLED_APPS = DJANGO_APPS + CRUDLFAP_APPS
 
 # CRUDLFA+ optional dependencies
 OPTIONAL_APPS = [
-    # {'debug_toolbar': {'after': 'django.contrib.staticfiles'}},
+    {'debug_toolbar': {'after': 'django.contrib.staticfiles'}},
     {'django_extensions': {'before': 'crudlfap'}},
     {'collectdir': {'before': 'crudlfap'}},
 ]
 
 DJWC = {
     'COMPONENTS': {
-        # 'mwc-button': '@material/mwc-button/mwc-button.js',
+        'mwc-button': '@material/mwc-button/mwc-button.js',
         # 'mwc-bottom-app-bar': '@material/mwc-bottom-app-bar/mwc-bottom-app-bar.js',
         # 'mwc-card': '@material/mwc-card/mwc-card.js',
         # 'mwc-checkbox': '@material/mwc-checkbox/mwc-checkbox.js',
         # 'mwc-chip': '@material/mwc-chip/mwc-chip.js',
-        # 'mwc-circular-progress': '@material/mwc-circular-progress/mwc-circular-progress.js',
-        # 'mwc-circular-progress-four-color': '@material/mwc-circular-progress-four-color/mwc-circular-progress-four-color.js',
+        'mwc-circular-progress': '@material/mwc-circular-progress/mwc-circular-progress.js',
+        'mwc-circular-progress-four-color': '@material/mwc-circular-progress-four-color/mwc-circular-progress-four-color.js',
         # 'mwc-data-table': '@material/mwc-data-table/mwc-data-table.js',
         'mwc-dialog': '@material/mwc-dialog/mwc-dialog.js',
         'mwc-drawer': '@material/mwc-drawer/mwc-drawer.js',
         'mwc-fab': '@material/mwc-fab/mwc-fab.js',
-        # 'mwc-formfield': '@material/mwc-formfield/mwc-formfield.js',
+        'mwc-formfield': '@material/mwc-formfield/mwc-formfield.js',
         # 'mwc-icon-button-toggle': '@material/mwc-icon-button-toggle/mwc-icon-button-toggle.js',
         'mwc-icon-button': '@material/mwc-icon-button/mwc-icon-button.js',
         'mwc-icon': '@material/mwc-icon/mwc-icon.js',
         # 'mwc-linear-progress': '@material/mwc-linear-progress/mwc-linear-progress.js',
         'mwc-list': '@material/mwc-list/mwc-list.js',
         'mwc-list-item': '@material/mwc-list/mwc-list-item.js',
-        # 'mwc-menu': '@material/mwc-menu/mwc-menu.js',
-        # 'mwc-radio': '@material/mwc-radio/mwc-radio.js',
-        # 'mwc-select': '@material/mwc-select/mwc-select.js',
+        'mwc-menu': '@material/mwc-menu/mwc-menu.js',
+        'mwc-radio': '@material/mwc-radio/mwc-radio.js',
+        'mwc-select': '@material/mwc-select/mwc-select.js',
         # 'mwc-slider': '@material/mwc-slider/mwc-slider.js',
-        # 'mwc-snackbar': '@material/mwc-snackbar/mwc-snackbar.js',
-        # 'mwc-switch': '@material/mwc-switch/mwc-switch.js',
-        # 'mwc-tab-bar': '@material/mwc-tab-bar/mwc-tab-bar.js',
-        # 'mwc-tab': '@material/mwc-tab/mwc-tab.js',
-        # 'mwc-textarea': '@material/mwc-textarea/mwc-textarea.js',
-        # 'mwc-textfield': '@material/mwc-textfield/mwc-textfield.js',
+        'mwc-snackbar': '@material/mwc-snackbar/mwc-snackbar.js',
+        'mwc-switch': '@material/mwc-switch/mwc-switch.js',
+        'mwc-tab-bar': '@material/mwc-tab-bar/mwc-tab-bar.js',
+        'mwc-tab': '@material/mwc-tab/mwc-tab.js',
+        'mwc-textarea': '@material/mwc-textarea/mwc-textarea.js',
+        'mwc-textfield': '@material/mwc-textfield/mwc-textfield.js',
         # 'mwc-tooltip': '@material/mwc-tooltip/mwc-tooltip.js',
         'mwc-top-app-bar-fixed': '@material/mwc-top-app-bar-fixed/mwc-top-app-bar-fixed.js',
         # 'mwc-top-app-bar': '@material/mwc-top-app-bar/mwc-top-app-bar.js',
@@ -231,7 +232,7 @@ MIDDLEWARE = [
 ]
 
 OPTIONAL_MIDDLEWARE = [
-    # {'debug_toolbar.middleware.DebugToolbarMiddleware': None}
+    {'debug_toolbar.middleware.DebugToolbarMiddleware': None}
 ]
 
 INTERNAL_IPS = ('127.0.0.1',)
@@ -280,6 +281,7 @@ CRUDLFAP_TEMPLATE_BACKEND = {
             "getattr": getattr,
             "str": str,
             "int": int,
+            "json": json.dump,
             "isinstance": isinstance,
             "type": type,
             "render_form": "crudlfap.jinja2.render_form",

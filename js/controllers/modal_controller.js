@@ -10,7 +10,7 @@ export default class extends Controller {
   }
 
   get modal() {
-    return document.getElementById('modal')
+    return document.getElementById('main-modal')
   }
 
   open(e) {
@@ -29,28 +29,40 @@ export default class extends Controller {
       var parser = new DOMParser()
       var doc = parser.parseFromString(res, 'text/html')
       var newbody = doc.getElementById('modal-body-ajax')
+      var title = doc.getElementById('modal-title-ajax')
       var modalClass = this.element.getAttribute('data-modal-class')
       var modalInit = this.element.getAttribute('data-modal-init')
-      this.modal.className = modalClass === null ? 'modal fade' : modalClass
-      this.modal.innerHTML = newbody.innerHTML
-      loader.hide()
+
+      // for some reason this is necessary to load the new components
+      for (var script of doc.querySelectorAll('script[type=module]')) {
+        var newScript = document.createElement("script");
+        function loadError(oError) {
+          throw new URIError("The script " + oError.target.src + " didn't load correctly.");
+        }
+        newScript.onerror = loadError;
+        document.querySelector('head').appendChild(newScript);
+        newScript.type='module'
+        newScript.src = script.src;
+      }
+
+      this.modal.className = modalClass || ''
+      this.modal.innerHTML = ''
+      this.modal.appendChild(newbody)
+
       modalInit === null ? this.initmodal() : this[modalInit]()
-    }).catch(error => {
+    })
+    .catch(error => {
       loader.hide()
-      M.toast({
-        html: error,
-        classes: 'orange darken-4',
-        displayLength: 15000,
-      })
+      var snack = document.getElementById('main-snack')
+      snack.innerText = error
+      snack.show()
     })
   }
 
   initmodal() {
     init(this.modal)
-    var instance = M.Modal.init(document.getElementById('modal'), {
-      endingTop: '5%',
-    })
-    instance.open()
+    loader.hide()
+    this.modal.querySelector('mwc-dialog').open = true
   }
 
   show() {
@@ -60,6 +72,7 @@ export default class extends Controller {
     this.modal.style.top = null
     this.modal.style.transform = null
     this.modal.style.position = 'relative'
+    loader.hide()
     for (var i of this.modal.querySelectorAll('.modal-close')) {
       i.addEventListener(
         'click',

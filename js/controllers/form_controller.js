@@ -5,6 +5,20 @@ import init from '../init.js'
 import loader from '../loader.js'
 
 export default class extends Controller {
+  triggerSubmit(e) {
+    if (this.element.previousElementSibling.tagName == 'FORM')
+      var form = this.element.previousElementSibling
+
+    if (this.element.parentNode.parentNode.tagName == 'FORM')
+      var form = this.element.parentNode.parentNode.tagName == 'FORM'
+
+    var event = new Event('submit', {
+        'bubbles'    : true, // Whether the event will bubble up through the DOM or not
+        'cancelable' : true  // Whether the event may be canceled or not
+    });
+    form.dispatchEvent( event );
+  }
+
   submit(e) {
     if (this.element.id === undefined) {
       // console.warn('Skipping ajax because form tag has no id attr')
@@ -48,10 +62,7 @@ export default class extends Controller {
 
         // we're going to replace the body, that means we close the modal
         // which will restore the browser scrollbars if any
-        var modal = M.Modal.getInstance(document.getElementById('modal'))
-        if (modal && modal.isOpen) {
-          modal.close()
-        }
+        document.getElementById('modal1').querySelector('mwc-dialog').open = false
       }
 
       /**

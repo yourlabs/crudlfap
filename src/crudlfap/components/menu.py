@@ -13,6 +13,8 @@ class ViewLink(Component):
         attrs.update({
             'href': view.url,
             'title': str(view.title_link),
+            'data-controller': getattr(view, 'controller', ''),
+            'data-action': getattr(view, 'action', ''),
             'class': 'ViewLink ' + 'active' if active else '',
             'tag': 'a',
         })
@@ -26,10 +28,9 @@ class ViewLink(Component):
         super().__init__(*content, **attrs)
 
 
-class ListItem(Component):
+class MenuItem(Component):
     def __init__(self, *content, icon=None, meta=None, **attrs):
         attrs.setdefault('tag', 'mwc-list-item')
-        attrs.setdefault('onclick', 'listSubmenuClick(this)')
 
         content = [
             Component(*content, tag='span'),
@@ -42,6 +43,7 @@ class ListItem(Component):
             attrs.setdefault('graphic', 'icon')
 
         if meta:
+            attrs.setdefault('onclick', 'listSubmenuClick(this)')
             content.append(
                 Icon(
                     meta,
@@ -72,7 +74,7 @@ class RouterMenu(ViewLink):
         }
         super().__init__(
             self.index,
-            ListItem(
+            MenuItem(
                 Text(router.model._meta.verbose_name_plural.capitalize()),
                 icon=getattr(router, 'material_icon', None),
                 meta='keyboard_arrow_down' if len(self.menu) > 1 else None,
@@ -84,7 +86,7 @@ class RouterMenu(ViewLink):
         return [
             ViewLink(
                 view,
-                ListItem(
+                MenuItem(
                     Text(view.title_menu.capitalize()),
                     icon=getattr(view, 'material_icon', None),
                     graphic='medium',
@@ -98,7 +100,7 @@ class RouterMenu(ViewLink):
         ]
 
 
-class ViewListItem(ListItem):
+class ViewMenuItem(MenuItem):
     def __init__(self, view, graphic=None):
         #if getattr(view, 'router', None) is None:
         #    span = (Text(str(getattr(view, 'title', str(view)))))
@@ -126,7 +128,7 @@ class NavMenu(Component):
         content = [
             ViewLink(
                 crudlfap.site.views['home'],
-                ViewListItem(crudlfap.site.views['home']),
+                ViewMenuItem(crudlfap.site.views['home']),
                 active=request.path_info == crudlfap.site.views['home'].url,
             )
         ]
@@ -140,7 +142,7 @@ class NavMenu(Component):
         if not request.user.is_authenticated:
             content.append(
                 A(
-                    ListItem(
+                    MenuItem(
                         _('Log in'),
                     ),
                     href=reverse('crudlfap:login')
@@ -149,7 +151,7 @@ class NavMenu(Component):
         else:
             content.append(
                 A(
-                    ListItem(
+                    MenuItem(
                         _('Log out'),
                     ),
                     **{
@@ -162,7 +164,7 @@ class NavMenu(Component):
             if request.session.get('become_user', None):
                 content.append(
                     A(
-                        ListItem(
+                        MenuItem(
                             ' '.join([
                                 str(_('Back to your account')),
                                 request.session['become_user_realname'],
@@ -184,26 +186,27 @@ class NavMenu(Component):
         )
 
 
-class MenuItem(Component):
-    def __init__(self, view, request, single_item=False, submenu=None):
-        attrs = {
-            'href': view.url,
-            'title': str(view.title_link),
-            'class': 'MenuItem active' if request.path_info == view.url else '',
-            'tag': 'a',
-        }
+class TopMenu(Component):
+    def __init__(self, request, views):
+        content = [
+            ViewLink(
+                view,
+                Component(
+                    icon=view.material_icon,
+                    tag='mwc-icon-button',
+                    outlined='true',
+                    style='color: ' + getattr(view, 'color', 'white'),
+                )
+            )
+            for view in views
+        ]
 
-        if submenu:
-            attrs['hidden'] = 'true'
-            attrs['submenu'] = 'true'
-
-        for key, value in getattr(view, 'link_attributes', {}).items():
-            attrs[key] = value.replace('"', '\\"')
-
-        if not getattr(view, 'turbolinks', True):
-            attrs['data-turbolinks'] = 'false'
-
-        return super().__init__(
-            ListItem(view, request, single_item=single_item, graphic='medium' if submenu else 'icon'),
-            **attrs
+        super().__init__(
+            *content,
+            **{
+                'tag': 'div',
+                'class': 'crudlfap.components.menu.TopMenu',
+                'slot': 'actionItems',
+                'style': 'display: flex; align-items: center',
+            }
         )

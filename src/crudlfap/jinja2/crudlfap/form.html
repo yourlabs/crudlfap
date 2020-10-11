@@ -33,10 +33,14 @@
 {% endblock %}
 
 {% block buttons %}
-    {{ render_button(view.title_submit, button_type="submit", button_class="btn-primary") }}
-    {% if request.META.get('HTTP_X_MODAL') %}
-    <a style="position: absolute; right: 1.5rem" class="modal-close waves-effect waves-green btn red">{{ _('cancel') }}</a>
-    {% endif %}
+<div class="hide-in-modal">
+    <mwc-button
+        data-controller="form"
+        data-action="click->form#triggerSubmit"
+        raised>
+      {{ view.title_submit }}
+    </mwc-button>
+</div>
 {% endblock %}
 
 {% block form_close %}
@@ -45,4 +49,21 @@
   {% endif %}
   {% csrf_token %}
 </form>
+
+{% if request.META.get('HTTP_X_MODAL') %}
+<mwc-button
+  id="primary-action-button"
+  data-controller="form"
+  data-action="click->form#triggerSubmit"
+  raised
+  slot="primaryAction">
+  {{ view.title_submit }}
+</mwc-button>
+<mwc-button
+  slot="secondaryAction"
+  dialogAction="close"
+>
+  {{ _('cancel') }}
+</mwc-button>
+{% endif %}
 {% endblock %}

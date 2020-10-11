@@ -10,7 +10,7 @@ from django.utils.safestring import mark_safe
 
 class CreateMixin:
     style = 'success'
-    material_icon = 'add'
+    material_icon = 'add_circle'
     default_template_name = 'crudlfap/create.html'
     controller = 'modal'
     action = 'click->modal#open'

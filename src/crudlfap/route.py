@@ -284,3 +284,7 @@ class Route(Factory, metaclass=RouteMetaclass):
         if isinstance(view, str):
             view = import_string(view)
         return type(view.__name__, (view, cls), attributes)
+
+    def viewlink(self, *content, **attrs):
+        from .components.menu import ViewLink
+        return ViewLink(self, *args, **kwargs)
