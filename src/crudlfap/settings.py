@@ -216,6 +216,9 @@ DJWC = {
         # 'mwc-tooltip': '@material/mwc-tooltip/mwc-tooltip.js',
         'mwc-top-app-bar-fixed': '@material/mwc-top-app-bar-fixed/mwc-top-app-bar-fixed.js',
         # 'mwc-top-app-bar': '@material/mwc-top-app-bar/mwc-top-app-bar.js',
+
+        'autocomplete-select': 'autocomplete-light/dist/autocomplete-light/autocomplete-light.esm.js',
+        'autocomplete-light': 'autocomplete-light/dist/autocomplete-light/autocomplete-light.esm.js',
     }
 }
 
