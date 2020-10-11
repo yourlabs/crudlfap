@@ -62,7 +62,7 @@ export default class extends Controller {
 
         // we're going to replace the body, that means we close the modal
         // which will restore the browser scrollbars if any
-        document.getElementById('modal1').querySelector('mwc-dialog').open = false
+        document.getElementById('main-modal').querySelector('mwc-dialog').open = false
       }
 
       /**

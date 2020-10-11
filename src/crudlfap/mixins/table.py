@@ -9,11 +9,10 @@ import django_tables2 as tables
 from django_tables2.config import RequestConfig
 
 
-class JinjaColumn(tables.Column):
+class ActionsColumn(tables.Column):
     empty_values = ()
 
-    def __init__(self, template_code, **kwargs):
-        self.template_code = template_code
+    def __init__(self, **kwargs):
         kwargs.setdefault('default', True)
         super().__init__(**kwargs)
 
@@ -28,10 +27,33 @@ class JinjaColumn(tables.Column):
                 object=record
             )
         )
-        b = template.engines['crudlfap']
-        t = b.from_string(self.template_code)
-        r = t.render(context)
-        return mark_safe(r)
+
+        from ryzom.components import Component
+        from crudlfap.components.menu import ViewLink
+
+        views=site[type(record)].get_menu(
+            'object', table.request, object=record
+        )
+
+        actions = Component(*[
+            ViewLink(
+                view,
+                Component(
+                    icon=view.material_icon,
+                    tag='mwc-icon-button',
+                    outlined='true',
+                    style='; '.join([
+                        'color: ' + getattr(view, 'color', 'white'),
+                        '--mdc-icon-button-size: 24px',
+                    ]),
+                    # to add everywhere
+                    # next=request.path_info,
+                )
+            )
+            for view in views
+        ])
+
+        return mark_safe(actions.to_html())
 
 
 class Table(tables.Table):
@@ -78,17 +100,7 @@ class TableMixin(object):
 
     def get_table_meta_action_columns(self):
         return dict(
-            crudlfap=JinjaColumn(
-                template_code='''
-                {% import 'crudlfap.html' as crudlfap %}
-                {{ crudlfap.dropdown(
-                    views,
-                    'row-actions-' + str(object.pk),
-                    class='btn-floating red',
-                    next=request.path_info,
-                    icon='more_vert',
-                ) }}
-                ''',
+            crudlfap=ActionsColumn(
                 verbose_name=_('Actions'),
                 orderable=False,
             )
