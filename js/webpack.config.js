@@ -1,16 +1,28 @@
 var path = require('path')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-
-const extractSass = new ExtractTextPlugin({
-  filename: 'crudlfap.css',
-})
+const webpack = require('webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 var production = process.env.NODE_ENV == 'production'
 
-var cfg = {
-  context: __dirname,
+const plugins = [
+  new MiniCssExtractPlugin({
+    filename: 'crudlfap.css',
+  }),
+];
 
+if (!production) {
+  // only enable hot in development
+  plugins.push(new webpack.HotModuleReplacementPlugin());
+}
+
+module.exports = {
+  context: __dirname,
+  mode: production ? 'production' : 'development',
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin()],
+  },
   entry: {
     main: [
       'babel-polyfill',
@@ -26,7 +38,12 @@ var cfg = {
   devtool: 'source-map',
   module: {
     rules: [
-      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader?limit=10000&mimetype=application/font-woff' },
+      {
+          test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+          use: {
+            loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+          }
+      },
       { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file-loader' },
       {
         test: /\.js$/,
@@ -52,33 +69,15 @@ var cfg = {
         }
       },
       {
-        test: /\.s(a|c)ss$/,
-        use: extractSass.extract({
-          use: [
-            {
-              loader: 'css-loader',
-              options: {
-                sourceMap: true
-              }
-            },
-            {
-              loader: 'sass-loader',
-              options: {
-                sourceMap: true
-              }
-            }
-          ]
-        })
-      }
+        test: /\.(sa|sc|c)ss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          // 'postcss-loader',
+          'sass-loader',
+        ],
+      },
     ]
   },
-  plugins: [
-    extractSass
-  ]
-}
-
-if (production) {
-  cfg.plugins.push(new UglifyJSPlugin())
-}
-
-module.exports = cfg
+  plugins: plugins
+};
