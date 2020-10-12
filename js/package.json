@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-cli --watch",
-    "prepare": "webpack-cli",
+    "build": "webpack-cli --mode production",
     "test": "jest",
     "lint": "eslint js",
     "chrome-browser-test": "cd nightwatch && yarn test",
