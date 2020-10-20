@@ -4,24 +4,22 @@ import init from '../init.js'
 
 export default class extends Controller {
   input() {
-    var data = serialize(this.element)
-    var url = window.location.pathname + '?' + data
+    // clear any xhr planner
+    this.timeoutId && window.clearTimeout(this.timeoutId)
+    // clear any unsent xhr
+    this.xhr && this.xhr.readyState === 0 && this.xhr.abort()
 
-    if (this.url !== undefined) {
-      if (this.url === url) {
-        // console.log('aborted for same url', url);
-        return
-      }
-      if (this.xhr !== undefined && this.xhr.readyState < 4) {
-        this.xhr.abort()
-      }
+    var data = serialize(this.element)
+    for (var input of this.element.querySelectorAll('[name]')) {
+      if (input.value === undefined) continue
+      data += '&' + input.getAttribute('name') + '=' + input.value
     }
 
-    this.url = url
     this.xhr = new XMLHttpRequest()
-    this.xhr.open('GET', this.url)
+    this.xhr.open('GET', window.location.pathname + '?' + data)
     this.xhr.onload = this.onload.bind(this)
-    this.xhr.send()
+    // plan an xhr
+    this.timeoutId = window.setTimeout(() => this.xhr.send(), 250)
   }
 
   onload(e) {

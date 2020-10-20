@@ -10,18 +10,35 @@ export default class extends Controller {
     document.body.setAttribute('class', cls + ' listaction-ready')
   }
   get checkboxes() {
-    return Array.prototype.slice.call(document.querySelectorAll('table input[type=checkbox][data-pk]'))
+    return Array.prototype.slice.call(document.querySelectorAll('table [data-action="change->listaction#checkboxChange"]'))
   }
   get leader() {
-    return document.querySelector('table input[type=checkbox][data-master]')
+    return document.querySelector('table [data-action="change->listaction#selectAllChange"]')
   }
   get actionbar() {
     return document.getElementById('listaction')
   }
   checkboxChange() {
-    if (this.leader.checked && !this.element.checked) {
+    let total = this.checkboxes.length
+    let checked = this.checkboxes.filter((item) => item.checked).length
+
+    if (checked) {
+      if (checked == total) {
+        this.leader.checked = true
+      } else {
+        this.leader.indeterminate = true
+      }
+    } else {
+      this.leader.indeterminate = false
       this.leader.checked = false
     }
+
+    if (this.element.checked) {
+      this.element.parentNode.parentNode.classList.add('selected')
+    } else {
+      this.element.parentNode.parentNode.classList.remove('selected')
+    }
+
     this.actionbarDisplay()
     this.urlUpdate()
   }
@@ -53,6 +70,11 @@ export default class extends Controller {
   selectAllChange() {
     for (var cb of this.checkboxes) {
       cb.checked = this.element.checked
+      if (cb.checked) {
+        cb.parentNode.parentNode.classList.add('selected')
+      } else {
+        cb.parentNode.parentNode.classList.remove('selected')
+      }
     }
     this.checkboxChange()
   }

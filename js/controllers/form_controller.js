@@ -43,6 +43,10 @@ export default class extends Controller {
     e.preventDefault()
     var url = this.element.getAttribute('action')
     var formData = new FormData(this.element)
+    for (var input of this.element.querySelectorAll('[name]')) {
+      if (formData.has(input.attributes.name)) continue
+      formData.set(input.name, input.value)
+    }
 
     var application = this.application
     fetch(url, {

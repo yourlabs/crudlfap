@@ -23,15 +23,14 @@
 <style type="text/css">
 #render-table .btn-floating { margin-left: 6px; }
 </style>
+<link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
 
-<div class="list-container" style="width: 98%; margin: 0 auto; display: flex; flex-direction: column">
+<div class="filter-container">
   {% if view.search_form or view.filterset %}
-  <form method="get" action="" data-controller="autosubmit" data-target="render-table" data-action="input->autosubmit#input change->autosubmit#input">
-    {% if view.search_form %}
-    {{ render_form(view.search_form) }}
-    {% endif %}
-    {% if view.filterset %}
-    {{ render_form(view.filterset.form) }}
+  <form method="get" action="" data-controller="autosubmit" data-target="render-table" data-action="input->autosubmit#input change->autosubmit#input" class="outlined horizontal">
+    {% if view.form_component %}
+    <mwc-icon title="Filter the list with the following selectors" style=" --mdc-icon-size: 36px; display: flex; align-items: center">filter_list</mwc-icon>
+    {{ view.form_component.to_html()|safe() }}
     {% endif %}
   </form>
   {% endif %}

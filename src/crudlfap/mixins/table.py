@@ -11,6 +11,10 @@ from django_tables2.config import RequestConfig
 
 class ActionsColumn(tables.Column):
     empty_values = ()
+    attrs = {
+        'td': {'style': 'text-align: right; min-width: 50px'},
+        'th': {'style': 'text-align: right'},
+    }
 
     def __init__(self, **kwargs):
         kwargs.setdefault('default', True)
@@ -51,7 +55,7 @@ class ActionsColumn(tables.Column):
                 )
             )
             for view in views
-        ])
+        ], style='text-align: right; padding-right: .5rem')
 
         return mark_safe(actions.to_html())
 
@@ -108,30 +112,20 @@ class TableMixin(object):
 
     def get_table_meta_checkbox_column_template(self):
         return '''
-            <label>
-                <input
-                    type="checkbox"
-                    data-controller="listaction"
-                    data-action="change->listaction#checkboxChange"
-                    data-pk="{{ record.pk }}"
-                    style="margin: 0 12px"
-                />
-                <span></span>
-            </label>
+            <mwc-checkbox
+              data-controller="listaction"
+              data-action="change->listaction#checkboxChange"
+              data-pk="{{ record.pk }}"
+            ></mwc-checkbox>
         '''
 
     def get_table_meta_checkbox_column_verbose_name(self):
         return '''
-            <label>
-                <input
-                    type="checkbox"
-                    data-controller="listaction"
-                    data-action="change->listaction#selectAllChange"
-                    data-master="1"
-                    style="margin: 0 12px"
-                />
-                <span></span>
-            </label>
+            <mwc-checkbox
+              data-controller="listaction"
+              data-action="change->listaction#selectAllChange"
+              data-master="1"
+            ></mwc-checkbox>
         '''
 
     def get_table_meta_checkbox_column(self):

@@ -1,17 +1,7 @@
 {% extends 'base.html' %}
 
 {% block form_open %}
-<form
-  id="{% block form_id %}main-form{% endblock %}"
-  action="{{ request.get_full_path() }}"
-  method="post"
-  enctype="multipart/form-data"
-  data-controller="form"
-  data-action="submit->form#submit"
-  {% if form is defined %}
-  class="{% if request.method == 'POST' and form.errors or form.non_field_errors %}form-invalid{% endif %}"
-  {% endif %}
->
+  <div style="max-width: 600px; margin: 0 auto">
 {% endblock %}
 
 {% block content %}
@@ -29,10 +19,19 @@
   </div>
   {% endif %}
 
-  {{ render_form(view.form) }}
+  {{ ryzom('crudlfap.components.form.Form', view.form, view) }}
 {% endblock %}
 
 {% block buttons %}
+<style>
+mwc-textfield {
+  padding: 20px 0;
+  display: block !important;
+}
+mwc-formfield {
+  display: block !important;
+}
+</style>
 <div class="hide-in-modal">
     <mwc-button
         data-controller="form"
@@ -44,12 +43,6 @@
 {% endblock %}
 
 {% block form_close %}
-  {% if view.next_url %}
-    <input type="hidden" name="_next" value="{{ view.next_url }}" />
-  {% endif %}
-  {% csrf_token %}
-</form>
-
 {% if request.META.get('HTTP_X_MODAL') %}
 <mwc-button
   id="primary-action-button"
@@ -66,4 +59,5 @@
   {{ _('cancel') }}
 </mwc-button>
 {% endif %}
+</div>
 {% endblock %}

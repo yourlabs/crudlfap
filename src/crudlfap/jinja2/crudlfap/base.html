@@ -45,12 +45,6 @@
         display: none;
     }
 
-    /* autosubmit: that could only be a search form right ? */
-    form[data-controller=autosubmit] {
-        display: flex;
-        justify-content: space-between;
-    }
-
     form[data-controller=autosubmit] [data-component="ryzom.components.muicss.VisibleFields"] {
         display: flex;
         align-items: end;
@@ -86,7 +80,7 @@
         border-top-color: rgba(0,0,0,.12);
         height: 52px;
     }
-    tr:hover {
+    tr:hover, tr.selected {
         background-color: rgba(0,0,0,.04);
     }
     th {
@@ -143,7 +137,7 @@
 
   </head>
 
-  <body class="{% block body_class %}{{ view.body_class|default('') }}{% endblock %}">
+  <body class="{% block body_class %}{{ view.body_class|default('') }}{% endblock %}" style="height: 100vh">
     <div id="main-loader" class="loader-container turbolinks-progress-bar">
       <style>
       mwc-circular-progress {
@@ -152,6 +146,7 @@
         --mdc-circular-progress-bar-color-3: #ffc107;
         --mdc-circular-progress-bar-color-4: #03dac5;
       }
+
       </style>
       <mwc-circular-progress-four-color indeterminate></mwc-circular-progress-four-color>
     </div>
@@ -168,7 +163,9 @@
       </div>
       <span slot="title">{{ request.user }}</span>
       <div slot="appContent">
-          <mwc-top-app-bar-fixed>
+        <mwc-top-app-bar
+          style="--mdc-theme-primary: white; --mdc-theme-on-primary: black; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5)"
+        >
           <mwc-icon-button
             slot="navigationIcon"
             icon="menu"
@@ -181,29 +178,31 @@
             {% endblock %}
           </div>
           {{ ryzom('crudlfap.components.menu.TopMenu', request, view.menu_views) }}
+        </mwc-top-app-bar>
 
-          {% include 'crudlfap/_messages.html' %}
-          {% block before_container %}{% endblock %}
-          {% block content_open %}
-          <div class="{{ view.body_class|default('') }}" id="modal-body-ajax">
-          {% endblock %}
-            {% if request.META.get('HTTP_X_MODAL') %}
-            <!-- djwc-modules -->
-            <mwc-dialog heading="{% if view.title_heading %}{{ view.title_heading }}{% endif %}">
-            {% endif %}
+        {% include 'crudlfap/_messages.html' %}
+        {% block before_container %}{% endblock %}
+        {% block content_open %}
+        <div
+          style="--mdc-theme-primary: black; --mdc-theme-on-primary: white;"
+        >
+        {% endblock %}
+          {% if request.META.get('HTTP_X_MODAL') %}
+          <!-- djwc-modules -->
+          <mwc-dialog heading="{% if view.title_heading %}{{ view.title_heading }}{% endif %}">
+          {% endif %}
 
-            {% block form_open %}{% endblock %}
-            {% block content %}{% block form %}{% endblock %}{% endblock %}
-            {% block buttons %}{% endblock %}
-            {% block form_close %}{% endblock %}
+          {% block form_open %}{% endblock %}
+          {% block content %}{% block form %}{% endblock %}{% endblock %}
+          {% block buttons %}{% endblock %}
+          {% block form_close %}{% endblock %}
 
-            {% if request.META.get('HTTP_X_MODAL') %}
-            </mwc-dialog>
-            {% endif %}
-          {% block content_close %}
-          </div>
-          {% endblock %}
-        </mwc-top-app-bar-fixed>
+          {% if request.META.get('HTTP_X_MODAL') %}
+          </mwc-dialog>
+          {% endif %}
+        {% block content_close %}
+        </div>
+        {% endblock %}
       </div>
     </mwc-drawer>
   </body>

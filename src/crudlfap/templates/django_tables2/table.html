@@ -39,59 +39,54 @@
     </tbody>
     {% endblock table.tbody %}
     {% block table.tfoot %}
-    {% if table.has_footer %}
     <tfoot>
         <tr>
-        {% for column in table.columns %}
-            <td {{ column.attrs.tf.as_html }}>{{ column.footer }}</td>
-        {% endfor %}
+            <td>
+                {% if table.page %}
+                {% block pagination %}
+                <ul class="pagination">
+                    {% if table.page.has_previous %}
+                        {% block pagination.previous %}
+                            <li class="previous">
+                                <a href="{% querystring table.prefixed_page_field=table.page.previous_page_number %}"><i class="material-icons">chevron_left</i></a>
+                            </li>
+                        {% endblock pagination.previous %}
+                    {% endif %}
+
+                    {% block pagination.range %}
+                        {% for p in table.page|table_page_range:table.paginator %}
+                            {% if table.page.number == p %}
+                            <li class="active">
+                                <a href="#!">
+                                    {{ p }}
+                                </a>
+                            {% elif p == '...' %}
+                            <li class="disabled">
+                                <a href="#!">
+                                    {{ p }}
+                                </a>
+                            {% else %}
+                            <li class="waves-effect">
+                                <a href="{% querystring table.prefixed_page_field=p %}">
+                                    {{ p }}
+                                </a>
+                            {% endif %}
+                            </li>
+                        {% endfor %}
+                    {% endblock pagination.range %}
+                    {% if table.page.has_next %}
+                        {% block pagination.next %}
+                            <li class="next">
+                                <a href="{% querystring table.prefixed_page_field=table.page.next_page_number %}"><i class="material-icons">chevron_right</i></a>
+                            </li>
+                        {% endblock pagination.next %}
+                    {% endif %}
+                </ul>
+                {% endblock pagination %}
+            </td>
         </tr>
     </tfoot>
-    {% endif %}
     {% endblock table.tfoot %}
 </table>
 {% endblock table %}
-
-{% if table.page %}
-{% block pagination %}
-<ul class="pagination">
-    {% if table.page.has_previous %}
-        {% block pagination.previous %}
-            <li class="previous">
-                <a href="{% querystring table.prefixed_page_field=table.page.previous_page_number %}"><i class="material-icons">chevron_left</i></a>
-            </li>
-        {% endblock pagination.previous %}
-    {% endif %}
-
-    {% block pagination.range %}
-        {% for p in table.page|table_page_range:table.paginator %}
-            {% if table.page.number == p %}
-            <li class="active">
-                <a href="#!">
-                    {{ p }}
-                </a>
-            {% elif p == '...' %}
-            <li class="disabled">
-                <a href="#!">
-                    {{ p }}
-                </a>
-            {% else %}
-            <li class="waves-effect">
-                <a href="{% querystring table.prefixed_page_field=p %}">
-                    {{ p }}
-                </a>
-            {% endif %}
-            </li>
-        {% endfor %}
-    {% endblock pagination.range %}
-    {% if table.page.has_next %}
-        {% block pagination.next %}
-            <li class="next">
-                <a href="{% querystring table.prefixed_page_field=table.page.next_page_number %}"><i class="material-icons">chevron_right</i></a>
-            </li>
-        {% endblock pagination.next %}
-    {% endif %}
-</ul>
-{% endblock pagination %}
-{% endif %}
 </div>

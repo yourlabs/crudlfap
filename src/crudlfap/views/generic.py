@@ -96,6 +96,13 @@ class ListView(mixins.ListMixin, mixins.SearchMixin, mixins.FilterMixin,
     def get_listactions(self):
         return self.router.get_menu('list_action', self.request)
 
+    def get_form_component(self):
+        from crudlfap.components.form import Form
+        class ListForm(Form):
+            def __init__(self, view):
+                super().__init__(view.filterset.form, view)
+        return ListForm(self)
+
 
 class UpdateView(mixins.UpdateMixin, ObjectFormView):
     """Model update view."""

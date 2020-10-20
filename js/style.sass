@@ -1,4 +1,35 @@
-@import './node_modules/muicss/dist/css/mui.min.css'
+tr.selected
+  background-color: blue
+
+form
+  mwc-textfield
+    display: block !important
+
+  mwc-formfield
+    display: block !important
+
+form.horizontal
+  display: flex
+  flex-wrap: wrap
+  justify-content: center
+
+  mwc-textfield, mwc-select
+    width: 180px
+    margin: 16px 8px
+
+.filter-container
+  width: 98%
+  padding-top: 12px
+  margin: 0 auto
+
+  @media screen and (max-width: 700px)
+    td, th
+      display: inline-block
+
+  @media screen and (max-width: 300px)
+    mwc-textfield, mwc-select
+      max-width: 300px
+      margin: 0 8px
 
 .clickable:hover
   background-color: rgba(0, 0, 0, 0.07)
