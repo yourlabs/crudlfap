@@ -192,6 +192,7 @@ class Form(Component):
             type='hidden',
             name='csrfmiddlewaretoken',
             value=view.request.META['CSRF_COOKIE'],
+            tag='input'
         ))
 
         invalid = (
@@ -202,6 +203,7 @@ class Form(Component):
         super().__init__(
             *content,
             **{
+                'id': 'form',
                 'action': view.request.get_full_path(),
                 'method': 'post',
                 'enctype': 'multipart/form-data',

@@ -34,6 +34,7 @@ mwc-formfield {
 </style>
 <div class="hide-in-modal">
     <mwc-button
+        form="form"
         data-controller="form"
         data-action="click->form#triggerSubmit"
         raised>
@@ -45,6 +46,7 @@ mwc-formfield {
 {% block form_close %}
 {% if request.META.get('HTTP_X_MODAL') %}
 <mwc-button
+  form="form"
   id="primary-action-button"
   data-controller="form"
   data-action="click->form#triggerSubmit"
@@ -53,6 +55,7 @@ mwc-formfield {
   {{ view.title_submit }}
 </mwc-button>
 <mwc-button
+  form="form"
   slot="secondaryAction"
   dialogAction="close"
 >

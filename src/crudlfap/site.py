@@ -6,11 +6,15 @@ from .route import Route
 from .views.generic import TemplateView
 
 
+title_text =_('Login')
+
 site = Registry(
     views=[
         Route.factory(
             LoginView,
-            title_html=_('Login'),
+            title_html=title_text,
+            title_menu=title_text, 
+            title_submit=title_text,
             redirect_authenticated_user=True,
             authenticate=False,
         ),

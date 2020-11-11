@@ -23,7 +23,13 @@ export default class extends Controller {
       if (current && current.tagName == 'FORM') {
         form = current
       } else {
-        throw 'err'
+	    // try form attribute -
+    	if (e.target.hasAttribute('form')) {
+    		var formId = e.target.getAttribute('form')
+	    	form = document.getElementById(formId)
+	    } else {
+	    	throw 'err: form element not found.'
+	    }
       }
     }
 
