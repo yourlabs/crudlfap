@@ -18,7 +18,7 @@ setup(
     keywords='django crud',
     install_requires=[
         'jinja2',
-        'django>=2.0,<3.1',
+        'django>=2.0,<3.2',
         'django-jinja',
         'django-bootstrap3',
         'django-material',
