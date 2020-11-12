@@ -26,6 +26,7 @@ setup(
         'django-filter',
         'timeago',
         'lookupy-unmanaged',
+        'djwc',
         # FIXME: Update when ryzom is published to PyPi
         'ryzom @ git+https://yourlabs.io/oss/ryzom.git#egg=ryzom',
     ],
