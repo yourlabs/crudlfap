@@ -68,7 +68,7 @@ setting.
 Custom view parameters with View.clone()
 ----------------------------------------
 
-If you want to specify views in the router::
+If you want to specify views in the router:
 
 .. literalinclude:: ../src/crudlfap_example/song/crudlfap.py
 
