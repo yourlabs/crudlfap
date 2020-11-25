@@ -236,7 +236,7 @@ class Route(Factory, metaclass=RouteMetaclass):
         if self.router:
             return self.router.has_perm(self)
 
-        return self.has_perm_backend(self)
+        return self.has_perm_backend()
 
     def has_perm_backend(self):
         """
