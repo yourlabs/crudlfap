@@ -53,7 +53,7 @@ export default class extends Controller {
     .catch(error => {
       loader.hide()
       var snack = document.getElementById('main-snack')
-      snack.innerText = error
+      snack.labelText = error
       snack.show()
     })
   }

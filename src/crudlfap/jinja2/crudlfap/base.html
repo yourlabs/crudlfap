@@ -185,6 +185,7 @@
         {% block content_open %}
         <div
           style="--mdc-theme-primary: black; --mdc-theme-on-primary: white;"
+          id="modal-body-ajax"
         >
         {% endblock %}
           {% if request.META.get('HTTP_X_MODAL') %}
