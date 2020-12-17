@@ -1,5 +1,6 @@
 import re
 from collections.abc import Iterable
+from django.middleware.csrf import get_token
 from django.utils.module_loading import import_string
 
 from ryzom.components import Component, Text
@@ -191,7 +192,7 @@ class Form(Component):
         content.append(Component(
             type='hidden',
             name='csrfmiddlewaretoken',
-            value=view.request.META['CSRF_COOKIE'],
+            value=get_token(view.request),
             tag='input'
         ))
 
