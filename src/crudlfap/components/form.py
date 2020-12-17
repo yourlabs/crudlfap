@@ -3,7 +3,7 @@ from collections.abc import Iterable
 from django.utils.module_loading import import_string
 
 from ryzom.components import Component, Text
-from ryzom.components.django import Factory, DjangoTextInput
+from ryzom.components.django import Factory
 from django.utils.html import conditional_escape
 
 
