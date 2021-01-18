@@ -44,6 +44,7 @@ class Select(Component):
                 options.append(Component(
                     Text(option['label']),
                     value=option['value'],
+                    **option['attrs'],
                     tag='mwc-list-item',
                 ))
 
@@ -53,6 +54,7 @@ class Select(Component):
             label=widget['label'],
             outlined=1,
             name=widget['name'],
+            **widget['attrs'],
         )
 
 

@@ -51,7 +51,7 @@ export default class extends Controller {
     var formData = new FormData(this.element)
     for (var input of this.element.querySelectorAll('[name]')) {
       if (formData.has(input.attributes.name)) continue
-      formData.set(input.name, input.value)
+      formData.set(input.getAttribute('name'), input.value)
     }
 
     var application = this.application
