@@ -61,7 +61,9 @@ def test_pagination():
         columns=['name'],
         per_page=1,
     )
-    result = table.render(context=dict())
+    result = table.to_html(
+        {'page': 2}
+    )
     assert pretty(result) == '''
 %table
   %thead
