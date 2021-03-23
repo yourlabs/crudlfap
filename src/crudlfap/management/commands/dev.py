@@ -33,19 +33,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         call_command('migrate')
         self.createusers()
-        self.runserver(*args, **options)
-
-    def runserver(self, *args, **options):
-        try:
-            pid = os.fork()
-        except OSError:
-            sys.exit(1)
-
-        if pid == 0:
-            signal.send(sender=self)
-        else:
-            options['nothreading'] = True
-            super().handle(*args, **options)
+        super().handle(*args, **options)
 
     def createusers(self):
         user_model = apps.get_model(settings.AUTH_USER_MODEL)

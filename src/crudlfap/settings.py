@@ -157,12 +157,13 @@ CRUDLFAP_VIEWS = [
 
 CRUDLFAP_APPS = [
     'crudlfap',
-    'bootstrap3',
-    'material',
     'crudlfap_auth',
     'django_filters',
     'django_tables2',
-    'djwc',
+    'ryzom',
+    'py2js',
+    'ryzom_django',
+    'ryzom_django_mdc',
 ]
 
 DJANGO_APPS = [
@@ -178,52 +179,16 @@ INSTALLED_APPS = DJANGO_APPS + CRUDLFAP_APPS
 
 # CRUDLFA+ optional dependencies
 OPTIONAL_APPS = [
-    # {'debug_toolbar': {'after': 'django.contrib.staticfiles'}},
+    {'debug_toolbar': {'after': 'django.contrib.staticfiles'}},
     {'django_extensions': {'before': 'crudlfap'}},
     {'collectdir': {'before': 'crudlfap'}},
 ]
-
-DJWC = {
-    'COMPONENTS': {
-        # 'mwc-button': '@material/mwc-button/mwc-button.js',
-        # 'mwc-bottom-app-bar': '@material/mwc-bottom-app-bar/mwc-bottom-app-bar.js',
-        # 'mwc-card': '@material/mwc-card/mwc-card.js',
-        # 'mwc-checkbox': '@material/mwc-checkbox/mwc-checkbox.js',
-        # 'mwc-chip': '@material/mwc-chip/mwc-chip.js',
-        # 'mwc-circular-progress': '@material/mwc-circular-progress/mwc-circular-progress.js',
-        # 'mwc-circular-progress-four-color': '@material/mwc-circular-progress-four-color/mwc-circular-progress-four-color.js',
-        # 'mwc-data-table': '@material/mwc-data-table/mwc-data-table.js',
-        'mwc-dialog': '@material/mwc-dialog/mwc-dialog.js',
-        'mwc-drawer': '@material/mwc-drawer/mwc-drawer.js',
-        'mwc-fab': '@material/mwc-fab/mwc-fab.js',
-        # 'mwc-formfield': '@material/mwc-formfield/mwc-formfield.js',
-        # 'mwc-icon-button-toggle': '@material/mwc-icon-button-toggle/mwc-icon-button-toggle.js',
-        'mwc-icon-button': '@material/mwc-icon-button/mwc-icon-button.js',
-        'mwc-icon': '@material/mwc-icon/mwc-icon.js',
-        # 'mwc-linear-progress': '@material/mwc-linear-progress/mwc-linear-progress.js',
-        'mwc-list': '@material/mwc-list/mwc-list.js',
-        'mwc-list-item': '@material/mwc-list/mwc-list-item.js',
-        # 'mwc-menu': '@material/mwc-menu/mwc-menu.js',
-        # 'mwc-radio': '@material/mwc-radio/mwc-radio.js',
-        # 'mwc-select': '@material/mwc-select/mwc-select.js',
-        # 'mwc-slider': '@material/mwc-slider/mwc-slider.js',
-        # 'mwc-snackbar': '@material/mwc-snackbar/mwc-snackbar.js',
-        # 'mwc-switch': '@material/mwc-switch/mwc-switch.js',
-        # 'mwc-tab-bar': '@material/mwc-tab-bar/mwc-tab-bar.js',
-        # 'mwc-tab': '@material/mwc-tab/mwc-tab.js',
-        # 'mwc-textarea': '@material/mwc-textarea/mwc-textarea.js',
-        # 'mwc-textfield': '@material/mwc-textfield/mwc-textfield.js',
-        # 'mwc-tooltip': '@material/mwc-tooltip/mwc-tooltip.js',
-        'mwc-top-app-bar-fixed': '@material/mwc-top-app-bar-fixed/mwc-top-app-bar-fixed.js',
-        # 'mwc-top-app-bar': '@material/mwc-top-app-bar/mwc-top-app-bar.js',
-    }
-}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'djwc.middleware.StaticMiddleware',
+    'ryzom_unpoly.middleware.UnpolyMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -231,93 +196,28 @@ MIDDLEWARE = [
 ]
 
 OPTIONAL_MIDDLEWARE = [
-    # {'debug_toolbar.middleware.DebugToolbarMiddleware': None}
+    {'debug_toolbar.middleware.DebugToolbarMiddleware': None}
 ]
 
 INTERNAL_IPS = ('127.0.0.1',)
 
 ROOT_URLCONF = 'crudlfap_example.urls'
 
-TEMPLATE_CONSTANTS = {
-    "settings": dict(
-        SITE_NAME='CRUDLFA+DEMO',
-        SITE_TITLE='CRUDLFA+ demo !',
-        DEBUG=DEBUG,
-    ),
-}
-
 CRUDLFAP_TEMPLATE_BACKEND = {
-    "BACKEND": "django_jinja.backend.Jinja2",
-    "APP_DIRS": True,
-    "NAME": "crudlfap",
-    "OPTIONS": {
-        "app_dirname": "jinja2",
-        "match_extension": None,
-        "context_processors": [
-            "django.template.context_processors.debug",
-            "django.template.context_processors.request",
-            "django.contrib.auth.context_processors.auth",
-            "django.contrib.messages.context_processors.messages",
-            "django.template.context_processors.i18n",
-        ],
-        "extensions": [
-            "jinja2.ext.do",
-            "jinja2.ext.loopcontrols",
-            "jinja2.ext.with_",
-            "jinja2.ext.i18n",
-            "jinja2.ext.autoescape",
-            "django_jinja.builtins.extensions.CsrfExtension",
-            "django_jinja.builtins.extensions.CacheExtension",
-            "django_jinja.builtins.extensions.TimezoneExtension",
-            "django_jinja.builtins.extensions.UrlsExtension",
-            "django_jinja.builtins.extensions.StaticFilesExtension",
-            "django_jinja.builtins.extensions.DjangoFiltersExtension",
-        ],
-        "constants": TEMPLATE_CONSTANTS,
-        "globals": {
-            "pagination_filter_params": "crudlfap.jinja2.pagination_filter_params",  # noqa
-            "crudlfap_site": "crudlfap.site.site",
-            "getattr": getattr,
-            "str": str,
-            "int": int,
-            "isinstance": isinstance,
-            "type": type,
-            "render_form": "crudlfap.jinja2.render_form",
-            "render_button": "bootstrap3.forms.render_button",
-            "url": "django.urls.reverse",
-            "ryzom": "ryzom.components.component_html",
-        },
-        "newstyle_gettext": True,
-        "bytecode_cache": {
-            "name": "default",
-            "backend": "django_jinja.cache.BytecodeCache",
-            "enabled": False,
-        },
-        "autoescape": True,
-        "auto_reload": DEBUG,
-        "translation_engine": "django.utils.translation",
-    }
+    'BACKEND': 'ryzom_django.template_backend.Ryzom',
+    'NAME': 'ryzom',
 }
-
-try:
-    import webpack_loader  # noqa
-except ImportError:
-    pass
-else:
-    CRUDLFAP_TEMPLATE_BACKEND['OPTIONS']['globals'].setdefault(
-        'render_bundle',
-        'webpack_loader.templatetags.webpack_loader.render_bundle',
-    )
 
 DEFAULT_TEMPLATE_BACKEND = {
-    "BACKEND": "django.template.backends.django.DjangoTemplates",
-    "APP_DIRS": True,
-    "OPTIONS": {
-        "context_processors": [
-            "django.template.context_processors.debug",
-            "django.template.context_processors.request",
-            "django.contrib.auth.context_processors.auth",
-            "django.contrib.messages.context_processors.messages",
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'DIRS': [],
+    'APP_DIRS': True,
+    'OPTIONS': {
+        'context_processors': [
+            'django.template.context_processors.debug',
+            'django.template.context_processors.request',
+            'django.contrib.auth.context_processors.auth',
+            'django.contrib.messages.context_processors.messages',
         ],
     },
 }

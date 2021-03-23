@@ -62,7 +62,7 @@ crudlfap.Router(
         ),
     ],
     urlfield='username',
-    material_icon='person',
+    icon='person',
 ).register()
 
 
@@ -78,7 +78,7 @@ class GroupUpdateView(crudlfap.UpdateView):
 crudlfap.Router(
     Group,
     fields=['name', 'permissions'],
-    material_icon='group',
+    icon='group',
     views=[
         crudlfap.DeleteObjectsView,
         crudlfap.DeleteView,

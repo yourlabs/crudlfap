@@ -99,9 +99,9 @@ class ListItem(Component):
         attrs = dict(tag='mwc-list-item')
 
         show_icon = view if not single_item else view.router
-        if getattr(show_icon, 'material_icon', ''):
+        if getattr(show_icon, 'icon', ''):
             content.append(
-                Icon(show_icon.material_icon, slot='graphic'),
+                Icon(show_icon.icon, slot='graphic'),
             )
             attrs['graphic'] = graphic or 'icon'
 
@@ -144,8 +144,8 @@ class MenuRouter(Component):
         content.append(
             Component(str(router.model._meta.verbose_name_plural.capitalize()), tag='span'),
         )
-        if getattr(router, 'material_icon', ''):
-            content.append(Icon(router.material_icon, slot='graphic'))
+        if getattr(router, 'icon', ''):
+            content.append(Icon(router.icon, slot='graphic'))
 
         super().__init__(
             *content,

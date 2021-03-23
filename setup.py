@@ -17,11 +17,8 @@ setup(
     include_package_data=True,
     keywords='django crud',
     install_requires=[
-        'jinja2',
+        'ryzom>=0.5.1,<0.6',
         'django>=3.1,<3.2',
-        'django-jinja',
-        'django-bootstrap3',
-        'django-material',
         'django-tables2',
         'django-filter',
         'timeago',
@@ -30,7 +27,6 @@ setup(
     tests_require=['tox'],
     extras_require=dict(
         dev=[
-          'django-collectdir',
           'django-reversion',
           'django-debug-toolbar',
           'django-extensions',

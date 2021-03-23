@@ -8,30 +8,50 @@ from django.utils.translation import ugettext_lazy as _
 import django_tables2 as tables
 from django_tables2.config import RequestConfig
 
+from crudlfap import html
 
-class JinjaColumn(tables.Column):
+
+class UnpolyLinkColumn(tables.LinkColumn):
+    def render(self, record, value):
+        return super().render(record, value).replace(
+            '<a ',
+            '<a up-target="{html.A.attrs["up-target"]}"',
+        )
+
+
+class ActionsColumn(tables.Column):
     empty_values = ()
 
-    def __init__(self, template_code, **kwargs):
-        self.template_code = template_code
+    def __init__(self, **kwargs):
         kwargs.setdefault('default', True)
         super().__init__(**kwargs)
 
     def render(self, record, table, value, **kwargs):
-        from ..site import site
-        context = dict(
-            object=record,
-            request=table.request,
-            views=site[type(record)].get_menu(
-                'object',
-                table.request,
-                object=record
-            )
+        from crudlfap.site import site
+        buttons = []
+        views = site[type(record)].get_menu(
+            'object',
+            table.request,
+            object=record
         )
-        b = template.engines['crudlfap']
-        t = b.from_string(self.template_code)
-        r = t.render(context)
-        return mark_safe(r)
+        for view in views:
+            button = html.Component(
+                f'<button class="material-icons mdc-icon-button" ryzom-id="308bade28a8c11ebad3800e18cb957e9" style="color: {getattr(view, "color", "")}; --mdc-ripple-fg-size:28px; --mdc-ripple-fg-scale:1.7142857142857142; --mdc-ripple-left:10px; --mdc-ripple-top:10px;">{getattr(view, "icon", "")}</button>',
+                title=view.title.capitalize(),
+                href=view.url + '?next=' + table.request.path_info,
+                style='text-decoration: none',
+                tag='a',
+            )
+            if getattr(view, 'controller', None) == 'modal':
+                button.attrs.up_modal = '.main-inner'
+            else:
+                button.attrs['up-target'] = html.A.attrs['up-target']
+            buttons.append(button)
+        out = html.Div(
+            *buttons,
+            style='display:flex;flex-direction:row-reverse'
+        ).render()
+        return mark_safe(out)
 
 
 class Table(tables.Table):
@@ -74,62 +94,12 @@ class TableMixin(object):
         return []
 
     def get_table_meta_link_columns(self):
-        return {i: tables.LinkColumn() for i in self.table_link_fields}
+        return {i: UnpolyLinkColumn() for i in self.table_link_fields}
 
     def get_table_meta_action_columns(self):
         return dict(
-            crudlfap=JinjaColumn(
-                template_code='''
-                {% import 'crudlfap.html' as crudlfap %}
-                {{ crudlfap.dropdown(
-                    views,
-                    'row-actions-' + str(object.pk),
-                    class='btn-floating red',
-                    next=request.path_info,
-                    icon='more_vert',
-                ) }}
-                ''',
+            crudlfap=ActionsColumn(
                 verbose_name=_('Actions'),
-                orderable=False,
-            )
-        )
-
-    def get_table_meta_checkbox_column_template(self):
-        return '''
-            <label>
-                <input
-                    type="checkbox"
-                    data-controller="listaction"
-                    data-action="change->listaction#checkboxChange"
-                    data-pk="{{ record.pk }}"
-                />
-                <span></span>
-            </label>
-        '''
-
-    def get_table_meta_checkbox_column_verbose_name(self):
-        return '''
-            <label>
-                <input
-                    type="checkbox"
-                    data-controller="listaction"
-                    data-action="change->listaction#selectAllChange"
-                    data-master="1"
-                />
-                <span></span>
-            </label>
-        '''
-
-    def get_table_meta_checkbox_column(self):
-        if not self.listactions:
-            return dict()
-
-        return dict(
-            crudlfap_checkbox=tables.TemplateColumn(
-                self.table_meta_checkbox_column_template,
-                verbose_name=mark_safe(
-                    self.table_meta_checkbox_column_verbose_name
-                ),
                 orderable=False,
             )
         )
@@ -152,10 +122,9 @@ class TableMixin(object):
         if self.listactions:
             if 'sequence' in attrs:
                 attrs['sequence'] = list(attrs['sequence'])
-                attrs['sequence'].insert(0, 'crudlfap_checkbox')
                 attrs['sequence'].append('crudlfap')
             else:
-                attrs['sequence'] = ['crudlfap_checkbox', '...', 'crudlfap']
+                attrs['sequence'] = ['...', 'crudlfap']
 
         return attrs
 
@@ -166,7 +135,6 @@ class TableMixin(object):
         attrs = collections.OrderedDict(
             Meta=self.table_meta_class,
         )
-        attrs.update(self.table_meta_checkbox_column)
         attrs.update(self.table_meta_link_columns)
         attrs.update(self.table_meta_action_columns)
         attrs.update(self.table_columns)
@@ -191,10 +159,16 @@ class TableMixin(object):
     def get_table_kwargs(self):
         return dict(data=self.object_list)
 
+    def get_max_per_page(self):
+        return 100
+
     def get_table_pagination(self):
         if not self.paginate_by:
             return True
-        return dict(per_page=self.request.GET.get('per_page', self.paginate_by))
+        per_page = int(self.request.GET.get('per_page', self.paginate_by))
+        if per_page > self.max_per_page:
+            return self.max_per_page
+        return dict(per_page=per_page)
 
     def get_table(self):
         kwargs = self.table_kwargs

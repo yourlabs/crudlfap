@@ -16,7 +16,8 @@ class Registry(Factory, collections.OrderedDict):
     def get_menu(self, name, request, **kwargs):
         result = []
         for view in self.views:
-            if name in view.menus and view(request=request).has_perm():
+            menus = getattr(view, 'menus', [])
+            if name in menus and view(request=request).has_perm():
                 result.append(view)
         for model, router in self.items():
             menu = router.get_menu(name, request, **kwargs)

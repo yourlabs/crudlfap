@@ -20,7 +20,7 @@ class SongCreateView(SongMixin, crudlfap.CreateView):
 
 class SongRouter(crudlfap.Router):
     fields = '__all__'
-    material_icon = 'album'
+    icon = 'album'
     model = Song
 
     views = [

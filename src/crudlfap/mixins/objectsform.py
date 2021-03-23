@@ -5,17 +5,14 @@ from .modelform import ModelFormMixin
 
 class ObjectsFormMixin(ModelFormMixin):
     pluralize = True
-    link_attributes = {
-        'data-listaction': 'urlupdate',
-    }
     menus = ['list_action']
 
     def get_invalid_pks(self):
-        return len(self.request.GET.getlist('pks')) - len(self.object_list)
+        return len(self.request.GET.getlist('pk')) - len(self.object_list)
 
     def get_object_list(self):
         self.object_list = self.queryset.filter(
-            pk__in=self.request.GET.getlist('pks')
+            pk__in=self.request.GET.getlist('pk')
         )
         return self.object_list
 

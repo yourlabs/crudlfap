@@ -1,17 +1,13 @@
 from crudlfap import shortcuts as crudlfap
 
 from django.conf import settings
-from django.conf.urls import include, re_path
-from django.views.static import serve
+from django.urls import include, path, re_path
 
 urlpatterns = [
     crudlfap.site.urlpattern,
-    re_path(
-        r'^%s(?P<path>.*)$' % settings.STATIC_URL.lstrip('/'),
-        serve,
-        kwargs=dict(document_root=settings.STATIC_ROOT)
-    ),
+    path('bundles/', include('ryzom_django.bundle')),
 ]
+
 if 'debug_toolbar' in settings.INSTALLED_APPS and settings.DEBUG:
     import debug_toolbar
     urlpatterns += [

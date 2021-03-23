@@ -4,7 +4,6 @@ INSTALLED_APPS += [  # noqa
     # CRUDLFA+ examples
     'crudlfap_example.artist',
     'crudlfap_example.song',
-    'crudlfap_example.nondb',
     'crudlfap_example.blog',
 ]
 

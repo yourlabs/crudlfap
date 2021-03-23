@@ -34,7 +34,7 @@ class TemplateMixin:
         )
 
     def get_template_engine(self):
-        return getattr(settings, 'CRUDLFAP', {}).get('TEMPLATE_ENGINE', 'crudlfap')
+        return getattr(settings, 'CRUDLFAP', {}).get('TEMPLATE_ENGINE', 'ryzom')
 
     def get_response_class(self):
         return TemplateResponse

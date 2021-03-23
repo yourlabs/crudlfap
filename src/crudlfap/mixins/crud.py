@@ -7,10 +7,12 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
+from crudlfap import html
+
 
 class CreateMixin:
     style = 'success'
-    material_icon = 'add'
+    icon = 'add'
     default_template_name = 'crudlfap/create.html'
     template_name_suffixes = ['create', 'form']
     controller = 'modal'
@@ -28,7 +30,7 @@ class CreateMixin:
 class DeleteMixin:
     style = 'danger'
     fa_icon = 'trash'
-    material_icon = 'delete'
+    icon = 'delete'
     success_url_next = True
     color = 'red'
     log_action_flag = DELETION
@@ -50,7 +52,7 @@ class DeleteMixin:
 
 class DetailMixin:
     fa_icon = 'search-plus'
-    material_icon = 'search'
+    icon = 'search'
     default_template_name = 'crudlfap/detail.html'
     color = 'blue'
     menus_display = ['object', 'object_detail']
@@ -82,16 +84,15 @@ class DetailMixin:
             return getattr(self.object, value_getter)()
         value = getattr(self.object, name)
         if hasattr(value, 'get_absolute_url'):
-            return format_html(
-                '<a href="{}">{}</a>',
-                mark_safe(value.get_absolute_url()),
-                value
-            )
+            return html.A(
+                str(value),
+                href=value.get_absolute_url(),
+            ).render()
         return value
 
 
 class HistoryMixin:
-    material_icon = 'history'
+    icon = 'history'
     template_name_suffix = '_history'
     default_template_name = 'crudlfap/history.html'
     controller = None
@@ -107,7 +108,7 @@ class HistoryMixin:
 
 class ListMixin:
     default_template_name = 'crudlfap/list.html'
-    material_icon = 'list'
+    icon = 'list'
     body_class = 'full-width'
     menus = ['main', 'model']
     title_heading = None
@@ -123,7 +124,7 @@ class ListMixin:
 
 
 class UpdateMixin:
-    material_icon = 'edit'
+    icon = 'edit'
     default_template_name = 'crudlfap/update.html'
     template_name_suffixes = ['create', 'form']
     controller = 'modal'

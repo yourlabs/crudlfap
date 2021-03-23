@@ -27,7 +27,7 @@ class ControllerRouter(Router):
 
 class URLRouter(Router):
     model = URL
-    material_icon = 'link'
+    icon = 'link'
 
     views = [
         generic.DetailView,

@@ -9,12 +9,14 @@
 .. image:: https://img.shields.io/pypi/v/crudlfap.svg
    :target: https://pypi.python.org/pypi/crudlfap
 
-Welcome to CRUDLFA+ for Django 2.0: because Django is FUN !
+Welcome to CRUDLFA+ for Django 3.0: because Django is FUN !
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 CRUDLFA+ stands for Create Read Update Delete List Form Autocomplete and more.
 
-This plugin for Django makes a rich user interface from Django models.
+This plugin for Django makes a rich user interface from Django models, built
+with Material Components Web Ryzom Components, offering optionnal databinding
+with channels support.
 
 Try
 ===
@@ -25,17 +27,15 @@ documented example lives, without virtualenv::
     # This installs the repo in ./src/crudlfap and in your python user packages, i run this from ~
     pip install --user -e git+https://github.com/yourlabs/crudlfap.git#egg=crudlfap[dev]
 
-    # Migrate SQLite database, create some users and starts a server on localhost:8000
-    crudlfap dev
-
-    # Start webpack watcher
-    yarn --cwd js start
+    crudlfap migrate
+    crudlfap createsuperuser
+    crudlfap runserver
 
 Features
 ========
 
 - DRY into ModelRouter for all views of a Model,
-- Rich frontend interface out of the box, MaterializeCSS/Turbolinks/StimulusJS/Webpack
+- Rich frontend interface out of the box, Material Components Web/Ryzom/Unpoly
 
 Resources
 =========
