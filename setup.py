@@ -18,7 +18,7 @@ setup(
     keywords='django crud',
     install_requires=[
         'jinja2',
-        'django>=2.0,<3.1',
+        'django>=3.1,<3.2',
         'django-jinja',
         'django-bootstrap3',
         'django-material',
@@ -26,8 +26,6 @@ setup(
         'django-filter',
         'timeago',
         'lookupy-unmanaged',
-        # FIXME: Update when ryzom is published to PyPi
-        'ryzom @ git+https://yourlabs.io/oss/ryzom.git#egg=ryzom',
     ],
     tests_require=['tox'],
     extras_require=dict(

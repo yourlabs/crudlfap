@@ -17,7 +17,7 @@ class CreateMixin:
     action = 'click->modal#open'
     color = 'green'
     log_action_flag = ADDITION
-    menus = ['main', 'model']
+    menus = ['model']
     permission_shortcode = 'add'
 
     def form_valid(self):
@@ -111,6 +111,9 @@ class ListMixin:
     body_class = 'full-width'
     menus = ['main', 'model']
     title_heading = None
+
+    def get_title(self):
+        return self.model._meta.verbose_name_plural.capitalize()
 
     def get_urlpath(self):
         return ''

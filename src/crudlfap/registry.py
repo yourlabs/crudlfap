@@ -13,6 +13,18 @@ crudlfap = apps.get_app_config('crudlfap')  # pylint: disable=invalid-name
 class Registry(Factory, collections.OrderedDict):
     views = ViewsDescriptor()
 
+    def get_menu(self, name, request, **kwargs):
+        result = []
+        for view in self.views:
+            if name in view.menus and view(request=request).has_perm():
+                result.append(view)
+        for model, router in self.items():
+            menu = router.get_menu(name, request, **kwargs)
+            if not menu:
+                continue
+            result += menu
+        return result
+
     def get_app_menus(self, name, request, **kwargs):
         """Sort Router instances by app name."""
         result = collections.OrderedDict()

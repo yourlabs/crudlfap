@@ -194,7 +194,7 @@ class TableMixin(object):
     def get_table_pagination(self):
         if not self.paginate_by:
             return True
-        return dict(per_page=self.paginate_by)
+        return dict(per_page=self.request.GET.get('per_page', self.paginate_by))
 
     def get_table(self):
         kwargs = self.table_kwargs

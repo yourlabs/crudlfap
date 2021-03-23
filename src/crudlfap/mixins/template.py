@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from django.template.response import TemplateResponse
 from django.utils.translation import ugettext as _
 
@@ -33,7 +34,7 @@ class TemplateMixin:
         )
 
     def get_template_engine(self):
-        return 'crudlfap'
+        return getattr(settings, 'CRUDLFAP', {}).get('TEMPLATE_ENGINE', 'crudlfap')
 
     def get_response_class(self):
         return TemplateResponse
