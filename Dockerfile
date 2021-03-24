@@ -10,13 +10,13 @@ ENV STATIC_URL=/static/ STATIC_ROOT=/app/static
 ENV UWSGI_SPOOLER_NAMES=mail,stat UWSGI_SPOOLER_MOUNT=/app/spooler
 EXPOSE 6789
 
-RUN apk update && apk --no-cache upgrade && apk --no-cache add gettext shadow python3 py3-psycopg2 uwsgi-python3 uwsgi-http uwsgi-spooler dumb-init bash git curl && pip3 install --upgrade pip
+RUN apk update && apk --no-cache upgrade && apk --no-cache add gettext shadow python3 py3-psycopg2 uwsgi-python3 uwsgi-http uwsgi-spooler dumb-init bash git curl && pip install --upgrade pip
 RUN mkdir -p /app && usermod -d /app -l app node && groupmod -n app node && chown -R app:app /app
 WORKDIR /app
 
 COPY setup.py README.rst MANIFEST.in /app/
 COPY src /app/src
-RUN pip3 install --editable /app[dev]
+RUN pip install --editable /app[dev]
 
 RUN DEBUG=1 django-admin ryzom_bundle
 RUN DEBUG=1 django-admin collectstatic --noinput
