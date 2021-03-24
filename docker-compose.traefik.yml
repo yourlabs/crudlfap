@@ -1,0 +1,17 @@
+version: "3.5"
+services:
+  django:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.${CI_ENVIRONMENT_SLUG}.entryPoints=web"
+      - "traefik.http.routers.${CI_ENVIRONMENT_SLUG}.rule=host(`${HOST}`)"
+      - "traefik.http.routers.${CI_ENVIRONMENT_SLUG}.service=${CI_ENVIRONMENT_SLUG}"
+      - "traefik.http.services.${CI_ENVIRONMENT_SLUG}.loadBalancer.server.port=8000"
+    networks:
+      - default
+      - web
+
+networks:
+  web:
+    external: true
