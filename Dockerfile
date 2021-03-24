@@ -1,4 +1,4 @@
-FROM alpine
+FROM archlinux
 
 ENV DJANGO_SETTINGS_MODULE=crudlfap_example.settings
 ENV UWSGI_MODULE=crudlfap_example.wsgi:application
@@ -7,16 +7,16 @@ ENV NODE_ENV=production
 ENV PATH="${PATH}:/app/.local/bin"
 ENV PYTHONIOENCODING=UTF-8 PYTHONUNBUFFERED=1
 ENV STATIC_URL=/static/ STATIC_ROOT=/app/static
-ENV UWSGI_SPOOLER_NAMES=mail,stat UWSGI_SPOOLER_MOUNT=/app/spooler
+ENV UWSGI_SPOOLER_NAMES=mail,blockchain UWSGI_SPOOLER_MOUNT=/app/spooler
 EXPOSE 6789
 
-RUN apk update && apk --no-cache upgrade && apk --no-cache add gettext shadow python3 py3-psycopg2 uwsgi-python3 uwsgi-http uwsgi-spooler dumb-init bash git curl && pip install --upgrade pip
-RUN mkdir -p /app && usermod -d /app -l app node && groupmod -n app node && chown -R app:app /app
+RUN pacman -Syu --noconfirm mailcap which gettext python python-pillow python-psycopg2 python-pip python-psutil git curl uwsgi uwsgi-plugin-python python python-hiredis && pip install --upgrade pip
+RUN useradd --home-dir /app --uid 1000 app && mkdir -p /app && chown -R app /app
 WORKDIR /app
 
 COPY setup.py README.rst MANIFEST.in /app/
 COPY src /app/src
-RUN pip install --editable /app[dev]
+RUN pip install --editable /app
 
 RUN DEBUG=1 django-admin ryzom_bundle
 RUN DEBUG=1 django-admin collectstatic --noinput
