@@ -29,7 +29,7 @@ py-test:
   stage: build
   image: yourlabs/python
   script:
-  - tox -e py38-dj30
+  - tox -e py38-dj31
   - codecov-bash -e TOXENV -f coverage.xml
 
 js-qa:
