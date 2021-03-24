@@ -124,6 +124,7 @@ A settings file to import boilerplate from.
 
 
 import os
+import sys
 from pathlib import Path
 
 from crudlfap.conf import install_optional  # noqa
@@ -141,7 +142,9 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'notsecret')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get('DEBUG', False))
 
-if DEBUG and 'ALLOWED_HOSTS' not in os.environ:
+if 'HOST' in os.environ:
+    ALLOWED_HOSTS = [os.environ.get('HOST')]
+elif DEBUG and 'ALLOWED_HOSTS' not in os.environ:
     ALLOWED_HOSTS = ['*']
 else:
     ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
@@ -290,6 +293,8 @@ STATIC_ROOT = os.getenv(
     'STATIC_ROOT',
     Path(os.path.dirname(__file__)) / 'static'
 )
+if 'collectstatic' in sys.argv or not DEBUG:
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'  # noqa
 
 UWSGI_SPOOLER_MOUNT = os.getenv('UWSGI_SPOOLER_MOUNT')
 UWSGI_SPOOLER_NAMES = os.getenv('UWSGI_SPOOLER_NAMES', '').split(',')

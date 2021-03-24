@@ -1,0 +1,35 @@
+version: '3.5'
+services:
+  django:
+    # DO NOT REMOVE
+    # Ensures we keep access logs accross re-creates of the container
+    # Use journalctl CONTAINER_NAME=production_backend_1 to see them
+    logging:
+      driver: journald
+
+    build:
+      dockerfile: Dockerfile
+      context: .
+    volumes:
+    - /app/media
+    - /app/log
+    - /tmp
+    environment:
+    - HOST
+    - PROTO
+    - ADMINS
+    - BASICAUTH_ENABLE
+    - CI_ENVIRONMENT_NAME
+    - CI_COMMIT_SHA
+    - SENTRY_DSN
+    - MEDIA_ROOT=/app/media
+    - LOG_DIR=/app/log
+    - IPFS_PATH=/app/.ipfs
+    - EMAIL_HOST
+    - EMAIL_HOST_USER
+    - EMAIL_HOST_PASSWORD
+    - EMAIL_USE_SSL
+    - EMAIL_USE_TLS
+    - EMAIL_PORT
+    - DEFAULT_FROM_EMAIL
+    - SECRET_KEY
