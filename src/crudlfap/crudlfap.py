@@ -1,4 +1,4 @@
-from crudlfap.models import Controller, URL
+from crudlfap.models import URL, Controller
 from crudlfap.router import Router
 from crudlfap.views import generic
 

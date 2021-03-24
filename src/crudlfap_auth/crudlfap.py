@@ -1,11 +1,10 @@
-from crudlfap import shortcuts as crudlfap
-
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth.models import Group
 
-from . import views
+from crudlfap import shortcuts as crudlfap
 
+from . import views
 
 User = apps.get_model(getattr(settings, 'AUTH_USER_MODEL', 'auth.User'))
 

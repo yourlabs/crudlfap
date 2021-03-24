@@ -1,5 +1,5 @@
-from functools import reduce
 import operator
+from functools import reduce
 
 from django import forms
 from django.db import models

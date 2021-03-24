@@ -5,7 +5,6 @@ from .registry import Registry
 from .route import Route
 from .views.generic import TemplateView
 
-
 site = Registry(
     views=[
         Route.factory(

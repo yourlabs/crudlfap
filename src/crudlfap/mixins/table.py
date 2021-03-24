@@ -1,11 +1,9 @@
 import collections
 
-from django import template
+import django_tables2 as tables
 from django.db import models
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-
-import django_tables2 as tables
 from django_tables2.config import RequestConfig
 
 from crudlfap import html
@@ -36,7 +34,7 @@ class ActionsColumn(tables.Column):
         )
         for view in views:
             button = html.Component(
-                f'<button class="material-icons mdc-icon-button" ryzom-id="308bade28a8c11ebad3800e18cb957e9" style="color: {getattr(view, "color", "")}; --mdc-ripple-fg-size:28px; --mdc-ripple-fg-scale:1.7142857142857142; --mdc-ripple-left:10px; --mdc-ripple-top:10px;">{getattr(view, "icon", "")}</button>',
+                f'<button class="material-icons mdc-icon-button" ryzom-id="308bade28a8c11ebad3800e18cb957e9" style="color: {getattr(view, "color", "")}; --mdc-ripple-fg-size:28px; --mdc-ripple-fg-scale:1.7142857142857142; --mdc-ripple-left:10px; --mdc-ripple-top:10px;">{getattr(view, "icon", "")}</button>',  # noqa
                 title=view.title.capitalize(),
                 href=view.url + '?next=' + table.request.path_info,
                 style='text-decoration: none',

@@ -6,15 +6,12 @@ don't trust myself either :)
 """
 from datetime import timedelta
 
-from crudlfap import shortcuts as crudlfap
-
-from crudlfap_auth.crudlfap import User
-
-from crudlfap_example.blog.models import Post
-
+import pytest
 from django.utils import timezone
 
-import pytest
+from crudlfap import shortcuts as crudlfap
+from crudlfap_auth.crudlfap import User
+from crudlfap_example.blog.models import Post
 
 
 def user(**attrs):

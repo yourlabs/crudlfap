@@ -1,9 +1,8 @@
-from crudlfap import shortcuts as crudlfap
-
+import pytest
 from django.contrib.auth.models import Group, Permission
 from django.urls import resolve, reverse
 
-import pytest
+from crudlfap import shortcuts as crudlfap
 
 from .crudlfap import User
 

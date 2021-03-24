@@ -1,7 +1,7 @@
-from crudlfap import shortcuts as crudlfap
-
 from django.conf import settings
 from django.urls import include, path, re_path
+
+from crudlfap import shortcuts as crudlfap
 
 urlpatterns = [
     crudlfap.site.urlpattern,

@@ -5,14 +5,12 @@ It's a bit paranoid, but i'll sleep better with this: i don't trust users, i
 don't trust myself either :)
 """
 
+import pytest
+
 from crudlfap import shortcuts as crudlfap
-
 from crudlfap_auth.crudlfap import User
-
 from crudlfap_example.artist.models import Artist
 from crudlfap_example.song.models import Song
-
-import pytest
 
 
 def user(**attrs):

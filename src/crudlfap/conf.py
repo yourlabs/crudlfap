@@ -1,7 +1,6 @@
 import importlib
 from typing import Any, Dict, List, Optional
 
-
 SOURCEREF = List[Dict[str, Optional[Dict[str, Any]]]]
 
 __all__ = (

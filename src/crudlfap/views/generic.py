@@ -13,7 +13,6 @@ from django.views import generic
 from .. import mixins
 from ..route import Route
 
-
 if 'django.contrib.admin' in settings.INSTALLED_APPS:
     from django.contrib.admin.models import LogEntry
 else:

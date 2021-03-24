@@ -10,14 +10,12 @@ Crudlfa+ takes views further than Django and are expected to:
 
 import logging
 
-from crudlfap import shortcuts as crudlfap
-
 from django import http
-from django.contrib import auth
-from django.contrib import messages
+from django.contrib import auth, messages
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 from django.utils.translation import ugettext_lazy as _
 
+from crudlfap import shortcuts as crudlfap
 
 logger = logging.getLogger()
 

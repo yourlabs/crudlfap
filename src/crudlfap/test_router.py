@@ -1,12 +1,10 @@
-from crudlfap import shortcuts as crudlfap
-
-from crudlfap_example.artist.models import Artist
-
+import pytest
 from django.db import models
 from django.urls import resolve, reverse
 from django.views import generic
 
-import pytest
+from crudlfap import shortcuts as crudlfap
+from crudlfap_example.artist.models import Artist
 
 from .route import Route
 from .router import Router

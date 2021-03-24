@@ -1,10 +1,9 @@
-from crudlfap.site import site as default_site
-
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-
 from lookupy import Collection
+
+from crudlfap.site import site as default_site
 
 
 class ControllerManager(models.Manager):

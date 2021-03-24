@@ -6,7 +6,6 @@ from django.urls import path
 from .factory import Factory
 from .router import ViewsDescriptor
 
-
 crudlfap = apps.get_app_config('crudlfap')  # pylint: disable=invalid-name
 
 

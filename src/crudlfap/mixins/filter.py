@@ -1,7 +1,6 @@
+import django_filters
 from django import forms
 from django.db import models
-
-import django_filters
 
 
 class FilterMixin(object):
@@ -42,7 +41,7 @@ class FilterMixin(object):
     def get_filterset_meta_filter_overrides(self):
         return {
             models.CharField: {
-               'filterset_class': django_filters.CharFilter,
+               'filterset_class': django_filters.CharFilter,  # noqa
                'extra': lambda f: {
                    'lookup_expr': 'icontains',
                },

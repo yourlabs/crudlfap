@@ -56,7 +56,6 @@ from .route import Route
 from .settings import CRUDLFAP_VIEWS
 from .utils import guess_urlfield
 
-
 crudlfap = apps.get_app_config('crudlfap')  # pylint: disable=invalid-name
 
 

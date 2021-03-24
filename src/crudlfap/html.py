@@ -1,16 +1,13 @@
 from django.conf import settings
-from django.utils.translation import ugettext as _
 from django.urls import reverse
-
+from django.utils.translation import ugettext as _
 from ryzom_django_mdc.html import *  # noqa
-
-import django_tables2 as tables
 
 
 class A(A):
     attrs = dict(
         up_target='#main, .mdc-top-app-bar__title, #drawer .mdc-list',
-        #up_transition='cross-fade',
+        # up_transition='cross-fade',
     )
 
 
@@ -33,7 +30,10 @@ class PageMenu(Div):
                     v.label.capitalize(),
                     icon=getattr(v, 'icon', None),
                     tag='span',
-                    style=f'margin: 10px; color: {getattr(v, "color", "inherit")}',
+                    style={
+                        'margin': '10px',
+                        'color': getattr(v, 'color', 'inherit'),
+                    },
                 ),
                 href=v.url,
                 style='text-decoration: none',
@@ -46,10 +46,10 @@ class PageMenu(Div):
 
         return super().to_html(
             *content,
-            '<div class="mdc-elevation-overlay"></div><div class="mdc-button__ripple"></div>',
+            '<div class="mdc-elevation-overlay"></div>',
+            '<div class="mdc-button__ripple"></div>',
             **context,
         )
-
 
 
 class Main(Main):
@@ -122,7 +122,7 @@ class FormTemplate(Form):
     )
 
     def to_html(self, view, form, **context):
-        back=''
+        back = ''
         if next_ := view.request.GET.get('next', ''):
             back = A(
                 MDCButton(
@@ -152,7 +152,7 @@ class LoggedOut(Div):
         from .site import site
         return super().to_html(
             H1(_('Log out')),
-            P(_('Thanks for spending some quality time with the Web site today.')),
+            P(_('Thanks for spending some quality time with the Web site today.')),  # noqa
             A(
                 _('Log in again'),
                 href=site.views['login'].url,
@@ -238,7 +238,10 @@ class ObjectList(Div):
         # align "actions" title to the right with the buttons
         thead.tr.content[-1].attrs.style['text-align'] = 'right'
 
-        table = MDCDataTable(thead=thead, style='min-width: 100%; border-width: 0')
+        table = MDCDataTable(thead=thead, style={
+            'min-width': '100%',
+            'border-width': 0,
+        })
 
         for row in context['view'].table.paginated_rows:
             table.tbody.addchild(
@@ -297,7 +300,11 @@ class ObjectList(Div):
         filters_chips = Div(
             toggle=toggle,
             search=search_form or '',
-            chips=Div(cls='mdc-chip-set', role='grid', style='display: inline-block')
+            chips=Div(
+                cls='mdc-chip-set',
+                role='grid',
+                style='display: inline-block',
+            )
         )
 
         def remove_filter_url(name):
@@ -324,7 +331,11 @@ class ObjectList(Div):
                 ),
                 icon=I(
                     'cancel',
-                    cls='material-icons mdc-chip__icon mdc-chip__icon--trailing',
+                    cls=(
+                        'material-icons',
+                        'mdc-chip__icon',
+                        'mdc-chip__icon--trailing',
+                    ),
                     tabindex='-1',
                     role='button',
                 ),
@@ -420,8 +431,8 @@ class ObjectList(Div):
         for column, cell in row.items():
             # todo: localize values
             tr.addchild(MDCDataTableTd(cell))
-            # if is numeric
-            #td.attrs.addcls = 'mdc-data-table__header-cell--numeric'
+            # todo: if is numeric
+            # td.attrs.addcls = 'mdc-data-table__header-cell--numeric'
         return tr
 
     def th_component(self, column, **context):
@@ -439,7 +450,6 @@ class ObjectList(Div):
         # sorting
         if column.orderable:
             th.attrs.addcls = 'mdc-data-table__header-cell--with-sort'
-            sort = context['view'].request.GET.get('sort', '')
             if column.is_ordered:
                 th.attrs.addcls = 'mdc-data-table__header-cell--sorted'
             get = context['view'].request.GET.copy()
@@ -451,7 +461,11 @@ class ObjectList(Div):
             ])
             th.wrapper.content += [
                 A(
-                    cls='mdc-icon-button material-icons mdc-data-table__sort-icon-button',
+                    cls=(
+                        'mdc-icon-button',
+                        'material-icons',
+                        'mdc-data-table__sort-icon-button',
+                    ),
                     aria_label='Sort by dessert',
                     aria_describedby='dessert-status-label',
                     up_target='table',
@@ -489,14 +503,22 @@ class ObjectList(Div):
                 ]))
             ),
             A(
-                cls='mdc-icon-button material-icons mdc-data-table__pagination-button',
+                cls=(
+                    'mdc-icon-button',
+                    'material-icons',
+                    'mdc-data-table__pagination-button',
+                ),
                 disabled=page.number == 1,
                 href=pageurl(1),
                 icon=Div(cls='mdc-button__icon', text=Text('first_page')),
                 up_target='.mdc-data-table',
             ),
             A(
-                cls='mdc-icon-button material-icons mdc-data-table__pagination-button',
+                cls=(
+                    'mdc-icon-button',
+                    'material-icons',
+                    'mdc-data-table__pagination-button',
+                ),
                 disabled=not page.has_previous(),
                 icon=Div(cls='mdc-button__icon', text=Text('chevron_left')),
                 href=pageurl(
@@ -507,7 +529,11 @@ class ObjectList(Div):
                 up_target='.mdc-data-table',
             ),
             A(
-                cls='mdc-icon-button material-icons mdc-data-table__pagination-button',
+                cls=(
+                    'mdc-icon-button',
+                    'material-icons',
+                    'mdc-data-table__pagination-button',
+                ),
                 disabled=not page.has_next(),
                 icon=Div(cls='mdc-button__icon', text=Text('chevron_right')),
                 href=pageurl(
@@ -518,7 +544,11 @@ class ObjectList(Div):
                 up_target='.mdc-data-table',
             ),
             A(
-                cls='mdc-icon-button material-icons mdc-data-table__pagination-button',
+                cls=(
+                    'mdc-icon-button',
+                    'material-icons',
+                    'mdc-data-table__pagination-button',
+                ),
                 disabled=page.paginator.num_pages == page.number,
                 icon=Div(cls='mdc-button__icon', text=Text('last_page')),
                 href=pageurl(page.paginator.num_pages),
@@ -532,12 +562,16 @@ class ObjectList(Div):
                 cls='mdc-data-table__pagination-rows-per-page-label'
             ),
             select=MDCSelectPerPage(
-                addcls='mdc-select--outlined mdc-select--no-label mdc-data-table__pagination-rows-per-page-select',
+                addcls=(
+                    'mdc-select--outlined',
+                    'mdc-select--no-label',
+                    'mdc-data-table__pagination-rows-per-page-select',
+                ),
                 select=Select(*[
                     Option(
                         str(i),
                         value=i,
-                        selected=context['view'].table.page.paginator.per_page == i
+                        selected=page.paginator.per_page == i
                     )
                     for i in (3, 5, 7, 10, 25, 100)
                 ])
@@ -566,15 +600,15 @@ class mdcTopAppBar(Header):
             Section(
                 Button(
                     'menu',
-                    cls='material-icons mdc-top-app-bar__navigation-icon mdc-icon-button',
+                    cls='material-icons mdc-top-app-bar__navigation-icon mdc-icon-button',  # noqa
                 ),
                 Span(
                     view.title,
                     cls='mdc-top-app-bar__title',
                 ),
-                cls='mdc-top-app-bar__section mdc-top-app-bar__section--align-start',
+                cls='mdc-top-app-bar__section mdc-top-app-bar__section--align-start',  # noqa
             ),
-            cls='mdc-top-app-bar__section mdc-top-app-bar__section--align-start',
+            cls='mdc-top-app-bar__section mdc-top-app-bar__section--align-start',  # noqa
             tag='section',
         )]
         return super().to_html(**context)
@@ -586,8 +620,10 @@ class mdcTopAppBar(Header):
         window.addEventListener('DOMContentLoaded', self.setup)
 
     def setup():
-        window.drawer = mdc.drawer.MDCDrawer.attachTo(document.getElementById('drawer'))
-        topAppBar = mdc.topAppBar.MDCTopAppBar.attachTo(document.getElementById('app-bar'))
+        window.drawer = mdc.drawer.MDCDrawer.attachTo(
+            document.getElementById('drawer'))
+        topAppBar = mdc.topAppBar.MDCTopAppBar.attachTo(
+            document.getElementById('app-bar'))
         topAppBar.setScrollTarget(document.getElementById('main'))
         topAppBar.listen('MDCTopAppBar:nav', self.nav)
 
@@ -599,7 +635,7 @@ class mdcDrawer(Aside):
                 *content,
                 cls='mdc-drawer__content',
             ),
-            cls='mdc-drawer mdc-drawer--dismissible mdc-top-app-bar--fixed-adjust' ,
+            cls='mdc-drawer mdc-drawer--dismissible mdc-top-app-bar--fixed-adjust',  # noqa
             data_mdc_auto_init='MDCDrawer',
             **attrs,
         )
@@ -611,8 +647,8 @@ class mdcDrawer(Aside):
         content = []
         for view in site.get_menu('main', request):
             router = getattr(view, 'router', None)
-            if view.router:
-                icon = getattr(view.router, 'icon', None)
+            if router:
+                icon = getattr(router, 'icon', None)
                 title = getattr(view, 'model_verbose_name', view.title)
             else:
                 icon = getattr(view, 'icon', None)
@@ -638,6 +674,7 @@ class mdcDrawer(Aside):
             ))
 
         return super().to_html(MDCList(*content))
+
 
 class mdcAppContent(Div):
     def __init__(self, *content):

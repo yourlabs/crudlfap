@@ -1,8 +1,8 @@
 import re
 
-from crudlfap_example.artist.models import Artist
-
 from django.views import generic
+
+from crudlfap_example.artist.models import Artist
 
 from .route import Route
 from .router import Router

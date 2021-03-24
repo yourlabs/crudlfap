@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-import django
 import os
+
+import django
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crudlfap_example.settings")
 os.environ.setdefault("DEBUG", "1")

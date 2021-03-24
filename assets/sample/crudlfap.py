@@ -1,8 +1,8 @@
 """Extending CRUDLFAP features."""
 
 from crudlfap import crudlfap
-from .models import Post
 
+from .models import Post
 
 crudlfap.Router(
     Post,

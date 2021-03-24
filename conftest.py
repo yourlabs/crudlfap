@@ -1,5 +1,4 @@
 import pytest
-
 from django.contrib.sessions.backends.base import SessionBase
 from django.test.client import RequestFactory as drf
 

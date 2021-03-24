@@ -4,8 +4,6 @@ import copy
 from django import forms
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
 from django.contrib.contenttypes.models import ContentType
-from django.utils.html import format_html
-from django.utils.safestring import mark_safe
 
 from crudlfap import html
 
