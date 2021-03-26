@@ -61,12 +61,14 @@ review-deploy:
 
 master-deploy:
   image: yourlabs/ansible
-  stage: test
+  stage: deploy
   environment:
     name: master
     url: https://master.crudlfap.ci.yourlabs.io
   variables:
-    COMPOSE: docker-compose.yml,docker-compose.traefik.yml,docker-compose.persist.yml
+    DEPLOY: >
+      compose=docker-compose.yml,docker-compose.traefik.yml,docker-compose.persist.yml
+      home=/home/crudlfap-master
   only:
     refs:
       - master
@@ -74,12 +76,14 @@ master-deploy:
 
 demo:
   image: yourlabs/ansible
-  stage: test
+  stage: deploy
   environment:
-    name: release
+    name: demo
     url: https://demo.crudlfap.ci.yourlabs.io
   variables:
-    COMPOSE: docker-compose.yml,docker-compose.traefik.yml,docker-compose.persist.yml
+    DEPLOY: >
+      compose=docker-compose.yml,docker-compose.traefik.yml,docker-compose.persist.yml
+      home=/home/crudlfap-demo
   only: [tags]
   <<: *deploy
 
