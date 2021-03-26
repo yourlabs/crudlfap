@@ -37,6 +37,7 @@ services:
     - DB_USER=django
     - DB_PASS=django
     - DB_ENGINE=django.db.backends.postgresql
+    - DB_HOST=postgres
 
   postgres:
     logging:
