@@ -8,10 +8,10 @@ services:
     labels:
       - "io.yourlabs.compose.mkdir=./data/media,./log:1000:1000:0750"
       - "traefik.http.middlewares.${CI_ENVIRONMENT_SLUG}-redirect.redirectregex.regex=^https?://${HOST}/(.*)"
-      - "traefik.http.middlewares.${CI_ENVIRONMENT_SLUG}-redirect.redirectregex.replacement=https://www.${HOST}/$${1}"
+      - "traefik.http.middlewares.${CI_ENVIRONMENT_SLUG}-redirect.redirectregex.replacement=https://${HOST}/$${1}"
       - "traefik.http.routers.${CI_ENVIRONMENT_SLUG}.middlewares=${CI_ENVIRONMENT_SLUG}-redirect"
       - "traefik.http.routers.${CI_ENVIRONMENT_SLUG}-ssl.entryPoints=websecure"
-      - "traefik.http.routers.${CI_ENVIRONMENT_SLUG}-ssl.rule=host(`${HOST}`, `www.${HOST}`)"
+      - "traefik.http.routers.${CI_ENVIRONMENT_SLUG}-ssl.rule=host(`${HOST}`)"
       - "traefik.http.routers.${CI_ENVIRONMENT_SLUG}-ssl.tls=true"
       - "traefik.http.routers.${CI_ENVIRONMENT_SLUG}-ssl.tls.certResolver=leresolver"
       - "traefik.http.routers.${CI_ENVIRONMENT_SLUG}-ssl.service=${CI_ENVIRONMENT_SLUG}-ssl"
