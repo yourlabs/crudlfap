@@ -247,7 +247,7 @@ DATABASES = {
         'NAME': os.getenv('DB_NAME', os.path.join(BASE_DIR, 'db.sqlite3')),
         'HOST': os.getenv('DB_HOST'),
         'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'PASSWORD': os.getenv('DB_PASS'),
     }
 }
 
