@@ -32,13 +32,11 @@ build-test:
     - HOST=$(echo $CI_ENVIRONMENT_URL | sed s@^.*://@@)
       PROTO=$(echo $CI_ENVIRONMENT_URL | sed s@:.*@@)
       bigsudo yourlabs.compose
-      compose=$COMPOSE
       compose_django_build=
       compose_django_image=$IMAGE_TAG
       wait_grep=uwsgi
       pull=no
-      project=$CI_ENVIRONMENT_SLUG
-      lifetime=$LIFETIME
+      $DEPLOY
       crudlfap@ci.yourlabs.io
       | tee deploy.log
     - grep unreachable=0 deploy.log &> /dev/null
@@ -51,8 +49,10 @@ review-deploy:
     name: test/$CI_COMMIT_REF_NAME
     url: http://${CI_ENVIRONMENT_SLUG}.crudlfap.ci.yourlabs.io
   variables:
-    LIFETIME: 86400
-    COMPOSE: docker-compose.yml,docker-compose.traefik.yml
+    DEPLOY: >
+      compose=docker-compose.yml,docker-compose.traefik.yml
+      lifetime=86400
+      project=$CI_ENVIRONMENT_SLUG
   except:
   - tags
   - master
