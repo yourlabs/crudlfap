@@ -55,8 +55,7 @@ review-deploy:
     COMPOSE: docker-compose.yml,docker-compose.traefik.yml
   except:
   - tags
-  - refs:
-    - master
+  - master
   <<: *deploy
 
 master-deploy:
