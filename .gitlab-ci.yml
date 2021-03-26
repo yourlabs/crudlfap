@@ -43,29 +43,25 @@ build-test:
       | tee deploy.log
     - grep unreachable=0 deploy.log &> /dev/null
     - grep failed=0 deploy.log &> /dev/null
-    - echo $HOST | tee target
 
 review-deploy:
   image: yourlabs/ansible
   stage: test
-  artifacts:
-    paths:
-      - target
   environment:
     name: test/$CI_COMMIT_REF_NAME
     url: http://${CI_ENVIRONMENT_SLUG}.crudlfap.ci.yourlabs.io
-
   variables:
     LIFETIME: 86400
     COMPOSE: docker-compose.yml,docker-compose.traefik.yml
+  except:
+  - tags
+  - refs:
+    - master
   <<: *deploy
 
 master-deploy:
   image: yourlabs/ansible
   stage: test
-  artifacts:
-    paths:
-      - target
   environment:
     name: master
     url: https://master.crudlfap.ci.yourlabs.io
@@ -79,9 +75,6 @@ master-deploy:
 demo:
   image: yourlabs/ansible
   stage: test
-  artifacts:
-    paths:
-      - target
   environment:
     name: release
     url: https://demo.crudlfap.ci.yourlabs.io
