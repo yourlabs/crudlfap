@@ -33,3 +33,18 @@ services:
     - EMAIL_PORT
     - DEFAULT_FROM_EMAIL
     - SECRET_KEY
+    - DB_NAME=django
+    - DB_USER=django
+    - DB_PASS=django
+    - DB_ENGINE=django.db.backends.postgresql
+
+  postgres:
+    logging:
+      driver: journald
+    image: postgres:13
+    environment:
+    - POSTGRES_DB=django
+    - POSTGRES_USER=django
+    - POSTGRES_PASSWORD=django
+    volumes:
+    - /var/lib/postgresql/data

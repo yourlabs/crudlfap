@@ -25,6 +25,26 @@ build-test:
     - pip install pytest pytest-cov pytest-asyncio pytest-django
     - pytest -vv --cov src --cov-report=xml:coverage.xml --cov-report=term-missing --strict -r fEsxXw src
 
+.deploy: &deploy
+  before_script:
+    - mkdir -p ~/.ssh; echo "$CI_SSH_KEY" > ~/.ssh/id_ed25519; echo "$SSH_FINGERPRINTS" > ~/.ssh/known_hosts; chmod 700 ~/.ssh; chmod 600 ~/.ssh/*
+  script:
+    - HOST=$(echo $CI_ENVIRONMENT_URL | sed s@^.*://@@)
+      PROTO=$(echo $CI_ENVIRONMENT_URL | sed s@:.*@@)
+      bigsudo yourlabs.compose
+      compose=$COMPOSE
+      compose_django_build=
+      compose_django_image=$IMAGE_TAG
+      wait_grep=uwsgi
+      pull=no
+      project=$CI_ENVIRONMENT_SLUG
+      lifetime=$LIFETIME
+      crudlfap@ci.yourlabs.io
+      | tee deploy.log
+    - grep unreachable=0 deploy.log &> /dev/null
+    - grep failed=0 deploy.log &> /dev/null
+    - echo $HOST | tee target
+
 review-deploy:
   image: yourlabs/ansible
   stage: test
@@ -34,23 +54,41 @@ review-deploy:
   environment:
     name: test/$CI_COMMIT_REF_NAME
     url: http://${CI_ENVIRONMENT_SLUG}.crudlfap.ci.yourlabs.io
-  before_script:
-    - mkdir -p ~/.ssh; echo "$CI_SSH_KEY" > ~/.ssh/id_ed25519; echo "$SSH_FINGERPRINTS" > ~/.ssh/known_hosts; chmod 700 ~/.ssh; chmod 600 ~/.ssh/*
-  script:
-    - export HOST=${CI_ENVIRONMENT_SLUG}.crudlfap.ci.yourlabs.io
-    - bigsudo yourlabs.compose
-      compose=docker-compose.yml,docker-compose.traefik.yml
-      compose_django_build=
-      compose_django_image=$IMAGE_TAG
-      wait_grep=uwsgi
-      pull=no
-      project=$CI_ENVIRONMENT_SLUG
-      lifetime=86400
-      crudlfap@ci.yourlabs.io
-      | tee deploy.log
-    - grep unreachable=0 deploy.log &> /dev/null
-    - grep failed=0 deploy.log &> /dev/null
-    - echo $HOST | tee target
+
+  variables:
+    LIFETIME: 86400
+    COMPOSE: docker-compose.yml,docker-compose.traefik.yml
+  <<: *deploy
+
+master-deploy:
+  image: yourlabs/ansible
+  stage: test
+  artifacts:
+    paths:
+      - target
+  environment:
+    name: master
+    url: https://master.crudlfap.ci.yourlabs.io
+  variables:
+    COMPOSE: docker-compose.yml,docker-compose.traefik.yml,docker-compose.persist.yml
+  only:
+    refs:
+      - master
+  <<: *deploy
+
+demo:
+  image: yourlabs/ansible
+  stage: test
+  artifacts:
+    paths:
+      - target
+  environment:
+    name: release
+    url: https://demo.crudlfap.ci.yourlabs.io
+  variables:
+    COMPOSE: docker-compose.yml,docker-compose.traefik.yml,docker-compose.persist.yml
+  only: [tags]
+  <<: *deploy
 
 docs-qa:
   stage: build
