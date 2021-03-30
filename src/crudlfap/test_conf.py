@@ -6,7 +6,7 @@ def get_installed():
 
 
 def test_install_optional():
-    bs3 = {'bootstrap3': {'after': 'crudlfap'}}
+    bs3 = {'debug_toolbar': {'after': 'django.contrib.staticfiles'}}
     messages = {
         'django.contrib.messages': {
             'before': 'django.contrib.staticfiles'
@@ -20,12 +20,17 @@ def test_install_optional():
     }
     after = get_installed()
     install_optional([bs3], after)
-    expect = ['django.contrib.staticfiles', 'crudlfap', 'bootstrap3', 'myapp']
+    expect = [
+        'django.contrib.staticfiles',
+        'debug_toolbar',
+        'crudlfap',
+        'myapp',
+    ]
     assert after == expect, "Failed to insert bootstrap3 after crudlfap"
     before_and_after = get_installed()
     install_optional([bs3, messages], before_and_after)
     expected = ['django.contrib.messages', 'django.contrib.staticfiles',
-                'crudlfap', 'bootstrap3', 'myapp']
+                'debug_toolbar', 'crudlfap', 'myapp']
     assert before_and_after == expected, "Failed before and after"
     nono = get_installed()
     install_optional([nonexistent], nono)

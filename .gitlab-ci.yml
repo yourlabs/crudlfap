@@ -15,6 +15,78 @@ build:
   after_script:
   - docker logout
 
+build-test:
+  image:
+    name: $IMAGE_TAG
+    entrypoint: ["/bin/sh", "-c"]
+  stage: test
+  script:
+    - pip install -e .[dev]
+    - pip install pytest pytest-cov pytest-asyncio pytest-django
+    - pytest -vv --cov src --cov-report=xml:coverage.xml --cov-report=term-missing --strict -r fEsxXw src
+
+.deploy: &deploy
+  before_script:
+    - mkdir -p ~/.ssh; echo "$CI_SSH_KEY" > ~/.ssh/id_ed25519; echo "$SSH_FINGERPRINTS" > ~/.ssh/known_hosts; chmod 700 ~/.ssh; chmod 600 ~/.ssh/*
+  script:
+    - set -x
+    - HOST=$(echo $CI_ENVIRONMENT_URL | sed s@^.*://@@)
+      PROTO=$(echo $CI_ENVIRONMENT_URL | sed s@:.*@@)
+      bigsudo yourlabs.compose
+      compose_django_build=
+      compose_django_image=$IMAGE_TAG
+      wait_grep=uwsgi
+      pull=no
+      $DEPLOY
+      crudlfap@ci.yourlabs.io
+      | tee deploy.log
+    - grep unreachable=0 deploy.log &> /dev/null
+    - grep failed=0 deploy.log &> /dev/null
+
+review-deploy:
+  image: yourlabs/ansible
+  stage: test
+  environment:
+    name: test/$CI_COMMIT_REF_NAME
+    url: http://${CI_ENVIRONMENT_SLUG}.crudlfap.ci.yourlabs.io
+  variables:
+    DEPLOY: >
+      compose=docker-compose.yml,docker-compose.traefik.yml
+      lifetime=86400
+      project=$CI_ENVIRONMENT_SLUG
+  except:
+  - tags
+  - master
+  <<: *deploy
+
+master-deploy:
+  image: yourlabs/ansible
+  stage: deploy
+  environment:
+    name: master
+    url: https://master.crudlfap.ci.yourlabs.io
+  variables:
+    DEPLOY: >
+      compose=docker-compose.yml,docker-compose.traefik.yml,docker-compose.persist.yml
+      home=/home/crudlfap-master
+  only:
+    refs:
+      - master
+  <<: *deploy
+
+demo:
+  image: yourlabs/ansible
+  stage: deploy
+  environment:
+    name: demo
+    url: https://demo.crudlfap.ci.yourlabs.io
+  variables:
+    DEPLOY: >
+      compose=docker-compose.yml,docker-compose.traefik.yml,docker-compose.persist.yml
+      home=/home/crudlfap-demo
+  only: [tags]
+  <<: *deploy
+
 docs-qa:
   stage: build
   image: yourlabs/python
@@ -27,56 +99,13 @@ py-qa:
 
 py-test:
   stage: build
-  image: yourlabs/python
+  image: yourlabs/python-arch
   script:
-  - tox -e py38-dj31
+  - tox -e py39-dj31
   - codecov-bash -e TOXENV -f coverage.xml
-
-js-qa:
-  image: node:10-alpine
-  stage: build
-  script:
-  - cd js
-  - yarn install
-  - yarn run lint
-
-# lets first have tests then enable this one
-#js-test:
-#  image: node:10-alpine
-#  stage: build
-#  script:
-#  - npm install -g codecov
-#  - cd js
-#  - yarn install
-#  - yarn test
-#  - codecov
-
-npm:
-  stage: deploy
-  only:
-  - /^v\d+\./
-  image: node:10-alpine
-  variables:
-    NODE_ENV: production
-  script:
-  - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ~/.npmrc
-  - sed -i "s/GIT_TAG/${CI_COMMIT_REF_NAME/v/}/" js/package.json
-  - grep version js/package.json
-  - cd js; npm publish
 
 pypi:
   stage: deploy
   image: yourlabs/python
   script: pypi-release
-
-docker-release:
-  stage: deploy
-  image: docker:stable
-  before_script:
-  - echo "$DOCKER_PASS" | docker login -u $DOCKER_USER --password-stdin
-  script:
-  - docker pull $IMAGE_TAG
-  - docker tag $IMAGE_TAG $RELEASE_TAG
-  - docker push $RELEASE_TAG
-  after_script:
-  - docker logout
+  only: [tags]

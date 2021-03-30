@@ -1,0 +1,36 @@
+version: "3.5"
+services:
+  django:
+    restart: always
+    volumes:
+      - ./data/media:/app/media
+      - ./log:/app/log
+    labels:
+      - "io.yourlabs.compose.mkdir=./data/media,./log:1000:1000:0750"
+      - "traefik.http.middlewares.${CI_ENVIRONMENT_SLUG}-redirect.redirectregex.regex=^https?://${HOST}/(.*)"
+      - "traefik.http.middlewares.${CI_ENVIRONMENT_SLUG}-redirect.redirectregex.replacement=https://${HOST}/$${1}"
+      - "traefik.http.routers.${CI_ENVIRONMENT_SLUG}.middlewares=${CI_ENVIRONMENT_SLUG}-redirect"
+      - "traefik.http.routers.${CI_ENVIRONMENT_SLUG}-ssl.entryPoints=websecure"
+      - "traefik.http.routers.${CI_ENVIRONMENT_SLUG}-ssl.rule=host(`${HOST}`)"
+      - "traefik.http.routers.${CI_ENVIRONMENT_SLUG}-ssl.tls=true"
+      - "traefik.http.routers.${CI_ENVIRONMENT_SLUG}-ssl.tls.certResolver=leresolver"
+      - "traefik.http.routers.${CI_ENVIRONMENT_SLUG}-ssl.service=${CI_ENVIRONMENT_SLUG}-ssl"
+      - "traefik.http.services.${CI_ENVIRONMENT_SLUG}-ssl.loadBalancer.server.port=8000"
+      - "traefik.docker.network=web"
+    networks:
+      - web
+      - default
+
+  postgres:
+    restart: always
+    networks:
+      - default
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+      - ./dump:/dump
+    labels:
+      - "io.yourlabs.compose.mkdir=./dump,./data/postgres,./log/postgres:999:999:0700"
+
+networks:
+  web:
+    external: true

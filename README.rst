@@ -18,6 +18,11 @@ This plugin for Django makes a rich user interface from Django models, built
 with Material Components Web Ryzom Components, offering optionnal databinding
 with channels support.
 
+Demo:
+
+- last release: https://demo.crudlfap.ci.yourlabs.io/
+- curront master (might be down/broken etc): https://master.crudlfap.ci.yourlabs.io/
+
 Try
 ===
 
