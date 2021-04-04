@@ -310,7 +310,7 @@ class ObjectList(Div):
         )
 
         filters_chips = Div(
-            toggle=toggle,
+            toggle=toggle if context['view'].filterset.form.fields else '',
             search=search_form or '',
             chips=Div(
                 cls='mdc-chip-set',
@@ -359,8 +359,8 @@ class ObjectList(Div):
         return filters_chips
 
     def drawer_component(self, **context):
-        filterset = getattr(context['view'], 'filterset', None)
-        if not filterset:
+        filterset = context['view'].filterset
+        if not filterset.form.fields:
             return
         form = Form(
             method='get',
