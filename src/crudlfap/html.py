@@ -187,6 +187,8 @@ class ObjectDetail(Div):
 
 
 class ListAction(Div):
+    style = {'display': 'inline-block'}
+
     def onclick(element):
         link = element.attributes.href.value + '?'
         for checkbox in document.querySelectorAll('[data-pk]:checked'):
@@ -196,14 +198,16 @@ class ListAction(Div):
 
 class ListActions(Component):
     tag = 'list-actions'
+    style = {'display': 'none'}
 
     class HTMLElement:
         def connectedCallback(self):
             this.previousElementSibling.addEventListener(
                 'change', this.change.bind(this))
+            this.change({'target': this.previousElementSibling.querySelector(':checked')})
 
         def change(self, event):
-            if event.target.checked:
+            if event.target and event.target.checked:
                 this.style.display = 'block'
             elif not this.previousElementSibling.querySelector(':checked'):
                 this.style.display = 'none'
