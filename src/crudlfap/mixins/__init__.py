@@ -1,7 +1,7 @@
 # flake8: noqa: F401
 
-from .crud import (CreateMixin, DeleteMixin, DetailMixin, HistoryMixin,
-                   ListMixin, UpdateMixin)
+from .crud import (ActionMixin, CreateMixin, DeleteMixin, DetailMixin,
+                   HistoryMixin, ListMixin, UpdateMixin)
 from .filter import FilterMixin
 from .form import FormMixin
 from .lock import LockMixin

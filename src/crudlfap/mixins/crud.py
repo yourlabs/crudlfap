@@ -25,7 +25,35 @@ class CreateMixin:
         return super().form_valid()
 
 
-class DeleteMixin:
+class ActionMixin:
+    def has_perm(self):
+        """
+        Call has_perm_object or return True.
+
+        When called without an object, return True if router agrees.
+
+        Otherwise, return the result of has_perm_object(), that you must
+        implement, to return wether permission is accepted for a particular
+        object.
+
+        To override yourself, again go inside an if super().has_perm(): to
+        benefit from this behaviour.
+        """
+        if super().has_perm():
+            if hasattr(self, 'object'):
+                return self.has_perm_object()
+            return True
+
+    def has_perm_object(self):
+        """
+        Override this method: test self.object then return True.
+
+        By default, return True.
+        """
+        return True
+
+
+class DeleteMixin(ActionMixin):
     style = 'danger'
     fa_icon = 'trash'
     icon = 'delete'
