@@ -414,6 +414,7 @@ class ObjectList(Div):
             up_autosubmit=True,
             up_delay='200ms',
             up_target='.mdc-data-table, .mdc-chip-set',
+            style='margin-left: 14px',
         )
         for k, v in context['view'].request.GET.items():
             if k == 'q':
