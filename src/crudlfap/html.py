@@ -203,8 +203,13 @@ class ListActions(Component):
     class HTMLElement:
         def connectedCallback(self):
             this.previousElementSibling.addEventListener(
-                'change', this.change.bind(this))
-            this.change({'target': this.previousElementSibling.querySelector(':checked')})
+                'change',
+                this.change.bind(this),
+            )
+
+            this.change({
+                'target': this.previousElementSibling.querySelector(':checked')
+            })
 
         def change(self, event):
             if event.target and event.target.checked:
@@ -223,18 +228,21 @@ class ObjectList(Div):
         return super().context(*content, **context)
 
     def to_html(self, **context):
-        if context['view'].listactions:
+        checkbox = None
+        context['listactions'] = context['view'].router.get_menu(
+            'list_action',
+            context['view'].request,
+        )
+
+        if context['listactions']:
             table_checkbox = MDCCheckboxInput()
             table_checkbox.attrs.addcls = 'mdc-data-table__header-row-checkbox'
 
-            thead = MDCDataTableThead(tr=MDCDataTableHeaderTr(
-                MDCDataTableTh(
-                    table_checkbox,
-                    addcls='mdc-data-table__header-cell--checkbox',
-                )
-            ))
-        else:
-            thead = MDCDataTableThead(tr=MDCDataTableHeaderTr())
+            checkbox = MDCDataTableTh(
+                table_checkbox,
+                addcls='mdc-data-table__header-cell--checkbox',
+            )
+        thead = MDCDataTableThead(tr=MDCDataTableHeaderTr(checkbox))
 
         for column in context['view'].table.columns:
             thead.tr.addchild(self.th_component(column, **context))
@@ -252,7 +260,7 @@ class ObjectList(Div):
                 self.row_component(row, **context)
             )
 
-        if context['view'].listactions:
+        if context['listactions']:
             table.addchild(self.listactions_component(**context))
 
         table.addchild(self.pagination_component(**context))
@@ -418,7 +426,12 @@ class ObjectList(Div):
         return search_form
 
     def row_component(self, row, **context):
-        if context['view'].listactions:
+        show_checkbox = False
+        for listaction in context['listactions']:
+            if listaction.clone(object=row.record)().has_perm():
+                show_checkbox = True
+
+        if show_checkbox:
             checkboxinput = MDCCheckboxInput(
                 data_pk=str(row.record.pk)
             )
@@ -429,6 +442,8 @@ class ObjectList(Div):
                     addcls='mdc-data-table__cell--checkbox',
                 )
             )
+        elif context['listactions']:
+            tr = MDCDataTableTr(MDCDataTableTd())
         else:
             tr = MDCDataTableTr()
 
