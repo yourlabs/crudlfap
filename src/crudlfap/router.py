@@ -85,6 +85,15 @@ class Views(list):
                 return view
 
     def __setitem__(self, key, value):
+        if len(self):
+            first = self[0]
+            kwargs = dict()
+            if model := getattr(first, 'model', None):
+                kwargs['model'] = model
+            if router := getattr(first, 'router', None):
+                kwargs['router'] = router
+            value = value.clone(**kwargs)
+
         if isinstance(key, int):
             return super().__setitem__(key, value)
 
