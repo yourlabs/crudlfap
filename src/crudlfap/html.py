@@ -11,6 +11,33 @@ class A(A):
     )
 
 
+class Form(Form):
+    attrs = dict(
+        up_target=A.attrs['up-target'],
+        method='post',
+    )
+
+
+class Container(Div):
+    style = {
+        'display': 'flex',
+        'flex-direction': 'column',
+        'align-items': 'center',
+        'max-width': '960px',
+        'width': '96vw',
+        'margin': 'auto',
+    }
+
+
+class FormContainer(Container):
+    sass = '''
+    .FormContainer
+        max-width: 580px
+        .mdc-text-field, .mdc-form-field, .mdc-select, form
+            width: 100%
+    '''
+
+
 class PageMenu(Div):
     attrs = dict(cls='mdc-elevation--z2', style='margin-bottom: 10px')
 
@@ -111,16 +138,10 @@ class NarrowCard(Div):
     }
 
 
-@template('crudlfap/form.html', App, NarrowCard)
-@template('crudlfap/update.html', App, NarrowCard)
-@template('crudlfap/create.html', App, NarrowCard)
-@template('registration/login.html', App, NarrowCard)
-class FormTemplate(Form):
-    attrs = dict(
-        up_target=A.attrs['up-target'],
-        method='post',
-    )
-
+@template('crudlfap/form.html', App)
+@template('crudlfap/update.html', App)
+@template('crudlfap/create.html', App)
+class FormTemplate(FormContainer):
     def to_html(self, view, form, **context):
         back = ''
         if next_ := view.request.GET.get('next', ''):
