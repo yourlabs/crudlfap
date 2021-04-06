@@ -124,3 +124,36 @@ Example, still in urls.py::
 
 So, there'd be other ways to acheive this but that's how i like to
 do it.
+
+Create list actions
+===================
+
+List actions, such as the delete action, can be implemented as such::
+
+    class DeployMixin(crudlfap.ActionMixin):
+        style = ''
+        icon = 'send'
+        success_url_next = True
+        color = 'green'
+        form_class = forms.Form
+        permission_shortcode = 'send'
+        label = 'deploy'
+
+        def get_success_url(self):
+            return self.router['list'].reverse()
+
+        def has_perm_object(self):
+            return self.object.state == 'held'
+
+
+    class TransactionDeployView(DeployMixin, crudlfap.ObjectFormView):
+        def form_valid(self):
+            self.object.state = 'deploy'
+            self.object.save()
+            return super().form_valid()
+
+
+    class TransactionDeployMultipleView(DeployMixin, crudlfap.ObjectsFormView):
+        def form_valid(self):
+            self.object_list.filter(state='held').update(state='deploy')
+            return super().form_valid()
