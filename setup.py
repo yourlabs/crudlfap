@@ -23,6 +23,7 @@ setup(
         'django-filter',
         'timeago',
         'lookupy-unmanaged',
+        'libsass',
     ],
     tests_require=['tox'],
     extras_require=dict(
