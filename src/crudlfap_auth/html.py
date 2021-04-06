@@ -8,18 +8,22 @@ User = apps.get_model(getattr(settings, 'AUTH_USER_MODEL', 'auth.User'))
 
 @template('registration/login.html', App)
 class LoginFormViewComponent(FormContainer):
+    demo = False
+
     def context(self, *content, **context):
         context['view'].title = 'Login'
         return super().context(*content, **context)
 
     def to_html(self, *content, view, form, **kwargs):
         site = Site.objects.get_current(view.request)
+        content = content or [
+            H2('Welcome to ' + site.name, style='text-align: center;'),
+        ]
         return super().to_html(
             Form(
-                H4('Welcome to ' + site.name, style='text-align: center;'),
+                *content,
                 # OAuthConnect(),
                 # Span('Or enter email and password:', cls='center-text'),
-                Span('Enter email and password:', cls='center-text'),
                 CSRFInput(view.request),
                 form,
                 Div(
