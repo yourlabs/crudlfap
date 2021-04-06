@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.sites.models import Site
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from ryzom_django_mdc.html import *  # noqa
@@ -9,6 +10,33 @@ class A(A):
         up_target='#main, .mdc-top-app-bar__title, #drawer .mdc-list',
         # up_transition='cross-fade',
     )
+
+
+class Form(Form):
+    attrs = dict(
+        up_target=A.attrs['up-target'],
+        method='post',
+    )
+
+
+class Container(Div):
+    style = {
+        'display': 'flex',
+        'flex-direction': 'column',
+        'align-items': 'center',
+        'max-width': '960px',
+        'width': '96vw',
+        'margin': 'auto',
+    }
+
+
+class FormContainer(Container):
+    sass = '''
+    .FormContainer
+        max-width: 580px
+        .mdc-text-field, .mdc-form-field, .mdc-select, form
+            width: 100%
+    '''
 
 
 class PageMenu(Div):
@@ -95,10 +123,18 @@ class App(Html):
         'https://unpkg.com/unpoly@0.62.1/dist/unpoly.min.css',
     ]
 
+    def to_html(self, *content, **context):
+        self.head.content.append(
+            Style('.up-modal-content { padding-top: 0; padding-bottom: 0; }')
+        )
+        if title := getattr(context['view'], 'title', None):
+            self.head.content.append(Title(title))
+        return super().to_html(*content, **context)
+
 
 class NarrowCard(Div):
     style = {
-        'max-width': '25em',
+        'max-width': '95vw',
         'margin': 'auto',
         'padding': '1em',
         'margin-top': '2em',
@@ -111,16 +147,10 @@ class NarrowCard(Div):
     }
 
 
-@template('crudlfap/form.html', App, NarrowCard)
-@template('crudlfap/update.html', App, NarrowCard)
-@template('crudlfap/create.html', App, NarrowCard)
-@template('registration/login.html', App, NarrowCard)
-class FormTemplate(Form):
-    attrs = dict(
-        up_target=A.attrs['up-target'],
-        method='post',
-    )
-
+@template('crudlfap/form.html', App)
+@template('crudlfap/update.html', App)
+@template('crudlfap/create.html', App)
+class FormTemplate(FormContainer):
     def to_html(self, view, form, **context):
         back = ''
         if next_ := view.request.GET.get('next', ''):
@@ -133,17 +163,23 @@ class FormTemplate(Form):
             )
         return super().to_html(
             H3(view.title),
-            form,
-            CSRFInput(view.request),
-            back,
-            MDCButton(getattr(view, 'title_submit', _('Submit'))),
+            Form(
+                form,
+                CSRFInput(view.request),
+                back,
+                MDCButtonRaised(getattr(view, 'title_submit', _('Submit'))),
+            ),
         )
 
 
 @template('crudlfap/home.html', App)
 class Home(Div):
     def to_html(self, **context):
-        return super().to_html(H1('Welcome to Ryzom-CRUDLFA+'), **context)
+        site = Site.objects.get_current()
+        return super().to_html(
+            H1('Welcome to ' + site.name),
+            **context
+        )
 
 
 @template('registration/logged_out.html', App, NarrowCard)
@@ -187,6 +223,8 @@ class ObjectDetail(Div):
 
 
 class ListAction(Div):
+    style = {'display': 'inline-block'}
+
     def onclick(element):
         link = element.attributes.href.value + '?'
         for checkbox in document.querySelectorAll('[data-pk]:checked'):
@@ -196,14 +234,21 @@ class ListAction(Div):
 
 class ListActions(Component):
     tag = 'list-actions'
+    style = {'display': 'none'}
 
     class HTMLElement:
         def connectedCallback(self):
             this.previousElementSibling.addEventListener(
-                'change', this.change.bind(this))
+                'change',
+                this.change.bind(this),
+            )
+
+            this.change({
+                'target': this.previousElementSibling.querySelector(':checked')
+            })
 
         def change(self, event):
-            if event.target.checked:
+            if event.target and event.target.checked:
                 this.style.display = 'block'
             elif not this.previousElementSibling.querySelector(':checked'):
                 this.style.display = 'none'
@@ -219,18 +264,21 @@ class ObjectList(Div):
         return super().context(*content, **context)
 
     def to_html(self, **context):
-        if context['view'].listactions:
+        checkbox = None
+        context['listactions'] = context['view'].router.get_menu(
+            'list_action',
+            context['view'].request,
+        )
+
+        if context['listactions']:
             table_checkbox = MDCCheckboxInput()
             table_checkbox.attrs.addcls = 'mdc-data-table__header-row-checkbox'
 
-            thead = MDCDataTableThead(tr=MDCDataTableHeaderTr(
-                MDCDataTableTh(
-                    table_checkbox,
-                    addcls='mdc-data-table__header-cell--checkbox',
-                )
-            ))
-        else:
-            thead = MDCDataTableThead(tr=MDCDataTableHeaderTr())
+            checkbox = MDCDataTableTh(
+                table_checkbox,
+                addcls='mdc-data-table__header-cell--checkbox',
+            )
+        thead = MDCDataTableThead(tr=MDCDataTableHeaderTr(checkbox))
 
         for column in context['view'].table.columns:
             thead.tr.addchild(self.th_component(column, **context))
@@ -238,7 +286,7 @@ class ObjectList(Div):
         # align "actions" title to the right with the buttons
         thead.tr.content[-1].attrs.style['text-align'] = 'right'
 
-        table = MDCDataTable(thead=thead, style={
+        table = MDCDataTableResponsive(thead=thead, style={
             'min-width': '100%',
             'border-width': 0,
         })
@@ -248,7 +296,7 @@ class ObjectList(Div):
                 self.row_component(row, **context)
             )
 
-        if context['view'].listactions:
+        if context['listactions']:
             table.addchild(self.listactions_component(**context))
 
         table.addchild(self.pagination_component(**context))
@@ -259,7 +307,8 @@ class ObjectList(Div):
             Div(
                 self.search_component(**context) or '',
                 table,
-                cls='mdc-drawer__content'
+                cls='mdc-drawer__content',
+                style='overflow-y: unset',
             ),
             **context,
         )
@@ -298,7 +347,7 @@ class ObjectList(Div):
         )
 
         filters_chips = Div(
-            toggle=toggle,
+            toggle=toggle if context['view'].filterset.form.fields else '',
             search=search_form or '',
             chips=Div(
                 cls='mdc-chip-set',
@@ -347,8 +396,8 @@ class ObjectList(Div):
         return filters_chips
 
     def drawer_component(self, **context):
-        filterset = getattr(context['view'], 'filterset', None)
-        if not filterset:
+        filterset = context['view'].filterset
+        if not filterset.form.fields:
             return
         form = Form(
             method='get',
@@ -402,6 +451,7 @@ class ObjectList(Div):
             up_autosubmit=True,
             up_delay='200ms',
             up_target='.mdc-data-table, .mdc-chip-set',
+            style='margin-left: 14px',
         )
         for k, v in context['view'].request.GET.items():
             if k == 'q':
@@ -414,7 +464,12 @@ class ObjectList(Div):
         return search_form
 
     def row_component(self, row, **context):
-        if context['view'].listactions:
+        show_checkbox = False
+        for listaction in context['listactions']:
+            if listaction.clone(object=row.record)().has_perm():
+                show_checkbox = True
+
+        if show_checkbox:
             checkboxinput = MDCCheckboxInput(
                 data_pk=str(row.record.pk)
             )
@@ -425,12 +480,16 @@ class ObjectList(Div):
                     addcls='mdc-data-table__cell--checkbox',
                 )
             )
+        elif context['listactions']:
+            tr = MDCDataTableTr(MDCDataTableTd())
         else:
             tr = MDCDataTableTr()
 
         for column, cell in row.items():
             # todo: localize values
-            tr.addchild(MDCDataTableTd(cell))
+            tr.addchild(
+                MDCDataTableTd(cell, data_label=column.header),
+            )
             # todo: if is numeric
             # td.attrs.addcls = 'mdc-data-table__header-cell--numeric'
         return tr
@@ -603,7 +662,7 @@ class mdcTopAppBar(Header):
                     cls='material-icons mdc-top-app-bar__navigation-icon mdc-icon-button',  # noqa
                 ),
                 Span(
-                    view.title,
+                    getattr(view, 'title', getattr(settings, 'SITE_NAME', '')),
                     cls='mdc-top-app-bar__title',
                 ),
                 cls='mdc-top-app-bar__section mdc-top-app-bar__section--align-start',  # noqa
@@ -629,6 +688,8 @@ class mdcTopAppBar(Header):
 
 
 class mdcDrawer(Aside):
+    menu_hooks = []
+
     def __init__(self, *content, **attrs):
         super().__init__(
             Div(
@@ -644,7 +705,7 @@ class mdcDrawer(Aside):
         request = view.request
         from .site import site
 
-        content = []
+        menu_content = []
         for view in site.get_menu('main', request):
             router = getattr(view, 'router', None)
             if router:
@@ -654,13 +715,17 @@ class mdcDrawer(Aside):
                 icon = getattr(view, 'icon', None)
                 title = getattr(view, 'title', '')
 
-            content.append(
+            menu_content.append(
                 A(
                     MDCListItem(title.capitalize(), icon=icon),
                     href=view.url,
                     style='text-decoration: none',
                 )
             )
+        for hook in self.menu_hooks:
+            menu_content = hook(request, menu_content)
+
+        content = menu_content
 
         if request.session.get('become_user', None):
             content.append(Li(

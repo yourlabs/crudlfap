@@ -80,14 +80,6 @@ def test_su_user_reverse():
     assert reverse('crudlfap:su') == '/su'
 
 
-def test_login_reverse():
-    assert reverse('crudlfap:login') == '/login'
-
-
-def test_logout_reverse():
-    assert reverse('crudlfap:logout') == '/logout'
-
-
 def test_url_reverse():
     assert reverse('crudlfap:url:list') == '/url'
 
@@ -120,18 +112,6 @@ def test_user_create_resolve(user):
 def test_user_detail_resolve(user):
     result = resolve('/user/foo')
     assert result.func.view_class.urlname == 'detail'
-
-
-@pytest.mark.django_db
-def test_user_logout_resolve(user):
-    result = resolve('/logout')
-    assert result.func.view_class.urlname == 'logout'
-
-
-@pytest.mark.django_db
-def test_user_login_resolve():
-    result = resolve('/login')
-    assert result.func.view_class.urlname == 'login'
 
 
 def test_user_list_resolve():
@@ -300,28 +280,6 @@ def test_group_delete(admin_client):
         _next='/user',
     ))
     assert result.status_code == 404
-
-
-@pytest.mark.django_db
-def test_user_login_get(admin_client):
-    result = admin_client.get('/login')
-    assert result.status_code == 302
-
-
-@pytest.mark.django_db
-def test_user_login_post(admin_client):
-    result = admin_client.post('/login', dict(
-        username='lol',
-        new_password1='123',
-    ))
-    assert result.status_code == 302
-    assert result['Location'] == '/'
-
-
-@pytest.mark.django_db
-def test_user_logout_get(admin_client):
-    result = admin_client.get('/logout')
-    assert result.status_code == 200
 
 
 def test_become_user(admin_client, admin_user, suuser, user):

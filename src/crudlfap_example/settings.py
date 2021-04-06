@@ -5,6 +5,10 @@ INSTALLED_APPS += [  # noqa
     'crudlfap_example.artist',
     'crudlfap_example.song',
     'crudlfap_example.blog',
+
+    # CRUDLFA+ extras
+    'django_registration',
+    'crudlfap_registration',
 ]
 
 install_optional(OPTIONAL_APPS, INSTALLED_APPS)  # noqa

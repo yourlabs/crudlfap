@@ -27,27 +27,29 @@ Try
 ===
 
 This should start the example project from ``src/crudlfap_example`` where each
-documented example lives, without virtualenv::
+documented example lives::
 
     # This installs the repo in ./src/crudlfap and in your python user packages, i run this from ~
-    pip install --user -e git+https://github.com/yourlabs/crudlfap.git#egg=crudlfap[dev]
+    pip install --user -e git+https://github.com/yourlabs/crudlfap.git#egg=crudlfap[example]
+    cd src/crudlfap
 
-    crudlfap migrate
-    crudlfap createsuperuser
-    crudlfap runserver
+    ./manage.py migrate
+    ./manage.py createsuperuser
+    ./manage.py runserver
 
 Features
 ========
 
 - DRY into ModelRouter for all views of a Model,
-- Rich frontend interface out of the box, Material Components Web/Ryzom/Unpoly
+- extensive CRUD views, actions, etc
+- Rich frontend interface out of the box, MDC/Ryzom/Unpoly
 
 Resources
 =========
 
 - `Presentation graciously served by
   <https://gitpitch.com/yourlabs/crudlfap/master>`_ by `GitPitch
-  <https://gitpitch.com>`_
+  <https://gitpitch.com>`_ (old screenshots)
 - `ChatRoom graciously hosted by
   <https://www.yourlabs.chat>`_ by `YourLabs Business Service
   <https://www.yourlabs.biz>`_ on `Mattermost
@@ -70,5 +72,3 @@ Resources
   <https://yourlabs.io/oss/crudlfap/pipelines>`_ by YourLabs Business Service
 - Browser test graciously hosted by `SauceLabs
   <https://saucelabs.com>`_
-- `**Online paid support** provided via HackHands
-  <https://hackhands.com/jpic/>`_,

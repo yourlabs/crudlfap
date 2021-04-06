@@ -17,7 +17,7 @@ CRUDLFA+ stands for Create Read Update Delete List Form Autocomplete and more.
 	- pip is a package manager for Python packages, or modules if you like. |
 - Virtualenv |
 	- virtualenv is a tool to create isolated Python environments. |
-		  
+
 ---
 ### @color[#DC143C](Django)
   Django is a free and open source web application framework written in Python. A framework is nothing more than a collection of modules that make development easier.
@@ -95,7 +95,7 @@ Note:
 
 ---
 ### Using @color[#DC143C](CRUDLFA+)
-- Register Post model with crudlfap          . 
+- Register Post model with crudlfap          .
 
 	   from crudlfap import crudlfap
 	   from .models import Post
@@ -117,17 +117,7 @@ Note:
 ---
 ### Using @color[#DC143C](CRUDLFA+)
 - after that we need to apply migration by following command.
-	   python manage.py dev
-
-Note:
-- @color[#DC143C](dev) command is a speacial management command.
-- @color[#DC143C](dev) command will apply migrations for all apps(DjangoApp & CustomApp).
-- @color[#DC143C](dev) command will also create 3 users with different permission.
-	-	dev/dev (Super User)
-	-	staff/staff (Staff User)
-	- 	user/user (Normal User)
-- @color[#DC143C](dev) command will also run your server, so you can access it @color[#DC143C](http://127.0.0.1:8000/)
-
+	   python manage.py migrate
 
 ---
 ### @css[crudlfa-headline](Automatic model menus)

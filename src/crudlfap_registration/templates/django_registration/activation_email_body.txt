@@ -1,0 +1,10 @@
+Welcome on {{ site.name }} !
+
+Click below to verify your email, you will then be able to login.
+
+{{ site.url }}{% url 'django_registration_activate' activation_key %}
+
+This email as been sended automatically.
+Please don't respond at this mail.
+Thank's.
+Team {{ site.name }}.

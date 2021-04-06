@@ -17,7 +17,7 @@ setup(
     include_package_data=True,
     keywords='django crud',
     install_requires=[
-        'ryzom>=0.5.6,<0.6',
+        'ryzom>=0.6,<0.7',
         'django>=3.1,<3.2',
         'django-tables2',
         'django-filter',
@@ -26,19 +26,13 @@ setup(
     ],
     tests_require=['tox'],
     extras_require=dict(
-        dev=[
-          'django-reversion',
-          'django-debug-toolbar',
-          'django-extensions',
-          'devpy',
-          'dj-static',
+        project=[
+            'django-debug-toolbar',
+            'django-extensions',
+            'django-registration',
+            'dj-static',
         ],
     ),
-    entry_points={
-        'console_scripts': [
-            'crudlfap = crudlfap_example.manage:main',
-        ],
-    },
     classifiers=[
         'Development Status :: 1 - Planning',
         'Environment :: Web Environment',

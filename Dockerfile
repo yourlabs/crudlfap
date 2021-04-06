@@ -15,10 +15,11 @@ WORKDIR /app
 
 COPY setup.py README.rst MANIFEST.in /app/
 COPY src /app/src
-RUN pip install --editable /app
+COPY manage.py /app
+RUN pip install --editable /app[project]
 
-RUN DEBUG=1 django-admin ryzom_bundle
-RUN DEBUG=1 django-admin collectstatic --noinput
+RUN ./manage.py ryzom_bundle
+RUN DEBUG=1 ./manage.py collectstatic --noinput
 RUN find static -type f | xargs gzip -f -k -9
 
 USER app
@@ -27,7 +28,7 @@ ARG GIT_COMMIT
 ARG GIT_TAG
 ENV GIT_COMMIT="${GIT_COMMIT}" GIT_TAG="${GIT_TAG}"
 
-CMD bash -c "djcli dbcheck && crudlfap migrate --noinput && uwsgi \
+CMD bash -c "djcli dbcheck && ./manage.py migrate --noinput && uwsgi \
   --http-socket=0.0.0.0:8000 \
   --chdir=/app \
   --plugin=python \
