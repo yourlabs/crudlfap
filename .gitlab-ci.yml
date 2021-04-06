@@ -89,12 +89,12 @@ demo:
 
 docs-qa:
   stage: build
-  image: yourlabs/python
+  image: yourlabs/python-arch
   script: tox -e docs
 
 py-qa:
   stage: build
-  image: yourlabs/python
+  image: yourlabs/python-arch
   script: tox -e qa
 
 py-test:
@@ -106,6 +106,6 @@ py-test:
 
 pypi:
   stage: deploy
-  image: yourlabs/python
+  image: yourlabs/python-arch
   script: pypi-release
   only: [tags]
