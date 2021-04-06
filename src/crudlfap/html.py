@@ -122,6 +122,14 @@ class App(Html):
         'https://unpkg.com/unpoly@0.62.1/dist/unpoly.min.css',
     ]
 
+    def to_html(self, *content, **context):
+        self.head.content.append(
+            Style('.up-modal-content { padding-top: 0; padding-bottom: 0; }')
+        )
+        if title := getattr(context['view'], 'title', None):
+            self.head.content.append(Title(title))
+        return super().to_html(*content, **context)
+
 
 class NarrowCard(Div):
     style = {
@@ -154,10 +162,12 @@ class FormTemplate(FormContainer):
             )
         return super().to_html(
             H3(view.title),
-            form,
-            CSRFInput(view.request),
-            back,
-            MDCButton(getattr(view, 'title_submit', _('Submit'))),
+            Form(
+                form,
+                CSRFInput(view.request),
+                back,
+                MDCButtonRaised(getattr(view, 'title_submit', _('Submit'))),
+            ),
         )
 
 
