@@ -258,11 +258,6 @@ class Route(Factory, metaclass=RouteMetaclass):
         from .site import site
         return site
 
-    def get_login_url(self):
-        if self.registry:
-            return reverse('{}:login'.format(self.registry.app_name))
-        return reverse('login')
-
     def get_allowed_groups(self):
         if not self.router:
             return []
@@ -273,7 +268,7 @@ class Route(Factory, metaclass=RouteMetaclass):
         if not self.has_perm():
             if not request.user.is_authenticated:
                 return http.HttpResponseRedirect(
-                    self.login_url + '?next=' + request.path_info
+                    reverse('login') + '?next=' + request.path_info
                 )
             else:
                 return http.HttpResponseForbidden()

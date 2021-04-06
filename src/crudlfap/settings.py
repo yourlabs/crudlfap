@@ -159,9 +159,10 @@ CRUDLFAP_VIEWS = [
 
 CRUDLFAP_APPS = [
     'crudlfap',
-    'crudlfap_auth',
+    'crudlfap_sites',
     'django_filters',
     'django_tables2',
+    'crudlfap_auth',
     'ryzom',
     'py2js',
     'ryzom_django',
@@ -174,6 +175,7 @@ DJANGO_APPS = [
     'django.contrib.auth',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sites',
     'django.contrib.staticfiles',
 ]
 
@@ -183,7 +185,6 @@ INSTALLED_APPS = DJANGO_APPS + CRUDLFAP_APPS
 OPTIONAL_APPS = [
     {'debug_toolbar': {'after': 'django.contrib.staticfiles'}},
     {'django_extensions': {'before': 'crudlfap'}},
-    {'collectdir': {'before': 'crudlfap'}},
 ]
 
 MIDDLEWARE = [
@@ -251,6 +252,24 @@ DATABASES = {
     }
 }
 
+EMAIL_HOST = os.getenv('EMAIL_HOST', None)
+EMAIL_PORT = os.getenv('EMAIL_PORT', None)
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', None)
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', None)
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', None)
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', None)
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@electeez.com')
+
+if EMAIL_HOST:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+REGISTRATION_OPEN = True     # django-registration
+ACCOUNT_ACTIVATION_DAYS = 7  # django-registration
+LOGIN_REDIRECT_URL = '/'     # django.contrib.auth
+USE_X_FORWARDED_HOST = True  # reverse proxy support
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators

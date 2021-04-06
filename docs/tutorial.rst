@@ -18,36 +18,37 @@ box, but all defaults should also be overiddable as conveniently as possible.
 It turns out that Django performs extremely well already, and pushing Django's
 philosophy such as DRY as far as possible works very well for me.
 
-Enable in your project
-======================
+Start a CRUDLFA+ project
+========================
 
-We're going to setup ``TEMPLATES`` and ``INSTALLED_APPS`` before we begin.
+Make sure you install all project dependencies::
 
-.. note:: We will review the minimal settings in this tutorial, but you can
-          consult the default settings available for your crudlfap version in
-          the :py:mod:`~crudlfap.settings` module.
+    pip install crudlfap[project]
 
-TEMPLATES
----------
+And create a Django project::
 
-CRUDLFA+ uses Jinja2 templates with a quite extended configuration. Options to
-enable them are using any of these in your settings:
+    django-admin startproject yourproject
 
-- easiest: :py:data:`crudlfap.settings.TEMPLATES`
-- intermediate: :py:data:`crudlfap.settings.CRUDLFAP_TEMPLATE_BACKEND`
-- custom: :py:data:`crudlfap.settings.DEFAULT_TEMPLATE_BACKEND`
+Copy this ``settings.py`` which provides working settings for CRUDLFA+
+and allows to control settings with environment variables:
 
-INSTALLED_APPS
---------------
+.. literalinclude:: ../src/crudlfap_example/settings.py
 
-CRUDLFA+ leverages apps from the Django ecosystem.
-Use :py:data:`crudlfap.settings.CRUDLFAP_TEMPLATE_BACKEND`. To help make this a
-pleasant experience, CRUDLFAP+ splits the INSTALLED_APPS setting into multiple
-settings you can import and mix together:
+And this ``urls.py``:
 
-- everything: :py:data:`crudlfap.settings.INSTALLED_APPS`,
-- crudlfap only: :py:data:`crudlfap.settings.CRUDLFAP_APPS`,
-- django apps: :py:data:`crudlfap.settings.DJANGO_APPS`,
+.. literalinclude:: ../src/crudlfap_example/urls.py
+
+You may also install manually, but the procedure might change over time.
+
+Create a ``crudlfap.py``
+========================
+
+You need to create a Django app like with ``./manage.py startapp yourapp``. It
+creates a yourapp directory and you need to add yourapp to
+``settings.INSTALLED_APPS``.
+
+Then, you can start a ``yourapp/crudlfap.py`` file, where you can define model
+CRUDs, hook into the rendering of CRUDLFA+ (ie. menus) and so on.
 
 Define a Router
 ===============
@@ -124,6 +125,37 @@ Example, still in urls.py::
 
 So, there'd be other ways to acheive this but that's how i like to
 do it.
+
+Add menu item
+=============
+
+You can hook into CRUDLFA+ menu rendering, ie.:
+
+.. literalinclude:: ../src/crudlfap_registration/crudlfap.py
+
+Create route from view
+======================
+
+The following example returns a :py:class:`~crudlfap.route.Route` as needed by
+:py:class:`~crudlfap.router.Router` and
+:py:class:`~crudlfap.registry.Registry`:
+
+.. code-block:: python
+
+    Route.factory(
+        LoginView,
+        title=_('Login'),
+        title_submit=_('Login'),
+        title_menu=_('Login'),
+        menus=['main'],
+        redirect_authenticated_user=True,
+        authenticate=False,
+        icon='login',
+        has_perm=lambda self: not self.request.user.is_authenticated,
+    )
+
+Useful to add external apps views to routers or site.views, prior to the menu
+hook feature.
 
 Create list actions
 ===================

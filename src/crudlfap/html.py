@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.sites.models import Site
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from ryzom_django_mdc.html import *  # noqa
@@ -133,7 +134,7 @@ class App(Html):
 
 class NarrowCard(Div):
     style = {
-        'max-width': '25em',
+        'max-width': '95vw',
         'margin': 'auto',
         'padding': '1em',
         'margin-top': '2em',
@@ -174,7 +175,11 @@ class FormTemplate(FormContainer):
 @template('crudlfap/home.html', App)
 class Home(Div):
     def to_html(self, **context):
-        return super().to_html(H1('Welcome to Ryzom-CRUDLFA+'), **context)
+        site = Site.objects.get_current()
+        return super().to_html(
+            H1('Welcome to ' + site.name),
+            **context
+        )
 
 
 @template('registration/logged_out.html', App, NarrowCard)
@@ -281,7 +286,7 @@ class ObjectList(Div):
         # align "actions" title to the right with the buttons
         thead.tr.content[-1].attrs.style['text-align'] = 'right'
 
-        table = MDCDataTable(thead=thead, style={
+        table = MDCDataTableResponsive(thead=thead, style={
             'min-width': '100%',
             'border-width': 0,
         })
@@ -302,7 +307,8 @@ class ObjectList(Div):
             Div(
                 self.search_component(**context) or '',
                 table,
-                cls='mdc-drawer__content'
+                cls='mdc-drawer__content',
+                style='overflow-y: unset',
             ),
             **context,
         )
@@ -481,7 +487,9 @@ class ObjectList(Div):
 
         for column, cell in row.items():
             # todo: localize values
-            tr.addchild(MDCDataTableTd(cell))
+            tr.addchild(
+                MDCDataTableTd(cell, data_label=column.header),
+            )
             # todo: if is numeric
             # td.attrs.addcls = 'mdc-data-table__header-cell--numeric'
         return tr
@@ -654,7 +662,7 @@ class mdcTopAppBar(Header):
                     cls='material-icons mdc-top-app-bar__navigation-icon mdc-icon-button',  # noqa
                 ),
                 Span(
-                    view.title,
+                    getattr(view, 'title', getattr(settings, 'SITE_NAME', '')),
                     cls='mdc-top-app-bar__title',
                 ),
                 cls='mdc-top-app-bar__section mdc-top-app-bar__section--align-start',  # noqa
@@ -680,6 +688,8 @@ class mdcTopAppBar(Header):
 
 
 class mdcDrawer(Aside):
+    menu_hooks = []
+
     def __init__(self, *content, **attrs):
         super().__init__(
             Div(
@@ -695,7 +705,7 @@ class mdcDrawer(Aside):
         request = view.request
         from .site import site
 
-        content = []
+        menu_content = []
         for view in site.get_menu('main', request):
             router = getattr(view, 'router', None)
             if router:
@@ -705,13 +715,17 @@ class mdcDrawer(Aside):
                 icon = getattr(view, 'icon', None)
                 title = getattr(view, 'title', '')
 
-            content.append(
+            menu_content.append(
                 A(
                     MDCListItem(title.capitalize(), icon=icon),
                     href=view.url,
                     style='text-decoration: none',
                 )
             )
+        for hook in self.menu_hooks:
+            menu_content = hook(request, menu_content)
+
+        content = menu_content
 
         if request.session.get('become_user', None):
             content.append(Li(

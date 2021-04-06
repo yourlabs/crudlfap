@@ -21,7 +21,7 @@ build-test:
     entrypoint: ["/bin/sh", "-c"]
   stage: test
   script:
-    - pip install -e .[dev]
+    - pip install -e .[project]
     - pip install pytest pytest-cov pytest-asyncio pytest-django
     - pytest -vv --cov src --cov-report=xml:coverage.xml --cov-report=term-missing --strict -r fEsxXw src
 

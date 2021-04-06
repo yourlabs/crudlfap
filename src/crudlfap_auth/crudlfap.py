@@ -1,12 +1,33 @@
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth.models import Group
+from django.urls import reverse
 
 from crudlfap import shortcuts as crudlfap
+from crudlfap import html
 
 from . import views
 
 User = apps.get_model(getattr(settings, 'AUTH_USER_MODEL', 'auth.User'))
+
+
+def login_logout(request, menu):
+    if request.user.is_authenticated:
+        menu.append(html.A(
+            html.MDCListItem('Logout', icon='logout'),
+            href=reverse('logout'),
+            style='text-decoration: none',
+        ))
+    else:
+        menu.insert(1, html.A(
+            html.MDCListItem('Login', icon='login'),
+            href=reverse('login'),
+            style='text-decoration: none',
+        ))
+    return menu
+
+
+html.mdcDrawer.menu_hooks.append(login_logout)
 
 
 crudlfap.Router(

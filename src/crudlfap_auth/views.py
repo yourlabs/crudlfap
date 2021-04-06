@@ -22,8 +22,8 @@ logger = logging.getLogger()
 
 class PasswordView(crudlfap.UpdateView):
     slug = 'password'
-    material_icon = 'vpn_key'
-    color = 'purple darken-4'
+    icon = 'vpn_key'
+    color = 'purple'
     controller = 'modal'
     action = 'click->modal#open'
 
@@ -47,8 +47,8 @@ class PasswordView(crudlfap.UpdateView):
 class BecomeUser(crudlfap.ObjectView):
     urlname = 'su'
     menus = ['object']
-    material_icon = 'attach_money'
-    color = 'pink darken-4'
+    icon = 'accessibility_new'
+    color = 'purple'
     link_attributes = {'data-noprefetch': 'true'}
 
     def become(self):
