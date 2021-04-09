@@ -158,3 +158,12 @@ class ObjectMixin(ModelMixin):
                 raise
 
         return names
+
+    def get_abstract_object(self):
+        return self.model()
+
+    @classmethod
+    def abstract(cls, **kwargs):
+        if 'object' not in kwargs:
+            kwargs['object'] = cls.abstract_object
+        return cls(**kwargs)

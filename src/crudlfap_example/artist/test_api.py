@@ -27,7 +27,7 @@ def test_api(client):
         )),
         content_type='application/json'
     )
-    assert response.status_code == 400
+    assert response.status_code == 405
 
     # test list get
     response = client.get(

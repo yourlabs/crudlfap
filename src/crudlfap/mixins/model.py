@@ -48,3 +48,12 @@ class ModelMixin(object):
                 'cls': self.__class__.__name__
             }
         )
+
+    def get_swagger_model_name(self):
+        if self.model:
+            return self.model.__name__
+
+    def get_swagger_tags(self):
+        if self.model:
+            return [self.model.__name__]
+        return []

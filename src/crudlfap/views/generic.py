@@ -96,6 +96,41 @@ class ListView(mixins.ListMixin, mixins.SearchMixin, mixins.FilterMixin,
     def get_listactions(self):
         return self.router.get_menu('list_action', self.request)
 
+    def get_swagger_get(self):
+        return {
+            # 'description': 'Multiple status are comma separated',
+            'operationId': 'findPetsByStatus',
+            'parameters': [
+                {
+                    'collectionFormat': 'multi',
+                    'description': 'Status values to filter',
+                    'in': 'query',
+                    'items': {
+                        'default': 'available',
+                        'enum': ['available', 'pending', 'sold'],
+                        'type': 'string'
+                    },
+                    'name': 'status',
+                    'required': True,
+                    'type': 'array'
+                }
+            ],
+            'produces': ['application/json', 'application/xml'],
+            'responses': {
+                '200': {
+                    'description': 'successful operation',
+                    'schema': {
+                        'items': {'$ref': '#/definitions/Pet'},
+                        'type': 'array'
+                    }
+                },
+                '400': {'description': 'Invalid status value'}
+            },
+            'security': [{'petstore_auth': ['write:pets', 'read:pets']}],
+            'summary': self.title,
+            'tags': self.swagger_tags,
+        }
+
     def json_get(self, request, *args, **kwargs):
         rows = []
         for row in self.table.paginated_rows:

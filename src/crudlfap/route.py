@@ -291,3 +291,17 @@ class Route(Factory, metaclass=RouteMetaclass):
         if isinstance(view, str):
             view = import_string(view)
         return type(view.__name__, (view, cls), attributes)
+
+    @classmethod
+    def abstract(cls, **kwargs):
+        """Return an instance of this view."""
+        return cls(**kwargs)
+
+    def get_swagger_path_definition(self):
+        result = dict()
+        for method in self.http_method_names:
+            method_def = getattr(self, f'swagger_{method}', None)
+            if not method_def:
+                continue
+            result[method] = method_def
+        return result

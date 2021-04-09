@@ -2,7 +2,6 @@
 import copy
 
 from django import forms
-from django import http
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
 from django.contrib.contenttypes.models import ContentType
 
@@ -167,6 +166,48 @@ class ListMixin:
 
     def get_title_heading(self):
         return self.model._meta.verbose_name_plural.capitalize()
+
+    def get_swagger_get(self):
+        '''TODO
+        parameters = {
+                    'collectionFormat': 'multi',
+                    'description': 'Status values to filter',
+                    'in': 'query',
+                    'items': {
+                        'default': 'available',
+                        'enum': ['available', 'pending', 'sold'],
+                        'type': 'string'
+                    },
+                    'name': 'status',
+                    'required': True,
+                    'type': 'array'
+                }
+        '''
+        return {
+            # 'description': self.title,
+            # 'operationId': 'findPetsByStatus',
+            'parameters': [],
+            'produces': ['application/json'],
+            'responses': {
+                '200': {
+                    'description': 'successful operation',
+                    'schema': {
+                        'items': {
+                            '$ref': '#/definitions/' + self.model.__name__
+                        },
+                        'type': 'array'
+                    }
+                },
+                '400': {'description': 'Invalid status value'}
+            },
+            'security': [
+                {
+                    'auth': [self.permission_fullcode]
+                }
+            ],
+            'summary': self.title,
+            'tags': self.swagger_tags
+        }
 
 
 class UpdateMixin:

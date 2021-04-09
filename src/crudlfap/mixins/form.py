@@ -34,7 +34,7 @@ class FormMixin:
         )
         for name, errors in self.form.errors.items():
             data['field_errors'][name] = errors
-        return http.JsonResponse(data, status=400)
+        return http.JsonResponse(data, status=405)
 
     def form_invalid(self):
         """If the form is invalid, render the invalid form."""
@@ -130,3 +130,38 @@ class FormMixin:
             self.request,
             self.message_html(self.form_invalid_message)
         )
+
+    def get_swagger_summary(self):
+        return self.title
+
+    def get_swagger_post(self):
+        result = {
+            'consumes': ['application/json'],
+            # 'description': self.title,
+            # 'operationId': 'addPet',
+            'parameters': [],
+            'produces': ['application/json', 'application/xml'],
+            'responses': {
+                '405': {
+                    'description': 'Invalid input'
+                },
+            },
+            'security': [
+                {
+                    'auth': [self.permission_fullcode]
+                }
+            ],
+            'summary': self.swagger_summary,
+            'tags': self.swagger_tags,
+        }
+        for name, field in self.form_class.base_fields.items():
+            result['parameters'].append({
+                'description': '. '.join([
+                    str(field.label),
+                    str(field.help_text)
+                ]),
+                'name': name,
+                'required': field.required,
+                # 'schema': {'$ref': '#/definitions/Pet'}
+            })
+        return result
