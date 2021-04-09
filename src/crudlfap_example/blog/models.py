@@ -47,4 +47,4 @@ class Post(models.Model):
         return self.name
 
     def editable(self, user):
-        return user.is_staff or user.is_superuser or user == self.owner
+        return user.is_staff or user.is_superuser or user.pk == self.owner_id
