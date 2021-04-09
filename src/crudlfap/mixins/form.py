@@ -1,3 +1,5 @@
+import json
+
 from django import http
 from django.contrib import messages
 
@@ -15,11 +17,30 @@ class FormMixin:
 
     def form_valid(self):
         """If the form is valid, redirect to the supplied URL."""
+        if self.request.content_type == 'application/json':
+            return self.form_valid_json()
+
         self.message_success()
         return http.HttpResponseRedirect(self.success_url)
 
+    def form_valid_json(self):
+        return http.JsonResponse({'status': 'accepted'}, status=201)
+
+    def form_invalid_json(self):
+        data = dict(
+            status='invalid data',
+            non_field_errors=self.form.non_field_errors(),
+            field_errors=dict(),
+        )
+        for name, errors in self.form.errors.items():
+            data['field_errors'][name] = errors
+        return http.JsonResponse(data, status=400)
+
     def form_invalid(self):
         """If the form is invalid, render the invalid form."""
+        if self.request.content_type == 'application/json':
+            return self.form_invalid_json()
+
         self.message_error()
         return self.render_to_response()
 
@@ -66,8 +87,12 @@ class FormMixin:
         }
 
         if self.request.method in ('POST', 'PUT'):
+            if self.request.content_type == 'application/json':
+                data = json.loads(self.request.body)
+            else:
+                data = self.request.POST
             self.form_kwargs.update({
-                'data': self.request.POST,
+                'data': data,
                 'files': self.request.FILES,
             })
         return self.form_kwargs

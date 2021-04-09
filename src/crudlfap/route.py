@@ -272,6 +272,18 @@ class Route(Factory, metaclass=RouteMetaclass):
                 )
             else:
                 return http.HttpResponseForbidden()
+        HTTP_ACCEPT = request.META.get('HTTP_ACCEPT', '')
+        json_handler = (
+            request.content_type == 'application/json'
+            or HTTP_ACCEPT.startswith('application/json')
+        )
+        if json_handler and request.method.lower() in self.http_method_names:
+            handler = f'json_{self.request.method.lower()}'
+            if hasattr(self, handler):
+                result = getattr(self, handler)(request, *args, **kwargs)
+                if isinstance(result, dict):
+                    return http.JsonResponse(result)
+                return result
         return super().dispatch(request, *args, **kwargs)
 
     @classmethod

@@ -2,6 +2,7 @@
 import copy
 
 from django import forms
+from django import http
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
 from django.contrib.contenttypes.models import ContentType
 
@@ -23,6 +24,21 @@ class CreateMixin:
     def form_valid(self):
         self.object = self.form.save()
         return super().form_valid()
+
+    '''
+    def form_valid_json(self):
+        detail = self.router.get('detail', None)
+        url = None
+        if detail:
+            detail = detail.clone(request=self.request, object=self.object)
+            if detail.has_perm():
+                url = detail.url()
+        return http.JsonResponse({
+            'url': url,
+            'data': data,
+            'status': 'created',
+        }, status=201)
+    '''
 
 
 class ActionMixin:
@@ -96,6 +112,7 @@ class DetailMixin:
             {
                 'field': self.model._meta.get_field(field),
                 'value': self.get_field_display(field),
+                'name': field,
             }
             for field in (
                 [f.name for f in self.model._meta.fields]
@@ -115,6 +132,9 @@ class DetailMixin:
                 href=value.get_absolute_url(),
             ).render()
         return value
+
+    def json_get(self, request, *args, **kwargs):
+        return {field['name']: field['value'] for field in self.display_fields}
 
 
 class HistoryMixin:
