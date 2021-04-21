@@ -93,11 +93,11 @@ docs:
   artifacts:
     expire_in: 2 days
     when: always
-    paths:
-    - docs/_build/html
+    paths: [public]
   script:
   - pip install -r docs/requirements.txt
   - cd docs && make html
+  - mv docs/_build/html public
 
 py-qa:
   stage: build
@@ -121,11 +121,7 @@ pages:
   stage: test
   image: alpine:latest
   artifacts:
-    paths:
-    - docs/_build/html
+    paths: [public]
   only:
   - master
-  script:
-  - mkdir public
-  - mv docs/_build/html public
-  - find public
+  script: find public
