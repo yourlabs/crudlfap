@@ -120,10 +120,11 @@ pypi:
 pages:
   stage: deploy
   image: alpine:latest
-  script:
-  - mv docs public
   artifacts:
     paths:
     - docs
   only:
   - master
+  script:
+  - mkdir public
+  - mv docs/_build/html public
