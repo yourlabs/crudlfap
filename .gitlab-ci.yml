@@ -90,7 +90,9 @@ demo:
 docs-qa:
   stage: build
   image: yourlabs/python-arch
-  script: tox -e docs
+  script:
+  - pip install -r docs/requirements.txt
+  - cd docs && make html
 
 py-qa:
   stage: build

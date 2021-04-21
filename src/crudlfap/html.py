@@ -739,14 +739,11 @@ class mdcDrawer(Aside):
         from .site import site
 
         menu_content = []
+        if request.user.is_authenticated:
+            menu_content.append(MDCListItem(str(request.user.email)))
         for view in site.get_menu('main', request):
-            router = getattr(view, 'router', None)
-            if router:
-                icon = getattr(router, 'icon', None)
-                title = getattr(view, 'model_verbose_name', view.title)
-            else:
-                icon = getattr(view, 'icon', None)
-                title = getattr(view, 'title', '')
+            icon = getattr(view, 'icon', None)
+            title = getattr(view, 'title', '')
 
             menu_content.append(
                 A(

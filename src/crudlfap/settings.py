@@ -204,8 +204,6 @@ OPTIONAL_MIDDLEWARE = [
 
 INTERNAL_IPS = ('127.0.0.1',)
 
-ROOT_URLCONF = 'crudlfap_example.urls'
-
 CRUDLFAP_TEMPLATE_BACKEND = {
     'BACKEND': 'ryzom_django.template_backend.Ryzom',
     'NAME': 'ryzom',
@@ -245,7 +243,7 @@ AUTHENTICATION_BACKENDS = [
 DATABASES = {
     'default': {
         'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.sqlite3'),
-        'NAME': os.getenv('DB_NAME', os.path.join(BASE_DIR, 'db.sqlite3')),
+        'NAME': os.getenv('DB_NAME', 'db.sqlite3'),
         'HOST': os.getenv('DB_HOST'),
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASS'),
