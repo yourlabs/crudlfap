@@ -94,7 +94,7 @@ docs:
     expire_in: 2 days
     when: always
     paths:
-    - docs
+    - docs/_build/html
   script:
   - pip install -r docs/requirements.txt
   - cd docs && make html
@@ -122,9 +122,10 @@ pages:
   image: alpine:latest
   artifacts:
     paths:
-    - docs
+    - docs/_build/html
   only:
   - master
   script:
   - mkdir public
   - mv docs/_build/html public
+  - find public
