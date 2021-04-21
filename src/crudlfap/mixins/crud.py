@@ -153,10 +153,14 @@ class HistoryMixin:
 
 class ListMixin:
     default_template_name = 'crudlfap/list.html'
-    icon = 'list'
     body_class = 'full-width'
     menus = ['main', 'model']
     title_heading = None
+
+    def get_icon(self):
+        if self.router:
+            return self.router.icon
+        return 'list'
 
     def get_title(self):
         return self.model._meta.verbose_name_plural.capitalize()
