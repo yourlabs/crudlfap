@@ -118,7 +118,7 @@ pypi:
   only: [tags]
 
 pages:
-  stage: deploy
+  stage: test
   image: alpine:latest
   artifacts:
     paths:
