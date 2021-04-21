@@ -96,7 +96,7 @@ docs:
     paths: [public]
   script:
   - pip install -r docs/requirements.txt
-  - cd docs && make html
+  - pushd docs && make html && popd
   - mv docs/_build/html public
 
 py-qa:
