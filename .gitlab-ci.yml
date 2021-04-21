@@ -87,9 +87,14 @@ demo:
   only: [tags]
   <<: *deploy
 
-docs-qa:
+docs:
   stage: build
   image: yourlabs/python-arch
+  artifacts:
+    expire_in: 2 days
+    when: always
+    paths:
+    - docs
   script:
   - pip install -r docs/requirements.txt
   - cd docs && make html
@@ -111,3 +116,14 @@ pypi:
   image: yourlabs/python-arch
   script: pypi-release
   only: [tags]
+
+pages:
+  stage: deploy
+  image: alpine:latest
+  script:
+  - mv docs public
+  artifacts:
+    paths:
+    - docs
+  only:
+  - master
