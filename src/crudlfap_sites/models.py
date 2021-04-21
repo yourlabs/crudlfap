@@ -5,7 +5,7 @@ from django.http.request import split_domain_port
 
 
 class Site(DjangoSite):
-    settings = models.JSONField(blank=True, default={})
+    settings = models.JSONField(blank=True, default=dict)
     port = models.PositiveIntegerField(null=True)
     protocol = models.CharField(default='http', max_length=5)
 
