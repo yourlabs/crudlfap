@@ -172,6 +172,39 @@ class FormTemplate(FormContainer):
         )
 
 
+@template('crudlfap/api.html', Html)
+class Swagger(Div):
+    def py2js(self):
+        el = document.getElementById('swagger-ui')
+        ui = SwaggerUIBundle({
+            url: el.attributes['schema-url'].value,
+            dom_id: '#swagger-ui',
+            deepLinking: true,
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIStandalonePreset,
+            ],
+            plugins: [
+                SwaggerUIBundle.plugins.DownloadUrl
+            ],
+            layout: "StandaloneLayout"
+        })
+        window.ui = ui
+
+    def to_html(self, **context):
+        registry = context['view'].registry
+        return super().to_html(
+            Script(src='/static/swagger-ui-bundle.js'),
+            Script(src='/static/swagger-ui-standalone-preset.js'),
+            Stylesheet(href='/static/swagger-ui.css'),
+            Div(
+                id='swagger-ui',
+                schema_url=registry.views['schema'].url,
+            ),
+            **context
+        )
+
+
 @template('crudlfap/home.html', App)
 class Home(Div):
     def to_html(self, **context):

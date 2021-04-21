@@ -24,6 +24,21 @@ class CreateMixin:
         self.object = self.form.save()
         return super().form_valid()
 
+    '''
+    def form_valid_json(self):
+        detail = self.router.get('detail', None)
+        url = None
+        if detail:
+            detail = detail.clone(request=self.request, object=self.object)
+            if detail.has_perm():
+                url = detail.url()
+        return http.JsonResponse({
+            'url': url,
+            'data': data,
+            'status': 'created',
+        }, status=201)
+    '''
+
 
 class ActionMixin:
     def has_perm(self):
@@ -96,6 +111,7 @@ class DetailMixin:
             {
                 'field': self.model._meta.get_field(field),
                 'value': self.get_field_display(field),
+                'name': field,
             }
             for field in (
                 [f.name for f in self.model._meta.fields]
@@ -115,6 +131,9 @@ class DetailMixin:
                 href=value.get_absolute_url(),
             ).render()
         return value
+
+    def json_get(self, request, *args, **kwargs):
+        return {field['name']: field['value'] for field in self.display_fields}
 
 
 class HistoryMixin:
@@ -147,6 +166,48 @@ class ListMixin:
 
     def get_title_heading(self):
         return self.model._meta.verbose_name_plural.capitalize()
+
+    def get_swagger_get(self):
+        '''TODO
+        parameters = {
+                    'collectionFormat': 'multi',
+                    'description': 'Status values to filter',
+                    'in': 'query',
+                    'items': {
+                        'default': 'available',
+                        'enum': ['available', 'pending', 'sold'],
+                        'type': 'string'
+                    },
+                    'name': 'status',
+                    'required': True,
+                    'type': 'array'
+                }
+        '''
+        return {
+            # 'description': self.title,
+            # 'operationId': 'findPetsByStatus',
+            'parameters': [],
+            'produces': ['application/json'],
+            'responses': {
+                '200': {
+                    'description': 'successful operation',
+                    'schema': {
+                        'items': {
+                            '$ref': '#/definitions/' + self.model.__name__
+                        },
+                        'type': 'array'
+                    }
+                },
+                '400': {'description': 'Invalid status value'}
+            },
+            'security': [
+                {
+                    'auth': [self.permission_fullcode]
+                }
+            ],
+            'summary': self.title,
+            'tags': self.swagger_tags
+        }
 
 
 class UpdateMixin:

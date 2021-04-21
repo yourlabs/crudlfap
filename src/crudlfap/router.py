@@ -49,6 +49,7 @@ dropdown. If there is only one matching view, it will display only the button.
 """
 from django.apps import apps
 from django.conf import settings
+from django.db import models
 from django.urls import path
 from django.utils.module_loading import import_string
 
@@ -358,3 +359,39 @@ class Router(object):
 
     def get_allowed_groups(self):
         return []
+
+    def get_swagger_model_name(self, request):
+        return self.model.__name__
+
+    def get_swagger_model_definition(self, request):
+        result = dict(
+            properties={},
+            type='object',
+            # TODO:
+            # 'required': ['name', 'photoUrls'],
+        )
+        for field in self.model._meta.fields:
+            res = getattr(self, 'swagger_field_{field.name}_definition', None)
+            if res:
+                result['properties'][field.name] = res
+                continue
+
+            field_def = dict()
+            # relate to one model
+            # field_def = {'$ref': '#/definitions/' + field.model.__name__}
+
+            int_fields = (
+                models.IntegerField,
+                models.PositiveIntegerField,
+            )
+            if isinstance(field, int_fields):
+                field_def['type'] = 'integer'
+            elif isinstance(field, models.BooleanField):
+                field_def['type'] = 'boolean'
+            elif isinstance(field, models.JSONField):
+                field_def['type'] = 'object'
+            else:
+                field_def['type'] = 'string'
+
+            result['properties'][field.name] = field_def
+        return result

@@ -137,3 +137,6 @@ class ModelFormMixin(ModelMixin, FormMixin):
         response = super().form_valid()
         self.log_insert()
         return response
+
+    def get_swagger_summary(self):
+        return f'{self.model.__name__} {self.label}'
