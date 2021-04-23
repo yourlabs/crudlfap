@@ -21,7 +21,7 @@ with channels support.
 Demo:
 
 - last release: https://demo.crudlfap.ci.yourlabs.io/
-- curront master (might be down/broken etc): https://master.crudlfap.ci.yourlabs.io/
+- current master (might be down/broken etc): https://master.crudlfap.ci.yourlabs.io/
 
 Try
 ===
@@ -47,16 +47,12 @@ Features
 Resources
 =========
 
-- `Presentation graciously served by
-  <https://gitpitch.com/yourlabs/crudlfap/master>`_ by `GitPitch
-  <https://gitpitch.com>`_ (old screenshots)
+- `Documentation
+  <http://oss.yourlabs.me/crudlfap/>`_
 - `ChatRoom graciously hosted by
   <https://www.yourlabs.chat>`_ by `YourLabs Business Service
   <https://www.yourlabs.biz>`_ on `Mattermost
   <https://mattermost.com/>`_
-- `**Documentation** graciously hosted
-  <http://crudlfap.readthedocs.io>`_ by `RTFD
-  <http://rtfd.org>`_
 - `Mailing list graciously hosted
   <http://groups.google.com/group/yourlabs>`_ by `Google
   <http://groups.google.com>`_
