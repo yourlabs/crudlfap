@@ -28,6 +28,7 @@ site = Registry(
             urlname='api',
             urlpath='api',
             authenticate=False,
+            unpoly=False,
         ),
     ]
 )

@@ -5,9 +5,12 @@ from django.utils.translation import ugettext as _
 from ryzom_django_mdc.html import *  # noqa
 
 
+UP_TARGET_ALL = '#main, .mdc-top-app-bar__title, #drawer .mdc-list'
+
+
 class A(A):
     attrs = dict(
-        up_target='#main, .mdc-top-app-bar__title, #drawer .mdc-list',
+        up_target=UP_TARGET_ALL,
         # up_transition='cross-fade',
     )
 
@@ -745,12 +748,24 @@ class mdcDrawer(Aside):
             icon = getattr(view, 'icon', None)
             title = getattr(view, 'title', '')
 
-            menu_content.append(
-                A(
-                    MDCListItem(title.capitalize(), icon=icon),
-                    href=view.url,
-                    style='text-decoration: none',
+            if getattr(view, 'unpoly', True):
+                attrs = dict(
+                    up_target=UP_TARGET_ALL,
+                    up_href=view.url,
                 )
+            else:
+                attrs = dict(
+                    onclick=f"document.location.href='{view.url}'",
+                )
+            attrs['padding-top'] = '8px'
+            attrs['padding-bottom'] = '8px'
+
+            menu_content.append(
+                MDCListItem(
+                    title.capitalize(),
+                    icon=icon,
+                    **attrs,
+                ),
             )
         for hook in self.menu_hooks:
             menu_content = hook(request, menu_content)
@@ -768,7 +783,7 @@ class mdcDrawer(Aside):
                 )
             ))
 
-        return super().to_html(MDCList(*content))
+        return super().to_html(MDCList(*content, tag='ul'))
 
 
 class mdcAppContent(Div):
