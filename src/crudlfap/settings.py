@@ -143,7 +143,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'notsecret')
 DEBUG = bool(os.environ.get('DEBUG', False))
 
 if 'HOST' in os.environ:
-    ALLOWED_HOSTS = [os.environ.get('HOST')]
+    ALLOWED_HOSTS = ['www.' + os.environ.get('HOST'), os.environ.get('HOST')]
 elif DEBUG and 'ALLOWED_HOSTS' not in os.environ:
     ALLOWED_HOSTS = ['*']
 else:
