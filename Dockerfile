@@ -20,7 +20,7 @@ RUN pip install --editable /app[project]
 
 RUN ./manage.py ryzom_bundle
 RUN DEBUG=1 ./manage.py collectstatic --noinput
-RUN find static -type f | xargs gzip -f -k -9
+RUN find public -type f | xargs gzip -f -k -9
 
 USER app
 
@@ -50,6 +50,6 @@ CMD bash -c "djcli dbcheck && ./manage.py migrate --noinput && uwsgi \
   --mime-file /etc/mime.types \
   --route '^/static/.* addheader:Cache-Control: public, max-age=7776000' \
   --route '^/js|css|fonts|images|icons|favicon.png/.* addheader:Cache-Control: public, max-age=7776000' \
-  --static-map /static=/app/static \
+  --static-map /static=/app/public \
   --static-map /media=/app/media \
   --static-gzip-all"

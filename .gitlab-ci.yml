@@ -30,9 +30,11 @@ build-test:
     - mkdir -p ~/.ssh; echo "$CI_SSH_KEY" > ~/.ssh/id_ed25519; echo "$SSH_FINGERPRINTS" > ~/.ssh/known_hosts; chmod 700 ~/.ssh; chmod 600 ~/.ssh/*
   script:
     - set -x
-    - HOST=$(echo $CI_ENVIRONMENT_URL | sed s@^.*://@@)
-      PROTO=$(echo $CI_ENVIRONMENT_URL | sed s@:.*@@)
-      bigsudo yourlabs.compose
+    - export HOST=$(echo $CI_ENVIRONMENT_URL | sed s@^.*://@@)
+    - export PROTO=$(echo $CI_ENVIRONMENT_URL | sed s@:.*@@)
+    - export CI_PROJECT_SLUG=$(echo $CI_PROJECT_NAME | sed s@[/.]@-@g)
+    - export ANSIBLE_HOST_KEY_CHECKING=False
+    - bigsudo yourlabs.compose
       compose_django_build=
       compose_django_image=$IMAGE_TAG
       wait_grep=uwsgi

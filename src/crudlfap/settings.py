@@ -308,7 +308,7 @@ USE_TZ = True
 STATIC_URL = os.getenv('STATIC_URL', '/static/')
 STATIC_ROOT = os.getenv(
     'STATIC_ROOT',
-    Path(os.path.dirname(__file__)) / 'static'
+    Path(os.path.dirname(__file__)) / 'public'
 )
 if 'collectstatic' in sys.argv or not DEBUG:
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'  # noqa
