@@ -6,7 +6,7 @@ ENV UWSGI_MODULE=crudlfap_example.wsgi:application
 ENV NODE_ENV=production
 ENV PATH="${PATH}:/app/.local/bin"
 ENV PYTHONIOENCODING=UTF-8 PYTHONUNBUFFERED=1
-ENV STATIC_URL=/static/ STATIC_ROOT=/app/static
+ENV STATIC_URL=/static/ STATIC_ROOT=/app/public
 EXPOSE 8000
 
 RUN pacman -Syu --noconfirm mailcap which gettext python python-pillow python-psycopg2 python-pip python-psutil git curl uwsgi uwsgi-plugin-python python python-hiredis libsass && pip install --upgrade pip djcli
