@@ -13,16 +13,22 @@ User = apps.get_model(getattr(settings, 'AUTH_USER_MODEL', 'auth.User'))
 
 def login_logout(request, menu):
     if request.user.is_authenticated:
-        menu.append(html.A(
-            html.MDCListItem('Logout', icon='logout'),
+        menu.append(html.MDCListItem(
+            'Logout',
+            icon='logout',
             href=reverse('logout'),
             style='text-decoration: none',
+            up_target=html.UNPOLY_TARGET_ALL,
+            tag='a',
         ))
     else:
-        menu.insert(1, html.A(
-            html.MDCListItem('Login', icon='login'),
+        menu.insert(1, html.MDCListItem(
+            'Login',
+            icon='login',
             href=reverse('login'),
             style='text-decoration: none',
+            up_target=html.UNPOLY_TARGET_ALL,
+            tag='a',
         ))
     return menu
 

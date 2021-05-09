@@ -5,9 +5,12 @@ from django.utils.translation import ugettext as _
 from ryzom_django_mdc.html import *  # noqa
 
 
+UNPOLY_TARGET_ALL = '#main, .mdc-top-app-bar__title, #drawer .mdc-list'
+
+
 class A(A):
     attrs = dict(
-        up_target='#main, .mdc-top-app-bar__title, #drawer .mdc-list',
+        up_target=UNPOLY_TARGET_ALL,
         # up_transition='cross-fade',
     )
 
@@ -744,13 +747,18 @@ class mdcDrawer(Aside):
         for view in site.get_menu('main', request):
             icon = getattr(view, 'icon', None)
             title = getattr(view, 'title', '')
+            attrs = dict()
+            if getattr(view, 'unpoly', True):
+                attrs['up_target'] = UNPOLY_TARGET_ALL
 
             menu_content.append(
-                A(
-                    MDCListItem(title.capitalize(), icon=icon),
+                MDCListItem(
+                    title.capitalize(), icon=icon,
                     href=view.url,
                     style='text-decoration: none',
-                )
+                    tag='a',
+                    **attrs,
+                ),
             )
         for hook in self.menu_hooks:
             menu_content = hook(request, menu_content)
@@ -758,15 +766,16 @@ class mdcDrawer(Aside):
         content = menu_content
 
         if request.session.get('become_user', None):
-            content.append(Li(
+            content.append(
                 A(
                     ' '.join([
                         str(_('Back to your account')),
                         request.session['become_user_realname'],
                     ]),
                     href=reverse('crudlfap:su'),
+                    up_target=UNPOLY_TARGET_ALL,
                 )
-            ))
+            )
 
         return super().to_html(MDCList(*content))
 
