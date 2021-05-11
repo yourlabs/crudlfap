@@ -52,6 +52,7 @@ class ModelFormMixin(ModelMixin, FormMixin):
 
     def get_form(self):
         self.form = self.form_class(**self.form_kwargs)
+        return self.form
 
     def get_form_fields(self):
         return self.fields
