@@ -89,5 +89,4 @@ class TemplateMixin:
         default_template_name = getattr(self, 'default_template_name', None)
         if default_template_name:
             template_names.append(default_template_name)
-        logger.debug('TEMPLATE_NAMES', template_names)
         return template_names
