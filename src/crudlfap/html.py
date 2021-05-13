@@ -45,6 +45,10 @@ class FormContainer(Container):
 class PageMenu(Div):
     attrs = dict(cls='mdc-elevation--z2', style='margin-bottom: 10px')
 
+    def __init__(self, *args, _next=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._next = _next
+
     def to_html(self, *content, **context):
         if 'page-menu' not in context:
             return super().to_html(*content, **context)
@@ -56,6 +60,11 @@ class PageMenu(Div):
             if v.urlname == context['view'].urlname:
                 continue
 
+            href = v.url
+            if self._next:
+                if '?' not in href:
+                    href += '?'
+                href += '&_next=' + self._next
             button = A(
                 MDCTextButton(
                     v.label.capitalize(),
@@ -66,7 +75,7 @@ class PageMenu(Div):
                         'color': getattr(v, 'color', 'inherit'),
                     },
                 ),
-                href=v.url,
+                href=href,
                 style='text-decoration: none',
             )
             if getattr(v, 'controller', None) == 'modal':
@@ -381,7 +390,7 @@ class ObjectList(Div):
 
         return super().to_html(
             self.drawer_component(**context) or '',
-            PageMenu(),
+            PageMenu(_next=context['view'].request.path),
             Div(
                 self.search_component(**context) or '',
                 table,
