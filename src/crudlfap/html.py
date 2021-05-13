@@ -87,6 +87,35 @@ class Main(Main):
     pass
 
 
+class ModalClose(Component):
+    '''
+    Close the modal when inserted by Unpoly.
+
+    This should be the default behaviour of Unpoly, as documented, and is the
+    case with modals that do not redirect on the same page, but for modals with
+    a form with a ?_next= redirection then surprisingly unpoly does update the
+    body but does not close the modal by default.
+
+    This tag registers a compiler that calls up.modal.close() when it
+    sees itself, given that unpoly does not execute scripts in
+    response that it loads. As such, this tag MUST be in the initial body, but
+    outside the elements that you will load in modal.
+
+    Remove this hack when we figure the problem in unpoly.
+
+    Equivalent of::
+
+        Script(
+            'up.compiler(".closemodal", function() { up.modal.close(); })',
+            cls='closemodal',
+        ),
+    '''
+    attrs = dict(cls='closemodal')
+
+    def py2js():
+        up.compiler('.closemodal', lambda: up.modal.close())
+
+
 class Body(Body):
     style = 'margin: 0'
 
@@ -98,6 +127,7 @@ class Body(Body):
                 *content,
                 cls='main-inner',
             ),
+            ModalClose(),
             cls='main mdc-drawer-app-content',
             id='main',
         )
