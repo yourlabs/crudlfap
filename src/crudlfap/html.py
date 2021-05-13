@@ -250,6 +250,13 @@ class Home(Div):
         site = Site.objects.get_current()
         return super().to_html(
             H1('Welcome to ' + site.name),
+            MDCButtonRaised(
+                'Login to continue',
+                href=reverse('login'),
+                up_target=UNPOLY_TARGET_ALL,
+                tag='a',
+            ),
+            Div('Then, navigate with the menu button at the north west'),
             **context
         )
 
