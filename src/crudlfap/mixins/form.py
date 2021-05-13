@@ -42,7 +42,9 @@ class FormMixin:
             return self.form_invalid_json()
 
         self.message_error()
-        return self.render_to_response()
+        response = self.render_to_response()
+        response.status_code = 400
+        return response
 
     def get_title_submit(self):
         """

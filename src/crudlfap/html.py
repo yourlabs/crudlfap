@@ -87,6 +87,35 @@ class Main(Main):
     pass
 
 
+class ModalClose(Component):
+    '''
+    Close the modal when inserted by Unpoly.
+
+    This should be the default behaviour of Unpoly, as documented, and is the
+    case with modals that do not redirect on the same page, but for modals with
+    a form with a ?_next= redirection then surprisingly unpoly does update the
+    body but does not close the modal by default.
+
+    This tag registers a compiler that calls up.modal.close() when it
+    sees itself, given that unpoly does not execute scripts in
+    response that it loads. As such, this tag MUST be in the initial body, but
+    outside the elements that you will load in modal.
+
+    Remove this hack when we figure the problem in unpoly.
+
+    Equivalent of::
+
+        Script(
+            'up.compiler(".closemodal", function() { up.modal.close(); })',
+            cls='closemodal',
+        ),
+    '''
+    attrs = dict(cls='closemodal')
+
+    def py2js():
+        up.compiler('.closemodal', lambda: up.modal.close())
+
+
 class Body(Body):
     style = 'margin: 0'
 
@@ -98,6 +127,7 @@ class Body(Body):
                 *content,
                 cls='main-inner',
             ),
+            ModalClose(),
             cls='main mdc-drawer-app-content',
             id='main',
         )
@@ -112,7 +142,10 @@ class Body(Body):
         )
 
     def py2js(self):
-        up.compiler('[data-mdc-auto-init]', lambda: mdc.autoInit())
+        up.compiler(
+            '[data-mdc-auto-init]',
+            lambda el: mdc.autoInit(el.parentElement)
+        )
         if self.debug:
             up.log.enable()
 
@@ -120,10 +153,13 @@ class Body(Body):
 class App(Html):
     body_class = Body
     scripts = [
-        'https://unpkg.com/unpoly@0.62.1/dist/unpoly.js',
+        'https://unpkg.com/unpoly@1.0.0/dist/unpoly.js',
+        # 'https://unpkg.com/unpoly@2.0.0-rc9/unpoly.min.js',
+        # 'https://unpkg.com/unpoly@2.0.0-rc9/unpoly-migrate.js',
     ]
     stylesheets = [
-        'https://unpkg.com/unpoly@0.62.1/dist/unpoly.min.css',
+        'https://unpkg.com/unpoly@1.0.0/dist/unpoly.css',
+        # 'https://unpkg.com/unpoly@2.0.0-rc9/unpoly.min.css',
     ]
 
     def to_html(self, *content, **context):
@@ -214,6 +250,13 @@ class Home(Div):
         site = Site.objects.get_current()
         return super().to_html(
             H1('Welcome to ' + site.name),
+            MDCButtonRaised(
+                'Login to continue',
+                href=reverse('login'),
+                up_target=UNPOLY_TARGET_ALL,
+                tag='a',
+            ),
+            Div('Then, navigate with the menu button at the north west'),
             **context
         )
 
@@ -221,13 +264,12 @@ class Home(Div):
 @template('registration/logged_out.html', App, NarrowCard)
 class LoggedOut(Div):
     def to_html(self, **context):
-        from .site import site
         return super().to_html(
             H1(_('Log out')),
             P(_('Thanks for spending some quality time with the Web site today.')),  # noqa
             A(
                 _('Log in again'),
-                href=site.views['login'].url,
+                href=reverse('login'),
             ),
             **context,
         )
