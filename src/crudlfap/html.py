@@ -150,10 +150,13 @@ class Body(Body):
 class App(Html):
     body_class = Body
     scripts = [
-        'https://unpkg.com/unpoly@0.62.1/dist/unpoly.js',
+        'https://unpkg.com/unpoly@1.0.0/dist/unpoly.js',
+    #     'https://unpkg.com/unpoly@2.0.0-rc9/unpoly.min.js',
+    #     'https://unpkg.com/unpoly@2.0.0-rc9/unpoly-migrate.js',
     ]
     stylesheets = [
-        'https://unpkg.com/unpoly@0.62.1/dist/unpoly.min.css',
+        'https://unpkg.com/unpoly@1.0.0/dist/unpoly.css',
+    #     'https://unpkg.com/unpoly@2.0.0-rc9/unpoly.min.css',
     ]
 
     def to_html(self, *content, **context):
