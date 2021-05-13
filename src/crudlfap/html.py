@@ -142,7 +142,7 @@ class Body(Body):
         )
 
     def py2js(self):
-        up.compiler('[data-mdc-auto-init]', lambda: mdc.autoInit())
+        up.compiler('[data-mdc-auto-init]', lambda el: mdc.autoInit(el.parentElement))
         if self.debug:
             up.log.enable()
 
