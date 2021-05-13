@@ -1,5 +1,6 @@
 """CRUD :eMixins that can be used in Actions or Views."""
 import copy
+import json
 
 from django import forms
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
@@ -103,6 +104,11 @@ class DetailMixin:
         """Identify the object by slug or pk in the pattern."""
         return r'<{}>'.format(cls.urlfield)
 
+    def get_JSONField_display(self, name):  # noqa
+        value = getattr(self.object, name, "")
+        formated = json.dumps(value, indent=4)
+        return f'<pre>{formated}</pre>'
+
     def get_title(self):
         return str(self.object)
 
@@ -124,6 +130,15 @@ class DetailMixin:
         value_getter = '_'.join(['get', name, 'display'])
         if hasattr(self.object, value_getter):
             return getattr(self.object, value_getter)()
+        if hasattr(self, value_getter):
+            return getattr(self, value_getter)()
+        type_getter = '_'.join([
+            'get',
+            type(self.model._meta.get_field(name)).__name__,
+            'display',
+        ])
+        if hasattr(self, type_getter):
+            return getattr(self, type_getter)(name)
         value = getattr(self.object, name)
         if hasattr(value, 'get_absolute_url'):
             return html.A(
