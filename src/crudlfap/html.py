@@ -264,13 +264,12 @@ class Home(Div):
 @template('registration/logged_out.html', App, NarrowCard)
 class LoggedOut(Div):
     def to_html(self, **context):
-        from .site import site
         return super().to_html(
             H1(_('Log out')),
             P(_('Thanks for spending some quality time with the Web site today.')),  # noqa
             A(
                 _('Log in again'),
-                href=site.views['login'].url,
+                href=reverse('login'),
             ),
             **context,
         )
