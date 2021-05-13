@@ -754,7 +754,7 @@ class mdcTopAppBar(Header):
         window.drawer.open = not window.drawer.open
 
     def py2js(self):
-        window.addEventListener('DOMContentLoaded', self.setup)
+        up.compiler('#drawer, #app-bar, #main', self.setup)
 
     def setup():
         window.drawer = mdc.drawer.MDCDrawer.attachTo(
