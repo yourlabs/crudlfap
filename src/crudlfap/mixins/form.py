@@ -148,11 +148,6 @@ class FormMixin:
                     'description': 'Invalid input'
                 },
             },
-            'security': [
-                {
-                    'auth': [self.permission_fullcode]
-                }
-            ],
             'summary': self.swagger_summary,
             'tags': self.swagger_tags,
         }

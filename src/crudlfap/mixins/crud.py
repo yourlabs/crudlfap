@@ -204,11 +204,6 @@ class ListMixin:
                 },
                 '400': {'description': 'Invalid status value'}
             },
-            'security': [
-                {
-                    'auth': [self.permission_fullcode]
-                }
-            ],
             'summary': self.title,
             'tags': self.swagger_tags
         }

@@ -74,6 +74,32 @@ class DeleteObjectsView(mixins.DeleteMixin, ObjectsFormView):
 class DetailView(mixins.DetailMixin, ObjectView):
     """Templated model object detail view which takes a field option."""
 
+    def get_swagger_summary(self):
+        return f'{self.model.__name__} Detail'
+
+    def get_swagger_get(self):
+        result = {
+            'operationId': f'find{self.model.__name__}ByStatus',
+            'produces': ['application/json'],
+            'responses': {
+                '200': {
+                    'description': 'successful operation',
+                    'schema': {
+                        'items': {
+                            '$ref': f'#/definitions/{self.model.__name__}'
+                        },
+                        'type': 'array'
+                    }
+                },
+                '404': {
+                    'description': 'Not found'
+                },
+            },
+            'summary': self.swagger_summary,
+            'tags': self.swagger_tags,
+        }
+        return result
+
 
 class HistoryView(mixins.ObjectMixin, generic.DetailView):
     pass
@@ -97,36 +123,35 @@ class ListView(mixins.ListMixin, mixins.SearchMixin, mixins.FilterMixin,
         return self.router.get_menu('list_action', self.request)
 
     def get_swagger_get(self):
+        parameters = []
+        if self.filterset:
+            for name, field in self.filterset.form.fields.items():
+                parameters.append({
+                    'collectionFormat': 'single',
+                    'description': field.help_text,
+                    'in': 'query',
+                    'name': name,
+                    'required': field.required,
+                    'type': 'string'
+                })
+
         return {
             # 'description': 'Multiple status are comma separated',
-            'operationId': 'findPetsByStatus',
-            'parameters': [
-                {
-                    'collectionFormat': 'multi',
-                    'description': 'Status values to filter',
-                    'in': 'query',
-                    'items': {
-                        'default': 'available',
-                        'enum': ['available', 'pending', 'sold'],
-                        'type': 'string'
-                    },
-                    'name': 'status',
-                    'required': True,
-                    'type': 'array'
-                }
-            ],
-            'produces': ['application/json', 'application/xml'],
+            'operationId': f'find{self.model.__name__}ByStatus',
+            'parameters': parameters,
+            'produces': ['application/json'],
             'responses': {
                 '200': {
                     'description': 'successful operation',
                     'schema': {
-                        'items': {'$ref': '#/definitions/Pet'},
+                        'items': {
+                            '$ref': f'#/definitions/{self.model.__name__}'
+                        },
                         'type': 'array'
                     }
                 },
-                '400': {'description': 'Invalid status value'}
+                '400': {'description': 'Invalid parameter'}
             },
-            'security': [{'petstore_auth': ['write:pets', 'read:pets']}],
             'summary': self.title,
             'tags': self.swagger_tags,
         }
