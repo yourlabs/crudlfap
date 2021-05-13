@@ -275,7 +275,7 @@ class LoggedOut(Div):
         )
 
 
-@template('crudlfap/detail.html', App, NarrowCard)
+@template('crudlfap/detail.html', App)
 class ObjectDetail(Div):
     def to_html(self, **context):
         table = MDCDataTable()
@@ -289,7 +289,7 @@ class ObjectDetail(Div):
                 MDCDataTableTd(field['value']),
             ))
 
-        return super().to_html(table, **context)
+        return super().to_html(PageMenu(), NarrowCard(table), **context)
 
     def context(self, *content, **context):
         context['page-menu'] = context['view'].router.get_menu(
