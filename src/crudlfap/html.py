@@ -142,7 +142,10 @@ class Body(Body):
         )
 
     def py2js(self):
-        up.compiler('[data-mdc-auto-init]', lambda el: mdc.autoInit(el.parentElement))
+        up.compiler(
+            '[data-mdc-auto-init]',
+            lambda el: mdc.autoInit(el.parentElement)
+        )
         if self.debug:
             up.log.enable()
 
@@ -151,12 +154,12 @@ class App(Html):
     body_class = Body
     scripts = [
         'https://unpkg.com/unpoly@1.0.0/dist/unpoly.js',
-    #     'https://unpkg.com/unpoly@2.0.0-rc9/unpoly.min.js',
-    #     'https://unpkg.com/unpoly@2.0.0-rc9/unpoly-migrate.js',
+        # 'https://unpkg.com/unpoly@2.0.0-rc9/unpoly.min.js',
+        # 'https://unpkg.com/unpoly@2.0.0-rc9/unpoly-migrate.js',
     ]
     stylesheets = [
         'https://unpkg.com/unpoly@1.0.0/dist/unpoly.css',
-    #     'https://unpkg.com/unpoly@2.0.0-rc9/unpoly.min.css',
+        # 'https://unpkg.com/unpoly@2.0.0-rc9/unpoly.min.css',
     ]
 
     def to_html(self, *content, **context):
