@@ -847,16 +847,25 @@ class mdcTopAppBar(Header):
     def nav():
         window.drawer.open = not window.drawer.open
 
+    def close():
+        if window.visualViewport.width < 800:
+            window.drawer.open = False
+
     def py2js(self):
         up.compiler('#drawer, #app-bar, #main', self.setup)
 
     def setup():
-        window.drawer = mdc.drawer.MDCDrawer.attachTo(
-            document.getElementById('drawer'))
-        topAppBar = mdc.topAppBar.MDCTopAppBar.attachTo(
-            document.getElementById('app-bar'))
-        topAppBar.setScrollTarget(document.getElementById('main'))
+        drawer = document.getElementById('drawer')
+        app_bar = document.getElementById('app-bar')
+        main = document.getElementById('main')
+
+        window.drawer = mdc.drawer.MDCDrawer.attachTo(drawer)
+        topAppBar = mdc.topAppBar.MDCTopAppBar.attachTo(app_bar)
+        topAppBar.setScrollTarget(main)
         topAppBar.listen('MDCTopAppBar:nav', self.nav)
+
+        for link in drawer.querySelectorAll('a'):
+            link.addEventListener('click', self.close)
 
 
 class mdcDrawer(Aside):
