@@ -23,14 +23,22 @@ class Form(Form):
 
 
 class Container(Div):
-    style = {
-        'display': 'flex',
-        'flex-direction': 'column',
-        'align-items': 'center',
-        'max-width': '960px',
-        'width': '96vw',
-        'margin': 'auto',
-    }
+    sass = '''
+    .Container
+        display: flex
+        flex-direction: column
+        align-items: center
+        max-width: 960px
+        width: 96vw
+        margin: auto
+
+    .up-modal .Container
+        width: 86vw
+
+    @media screen and (max-width: 500px)
+        .up-modal .up-modal-content
+            padding: 10px
+    '''
 
 
 class FormContainer(Container):
@@ -39,6 +47,7 @@ class FormContainer(Container):
         max-width: 580px
         .mdc-text-field, .mdc-form-field, .mdc-select, form
             width: 100%
+            max-width: 90vw
     '''
 
 
@@ -255,11 +264,14 @@ class App(Html):
         'https://unpkg.com/unpoly@1.0.0/dist/unpoly.css',
         # 'https://unpkg.com/unpoly@2.0.0-rc9/unpoly.min.css',
     ]
+    sass = '''
+    .up-modal .up-modal-viewport
+        padding-left: 0
+        padding-right: 0
+        padding-top: 10px
+    '''
 
     def to_html(self, *content, **context):
-        self.head.content.append(
-            Style('.up-modal-content { padding-top: 0; padding-bottom: 0; }')
-        )
         if title := getattr(context['view'], 'title', None):
             self.head.content.append(Title(title))
         return super().to_html(*content, SpinnerOverlay(), **context)
