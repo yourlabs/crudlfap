@@ -17,7 +17,7 @@ setup(
     include_package_data=True,
     keywords='django crud',
     install_requires=[
-        'ryzom>=0.6.3,<0.7',
+        'ryzom>=0.6.4,<0.7',
         'django>=3.1,<3.2',
         'django-tables2',
         'django-filter',
