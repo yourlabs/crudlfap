@@ -350,7 +350,7 @@ class Swagger(Div):
         )
 
 
-@template('crudlfap/home.html', App)
+@template('crudlfap/home.html', App, Container)
 class Home(Div):
     def to_html(self, **context):
         site = Site.objects.get_current()
