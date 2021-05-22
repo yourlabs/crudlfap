@@ -18,7 +18,11 @@ ROOT_URLCONF = 'crudlfap_example.urls'
 DATABASES = {
     'default': {
         'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.sqlite3'),
-        'NAME': os.getenv('DB_NAME', os.path.join(BASE_DIR, 'db.sqlite3')),
+        'NAME': os.getenv('DB_NAME', os.path.join(
+            os.path.dirname(__file__),
+            '..',
+            'db.sqlite3',
+        )),
         'HOST': os.getenv('DB_HOST'),
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASS'),
