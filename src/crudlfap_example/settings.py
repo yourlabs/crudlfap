@@ -3,17 +3,17 @@ from crudlfap.settings import *  # noqa
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 INSTALLED_APPS += [  # noqa
+    # CRUDLFA+ extras
+    'django_registration',
+    'crudlfap_registration',
+
     # CRUDLFA+ examples
     'crudlfap_example.artist',
     'crudlfap_example.song',
     'crudlfap_example.blog',
-
-    # CRUDLFA+ extras
-    'django_registration',
-    'crudlfap_registration',
 ]
 
-ROOT_URLCONF = 'crudlfap_example.urls'
+ROOT_URLCONF = os.path.dirname(__file__).split('/')[-1] + '.urls'
 
 DATABASES = {
     'default': {
