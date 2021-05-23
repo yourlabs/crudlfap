@@ -3,6 +3,7 @@ import copy
 import json
 
 from django import forms
+from django import http
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
 from django.contrib.contenttypes.models import ContentType
 
@@ -24,21 +25,6 @@ class CreateMixin:
     def form_valid(self):
         self.object = self.form.save()
         return super().form_valid()
-
-    '''
-    def form_valid_json(self):
-        detail = self.router.get('detail', None)
-        url = None
-        if detail:
-            detail = detail.clone(request=self.request, object=self.object)
-            if detail.has_perm():
-                url = detail.url()
-        return http.JsonResponse({
-            'url': url,
-            'data': data,
-            'status': 'created',
-        }, status=201)
-    '''
 
 
 class ActionMixin:
@@ -112,18 +98,21 @@ class DetailMixin:
     def get_title(self):
         return str(self.object)
 
+    def get_visible_fields(self):
+        return [
+            f.name for f in self.model._meta.fields
+            if self.fields == '__all__' or f.name not in self.exclude
+        ]
+
     def get_display_fields(self):
+        """Table field rendering"""
         self.display_fields = [
             {
                 'field': self.model._meta.get_field(field),
                 'value': self.get_field_display(field),
                 'name': field,
             }
-            for field in (
-                [f.name for f in self.model._meta.fields]
-                if self.fields == '__all__'
-                else self.fields
-            ) if field not in self.exclude
+            for field in self.visible_fields
         ]
 
     def get_field_display(self, name):
@@ -147,8 +136,31 @@ class DetailMixin:
             ).render()
         return value
 
+    def get_json_fields(self):
+        return self.visible_fields
+
+    def get_FIELD_json(self, obj, field):
+        value = getattr(obj, field)
+        if self.router and type(value) in self.router.registry:
+            value = self.router.registry[type(value)].serialize(obj)
+        elif value and not isinstance(value, (str, int, float, bool)):
+            value = str(value)
+        return value
+
+    def serialize(self):
+        if self.router:
+            return self.router.serialize(self.object, self.json_fields)
+        return {
+            field: getattr(
+                self,
+                f'get_{field}_json',
+                'get_FIELD_json',
+            )(self.object, field)
+            for field in self.json_fields
+        }
+
     def json_get(self, request, *args, **kwargs):
-        return {field['name']: field['value'] for field in self.display_fields}
+        return http.JsonResponse(self.serialize())
 
 
 class HistoryMixin:
