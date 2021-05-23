@@ -189,3 +189,78 @@ List actions, such as the delete action, can be implemented as such::
         def form_valid(self):
             self.object_list.filter(state='held').update(state='deploy')
             return super().form_valid()
+
+API
+===
+
+CRUDLFA+ now offers a REST API interface which is documented with swagger on
+``/api``.
+
+Usage
+-----
+
+It requires to set the ``Content-Type: application/json`` header. For example:
+
+.. code-block:: python
+
+    import requests
+
+    response = requests.get(
+        f'http://localhost:8000/blockchain',
+        headers={'Content-Type': 'application/json'}
+    )
+    assert response.status_code == 200
+    blockchains = response.json()
+
+POST requests require a CSRF token that you may obtain as a cookie with any GET
+request, but it is advised that you keep it up to date by using a request
+session.
+
+.. code-block:: python
+
+    import requests
+    session = requests.session()
+    session.get('http://localhost:8000')
+    response = session.post(
+        f'{site}/auth/login/',
+        dict(
+            username='user', password='user'
+        ),
+        headers={'X-CSRFToken': session.cookies['csrftoken']},
+        allow_redirects=False,
+    )
+    assert response.status_code == 302
+
+
+Then you can make more POST requests ie. to create an object:
+
+.. code-block:: python
+
+    response = session.post(
+        f'{site}/account/create',
+        json=dict(
+            blockchain=123,
+        ),
+        headers={
+            'Content-Type': 'application/json',
+            'X-CSRFToken': session.cookies['csrftoken'],
+        }
+    )
+    assert response.status_code == 201
+
+In case of error, it will return a 4xx response with the error details in a
+JSON response.
+
+Customize the API
+-----------------
+
+By default, views will call the router's
+:py:meth:`~crudlfap.router.Router.serialize(obj, fields)` method. You may override it,
+or just configure :py:attr:`~crudlfap.router.Router.json_fields` attribute. To
+serialize each field, it will try to find ``get_FIELDNAME_json()`` method,
+otherwise use the default
+:py:meth:`~crudlfap.router.Router.get_FIELDNAME_json(obj, field)` method which
+you might has well override. It will use the related router to serialize any
+related object.
+
+Then, you may override both of these at the view level if you want.

@@ -1,5 +1,6 @@
 import json
 
+from django import http
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
 from django.forms import models as model_forms
@@ -40,6 +41,12 @@ log_insert = log  # backward compat
 class ModelFormMixin(ModelMixin, FormMixin):
     """ModelForm Mixin using readable"""
     menus = ['model']
+
+    def form_valid_json(self):
+        return http.JsonResponse({
+            'data': self.router.serialize(self.object),
+            'status': 'created',
+        }, status=201)
 
     def get_form_kwargs(self):
         self.form_kwargs = super().get_form_kwargs()

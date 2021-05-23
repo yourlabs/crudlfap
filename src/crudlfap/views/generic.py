@@ -156,16 +156,25 @@ class ListView(mixins.ListMixin, mixins.SearchMixin, mixins.FilterMixin,
             'tags': self.swagger_tags,
         }
 
+    def get_json_fields(self):
+        return self.router.json_fields
+
+    def serialize(self, obj):
+        if self.router:
+            return self.router.serialize(obj, self.json_fields)
+        return {
+            field: getattr(
+                self,
+                f'get_{field}_json',
+                'get_FIELD_json',
+            )(obj, field)
+            for field in self.json_fields
+        }
+
     def json_get(self, request, *args, **kwargs):
         rows = []
         for row in self.table.paginated_rows:
-            json_row = dict()
-            for field in self.table_fields:
-                value = getattr(row.record, field, None)
-                if not isinstance(value, (str, int, float, bool, None)):
-                    value = str(value)
-                json_row[field] = value
-            rows.append(json_row)
+            rows.append(self.serialize(row.record))
         data = dict(
             results=rows,
             paginator=dict(

@@ -24,7 +24,10 @@ class FormMixin:
         return http.HttpResponseRedirect(self.success_url)
 
     def form_valid_json(self):
-        return http.JsonResponse({'status': 'accepted'}, status=201)
+        return http.JsonResponse({
+            'data': self.form.cleaned_data,
+            'status': 'accepted',
+        }, status=201)
 
     def form_invalid_json(self):
         data = dict(
