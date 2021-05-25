@@ -447,7 +447,7 @@ class ObjectList(Div):
         )
         return super().context(*content, **context)
 
-    def to_html(self, **context):
+    def to_html(self, *content, **context):
         checkbox = None
         context['listactions'] = context['view'].router.get_menu(
             'list_action',
@@ -486,6 +486,7 @@ class ObjectList(Div):
         table.addchild(self.pagination_component(**context))
 
         return super().to_html(
+            *content,
             self.drawer_component(**context) or '',
             PageMenu(_next=context['view'].request.path),
             Div(
