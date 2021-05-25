@@ -341,7 +341,6 @@ class Router(object):
         return views
 
     def get_menu_component(self, name, request, **kwargs):
-        from crudlfap.site import site
         views = self.get_menu(name, request, **kwargs)
         buttons = []
         for view in views:
