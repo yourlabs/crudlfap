@@ -53,6 +53,8 @@ from django.db import models
 from django.urls import path
 from django.utils.module_loading import import_string
 
+from crudlfap import html
+
 from .route import Route
 from .settings import CRUDLFAP_VIEWS
 from .utils import guess_urlfield
@@ -337,6 +339,25 @@ class Router(object):
                 views.append(view)
 
         return views
+
+    def get_menu_component(self, name, request, **kwargs):
+        from crudlfap.site import site
+        views = self.get_menu(name, request, **kwargs)
+        buttons = []
+        for view in views:
+            button = html.Component(
+                f'<button class="material-icons mdc-icon-button" ryzom-id="308bade28a8c11ebad3800e18cb957e9" style="color: {getattr(view, "color", "")}; --mdc-ripple-fg-size:28px; --mdc-ripple-fg-scale:1.7142857142857142; --mdc-ripple-left:10px; --mdc-ripple-top:10px;">{getattr(view, "icon", "")}</button>',  # noqa
+                title=view.title.capitalize(),
+                href=view.url + '?_next=' + request.path_info,
+                style='text-decoration: none',
+                tag='a',
+            )
+            if getattr(view, 'controller', None) == 'modal':
+                button.attrs.up_modal = '.main-inner'
+            else:
+                button.attrs['up-target'] = html.A.attrs['up-target']
+            buttons.append(button)
+        return html.Div(*buttons)
 
     def get_model(self):
         return None

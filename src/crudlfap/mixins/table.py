@@ -26,28 +26,13 @@ class ActionsColumn(tables.Column):
 
     def render(self, record, table, value, **kwargs):
         from crudlfap.site import site
-        buttons = []
-        views = site[type(record)].get_menu(
-            'object',
-            table.request,
-            object=record
-        )
-        for view in views:
-            button = html.Component(
-                f'<button class="material-icons mdc-icon-button" ryzom-id="308bade28a8c11ebad3800e18cb957e9" style="color: {getattr(view, "color", "")}; --mdc-ripple-fg-size:28px; --mdc-ripple-fg-scale:1.7142857142857142; --mdc-ripple-left:10px; --mdc-ripple-top:10px;">{getattr(view, "icon", "")}</button>',  # noqa
-                title=view.title.capitalize(),
-                href=view.url + '?next=' + table.request.path_info,
-                style='text-decoration: none',
-                tag='a',
-            )
-            if getattr(view, 'controller', None) == 'modal':
-                button.attrs.up_modal = '.main-inner'
-            else:
-                button.attrs['up-target'] = html.A.attrs['up-target']
-            buttons.append(button)
         out = html.Div(
-            *buttons,
-            style='display:flex;flex-direction:row-reverse'
+            *site[type(record)].get_menu_component(
+                'object',
+                table.request,
+                object=record
+            ).content,
+            style='display:flex;flex-direction:row-reverse',
         ).render()
         return mark_safe(out)
 
