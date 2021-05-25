@@ -395,7 +395,12 @@ class ObjectDetail(Div):
                 MDCDataTableTd(field['value']),
             ))
 
-        return super().to_html(PageMenu(), *content, NarrowCard(table), **context)
+        return super().to_html(
+            PageMenu(),
+            *content,
+            NarrowCard(table),
+            **context
+        )
 
     def context(self, *content, **context):
         context['page-menu'] = context['view'].router.get_menu(
