@@ -214,21 +214,17 @@ class SpinnerOverlay(Div):
     sass = '''
     .SpinnerOverlay
         position: fixed
-        width: 100%
-        height: 100%
+        width: 64px
+        height: 64px
         top: 0
-        left: 0
         right: 0
-        bottom: 0
-        background-color: rgba(255, 255, 255, 0.66)
         z-index: 20000
         cursor: pointer
-        padding-top: 30vh
 
         .loader
             color: var(--mdc-theme-primary)
             opacity: 50%
-            font-size: 90px
+            font-size: 30px
             text-indent: -9999em
             overflow: hidden
             width: 1em
@@ -292,13 +288,25 @@ class SpinnerOverlay(Div):
         ])
 
     def __init__(self):
-        super().__init__(Div('...', cls='loader'), style='display:none')
+        super().__init__(Div('...', cls='loader'), )#style='display:none')
 
+
+def poll():
+    def poll_setup(element):
+        interval = parseInt(element.getAttribute('poll') or 5000)
+
+        def poll():
+            if not document.hidden:
+                up.reload(element)
+            setTimeout(poll, interval)
+        setTimeout(poll, interval)
+    up.compiler('[poll]', poll_setup)
 
 class App(Html):
     body_class = Body
     scripts = [
         'https://unpkg.com/unpoly@1.0.0/dist/unpoly.js',
+        poll,
         # 'https://unpkg.com/unpoly@2.0.0-rc9/unpoly.min.js',
         # 'https://unpkg.com/unpoly@2.0.0-rc9/unpoly-migrate.js',
     ]
