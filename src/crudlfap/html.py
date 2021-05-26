@@ -135,7 +135,7 @@ class ModalClose(Component):
         up.compiler('.closemodal', lambda: up.modal.close())
 
 
-class Messages(Div):
+class Message(Div):
     icons = dict(
         debug='check_circle',
         info='check_circle',
@@ -143,7 +143,6 @@ class Messages(Div):
         warning='warning',
         error='error',
     )
-
     colors = dict(
         debug='green',
         info='yellow',
@@ -151,25 +150,35 @@ class Messages(Div):
         warning='orange',
         error='red',
     )
+    style='''
+        padding-left: 16px;
+        display: flex;
+        flex-direction: row;
+        align-items: center
+    '''
+    cls='mdc-card'
 
-    def message_component(self, message):
-        return Div(
+    def __init__(self, message, *content, **attrs):
+        print(message.level_tag)
+        return super().__init__(
+            *content,
             MDCIcon(
-                self.icons[message.level_tag],
+                self.icons.get(message.level_tag, 'success'),
                 style=dict(color=self.colors[message.level_tag]),
             ),
-            Div('You have created foo', style='margin-left: 16px'),
-            style='padding: 16px; display: flex; flex-direction: row; align-items: center',
-            cls='mdc-card',
+            Div(message, style='margin-left: 16px'),
+            **attrs
         )
 
+
+class Messages(Div):
     def to_html(self, *content, **context):
         msgs = messages.get_messages(context['view'].request)
         if not msgs:
             return ''
 
         return Div(*[
-            self.message_component(message)
+            Message(message)
             for message in msgs
         ]).to_html(*content, **context)
 
