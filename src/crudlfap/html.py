@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.sites.models import Site
+from django.contrib import messages
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from ryzom_django_mdc.html import *  # noqa
@@ -134,17 +135,58 @@ class ModalClose(Component):
         up.compiler('.closemodal', lambda: up.modal.close())
 
 
+class Messages(Div):
+    icons = dict(
+        debug='check_circle',
+        info='check_circle',
+        success='check_circle',
+        warning='warning',
+        error='error',
+    )
+
+    colors = dict(
+        debug='green',
+        info='yellow',
+        success='green',
+        warning='orange',
+        error='red',
+    )
+
+    def message_component(self, message):
+        return Div(
+            MDCIcon(
+                self.icons[message.level_tag],
+                style=dict(color=self.colors[message.level_tag]),
+            ),
+            Div('You have created foo', style='margin-left: 16px'),
+            style='padding: 16px; display: flex; flex-direction: row; align-items: center',
+            cls='mdc-card',
+        )
+
+    def to_html(self, *content, **context):
+        msgs = messages.get_messages(context['view'].request)
+        if not msgs:
+            return ''
+
+        return Div(*[
+            self.message_component(message)
+            for message in msgs
+        ]).to_html(*content, **context)
+
+
 class Body(Body):
     style = 'margin: 0'
 
     def __init__(self, *content, **attrs):
         self.drawer = mdcDrawer(id='drawer')
         self.bar = mdcTopAppBar()
+        self.main_inner = Div(
+            Messages(),
+            *content,
+            cls='main-inner',
+        )
         self.main = Main(
-            Div(
-                *content,
-                cls='main-inner',
-            ),
+            self.main_inner,
             ModalClose(),
             cls='main mdc-drawer-app-content',
             id='main',
