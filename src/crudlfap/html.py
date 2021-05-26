@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.sites.models import Site
+from django.contrib import messages
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from ryzom_django_mdc.html import *  # noqa
@@ -134,17 +135,56 @@ class ModalClose(Component):
         up.compiler('.closemodal', lambda: up.modal.close())
 
 
+class Message(MDCSnackBar):
+    icons = dict(
+        debug='check_circle',
+        info='check_circle',
+        success='check_circle',
+        warning='warning',
+        error='error',
+    )
+    colors = dict(
+        debug='green',
+        info='yellow',
+        success='green',
+        warning='orange',
+        error='red',
+    )
+    style='''
+        padding-left: 16px;
+        display: flex;
+        flex-direction: row;
+        align-items: center
+    '''
+
+    py2js = lambda: None # we will use up.compiler
+
+
+class Messages(Div):
+    def to_html(self, *content, **context):
+        msgs = messages.get_messages(context['view'].request)
+        if not msgs:
+            return ''
+
+        return Div(*[
+            Message(message)
+            for message in msgs
+        ]).to_html(*content, **context)
+
+
 class Body(Body):
     style = 'margin: 0'
 
     def __init__(self, *content, **attrs):
         self.drawer = mdcDrawer(id='drawer')
         self.bar = mdcTopAppBar()
+        self.main_inner = Div(
+            Messages(),
+            *content,
+            cls='main-inner',
+        )
         self.main = Main(
-            Div(
-                *content,
-                cls='main-inner',
-            ),
+            self.main_inner,
             ModalClose(),
             cls='main mdc-drawer-app-content',
             id='main',
@@ -234,11 +274,19 @@ def poll():
     up.compiler('[poll]', poll_setup)
 
 
+def snack(self):
+    def open_snack(elem):
+        sb = new.mdc.snackbar.MDCSnackbar(elem)
+        sb.open()
+    up.compiler('[data-mdc-auto-init=MDCSnackbar]', open_snack)
+
+
 class App(Html):
     body_class = Body
     scripts = [
         'https://unpkg.com/unpoly@1.0.0/dist/unpoly.js',
         poll,
+        snack,
         # 'https://unpkg.com/unpoly@2.0.0-rc9/unpoly.min.js',
         # 'https://unpkg.com/unpoly@2.0.0-rc9/unpoly-migrate.js',
     ]

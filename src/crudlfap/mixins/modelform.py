@@ -103,10 +103,6 @@ class ModelFormMixin(ModelMixin, FormMixin):
 
             return ' '.join((
                 message,
-                '<a href="{}" class="btn-flat toast-action">{}</a>'.format(
-                    url,
-                    _('detail').capitalize(),
-                ),
             ))
         return message
 
