@@ -343,6 +343,8 @@ class FormTemplate(FormContainer):
                 CSRFInput(view.request),
                 back,
                 MDCButtonRaised(getattr(view, 'title_submit', _('Submit'))),
+                method='post',
+                action=view.request.path_info,
             ),
         )
 
