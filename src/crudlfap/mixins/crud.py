@@ -16,7 +16,6 @@ class CreateMixin:
     default_template_name = 'crudlfap/create.html'
     template_name_suffixes = ['create', 'form']
     controller = 'modal'
-    action = 'click->modal#open'
     color = 'green'
     log_action_flag = ADDITION
     menus = ['model']

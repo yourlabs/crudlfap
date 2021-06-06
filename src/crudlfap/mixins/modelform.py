@@ -94,16 +94,6 @@ class ModelFormMixin(ModelMixin, FormMixin):
         ).capitalize()
 
     def message_html(self, message):
-        """Add the detail url for form.instance, if possible."""
-        if getattr(self, 'object', None):
-            try:
-                url = self.object.get_absolute_url()
-            except Exception:
-                return message
-
-            return ' '.join((
-                message,
-            ))
         return message
 
     def get_log_action_flag(self):

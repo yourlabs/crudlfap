@@ -150,14 +150,15 @@ class Message(MDCSnackBar):
         warning='orange',
         error='red',
     )
-    style='''
+    style = '''
         padding-left: 16px;
         display: flex;
         flex-direction: row;
         align-items: center
     '''
 
-    py2js = lambda: None # we will use up.compiler
+    def py2js(self):
+        return  # we will use up.compiler
 
 
 class Messages(Div):
@@ -264,10 +265,12 @@ def poll():
             console.error('[poll] *REQUIRES* an id attribute!')
             return
         interval = parseInt(element.getAttribute('poll') or 5000)
+
         def poll():
             if not document.hidden:
                 up.reload(element)
         poll = setInterval(poll, interval)
+
         def clear():
             clearInterval(poll)
         return clear
