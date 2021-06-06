@@ -75,7 +75,13 @@ class DeleteMixin(ActionMixin):
         return super().form_valid()
 
     def get_success_url(self):
-        return self.request.GET.get('_next', self.router['list'].reverse())
+        return self.request.GET.get(
+            '_next',
+            self.request.POST.get(
+                '_next',
+                self.router['list'].reverse()
+            ),
+        )
 
 
 class DetailMixin:

@@ -336,11 +336,20 @@ class FormTemplate(FormContainer):
                 ),
                 href=next_,
             )
+
+        _next = view.request.GET.get(
+            '_next',
+            view.request.POST.get('_next', ''),
+        )
+        if _next:
+            _next = Input(type='hidden', name='_next', value=_next)
+
         return super().to_html(
             H3(view.title),
             Form(
                 form,
                 CSRFInput(view.request),
+                _next,
                 back,
                 MDCButtonRaised(getattr(view, 'title_submit', _('Submit'))),
                 method='post',
