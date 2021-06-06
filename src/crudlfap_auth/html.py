@@ -35,6 +35,7 @@ class LoginFormViewComponent(FormContainer):
                     style='display: flex; justify-content: space-between',
                 ),
                 method='POST',
+                action=view.request.path_info,
                 cls='form card',
             ),
             cls='',

@@ -16,7 +16,6 @@ class CreateMixin:
     default_template_name = 'crudlfap/create.html'
     template_name_suffixes = ['create', 'form']
     controller = 'modal'
-    action = 'click->modal#open'
     color = 'green'
     log_action_flag = ADDITION
     menus = ['model']
@@ -75,7 +74,13 @@ class DeleteMixin(ActionMixin):
         return super().form_valid()
 
     def get_success_url(self):
-        return self.request.GET.get('_next', self.router['list'].reverse())
+        return self.request.GET.get(
+            '_next',
+            self.request.POST.get(
+                '_next',
+                self.router['list'].reverse()
+            ),
+        )
 
 
 class DetailMixin:
