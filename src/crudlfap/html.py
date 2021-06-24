@@ -490,10 +490,11 @@ class ListActions(Component):
 @template('crudlfap/list.html', App)
 class ObjectList(Div):
     def context(self, *content, **context):
-        context['page-menu'] = context['view'].router.get_menu(
-            'model',
-            context['view'].request,
-        )
+        if 'page-menu' not in context:
+            context['page-menu'] = context['view'].router.get_menu(
+                'model',
+                context['view'].request,
+            )
         return super().context(*content, **context)
 
     def to_html(self, *content, **context):
