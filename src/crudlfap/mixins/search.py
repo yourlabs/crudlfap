@@ -12,12 +12,15 @@ class SearchForm(forms.Form):
 
 
 class SearchMixin(object):
+    def get_search_model(self):
+        return self.model
+
     def get_search_fields(self):
         if hasattr(self.router, 'search_fields'):
             return self.router.search_fields
         return [
             f.name
-            for f in self.model._meta.fields
+            for f in self.search_model._meta.fields
             if isinstance(f, models.CharField)
         ]
 

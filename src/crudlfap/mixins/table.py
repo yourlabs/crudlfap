@@ -54,23 +54,23 @@ class TableMixin(object):
         if self.table_sequence:
             self.table_fields = [
                 f.name
-                for f in self.model._meta.fields
+                for f in self.object_list.model._meta.fields
                 if f.name in self.table_sequence
             ]
         else:
             self.table_fields = [
                 f.name
-                for f in self.model._meta.fields
+                for f in self.object_list.model._meta.fields
                 if f.name not in self.exclude
             ]
         return self.table_fields
 
     def get_table_link_fields(self):
-        if not hasattr(self.model, 'get_absolute_url'):
+        if not hasattr(self.object_list.model, 'get_absolute_url'):
             return []
 
         for field in self.table_fields:
-            model_field = self.model._meta.get_field(field)
+            model_field = self.object_list.model._meta.get_field(field)
             if isinstance(model_field, models.CharField):
                 return [field]
 
@@ -94,7 +94,7 @@ class TableMixin(object):
         return dict()
 
     def get_table_meta_attributes(self):
-        attrs = dict(model=self.model)
+        attrs = dict(model=self.object_list.model)
 
         if self.table_sequence:
             attrs['sequence'] = self.table_sequence
@@ -134,7 +134,7 @@ class TableMixin(object):
             bases = (self.table_class, Table)
 
         return type(
-            '{}Table'.format(self.model.__name__),
+            '{}Table'.format(self.object_list.model.__name__),
             bases,
             self.table_class_attributes
         )

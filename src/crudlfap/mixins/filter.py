@@ -4,6 +4,9 @@ from django.db import models
 
 
 class FilterMixin(object):
+    def get_filter_model(self):
+        return self.filterset_kwargs['queryset'].model
+
     def get_filterset(self):
         """
         Returns an instance of the filterset to be used in this view.
@@ -14,7 +17,7 @@ class FilterMixin(object):
         # with choices which would empty out results
         for name, field in self.filterset.form.fields.items():
             try:
-                mf = self.model._meta.get_field(name)
+                mf = self.filter_model._meta.get_field(name)
             except Exception:
                 continue
 
@@ -65,7 +68,7 @@ class FilterMixin(object):
 
     def get_filterset_meta_attributes(self):
         return dict(
-            model=self.model,
+            model=self.filter_model,
             fields=self.filter_fields,
             filter_overrides=self.filterset_meta_filter_overrides,
             form=self.filterset_form_class,
@@ -78,7 +81,7 @@ class FilterMixin(object):
         extra = dict()
         for field_name in self.filter_fields:
             try:
-                field = self.model._meta.get_field(field_name)
+                field = self.filter_model._meta.get_field(field_name)
             except:  # noqa
                 continue
             choices = getattr(field, 'choices', None)
@@ -95,7 +98,7 @@ class FilterMixin(object):
 
     def get_filterset_class(self):
         return type(
-            '{}FilterSet'.format(self.model.__name__),
+            '{}FilterSet'.format(self.filter_model.__name__),
             (django_filters.FilterSet,),
             self.filterset_class_attributes
         )
