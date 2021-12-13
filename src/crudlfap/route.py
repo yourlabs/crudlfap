@@ -103,7 +103,7 @@ class RouteMetaclass(FactoryMetaclass):
                 cls.router.namespace,
                 cls.urlname
             )
-        elif cls.registry:
+        elif cls.registry is not None:
             return '{}:{}'.format(
                 cls.registry.app_name,
                 cls.urlname
