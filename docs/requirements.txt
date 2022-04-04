@@ -1,4 +1,5 @@
 sphinx
 sphinx-js
 django
+MarkupSafe==2.0.1
 .[project]
