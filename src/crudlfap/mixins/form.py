@@ -147,7 +147,7 @@ class FormMixin:
             'parameters': [],
             'produces': ['application/json', 'application/xml'],
             'responses': {
-                '405': {
+                '400': {
                     'description': 'Invalid input'
                 },
             },

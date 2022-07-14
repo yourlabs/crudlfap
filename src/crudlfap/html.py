@@ -6,6 +6,11 @@ from django.utils.translation import gettext as _
 from ryzom_django_mdc.html import *  # noqa
 
 
+class Html(Html):
+    def to_html(self, *args, **kwargs):
+        return '<!doctype html>' + super().to_html(*args, **kwargs)
+
+
 UNPOLY_TARGET_ALL = '#main, .mdc-top-app-bar__title, #drawer .mdc-list'
 
 
@@ -89,7 +94,9 @@ class PageMenu(Div):
                 style='text-decoration: none',
             )
             if getattr(v, 'controller', None) == 'modal':
-                button.attrs.up_modal = '.main-inner'
+                button.attrs.up_layer = 'new'
+                button.attrs.up_accept_location = context['view'].router['list'].url
+                button.attrs.up_on_accepted = 'up.reload()'
                 del button.attrs['up-target']
 
             content.append(button)
@@ -104,35 +111,6 @@ class PageMenu(Div):
 
 class Main(Main):
     pass
-
-
-class ModalClose(Component):
-    '''
-    Close the modal when inserted by Unpoly.
-
-    This should be the default behaviour of Unpoly, as documented, and is the
-    case with modals that do not redirect on the same page, but for modals with
-    a form with a ?_next= redirection then surprisingly unpoly does update the
-    body but does not close the modal by default.
-
-    This tag registers a compiler that calls up.modal.close() when it
-    sees itself, given that unpoly does not execute scripts in
-    response that it loads. As such, this tag MUST be in the initial body, but
-    outside the elements that you will load in modal.
-
-    Remove this hack when we figure the problem in unpoly.
-
-    Equivalent of::
-
-        Script(
-            'up.compiler(".closemodal", function() { up.modal.close(); })',
-            cls='closemodal',
-        ),
-    '''
-    attrs = dict(cls='closemodal')
-
-    def py2js():
-        up.compiler('.closemodal', lambda: up.modal.close())
 
 
 class Message(MDCSnackBar):
@@ -175,6 +153,17 @@ class Messages(Div):
 
 class Body(Body):
     style = 'margin: 0'
+    sass = '''
+    up-progress-bar
+        background-color: var(--mdc-theme-secondary)
+        height: 24px
+        bottom: 0
+        top: auto !important
+        background: linear-gradient(90deg, var(--mdc-theme-primary), var(--mdc-theme-secondary))
+        width: 200vw
+        animation: rotate 1s linear infinite
+        position: absolute
+    '''
 
     def __init__(self, *content, **attrs):
         self.drawer = mdcDrawer(id='drawer')
@@ -186,13 +175,11 @@ class Body(Body):
         )
         self.main = Main(
             self.main_inner,
-            ModalClose(),
             cls='main mdc-drawer-app-content',
             id='main',
         )
         self.debug = settings.DEBUG
         super().__init__(
-            Spinner(),
             self.bar,
             Div(
                 self.drawer,
@@ -251,51 +238,30 @@ class Spinner(Div):
     def py2js(self):
         up.proxy.config.slowDelay = 25
         up.compiler('.Spinner', lambda element: [
-            up.on('up:proxy:slow', lambda: up.element.show(element)),
-            up.on('up:proxy:recover', lambda: up.element.hide(element)),
+            up.on('up:request:late', lambda: up.element.show(element)),
+            up.on('up:request:recover', lambda: up.element.hide(element)),
         ])
 
     def __init__(self):
         super().__init__(Div(cls='lds-dual-ring'), style='display:none')
 
 
-def poll():
-    def poll_setup(element):
-        if not element.getAttribute('id'):
-            console.error('[poll] *REQUIRES* an id attribute!')
-            return
-        interval = parseInt(element.getAttribute('poll') or 5000)
-
-        def poll():
-            if not document.hidden:
-                up.reload(element)
-        poll = setInterval(poll, interval)
-
-        def clear():
-            clearInterval(poll)
-        return clear
-    up.compiler('[poll]', poll_setup)
-
-
 def snack(self):
     def open_snack(elem):
         sb = new.mdc.snackbar.MDCSnackbar(elem)
         sb.open()
-    up.compiler('[data-mdc-auto-init=MDCSnackbar]', open_snack)
+    up.compiler("[data-mdc-auto-init=MDCSnackbar]", open_snack)
 
 
 class App(Html):
     body_class = Body
     scripts = [
-        'https://unpkg.com/unpoly@1.0.0/dist/unpoly.js',
-        poll,
+        'https://unpkg.com/unpoly@2.6.1/unpoly.js',
+        'https://unpkg.com/unpoly@2.6.1/unpoly-migrate.js',
         snack,
-        # 'https://unpkg.com/unpoly@2.0.0-rc9/unpoly.min.js',
-        # 'https://unpkg.com/unpoly@2.0.0-rc9/unpoly-migrate.js',
     ]
     stylesheets = [
-        'https://unpkg.com/unpoly@1.0.0/dist/unpoly.css',
-        # 'https://unpkg.com/unpoly@2.0.0-rc9/unpoly.min.css',
+        'https://unpkg.com/unpoly@2.6.1/unpoly.min.css',
     ]
     sass = '''
     .up-modal .up-modal-viewport
@@ -398,14 +364,20 @@ class Swagger(Div):
 class Home(Div):
     def to_html(self, **context):
         site = Site.objects.get_current()
+        user = context['view'].request.user
         return super().to_html(
-            H1('Welcome to ' + site.name),
+            H1(
+                f'Welcome to {site.name} {user.email}'
+                if user.is_authenticated
+                else
+                f'Welcome to {site.name}!'
+            ),
             MDCButtonRaised(
                 'Login to continue',
                 href=reverse('login'),
                 up_target=UNPOLY_TARGET_ALL,
                 tag='a',
-            ),
+            ) if not user.is_authenticated else '',
             Div('Then, navigate with the menu button at the north west'),
             **context
         )
