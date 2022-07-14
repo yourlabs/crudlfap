@@ -35,3 +35,28 @@ install_optional(OPTIONAL_MIDDLEWARE, MIDDLEWARE)  # noqa
 AUTHENTICATION_BACKENDS += [  # noqa
     'crudlfap_example.blog.crudlfap.AuthBackend',
 ]
+
+LOGGING = {
+   'version': 1,
+   'disable_existing_loggers': False,
+   'formatters': {
+       'verbose': {
+           'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+       },
+   },
+   'handlers': {
+       'console': {
+           'level': 'DEBUG',
+           'class': 'logging.StreamHandler',
+           'stream': sys.stdout,
+           'formatter': 'verbose'
+       },
+   },
+   'loggers': {
+       '': {
+           'handlers': ['console'],
+           'level': 'DEBUG',
+           'propagate': True,
+       },
+   },
+}
