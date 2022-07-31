@@ -554,8 +554,8 @@ class ObjectList(Div):
         )
 
         filters_chips = Div(
-            toggle=toggle if context['view'].filterset.form.fields else '',
             search=search_form or '',
+            toggle=toggle if context['view'].filterset.form.fields else '',
             chips=Div(
                 cls='mdc-chip-set',
                 role='grid',
