@@ -189,6 +189,9 @@ class Body(Body):
         width: 200vw
         animation: rotate 1s linear infinite
         position: absolute
+
+    up-modal-box
+        overflow: initial !important
     '''
 
     def __init__(self, *content, **attrs):
