@@ -60,48 +60,71 @@ class FormContainer(Container):
 class PageMenu(Div):
     attrs = dict(cls='mdc-elevation--z2', style='margin-bottom: 10px')
 
-    def __init__(self, *args, _next=None, **kwargs):
+    def __init__(self, *args, _next=None, _next_destructible=False, **kwargs):
         super().__init__(*args, **kwargs)
         self._next = _next
+        # wether the next page is destructible, such as a detail view after a
+        # delete post
+        self._next_destructible = _next_destructible
+
+    def link(self, view, context):
+        button = A(
+            MDCTextButton(
+                view.label.capitalize(),
+                icon=getattr(view, 'icon', None),
+                tag='span',
+                style={
+                    'margin': '10px',
+                    'color': getattr(view, 'color', 'inherit'),
+                },
+            ),
+            href=view.url,
+            style='text-decoration: none',
+        )
+
+        if getattr(view, 'controller', None) != 'modal':
+            return button
+
+        # wether going from the here to the next url is safe,
+        # safe means that this menu view will not destroy the current url
+        # which will be the case if we're in a detail view and making a
+        # DELETE request on the object
+        dangerous = (
+            self._next_destructible
+            and getattr(view, 'destructive', False)
+        )
+
+        button.attrs.up_layer = 'new'
+        if dangerous:
+            # in case the view will destroy the current view, enforce
+            # list view
+            next_url = str(view.router['list'].url)
+            button.attrs.up_on_accepted = (
+                f'up.visit("{view.router["list"].url}")'
+            )
+        else:
+            next_url = self._next
+            # we have to reload meanwhile unpoly 2 learns to reuse the
+            # form response
+            button.attrs.up_on_accepted = 'up.reload()'
+
+        if '?' not in button.attrs['href']:
+            button.attrs['href'] += '?'
+        button.attrs['href'] += '&_next=' + next_url
+        button.attrs.up_accept_location = next_url
+        del button.attrs['up-target']
+        return button
 
     def to_html(self, *content, **context):
         if 'page-menu' not in context:
             return super().to_html(*content, **context)
 
         content = list(content)
-        menu = context['page-menu']
-
-        for v in menu:
-            if v.urlname == context['view'].urlname:
-                continue
-
-            href = v.url
-            if self._next:
-                if '?' not in href:
-                    href += '?'
-                href += '&_next=' + self._next
-            button = A(
-                MDCTextButton(
-                    v.label.capitalize(),
-                    icon=getattr(v, 'icon', None),
-                    tag='span',
-                    style={
-                        'margin': '10px',
-                        'color': getattr(v, 'color', 'inherit'),
-                    },
-                ),
-                href=href,
-                style='text-decoration: none',
-            )
-            if getattr(v, 'controller', None) == 'modal':
-                button.attrs.up_layer = 'new'
-                button.attrs.up_accept_location = (
-                    context['view'].router['list'].url
-                )
-                button.attrs.up_on_accepted = 'up.reload()'
-                del button.attrs['up-target']
-
-            content.append(button)
+        content += [
+            self.link(view, context)
+            for view in context['page-menu']
+            if view.urlname != context['view'].urlname
+        ]
 
         return super().to_html(
             *content,
@@ -136,9 +159,6 @@ class Message(MDCSnackBar):
         flex-direction: row;
         align-items: center
     '''
-
-    def py2js(self):
-        return  # we will use up.compiler
 
 
 class Messages(Div):
@@ -410,7 +430,10 @@ class ObjectDetail(Div):
             ))
 
         return super().to_html(
-            PageMenu(),
+            PageMenu(
+                _next=context['view'].request.path,
+                _next_destructible=True,
+            ),
             *content,
             NarrowCard(table),
             **context
@@ -508,7 +531,10 @@ class ObjectList(Div):
         return super().to_html(
             *content,
             self.drawer_component(**context) or '',
-            PageMenu(_next=context['view'].request.path),
+            PageMenu(
+                _next=context['view'].request.path,
+                _next_destructible=False,
+            ),
             Div(
                 self.search_component(**context) or '',
                 table,

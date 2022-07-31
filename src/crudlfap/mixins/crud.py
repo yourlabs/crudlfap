@@ -65,6 +65,7 @@ class DeleteMixin(ActionMixin):
     action = 'click->modal#open'
     form_class = forms.Form
     permission_shortcode = 'delete'
+    destructive = True
 
     def form_valid(self):
         if hasattr(self, 'object_list'):

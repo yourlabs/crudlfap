@@ -7,7 +7,6 @@ from django.contrib import messages
 class FormMixin:
     """Mixin for views which have a Form."""
 
-    success_url_next = True
     initial = {}
     default_template_name = 'crudlfap/form.html'
 
@@ -111,14 +110,8 @@ class FormMixin:
     def get_success_url(self):
         if self.next_url:
             return self.next_url
-
-        if (hasattr(self, 'object')
-                and hasattr(self.object, 'get_absolute_url')):
-            return self.object.get_absolute_url()
-
         if self.router['list']:
             return self.router['list'].url
-
         return super().get_success_url()
 
     def message_html(self, message):

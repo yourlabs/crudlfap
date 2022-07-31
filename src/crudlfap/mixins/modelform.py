@@ -132,5 +132,14 @@ class ModelFormMixin(ModelMixin, FormMixin):
         self.log_insert()
         return response
 
+    def get_success_url(self):
+        if self.next_url:
+            return self.next_url
+
+        if hasattr(self.object, 'get_absolute_url'):
+            return self.object.get_absolute_url()
+
+        return super().get_success_url()
+
     def get_swagger_summary(self):
         return f'{self.model.__name__} {self.label}'
