@@ -21,7 +21,9 @@ class FormMixin:
             return self.form_valid_json()
 
         self.message_success()
-        return http.HttpResponseRedirect(self.success_url)
+        response = http.HttpResponseRedirect(self.success_url)
+        response['X-Up-Layer-Accept'] = self.request.path_info
+        return response
 
     def form_valid_json(self):
         return http.JsonResponse({
