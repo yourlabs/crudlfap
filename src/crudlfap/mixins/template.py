@@ -2,7 +2,7 @@ import logging
 
 from django.conf import settings
 from django.template.response import TemplateResponse
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 logger = logging.getLogger()
 

@@ -13,7 +13,7 @@ import logging
 from django import http
 from django.contrib import auth, messages
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from crudlfap import shortcuts as crudlfap
 
