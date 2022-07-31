@@ -153,6 +153,17 @@ class Messages(Div):
 
 class Body(Body):
     style = 'margin: 0'
+    sass = '''
+    up-progress-bar
+        background-color: var(--mdc-theme-secondary)
+        height: 24px
+        bottom: 0
+        top: auto !important
+        background: linear-gradient(90deg, var(--mdc-theme-primary), var(--mdc-theme-secondary))
+        width: 200vw
+        animation: rotate 1s linear infinite
+        position: absolute
+    '''
 
     def __init__(self, *content, **attrs):
         self.drawer = mdcDrawer(id='drawer')
@@ -164,11 +175,6 @@ class Body(Body):
         )
         self.main = Main(
             self.main_inner,
-            Style('''
-    up-progress-bar {
-      background-color: red;
-      }
-            '''),
             cls='main mdc-drawer-app-content',
             id='main',
         )
