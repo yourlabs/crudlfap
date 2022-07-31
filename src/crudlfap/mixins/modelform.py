@@ -4,7 +4,7 @@ from django import http
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
 from django.forms import models as model_forms
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from .form import FormMixin
 from .model import ModelMixin

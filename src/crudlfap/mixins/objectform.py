@@ -1,5 +1,5 @@
 from django.contrib.admin.models import CHANGE
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from .modelform import ModelFormMixin
 from .object import ObjectMixin
