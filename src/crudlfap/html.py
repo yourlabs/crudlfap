@@ -95,7 +95,9 @@ class PageMenu(Div):
             )
             if getattr(v, 'controller', None) == 'modal':
                 button.attrs.up_layer = 'new'
-                button.attrs.up_accept_location = context['view'].router['list'].url
+                button.attrs.up_accept_location = (
+                    context['view'].router['list'].url
+                )
                 button.attrs.up_on_accepted = 'up.reload()'
                 del button.attrs['up-target']
 
@@ -159,7 +161,11 @@ class Body(Body):
         height: 24px
         bottom: 0
         top: auto !important
-        background: linear-gradient(90deg, var(--mdc-theme-primary), var(--mdc-theme-secondary))
+        background: linear-gradient( \
+            90deg, \
+            var(--mdc-theme-primary), \
+            var(--mdc-theme-secondary) \
+        )
         width: 200vw
         animation: rotate 1s linear infinite
         position: absolute

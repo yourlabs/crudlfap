@@ -37,26 +37,26 @@ AUTHENTICATION_BACKENDS += [  # noqa
 ]
 
 LOGGING = {
-   'version': 1,
-   'disable_existing_loggers': False,
-   'formatters': {
-       'verbose': {
-           'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-       },
-   },
-   'handlers': {
-       'console': {
-           'level': 'DEBUG',
-           'class': 'logging.StreamHandler',
-           'stream': sys.stdout,
-           'formatter': 'verbose'
-       },
-   },
-   'loggers': {
-       '': {
-           'handlers': ['console'],
-           'level': 'DEBUG',
-           'propagate': True,
-       },
-   },
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
 }

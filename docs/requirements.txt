@@ -1,5 +1,6 @@
 sphinx
 sphinx-js
 django
+# https://github.com/pallets/jinja/issues/1585
 MarkupSafe==2.0.1
 .[project]
