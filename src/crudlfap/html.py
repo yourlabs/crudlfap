@@ -252,19 +252,11 @@ class Spinner(Div):
         super().__init__(Div(cls='lds-dual-ring'), style='display:none')
 
 
-def snack(self):
-    def open_snack(elem):
-        sb = new.mdc.snackbar.MDCSnackbar(elem)
-        sb.open()
-    up.compiler("[data-mdc-auto-init=MDCSnackbar]", open_snack)
-
-
 class App(Html):
     body_class = Body
     scripts = [
         'https://unpkg.com/unpoly@2.6.1/unpoly.js',
         'https://unpkg.com/unpoly@2.6.1/unpoly-migrate.js',
-        snack,
     ]
     stylesheets = [
         'https://unpkg.com/unpoly@2.6.1/unpoly.min.css',
