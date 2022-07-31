@@ -2,8 +2,13 @@ from django.conf import settings
 from django.contrib.sites.models import Site
 from django.contrib import messages
 from django.urls import reverse
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from ryzom_django_mdc.html import *  # noqa
+
+
+class Html(Html):
+    def to_html(self, *args, **kwargs):
+        return '<!doctype html>' + super().to_html(*args, **kwargs)
 
 
 UNPOLY_TARGET_ALL = '#main, .mdc-top-app-bar__title, #drawer .mdc-list'
@@ -55,44 +60,71 @@ class FormContainer(Container):
 class PageMenu(Div):
     attrs = dict(cls='mdc-elevation--z2', style='margin-bottom: 10px')
 
-    def __init__(self, *args, _next=None, **kwargs):
+    def __init__(self, *args, _next=None, _next_destructible=False, **kwargs):
         super().__init__(*args, **kwargs)
         self._next = _next
+        # wether the next page is destructible, such as a detail view after a
+        # delete post
+        self._next_destructible = _next_destructible
+
+    def link(self, view, context):
+        button = A(
+            MDCTextButton(
+                view.label.capitalize(),
+                icon=getattr(view, 'icon', None),
+                tag='span',
+                style={
+                    'margin': '10px',
+                    'color': getattr(view, 'color', 'inherit'),
+                },
+            ),
+            href=view.url,
+            style='text-decoration: none',
+        )
+
+        if getattr(view, 'controller', None) != 'modal':
+            return button
+
+        # wether going from the here to the next url is safe,
+        # safe means that this menu view will not destroy the current url
+        # which will be the case if we're in a detail view and making a
+        # DELETE request on the object
+        dangerous = (
+            self._next_destructible
+            and getattr(view, 'destructive', False)
+        )
+
+        button.attrs.up_layer = 'new'
+        if dangerous:
+            # in case the view will destroy the current view, enforce
+            # list view
+            next_url = str(view.router['list'].url)
+            button.attrs.up_on_accepted = (
+                f'up.visit("{view.router["list"].url}")'
+            )
+        else:
+            next_url = self._next
+            # we have to reload meanwhile unpoly 2 learns to reuse the
+            # form response
+            button.attrs.up_on_accepted = 'up.reload()'
+
+        if '?' not in button.attrs['href']:
+            button.attrs['href'] += '?'
+        button.attrs['href'] += '&_next=' + next_url
+        button.attrs.up_accept_location = next_url
+        del button.attrs['up-target']
+        return button
 
     def to_html(self, *content, **context):
         if 'page-menu' not in context:
             return super().to_html(*content, **context)
 
         content = list(content)
-        menu = context['page-menu']
-
-        for v in menu:
-            if v.urlname == context['view'].urlname:
-                continue
-
-            href = v.url
-            if self._next:
-                if '?' not in href:
-                    href += '?'
-                href += '&_next=' + self._next
-            button = A(
-                MDCTextButton(
-                    v.label.capitalize(),
-                    icon=getattr(v, 'icon', None),
-                    tag='span',
-                    style={
-                        'margin': '10px',
-                        'color': getattr(v, 'color', 'inherit'),
-                    },
-                ),
-                href=href,
-                style='text-decoration: none',
-            )
-            if getattr(v, 'controller', None) == 'modal':
-                button.attrs.up_modal = '.main-inner'
-                del button.attrs['up-target']
-
-            content.append(button)
+        content += [
+            self.link(view, context)
+            for view in context['page-menu']
+            if view.urlname != context['view'].urlname
+        ]
 
         return super().to_html(
             *content,
@@ -104,35 +136,6 @@ class PageMenu(Div):
 
 class Main(Main):
     pass
-
-
-class ModalClose(Component):
-    '''
-    Close the modal when inserted by Unpoly.
-
-    This should be the default behaviour of Unpoly, as documented, and is the
-    case with modals that do not redirect on the same page, but for modals with
-    a form with a ?_next= redirection then surprisingly unpoly does update the
-    body but does not close the modal by default.
-
-    This tag registers a compiler that calls up.modal.close() when it
-    sees itself, given that unpoly does not execute scripts in
-    response that it loads. As such, this tag MUST be in the initial body, but
-    outside the elements that you will load in modal.
-
-    Remove this hack when we figure the problem in unpoly.
-
-    Equivalent of::
-
-        Script(
-            'up.compiler(".closemodal", function() { up.modal.close(); })',
-            cls='closemodal',
-        ),
-    '''
-    attrs = dict(cls='closemodal')
-
-    def py2js():
-        up.compiler('.closemodal', lambda: up.modal.close())
 
 
 class Message(MDCSnackBar):
@@ -157,9 +160,6 @@ class Message(MDCSnackBar):
         align-items: center
     '''
 
-    def py2js(self):
-        return  # we will use up.compiler
-
 
 class Messages(Div):
     def to_html(self, *content, **context):
@@ -175,6 +175,21 @@ class Messages(Div):
 
 class Body(Body):
     style = 'margin: 0'
+    sass = '''
+    up-progress-bar
+        background-color: var(--mdc-theme-secondary)
+        height: 24px
+        bottom: 0
+        top: auto !important
+        background: linear-gradient( \
+            90deg, \
+            var(--mdc-theme-primary), \
+            var(--mdc-theme-secondary) \
+        )
+        width: 200vw
+        animation: rotate 1s linear infinite
+        position: absolute
+    '''
 
     def __init__(self, *content, **attrs):
         self.drawer = mdcDrawer(id='drawer')
@@ -186,13 +201,11 @@ class Body(Body):
         )
         self.main = Main(
             self.main_inner,
-            ModalClose(),
             cls='main mdc-drawer-app-content',
             id='main',
         )
         self.debug = settings.DEBUG
         super().__init__(
-            Spinner(),
             self.bar,
             Div(
                 self.drawer,
@@ -251,51 +264,22 @@ class Spinner(Div):
     def py2js(self):
         up.proxy.config.slowDelay = 25
         up.compiler('.Spinner', lambda element: [
-            up.on('up:proxy:slow', lambda: up.element.show(element)),
-            up.on('up:proxy:recover', lambda: up.element.hide(element)),
+            up.on('up:request:late', lambda: up.element.show(element)),
+            up.on('up:request:recover', lambda: up.element.hide(element)),
         ])
 
     def __init__(self):
         super().__init__(Div(cls='lds-dual-ring'), style='display:none')
 
 
-def poll():
-    def poll_setup(element):
-        if not element.getAttribute('id'):
-            console.error('[poll] *REQUIRES* an id attribute!')
-            return
-        interval = parseInt(element.getAttribute('poll') or 5000)
-
-        def poll():
-            if not document.hidden:
-                up.reload(element)
-        poll = setInterval(poll, interval)
-
-        def clear():
-            clearInterval(poll)
-        return clear
-    up.compiler('[poll]', poll_setup)
-
-
-def snack(self):
-    def open_snack(elem):
-        sb = new.mdc.snackbar.MDCSnackbar(elem)
-        sb.open()
-    up.compiler('[data-mdc-auto-init=MDCSnackbar]', open_snack)
-
-
 class App(Html):
     body_class = Body
     scripts = [
-        'https://unpkg.com/unpoly@1.0.0/dist/unpoly.js',
-        poll,
-        snack,
-        # 'https://unpkg.com/unpoly@2.0.0-rc9/unpoly.min.js',
-        # 'https://unpkg.com/unpoly@2.0.0-rc9/unpoly-migrate.js',
+        'https://unpkg.com/unpoly@2.6.1/unpoly.js',
+        'https://unpkg.com/unpoly@2.6.1/unpoly-migrate.js',
     ]
     stylesheets = [
-        'https://unpkg.com/unpoly@1.0.0/dist/unpoly.css',
-        # 'https://unpkg.com/unpoly@2.0.0-rc9/unpoly.min.css',
+        'https://unpkg.com/unpoly@2.6.1/unpoly.min.css',
     ]
     sass = '''
     .up-modal .up-modal-viewport
@@ -398,14 +382,20 @@ class Swagger(Div):
 class Home(Div):
     def to_html(self, **context):
         site = Site.objects.get_current()
+        user = context['view'].request.user
         return super().to_html(
-            H1('Welcome to ' + site.name),
+            H1(
+                f'Welcome to {site.name} {user.email}'
+                if user.is_authenticated
+                else
+                f'Welcome to {site.name}!'
+            ),
             MDCButtonRaised(
                 'Login to continue',
                 href=reverse('login'),
                 up_target=UNPOLY_TARGET_ALL,
                 tag='a',
-            ),
+            ) if not user.is_authenticated else '',
             Div('Then, navigate with the menu button at the north west'),
             **context
         )
@@ -440,7 +430,10 @@ class ObjectDetail(Div):
             ))
 
         return super().to_html(
-            PageMenu(),
+            PageMenu(
+                _next=context['view'].request.path,
+                _next_destructible=True,
+            ),
             *content,
             NarrowCard(table),
             **context
@@ -538,7 +531,10 @@ class ObjectList(Div):
         return super().to_html(
             *content,
             self.drawer_component(**context) or '',
-            PageMenu(_next=context['view'].request.path),
+            PageMenu(
+                _next=context['view'].request.path,
+                _next_destructible=False,
+            ),
             Div(
                 self.search_component(**context) or '',
                 table,
@@ -582,8 +578,8 @@ class ObjectList(Div):
         )
 
         filters_chips = Div(
-            toggle=toggle if context['view'].filterset.form.fields else '',
             search=search_form or '',
+            toggle=toggle if context['view'].filterset.form.fields else '',
             chips=Div(
                 cls='mdc-chip-set',
                 role='grid',

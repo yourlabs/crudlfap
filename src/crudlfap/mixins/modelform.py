@@ -4,7 +4,7 @@ from django import http
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
 from django.forms import models as model_forms
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from .form import FormMixin
 from .model import ModelMixin
@@ -131,6 +131,15 @@ class ModelFormMixin(ModelMixin, FormMixin):
         response = super().form_valid()
         self.log_insert()
         return response
+
+    def get_success_url(self):
+        if self.next_url:
+            return self.next_url
+
+        if hasattr(self.object, 'get_absolute_url'):
+            return self.object.get_absolute_url()
+
+        return super().get_success_url()
 
     def get_swagger_summary(self):
         return f'{self.model.__name__} {self.label}'

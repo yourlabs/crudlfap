@@ -3,7 +3,7 @@ import collections
 import django_tables2 as tables
 from django.db import models
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django_tables2.config import RequestConfig
 
 from crudlfap import html

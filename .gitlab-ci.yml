@@ -110,7 +110,7 @@ py-test:
   stage: build
   image: yourlabs/python-arch
   script:
-  - tox -e py310-dj32
+  - tox -e py310-dj40
   - codecov-bash -e TOXENV -f coverage.xml
 
 pypi:
