@@ -24,6 +24,7 @@ class A(A):
 class Form(Form):
     attrs = dict(
         up_target=A.attrs['up-target'],
+        up_layer='root',
         method='post',
     )
 
@@ -104,9 +105,6 @@ class PageMenu(Div):
             )
         else:
             next_url = self._next
-            # we have to reload meanwhile unpoly 2 learns to reuse the
-            # form response
-            button.attrs.up_on_accepted = 'up.reload()'
 
         if '?' not in button.attrs['href']:
             button.attrs['href'] += '?'

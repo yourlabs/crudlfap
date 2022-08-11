@@ -355,7 +355,6 @@ class Router(object):
             if getattr(view, 'controller', None) == 'modal':
                 button.attrs.up_layer = 'new'
                 button.attrs.up_accept_location = view.router['list'].url
-                button.attrs.up_on_accepted = 'up.reload()'
             else:
                 button.attrs['up-target'] = html.A.attrs['up-target']
             buttons.append(button)
