@@ -45,5 +45,5 @@ def test_urlpattern():
         model = Artist
     p = DetailView.urlpattern
     assert p.name == 'detail'
-    assert p.pattern.regex == re.compile('^detail$')
+    assert p.pattern.regex == re.compile('^detail\\Z')
     assert p.callback.view_class == DetailView
