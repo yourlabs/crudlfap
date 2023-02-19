@@ -21,7 +21,7 @@ setup(
         'django>=3.2,<4',
         'django-jinja',
         'django-bootstrap3',
-        'django-material',
+        'django-material-1.3-dj32==1.3.3',
         'django-tables2',
         'django-filter',
         'django-betterforms',
