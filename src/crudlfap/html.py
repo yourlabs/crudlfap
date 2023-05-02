@@ -126,8 +126,6 @@ class PageMenu(Div):
 
         return super().to_html(
             *content,
-            '<div class="mdc-elevation-overlay"></div>',
-            '<div class="mdc-button__ripple"></div>',
             **context,
         )
 
