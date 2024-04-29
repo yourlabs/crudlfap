@@ -44,11 +44,15 @@ npm:
   - sed -i "s/GIT_TAG/${CI_COMMIT_REF_NAME/v/}/" js/package.json
   - grep version js/package.json
   - cd js; npm install; npm publish
+  only:
+  - tags
 
 pypi:
   stage: deploy
   image: yourlabs/python
   script: pypi-release
+  only:
+  - tags
 
 docker-release:
   stage: deploy
