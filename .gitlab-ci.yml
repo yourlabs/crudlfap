@@ -32,25 +32,6 @@ py-test:
   - tox -e py310-dj32
   - codecov -e $TOXENV
 
-js-qa:
-  image: node:10-alpine
-  stage: build
-  script:
-  - cd js
-  - yarn install
-  - yarn run lint
-
-# lets first have tests then enable this one
-#js-test:
-#  image: node:10-alpine
-#  stage: build
-#  script:
-#  - npm install -g codecov
-#  - cd js
-#  - yarn install
-#  - yarn test
-#  - codecov
-
 npm:
   stage: deploy
   only:
