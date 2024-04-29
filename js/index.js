@@ -1,15 +1,16 @@
-import { Application } from 'stimulus'
-import { definitionsFromContext } from 'stimulus/webpack-helpers'
+import { Application } from '@hotwired/stimulus'
+import { definitionsFromContext } from '@hotwired/stimulus-webpack-helpers'
+
 import init from './init.js'
-import M from 'mrsmaterialize'
+import M from '@materializecss/materialize'
 import './style.sass'
 import loader from './loader.js'
 
 (() => {
-  if (window.Turbolinks === undefined) {
-    var Turbolinks = require('turbolinks')
-    Turbolinks.start()
-    Turbolinks.setProgressBarDelay(250)
+  if (window.Turbo === undefined) {
+    var Turbo = require('@hotwired/turbo')
+    Turbo.start()
+    Turbo.setProgressBarDelay(250)
   }
 
   // support to IE
@@ -40,7 +41,7 @@ application.load(definitionsFromContext(context))
 
 // Manual controller teardown
 // https://github.com/stimulusjs/stimulus/issues/104
-document.addEventListener('turbolinks:before-render', function() {
+document.addEventListener('turbo:load', function() {
   application.controllers.forEach(function(controller) {
     if(typeof controller.teardown === 'function') {
       controller.teardown()
@@ -48,7 +49,7 @@ document.addEventListener('turbolinks:before-render', function() {
   })
 })
 
-document.addEventListener('turbolinks:before-cache', function(e) {
+document.addEventListener('turbo:before-cache', function(e) {
   // perform cleanups here
   for (var tooltip of e.target.querySelectorAll('[data-tooltip]')) {
     M.Tooltip.getInstance(tooltip).destroy()
@@ -58,7 +59,7 @@ document.addEventListener('turbolinks:before-cache', function(e) {
   }
 })
 
-document.addEventListener('turbolinks:load', function(e) {
+document.addEventListener('turbo:load', function(e) {
   init(e.target.body)
 })
 
@@ -86,7 +87,7 @@ function prefetchCleanup(event) {
   event.target.removeEventListener('mouseleave', prefetchCleanup)
 }
 
-document.addEventListener('turbolinks:click', loader.show)
-document.addEventListener('turbolinks:render', loader.hide)
+document.addEventListener('turbo:click', loader.show)
+document.addEventListener('turbo:render', loader.hide)
 
 export default application

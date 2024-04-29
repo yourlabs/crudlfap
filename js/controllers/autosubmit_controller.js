@@ -1,4 +1,4 @@
-import { Controller } from 'stimulus'
+import { Controller } from '@hotwired/stimulus'
 import serialize from 'form-serialize'
 import init from '../init.js'
 

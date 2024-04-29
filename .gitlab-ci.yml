@@ -29,14 +29,14 @@ py-test:
   stage: build
   image: yourlabs/python
   script:
-  - tox -e py310-dj32
+  - tox -e py311-dj42
   - codecov -e $TOXENV
 
 npm:
   stage: deploy
   only:
   - /^v\d+\./
-  image: node:10-alpine
+  image: yourlabs/python
   variables:
     NODE_ENV: production
   script:

@@ -1,4 +1,4 @@
-import M from 'mrsmaterialize'
+import M from '@materializecss/materialize'
 
 var loader = {}
 
