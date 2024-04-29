@@ -29,21 +29,21 @@ py-test:
   stage: build
   image: yourlabs/python
   script:
-  - tox -e py310-dj32
+  - tox -e py311-dj42
   - codecov -e $TOXENV
 
 npm:
   stage: deploy
   only:
   - /^v\d+\./
-  image: node:10-alpine
+  image: yourlabs/python
   variables:
     NODE_ENV: production
   script:
   - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ~/.npmrc
   - sed -i "s/GIT_TAG/${CI_COMMIT_REF_NAME/v/}/" js/package.json
   - grep version js/package.json
-  - cd js; npm publish
+  - cd js; npm install; npm publish
 
 pypi:
   stage: deploy
