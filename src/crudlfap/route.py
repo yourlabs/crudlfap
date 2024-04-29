@@ -185,8 +185,10 @@ class Route(Factory, metaclass=RouteMetaclass):
     def get_url(self):
         """
         Return the URL for this view given its current state.
+
         Given that the ``reverse()`` method is a class method, this should
         allow things like::
+
             url = YourView(object=your_object).url
         """
         return self.reverse(*self.urlargs)
