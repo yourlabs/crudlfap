@@ -1,5 +1,5 @@
-import M from 'mrsmaterialize'
-import { Controller } from 'stimulus'
+import { Controller } from '@hotwired/stimulus'
+import M from '@materializecss/materialize'
 
 export default class extends Controller {
   connect() {

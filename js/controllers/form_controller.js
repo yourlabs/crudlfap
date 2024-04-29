@@ -1,6 +1,6 @@
 import Cookie from 'js-cookie'
-import { Controller } from 'stimulus'
-import M from 'mrsmaterialize'
+import { Controller } from '@hotwired/stimulus'
+import M from '@materializecss/materialize'
 import init from '../init.js'
 import loader from '../loader.js'
 

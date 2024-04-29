@@ -1,4 +1,4 @@
-import M from 'mrsmaterialize'
+import M from '@materializecss/materialize'
 
 export default function(el) {
   M.AutoInit(el)

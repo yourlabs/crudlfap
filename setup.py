@@ -18,7 +18,7 @@ setup(
     keywords='django crud',
     install_requires=[
         'jinja2==3.0.2',
-        'django>=3.2,<4',
+        'django>=4.2,<5',
         'django-jinja',
         'django-bootstrap3',
         'django-material-1.3-dj32==1.3.3',
@@ -27,6 +27,7 @@ setup(
         'django-betterforms',
         'timeago',
         'lookupy-unmanaged',
+        'sql-metadata',
     ],
     tests_require=['tox'],
     extras_require=dict(
