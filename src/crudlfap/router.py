@@ -357,6 +357,7 @@ class Router(object):
                 button.attrs.up_accept_location = view.router['list'].url
             else:
                 button.attrs['up-target'] = html.A.attrs['up-target']
+            button.attrs.update(getattr(view, 'link_attributes', {}))
             buttons.append(button)
         return html.Div(*buttons)
 

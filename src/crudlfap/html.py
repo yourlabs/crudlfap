@@ -11,7 +11,7 @@ class Html(Html):
         return '<!doctype html>' + super().to_html(*args, **kwargs)
 
 
-UNPOLY_TARGET_ALL = '#main, .mdc-top-app-bar__title, #drawer .mdc-list'
+UNPOLY_TARGET_ALL = 'body'
 
 
 class A(A):
@@ -82,6 +82,7 @@ class PageMenu(Div):
             href=view.url,
             style='text-decoration: none',
         )
+        button.attrs.update(getattr(view, 'link_attributes', {}))
 
         if getattr(view, 'controller', None) != 'modal':
             return button
@@ -982,12 +983,21 @@ class mdcDrawer(Aside):
         if request.session.get('become_user', None):
             content.append(
                 A(
-                    ' '.join([
-                        str(_('Back to your account')),
-                        request.session['become_user_realname'],
-                    ]),
+                    MDCTextButton(
+                        ' '.join([
+                            str(_('Back to your account')),
+                            request.session['become_user_realname'],
+                        ]),
+                        icon='accessibility_new',
+                        tag='span',
+                        style={
+                            'margin': '10px',
+                            'color': getattr(view, 'color', 'inherit'),
+                        },
+                    ),
                     href=reverse('crudlfap:su'),
-                    up_target=UNPOLY_TARGET_ALL,
+                    up_target='body',
+                    style='text-decoration: none',
                 )
             )
 

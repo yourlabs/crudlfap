@@ -49,7 +49,7 @@ class BecomeUser(crudlfap.ObjectView):
     menus = ['object']
     icon = 'accessibility_new'
     color = 'purple'
-    link_attributes = {'data-noprefetch': 'true'}
+    link_attributes = {'data-noprefetch': 'true', 'up-target': 'body'}
 
     def become(self):
         """

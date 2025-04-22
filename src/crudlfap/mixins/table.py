@@ -30,7 +30,7 @@ class ActionsColumn(tables.Column):
             *site[type(record)].get_menu_component(
                 'object',
                 table.request,
-                object=record
+                object=record,
             ).content,
             style='display:flex;flex-direction:row-reverse',
         ).render()
