@@ -4,6 +4,7 @@ import json
 
 from django import forms
 from django import http
+from django.utils.html import mark_safe
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
 from django.contrib.contenttypes.models import ContentType
 
@@ -136,10 +137,10 @@ class DetailMixin:
             return getattr(self, type_getter)(name)
         value = getattr(self.object, name)
         if hasattr(value, 'get_absolute_url'):
-            return html.A(
+            return mark_safe(html.A(
                 str(value),
                 href=value.get_absolute_url(),
-            ).render()
+            ).render())
         return value
 
     def get_json_fields(self):
