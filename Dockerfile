@@ -8,14 +8,14 @@ ENV PATH="${PATH}:/app/.local/bin"
 ENV PYTHONIOENCODING=UTF-8 PYTHONUNBUFFERED=1 STATIC_ROOT=/app/public
 EXPOSE 8000
 
-RUN pacman -Syu --noconfirm mailcap which gettext python python-pillow python-psycopg2 python-pip python-psutil git curl uwsgi uwsgi-plugin-python python python-hiredis libsass && pip install --upgrade pip djcli
+RUN pacman -Syu --noconfirm mailcap which gettext python python-pillow python-psycopg2 python-pip python-psutil git curl uwsgi uwsgi-plugin-python python python-hiredis libsass && pip install --break-system-packages --upgrade pip djcli
 RUN useradd --home-dir /app --uid 1000 app && mkdir -p /app && chown -R app /app
 WORKDIR /app
 
 COPY setup.py README.rst MANIFEST.in /app/
 COPY src /app/src
 COPY manage.py /app
-RUN pip install --editable /app[project]
+RUN pip install --break-system-packages --editable /app[project]
 
 RUN ./manage.py ryzom_bundle
 RUN DEBUG=1 ./manage.py collectstatic --noinput
