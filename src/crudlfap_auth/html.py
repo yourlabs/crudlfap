@@ -37,6 +37,8 @@ class LoginFormViewComponent(FormContainer):
                 method='POST',
                 action=view.request.path_info,
                 cls='form card',
+                up_target=None,
+                up_layer=None,
             ),
             cls='',
         )

@@ -213,11 +213,22 @@ class Body(Body):
             ),
         )
 
+    def to_html(self, *content, **context):
+        self.content.append(Meta(
+            name="csrf-token",
+            content=str(context['csrf_token']),
+        ))
+        return super().to_html(*content, **context)
+
     def py2js(self):
         up.compiler(
             '[data-mdc-auto-init]',
             lambda el: mdc.autoInit(el.parentElement)
         )
+        up.protocol.config.csrfToken = lambda: document.querySelector(
+            'meta[name="csrf-token"]'
+        ).getAttribute('content')
+        up.protocol.config.csrfHeader = 'X-CSRFToken'
         if self.debug:
             up.log.enable()
 
@@ -274,11 +285,11 @@ class Spinner(Div):
 class App(Html):
     body_class = Body
     scripts = [
-        'https://unpkg.com/unpoly@2.6.1/unpoly.js',
-        'https://unpkg.com/unpoly@2.6.1/unpoly-migrate.js',
+        'https://unpkg.com/unpoly@2.7.2/unpoly.js',
+        'https://unpkg.com/unpoly@2.7.2/unpoly-migrate.js',
     ]
     stylesheets = [
-        'https://unpkg.com/unpoly@2.6.1/unpoly.min.css',
+        'https://unpkg.com/unpoly@2.7.2/unpoly.min.css',
     ]
     sass = '''
     .up-modal .up-modal-viewport

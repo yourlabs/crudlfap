@@ -18,7 +18,9 @@ def login_logout(request, menu):
             icon='logout',
             href=reverse('logout'),
             style='text-decoration: none',
-            up_target=html.UNPOLY_TARGET_ALL,
+            up_target='body',
+            up_method='POST',
+            up_follow=True,
             tag='a',
         ))
     else:
